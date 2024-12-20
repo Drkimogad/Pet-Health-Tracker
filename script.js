@@ -1,57 +1,91 @@
-// Get elements
-const signupForm = document.getElementById('signupForm');
-const loginForm = document.getElementById('loginFormElement');
-const dietForm = document.getElementById('dietForm');
-const authSection = document.getElementById('authSection');
-const mainContent = document.getElementById('mainContent');
-const logoutButton = document.getElementById('logoutButton');
+// Dummy storage for users (you can replace this with localStorage)
+const users = [];
 
-// Fake storage for demo purposes (you can replace with real authentication)
-let users = [];
-
-function displayMainContent() {
-    authSection.style.display = 'none';
-    mainContent.style.display = 'block';
-    logoutButton.style.display = 'inline';
-}
-
-function hideMainContent() {
-    authSection.style.display = 'block';
-    mainContent.style.display = 'none';
-    logoutButton.style.display = 'none';
-}
-
-// Sign-up logic
-signupForm.addEventListener('submit', function (event) {
+// Handle Sign-Up
+document.getElementById('signUp').addEventListener('submit', function (event) {
     event.preventDefault();
-    const email = document.getElementById('signupEmail').value;
-    const password = document.getElementById('signupPassword').value;
+    
+    const email = document.getElementById('signUpEmail').value;
+    const password = document.getElementById('signUpPassword').value;
 
-    // Store the new user (in a real app, you'd send this to a server)
+    // Store the new user
     users.push({ email, password });
-
-    alert('Sign-up successful!');
-    displayMainContent();
+    alert('Sign-up successful! You can now log in.');
+    
+    // Switch to Login Form
+    document.getElementById('signUpForm').style.display = 'none';
+    document.getElementById('loginForm').style.display = 'block';
 });
 
-// Login logic
-loginForm.addEventListener('submit', function (event) {
+// Handle Login
+document.getElementById('login').addEventListener('submit', function (event) {
     event.preventDefault();
+    
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
 
-    // Check if user exists
-    const user = users.find(u => u.email === email && u.password === password);
-
+    // Check if the user exists
+    const user = users.find(user => user.email === email && user.password === password);
+    
     if (user) {
         alert('Login successful!');
-        displayMainContent();
+        
+        // Show Main Content and Hide Authentication Forms
+        document.getElementById('authSection').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+        document.getElementById('logoutButton').style.display = 'block';
+        
+        // Load saved pet data if available
+        loadSavedPetProfile();
     } else {
-        alert('Invalid credentials!');
+        alert('Invalid credentials! Please try again.');
     }
 });
 
-// Logout logic
-logoutButton.addEventListener('click', function () {
-    hideMainContent();
+// Handle Logout
+document.getElementById('logoutButton').addEventListener('click', function () {
+    document.getElementById('authSection').style.display = 'block';
+    document.getElementById('mainContent').style.display = 'none';
+    document.getElementById('logoutButton').style.display = 'none';
+    
+    alert('Logged out successfully!');
 });
+
+// Save Pet Profile
+document.getElementById('dietForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    const petProfile = {
+        petName: document.getElementById('petName').value,
+        breed: document.getElementById('breed').value,
+        age: document.getElementById('age').value,
+        weight: document.getElementById('weight').value,
+        allergies: document.getElementById('allergies').value,
+        medicalHistory: document.getElementById('medicalHistory').value,
+        dietPlan: document.getElementById('dietPlan').value
+    };
+
+    // Save pet profile in localStorage
+    localStorage.setItem('petProfile', JSON.stringify(petProfile));
+
+    // Alert and reload saved data
+    alert('Pet profile saved!');
+    loadSavedPetProfile();
+});
+
+// Load Saved Pet Profile
+function loadSavedPetProfile() {
+    const petProfile = JSON.parse(localStorage.getItem('petProfile'));
+    if (petProfile) {
+        document.getElementById('petName').value = petProfile.petName;
+        document.getElementById('breed').value = petProfile.breed;
+        document.getElementById('age').value = petProfile.age;
+        document.getElementById('weight').value = petProfile.weight;
+        document.getElementById('allergies').value = petProfile.allergies;
+        document.getElementById('medicalHistory').value = petProfile.medicalHistory;
+        document.getElementById('dietPlan').value = petProfile.dietPlan;
+    }
+}
+
+// Initial load
+loadSavedPetProfile();
