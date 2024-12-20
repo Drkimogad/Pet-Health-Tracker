@@ -1,57 +1,4 @@
-// Dummy storage for users (you can replace this with localStorage)
-const users = [];
-
-// Handle Sign-Up
-document.getElementById('signUp').addEventListener('submit', function (event) {
-    event.preventDefault();
-    
-    const email = document.getElementById('signUpEmail').value;
-    const password = document.getElementById('signUpPassword').value;
-
-    // Store the new user
-    users.push({ email, password });
-    alert('Sign-up successful! You can now log in.');
-    
-    // Switch to Login Form
-    document.getElementById('signUpForm').style.display = 'none';
-    document.getElementById('loginForm').style.display = 'block';
-});
-
-// Handle Login
-document.getElementById('login').addEventListener('submit', function (event) {
-    event.preventDefault();
-    
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
-
-    // Check if the user exists
-    const user = users.find(user => user.email === email && user.password === password);
-    
-    if (user) {
-        alert('Login successful!');
-        
-        // Show Main Content and Hide Authentication Forms
-        document.getElementById('authSection').style.display = 'none';
-        document.getElementById('mainContent').style.display = 'block';
-        document.getElementById('logoutButton').style.display = 'block';
-        
-        // Load saved pet data if available
-        loadSavedPetProfile();
-    } else {
-        alert('Invalid credentials! Please try again.');
-    }
-});
-
-// Handle Logout
-document.getElementById('logoutButton').addEventListener('click', function () {
-    document.getElementById('authSection').style.display = 'block';
-    document.getElementById('mainContent').style.display = 'none';
-    document.getElementById('logoutButton').style.display = 'none';
-    
-    alert('Logged out successfully!');
-});
-
-// Save Pet Profile
+// Handle Pet Profile Saving
 document.getElementById('dietForm').addEventListener('submit', function (event) {
     event.preventDefault();
 
@@ -62,30 +9,46 @@ document.getElementById('dietForm').addEventListener('submit', function (event) 
         weight: document.getElementById('weight').value,
         allergies: document.getElementById('allergies').value,
         medicalHistory: document.getElementById('medicalHistory').value,
-        dietPlan: document.getElementById('dietPlan').value
+        dietPlan: document.getElementById('dietPlan').value,
+        petImage: document.getElementById('petImageUpload').files[0] ? URL.createObjectURL(document.getElementById('petImageUpload').files[0]) : null
     };
 
-    // Save pet profile in localStorage
-    localStorage.setItem('petProfile', JSON.stringify(petProfile));
+    // Save pet profile in localStorage (or update if exists)
+    let savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+    savedProfiles.push(petProfile);
+    localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
 
-    // Alert and reload saved data
     alert('Pet profile saved!');
-    loadSavedPetProfile();
+    loadSavedPetProfiles();
 });
 
-// Load Saved Pet Profile
-function loadSavedPetProfile() {
-    const petProfile = JSON.parse(localStorage.getItem('petProfile'));
-    if (petProfile) {
-        document.getElementById('petName').value = petProfile.petName;
-        document.getElementById('breed').value = petProfile.breed;
-        document.getElementById('age').value = petProfile.age;
-        document.getElementById('weight').value = petProfile.weight;
-        document.getElementById('allergies').value = petProfile.allergies;
-        document.getElementById('medicalHistory').value = petProfile.medicalHistory;
-        document.getElementById('dietPlan').value = petProfile.dietPlan;
+// Load Saved Pet Profiles
+function loadSavedPetProfiles() {
+    const petProfiles = JSON.parse(localStorage.getItem('petProfiles'));
+    const dietList = document.getElementById('dietList');
+    dietList.innerHTML = '';  // Clear current list
+
+    if (petProfiles) {
+        petProfiles.forEach(profile => {
+            const listItem = document.createElement('li');
+            listItem.classList.add('pet-profile');
+            
+            const petImage = profile.petImage ? `<img src="${profile.petImage}" alt="Pet Image" class="pet-image">` : '';
+            const petDetails = `
+                <p><strong>Name:</strong> ${profile.petName}</p>
+                <p><strong>Breed:</strong> ${profile.breed}</p>
+                <p><strong>Age:</strong> ${profile.age}</p>
+                <p><strong>Weight:</strong> ${profile.weight}</p>
+                <p><strong>Allergies:</strong> ${profile.allergies}</p>
+                <p><strong>Medical History:</strong> ${profile.medicalHistory}</p>
+                <p><strong>Diet Plan:</strong> ${profile.dietPlan}</p>
+            `;
+
+            listItem.innerHTML = petImage + petDetails;
+            dietList.appendChild(listItem);
+        });
     }
 }
 
 // Initial load
-loadSavedPetProfile();
+loadSavedPetProfiles();
