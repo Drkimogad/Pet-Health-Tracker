@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pet Diet Planner</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Pet Diet Planner</h1>
@@ -16,35 +17,6 @@
     </form>
     <h2>Saved Diet Plans</h2>
     <ul id="dietList"></ul>
-
-    <script>
-        document.getElementById('dietForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const petName = document.getElementById('petName').value;
-            const dietPlan = document.getElementById('dietPlan').value;
-            const dietData = { name: petName, diet: dietPlan };
-
-            let diets = localStorage.getItem('diets');
-            diets = diets ? JSON.parse(diets) : [];
-            diets.push(dietData);
-            localStorage.setItem('diets', JSON.stringify(diets));
-
-            displayDiets();
-        });
-
-        function displayDiets() {
-            const dietList = document.getElementById('dietList');
-            dietList.innerHTML = '';
-            let diets = localStorage.getItem('diets');
-            diets = diets ? JSON.parse(diets) : [];
-            diets.forEach(diet => {
-                const li = document.createElement('li');
-                li.textContent = `${diet.name}'s Diet: ${diet.diet}`;
-                dietList.appendChild(li);
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', displayDiets);
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
