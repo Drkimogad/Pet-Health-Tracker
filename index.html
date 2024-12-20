@@ -7,16 +7,41 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Pet Diet Planner</h1>
-    <form id="dietForm">
-        <label for="petName">Pet Name:</label>
-        <input type="text" id="petName" required><br><br>
-        <label for="dietPlan">Diet Plan:</label>
-        <textarea id="dietPlan" required></textarea><br><br>
-        <button type="submit">Save</button>
-    </form>
-    <h2>Saved Diet Plans</h2>
-    <ul id="dietList"></ul>
+    <div class="background-container">
+        <header>
+            <h1>Pet Diet Planner</h1>
+        </header>
+        <main class="content">
+            <div class="form-container">
+                <form id="dietForm">
+                    <label for="petName">Pet Name:</label>
+                    <input type="text" id="petName" required><br><br>
+
+                    <label for="medicalHistory">Medical History:</label>
+                    <textarea id="medicalHistory" placeholder="Enter medical history"></textarea><br><br>
+
+                    <label for="dietPlan">Diet Plan:</label>
+                    <textarea id="dietPlan" required placeholder="Enter diet plan"></textarea><br><br>
+                    <button type="submit">Save</button>
+                </form>
+            </div>
+
+            <div class="image-container">
+                <h2>Pet Profile</h2>
+                <img src="placeholder.jpg" alt="Pet Image" id="petImage">
+                <p>Add a picture of your pet here!</p>
+            </div>
+        </main>
+        
+        <section>
+            <h2>Saved Diet Plans</h2>
+            <ul id="dietList"></ul>
+        </section>
+
+        <footer>
+            <p>&copy; 2024 Pet Diet Planner. All rights reserved.</p>
+        </footer>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
