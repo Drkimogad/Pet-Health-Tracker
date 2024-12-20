@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Diet Planner</title>
+</head>
+<body>
+    <h1>Pet Diet Planner</h1>
+    <form id="dietForm">
+        <label for="petName">Pet Name:</label>
+        <input type="text" id="petName" required><br><br>
+        <label for="dietPlan">Diet Plan:</label>
+        <textarea id="dietPlan" required></textarea><br><br>
+        <button type="submit">Save</button>
+    </form>
+    <h2>Saved Diet Plans</h2>
+    <ul id="dietList"></ul>
+
+    <script>
+        document.getElementById('dietForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const petName = document.getElementById('petName').value;
+            const dietPlan = document.getElementById('dietPlan').value;
+            const dietData = { name: petName, diet: dietPlan };
+
+            let diets = localStorage.getItem('diets');
+            diets = diets ? JSON.parse(diets) : [];
+            diets.push(dietData);
+            localStorage.setItem('diets', JSON.stringify(diets));
+
+            displayDiets();
+        });
+
+        function displayDiets() {
+            const dietList = document.getElementById('dietList');
+            dietList.innerHTML = '';
+            let diets = localStorage.getItem('diets');
+            diets = diets ? JSON.parse(diets) : [];
+            diets.forEach(diet => {
+                const li = document.createElement('li');
+                li.textContent = `${diet.name}'s Diet: ${diet.diet}`;
+                dietList.appendChild(li);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', displayDiets);
+    </script>
+</body>
+</html>
