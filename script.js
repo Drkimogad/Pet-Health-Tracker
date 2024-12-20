@@ -1,11 +1,11 @@
-// Check if user is logged in and update visibility accordingly
+// Check login status and show profile section
 function checkLoginStatus() {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     
     if (isLoggedIn === 'true') {
         document.getElementById('authSection').style.display = 'none'; // Hide login/logout buttons
         document.getElementById('profileSection').style.display = 'block'; // Show profile section
-        loadSavedPetProfiles(); // Load pet profiles if logged in
+        loadSavedPetProfiles(); // Load saved pet profiles
     } else {
         document.getElementById('authSection').style.display = 'block'; // Show login button
         document.getElementById('profileSection').style.display = 'none'; // Hide profile section
