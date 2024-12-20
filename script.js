@@ -1,3 +1,29 @@
+// Check if user is logged in and update visibility accordingly
+function checkLoginStatus() {
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    
+    if (isLoggedIn === 'true') {
+        document.getElementById('authSection').style.display = 'none'; // Hide login/logout buttons
+        document.getElementById('profileSection').style.display = 'block'; // Show profile section
+        loadSavedPetProfiles(); // Load pet profiles if logged in
+    } else {
+        document.getElementById('authSection').style.display = 'block'; // Show login button
+        document.getElementById('profileSection').style.display = 'none'; // Hide profile section
+    }
+}
+
+// Login function
+function login() {
+    localStorage.setItem('isLoggedIn', 'true');
+    checkLoginStatus();
+}
+
+// Logout function
+function logout() {
+    localStorage.setItem('isLoggedIn', 'false');
+    checkLoginStatus();
+}
+
 // Handle Pet Profile Saving
 document.getElementById('dietForm').addEventListener('submit', function (event) {
     event.preventDefault();
@@ -13,7 +39,7 @@ document.getElementById('dietForm').addEventListener('submit', function (event) 
         petImage: document.getElementById('petImageUpload').files[0] ? URL.createObjectURL(document.getElementById('petImageUpload').files[0]) : null
     };
 
-    // Save pet profile in localStorage (or update if exists)
+    // Save pet profile in localStorage
     let savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
     savedProfiles.push(petProfile);
     localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
@@ -51,4 +77,4 @@ function loadSavedPetProfiles() {
 }
 
 // Initial load
-loadSavedPetProfiles();
+checkLoginStatus();
