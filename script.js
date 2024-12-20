@@ -1,48 +1,62 @@
+// Add event listener to form submission
 document.getElementById('dietForm').addEventListener('submit', function(event) {
     event.preventDefault();
-    const petName = document.getElementById('petName').value.trim();
-    const dietPlan = document.getElementById('dietPlan').value.trim();
+    
+    // Get form values
+    const petName = document.getElementById('petName').value;
+    const breed = document.getElementById('breed').value;
+    const age = document.getElementById('age').value;
+    const weight = document.getElementById('weight').value;
+    const allergies = document.getElementById('allergies').value;
+    const medicalHistory = document.getElementById('medicalHistory').value;
+    const dietPlan = document.getElementById('dietPlan').value;
 
-    if (!petName || !dietPlan) {
-        alert('Please fill out all fields.');
-        return;
-    }
+    // Store pet data in an object
+    const petData = {
+        name: petName,
+        breed: breed,
+        age: age,
+        weight: weight,
+        allergies: allergies,
+        medicalHistory: medicalHistory,
+        dietPlan: dietPlan
+    };
 
-    const dietData = { name: petName, diet: dietPlan };
+    // Get existing pets data from LocalStorage, if any
+    let pets = localStorage.getItem('pets');
+    pets = pets ? JSON.parse(pets) : [];
 
-    let diets = localStorage.getItem('diets');
-    diets = diets ? JSON.parse(diets) : [];
+    // Add the new pet data to the array
+    pets.push(petData);
 
-    if (diets.some(diet => diet.name === petName)) {
-        alert('A diet plan for this pet already exists.');
-        return;
-    }
+    // Save the updated pets array back to LocalStorage
+    localStorage.setItem('pets', JSON.stringify(pets));
 
-    diets.push(dietData);
-    localStorage.setItem('diets', JSON.stringify(diets));
-
-    document.getElementById('dietForm').reset();
-    displayDiets();
+    // Display the updated pet list
+    displayPets();
 });
 
-function displayDiets() {
-    const dietList = document.getElementById('dietList');
-    dietList.innerHTML = '';
-    let diets = localStorage.getItem('diets');
-    diets = diets ? JSON.parse(diets) : [];
-    diets.forEach((diet, index) => {
+// Display saved pet profiles and diet plans
+function displayPets() {
+    const petList = document.getElementById('dietList');
+    petList.innerHTML = '';  // Clear existing list
+
+    // Retrieve pets data from LocalStorage
+    let pets = localStorage.getItem('pets');
+    pets = pets ? JSON.parse(pets) : [];
+
+    // Create list items for each saved pet
+    pets.forEach(pet => {
         const li = document.createElement('li');
-        li.textContent = `${diet.name}'s Diet: ${diet.diet}`;
-        const deleteBtn = document.createElement('button');
-        deleteBtn.textContent = 'Delete';
-        deleteBtn.addEventListener('click', () => {
-            diets.splice(index, 1);
-            localStorage.setItem('diets', JSON.stringify(diets));
-            displayDiets();
-        });
-        li.appendChild(deleteBtn);
-        dietList.appendChild(li);
+        li.innerHTML = `
+            <strong>${pet.name}</strong> (${pet.breed}) - Age: ${pet.age} years, Weight: ${pet.weight}kg<br>
+            <em>Allergies:</em> ${pet.allergies || 'None'}<br>
+            <em>Medical History:</em> ${pet.medicalHistory || 'None'}<br>
+            <strong>Diet Plan:</strong> ${pet.dietPlan}
+        `;
+        petList.appendChild(li);
     });
 }
 
-document.addEventListener('DOMContentLoaded', displayDiets);
+// Display pets when the page loads
+document.addEventListener('DOMContentLoaded', displayPets);
