@@ -44,15 +44,10 @@
                     <label for="petName">Pet Name:</label>
                     <input type="text" id="petName" required><br><br>
 
-                    <!-- Combined section for Breed, Age, and Weight -->
-                    <label for="breed">Breed:</label>
-                    <input type="text" id="breed" required placeholder="Breed"><br><br>
-
-                    <label for="age">Age:</label>
-                    <input type="number" id="age" required placeholder="Age"><br><br>
-
-                    <label for="weight">Weight:</label>
-                    <input type="number" id="weight" required placeholder="Weight"><br><br>
+                    <label for="breed">Breed, Age, Weight, and Sex:</label><br>
+                    <input type="text" id="breed" required placeholder="Breed"><br><br> 
+                    <input type="number" id="age" required placeholder="Age"><br><br> 
+                    <input type="number" id="weight" required placeholder="Weight"><br><br> 
 
                     <label for="allergies">Allergies:</label>
                     <textarea id="allergies" placeholder="Allergies (if any)"></textarea><br><br>
@@ -63,13 +58,13 @@
                     <label for="dietPlan">Diet Plan:</label>
                     <textarea id="dietPlan" placeholder="Enter diet plan for pet"></textarea><br><br>
 
-                    <label for="vaccinationReminder">Vaccination Reminder:</label>
+                    <label for="vaccinationReminder">Vaccinations and Deworming Reminder:</label>
                     <input type="date" id="vaccinationReminder" required><br><br>
 
-                    <label for="medicalHistoryReminder">Medical History Reminder:</label>
+                    <label for="medicalHistoryReminder">Medical Check-ups Reminder:</label>
                     <input type="date" id="medicalHistoryReminder" required><br><br>
 
-                    <label for="dietReminder">Diet Reminder:</label>
+                    <label for="dietReminder">Food Renewal Reminder:</label>
                     <input type="date" id="dietReminder" required><br><br>
 
                     <label for="petPhoto">Upload Pet Photo:</label>
@@ -77,15 +72,6 @@
 
                     <button type="submit">Save Pet Profile</button>
                 </form>
-            </div>
-
-            <!-- Reminders Section with Button -->
-            <div>
-                <button id="reminderButton" onclick="toggleReminderSection()">Show Reminders</button>
-                <div id="reminderSection" style="display: none;">
-                    <h2>Reminders</h2>
-                    <p>Set up your reminders for medical history, vaccinations, and diet!</p>
-                </div>
             </div>
 
             <h3>Saved Pet Profiles</h3>
