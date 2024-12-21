@@ -64,7 +64,10 @@ document.getElementById('dietForm').addEventListener('submit', function (event) 
         allergies: document.getElementById('allergies').value,
         medicalHistory: document.getElementById('medicalHistory').value,
         dietPlan: document.getElementById('dietPlan').value,
-        petPhoto: document.getElementById('petPhoto').files[0]
+        petPhoto: document.getElementById('petPhoto').files[0],
+        vaccinationReminder: document.getElementById('vaccinationReminder').value,
+        medicalHistoryReminder: document.getElementById('medicalHistoryReminder').value,
+        dietReminder: document.getElementById('dietReminder').value,
     };
 
     // Save pet profile in localStorage
@@ -91,6 +94,9 @@ function loadSavedPetProfile() {
             <p>Allergies: ${profile.allergies}</p>
             <p>Medical History: ${profile.medicalHistory}</p>
             <p>Diet Plan: ${profile.dietPlan}</p>
+            <p>Vaccination Reminder: ${profile.vaccinationReminder}</p>
+            <p>Medical History Reminder: ${profile.medicalHistoryReminder}</p>
+            <p>Diet Reminder: ${profile.dietReminder}</p>
             <img src="${URL.createObjectURL(profile.petPhoto)}" alt="Pet Photo" width="100"><br><br>
             <button onclick="deleteProfile(${index})">Delete</button>
         `;
