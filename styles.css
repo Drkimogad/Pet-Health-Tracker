@@ -90,8 +90,8 @@ li {
 }
 
 .delete-button {
-    font-size: 10px; /* Reduced size of delete button */
-    padding: 3px 8px;
+    font-size: 8px; /* Reduced size of delete button */
+    padding: 2px 5px; /* smaller padding */
     background-color: #ff4d4d;
     color: white;
     border: none;
