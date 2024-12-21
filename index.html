@@ -12,38 +12,43 @@
             <h1>Pet Diet Planner</h1>
         </header>
 
-        <div id="authSection">
-            <form id="signUpForm">
-                <h2>Sign Up</h2>
-                <label for="signUpEmail">Email:</label>
-                <input type="email" id="signUpEmail" required><br><br>
+        <!-- Authentication Section (Login/Sign-Up) -->
+        <section id="authSection">
+            <div id="signUpForm">
+                <h2>Sign-Up</h2>
+                <form id="signUp">
+                    <label for="signUpEmail">Email:</label>
+                    <input type="email" id="signUpEmail" required><br><br>
+                    <label for="signUpPassword">Password:</label>
+                    <input type="password" id="signUpPassword" required><br><br>
+                    <button type="submit">Sign Up</button>
+                </form>
+            </div>
 
-                <label for="signUpPassword">Password:</label>
-                <input type="password" id="signUpPassword" required><br><br>
-
-                <button type="submit">Sign Up</button>
-            </form>
-
-            <form id="loginForm" style="display:none;">
+            <div id="loginForm" style="display: none;">
                 <h2>Login</h2>
-                <label for="loginEmail">Email:</label>
-                <input type="email" id="loginEmail" required><br><br>
+                <form id="login">
+                    <label for="loginEmail">Email:</label>
+                    <input type="email" id="loginEmail" required><br><br>
+                    <label for="loginPassword">Password:</label>
+                    <input type="password" id="loginPassword" required><br><br>
+                    <button type="submit">Login</button>
+                </form>
+            </div>
+        </section>
 
-                <label for="loginPassword">Password:</label>
-                <input type="password" id="loginPassword" required><br><br>
-
-                <button type="submit">Login</button>
-            </form>
-        </div>
-
-        <main class="content" id="mainContent" style="display:none;">
+        <!-- Main Content Section -->
+        <main id="mainContent" style="display: none;">
             <div class="form-container">
                 <form id="dietForm">
                     <label for="petName">Pet Name:</label>
                     <input type="text" id="petName" required><br><br>
 
-                    <label for="profileDetails">Breed, Gender, Age, and Weight:</label>
-                    <input type="text" id="breed" placeholder="Breed"><br><br>
+                    <label for="breed">Breed, Sex, Age, Weight:</label>
+                    <input type="text" id="breed" placeholder="Breed" required>
+                    <input type="text" id="sex" placeholder="Sex" required>
+                    <input type="number" id="age" placeholder="Age" required>
+                    <input type="number" id="weight" placeholder="Weight" required><br><br>
 
                     <label for="allergies">Allergies:</label>
                     <textarea id="allergies" placeholder="Enter any allergies"></textarea><br><br>
@@ -54,35 +59,22 @@
                     <label for="dietPlan">Diet Plan:</label>
                     <textarea id="dietPlan" required placeholder="Enter diet plan"></textarea><br><br>
 
-                    <label for="petImage">Upload Pet Photo:</label>
-                    <input type="file" id="petImage" accept="image/*"><br><br>
+                    <label for="petPhoto">Upload Pet Photo:</label>
+                    <input type="file" id="petPhoto"><br><br>
 
                     <button type="submit">Save Pet Profile</button>
                 </form>
             </div>
 
-            <div class="reminders">
-                <h3>Set Reminders:</h3>
-                <label for="vaccinationReminder">Vaccination & Deworming Reminder:</label>
-                <input type="datetime-local" id="vaccinationReminder"><br><br>
-
-                <label for="pillReminder">Pill Schedule Reminder:</label>
-                <input type="datetime-local" id="pillReminderMorning" placeholder="Morning"><br>
-                <input type="datetime-local" id="pillReminderNoon" placeholder="Noon"><br>
-                <input type="datetime-local" id="pillReminderEvening" placeholder="Evening"><br><br>
-
-                <button id="saveReminders">Save Reminders</button>
-            </div>
-
-            <div class="image-container">
+            <div class="saved-profiles">
                 <h2>Saved Pet Profiles</h2>
-                <ul id="petProfilesList"></ul>
+                <ul id="savedProfilesList"></ul>
             </div>
 
-            <button id="logoutButton" style="display:none;">Logout</button>
+            <button id="logoutButton" style="display: none;">Logout</button>
         </main>
 
-        <footer style="background-color: lightgrey;">
+        <footer>
             <p>&copy; 2024 Pet Diet Planner. All rights reserved.</p>
         </footer>
     </div>
