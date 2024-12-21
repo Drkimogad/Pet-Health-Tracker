@@ -1,91 +1,100 @@
-/* General Styles */
 body {
     font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
-    color: #333;
 }
 
 .background-container {
-    background-color: #333; /* Dark grey background */
-    color: white;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 header {
     text-align: center;
-    padding: 20px 0;
-    background-color: #45a049;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
-    margin: 0;
-}
-
-main.content {
-    display: flex;
-    justify-content: space-between;
-    padding: 20px;
-    gap: 20px;
-}
-
-.form-container {
-    flex: 2;
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 2em;
     color: #333;
 }
 
-input, textarea {
-    width: 100%;
-    padding: 8px;
-    margin: 5px 0 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
+h2 {
+    font-size: 1.5em;
+    color: #666;
 }
 
-button {
+form {
+    display: flex;
+    flex-direction: column;
+    margin: 20px 0;
+}
+
+form label {
+    font-size: 1em;
+    margin: 5px 0;
+}
+
+form input, form textarea {
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+form button {
+    padding: 10px;
+    font-size: 1em;
     background-color: #4CAF50;
     color: white;
-    padding: 10px 15px;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
 }
 
-button:hover {
+form button:hover {
     background-color: #45a049;
 }
 
-.image-container {
-    flex: 1;
-    text-align: center;
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+#authSection {
+    margin-bottom: 30px;
 }
 
-.image-container img {
+#authSection form {
     width: 100%;
-    max-height: 200px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 10px;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+#authSection #loginForm {
+    display: none;
+}
+
+.pet-profile-list {
+    margin-top: 30px;
 }
 
 footer {
     text-align: center;
-    padding: 10px 0;
-    background-color: #45a049;
-    font-size: 14px;
-    color: #ccc;
+    margin-top: 30px;
+    font-size: 0.9em;
+    color: #777;
+}
+
+#logoutButton {
+    padding: 10px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#logoutButton:hover {
+    background-color: #e53935;
 }
