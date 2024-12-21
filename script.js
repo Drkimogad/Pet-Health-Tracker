@@ -2,7 +2,7 @@
 const users = [];
 
 // Handle Sign-Up
-document.getElementById('signUp').addEventListener('submit', function (event) {
+document.getElementById('signUpForm').addEventListener('submit', function (event) {
     event.preventDefault();
     
     const email = document.getElementById('signUpEmail').value;
@@ -18,7 +18,7 @@ document.getElementById('signUp').addEventListener('submit', function (event) {
 });
 
 // Handle Login
-document.getElementById('login').addEventListener('submit', function (event) {
+document.getElementById('loginForm').addEventListener('submit', function (event) {
     event.preventDefault();
     
     const email = document.getElementById('loginEmail').value;
@@ -63,9 +63,9 @@ document.getElementById('dietForm').addEventListener('submit', function (event) 
         allergies: document.getElementById('allergies').value,
         medicalHistory: document.getElementById('medicalHistory').value,
         dietPlan: document.getElementById('dietPlan').value,
-        vaccinationHistory: document.getElementById('vaccinationHistory').value,
-        dewormingHistory: document.getElementById('dewormingHistory').value,
-        photo: document.getElementById('petImagePreview').src
+        vaccinations: document.getElementById('vaccinations').value,
+        deworming: document.getElementById('deworming').value,
+        photo: document.getElementById('petPhoto').files[0] ? URL.createObjectURL(document.getElementById('petPhoto').files[0]) : null
     };
 
     // Save pet profile in localStorage
@@ -73,6 +73,7 @@ document.getElementById('dietForm').addEventListener('submit', function (event) 
     savedProfiles.push(petProfile);
     localStorage.setItem('savedProfiles', JSON.stringify(savedProfiles));
 
+    // Alert and reload saved data
     alert('Pet profile saved!');
     loadSavedPetProfiles();
 });
@@ -80,7 +81,7 @@ document.getElementById('dietForm').addEventListener('submit', function (event) 
 // Load Saved Pet Profiles
 function loadSavedPetProfiles() {
     const savedProfiles = JSON.parse(localStorage.getItem('savedProfiles')) || [];
-    const profilesList = document.getElementById('savedProfilesList');
+    const profilesList = document.getElementById('profilesList');
     profilesList.innerHTML = '';
 
     savedProfiles.forEach((profile, index) => {
@@ -92,7 +93,9 @@ function loadSavedPetProfiles() {
             <p>Age: ${profile.age}</p>
             <p>Weight: ${profile.weight}</p>
             <p>Diet Plan: ${profile.dietPlan}</p>
-            <img src="${profile.photo}" alt="Pet Photo" style="max-width: 100px;">
+            <p>Vaccinations: ${profile.vaccinations}</p>
+            <p>Deworming: ${profile.deworming}</p>
+            ${profile.photo ? `<img src="${profile.photo}" alt="Pet Photo" style="max-width: 100px;">` : ''}
         `;
         profilesList.appendChild(listItem);
     });
