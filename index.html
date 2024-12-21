@@ -44,39 +44,47 @@
                     <label for="petName">Pet Name:</label>
                     <input type="text" id="petName" required><br><br>
 
-                    <label for="breed">Breed, Sex, Age, Weight:</label>
-                    <input type="text" id="breed" placeholder="Breed" required>
-                    <input type="text" id="sex" placeholder="Sex" required>
-                    <input type="number" id="age" placeholder="Age" required>
-                    <input type="number" id="weight" placeholder="Weight" required><br><br>
+                    <label for="breed">Breed, Age, Weight, Sex:</label>
+                    <input type="text" id="breed" required placeholder="Breed"><br><br>
+                    <input type="number" id="age" required placeholder="Age"><br><br>
+                    <input type="number" id="weight" required placeholder="Weight"><br><br>
+                    <select id="sex" required>
+                        <option value="">Select Sex</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select><br><br>
 
                     <label for="allergies">Allergies:</label>
-                    <textarea id="allergies" placeholder="Enter any allergies"></textarea><br><br>
+                    <textarea id="allergies" placeholder="Allergies (if any)"></textarea><br><br>
 
                     <label for="medicalHistory">Medical History:</label>
-                    <textarea id="medicalHistory" placeholder="Enter medical history"></textarea><br><br>
+                    <textarea id="medicalHistory" placeholder="Enter any medical history"></textarea><br><br>
 
                     <label for="dietPlan">Diet Plan:</label>
-                    <textarea id="dietPlan" required placeholder="Enter diet plan"></textarea><br><br>
+                    <textarea id="dietPlan" placeholder="Enter diet plan for pet"></textarea><br><br>
+
+                    <label for="vaccinationReminder">Vaccination Reminder:</label>
+                    <input type="date" id="vaccinationReminder" required><br><br>
+
+                    <label for="medicalHistoryReminder">Medical History Reminder:</label>
+                    <input type="date" id="medicalHistoryReminder" required><br><br>
+
+                    <label for="dietReminder">Diet Reminder:</label>
+                    <input type="date" id="dietReminder" required><br><br>
 
                     <label for="petPhoto">Upload Pet Photo:</label>
-                    <input type="file" id="petPhoto"><br><br>
+                    <input type="file" id="petPhoto" accept="image/*"><br><br>
 
                     <button type="submit">Save Pet Profile</button>
                 </form>
             </div>
 
-            <div class="saved-profiles">
-                <h2>Saved Pet Profiles</h2>
-                <ul id="savedProfilesList"></ul>
-            </div>
-
-            <button id="logoutButton" style="display: none;">Logout</button>
+            <h3>Saved Pet Profiles</h3>
+            <ul id="savedProfilesList"></ul>
         </main>
 
-        <footer>
-            <p>&copy; 2024 Pet Diet Planner. All rights reserved.</p>
-        </footer>
+        <!-- Logout Button -->
+        <button id="logoutButton" style="display: none;">Logout</button>
     </div>
 
     <script src="script.js"></script>
