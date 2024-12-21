@@ -1,18 +1,14 @@
-// Dummy storage for users (you can replace this with localStorage)
+// Dummy storage for users
 const users = [];
 
 // Handle Sign-Up
 document.getElementById('signUp').addEventListener('submit', function (event) {
     event.preventDefault();
-    
     const email = document.getElementById('signUpEmail').value;
     const password = document.getElementById('signUpPassword').value;
 
-    // Store the new user
     users.push({ email, password });
     alert('Sign-up successful! You can now log in.');
-    
-    // Switch to Login Form
     document.getElementById('signUpForm').style.display = 'none';
     document.getElementById('loginForm').style.display = 'block';
 });
@@ -20,22 +16,16 @@ document.getElementById('signUp').addEventListener('submit', function (event) {
 // Handle Login
 document.getElementById('login').addEventListener('submit', function (event) {
     event.preventDefault();
-    
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
 
-    // Check if the user exists
     const user = users.find(user => user.email === email && user.password === password);
-    
+
     if (user) {
         alert('Login successful!');
-        
-        // Show Main Content and Hide Authentication Forms
         document.getElementById('authSection').style.display = 'none';
         document.getElementById('mainContent').style.display = 'block';
         document.getElementById('logoutButton').style.display = 'block';
-        
-        // Load saved pet data if available
         loadSavedPetProfile();
     } else {
         alert('Invalid credentials! Please try again.');
@@ -47,7 +37,6 @@ document.getElementById('logoutButton').addEventListener('click', function () {
     document.getElementById('authSection').style.display = 'block';
     document.getElementById('mainContent').style.display = 'none';
     document.getElementById('logoutButton').style.display = 'none';
-    
     alert('Logged out successfully!');
 });
 
@@ -58,47 +47,44 @@ document.getElementById('dietForm').addEventListener('submit', function (event) 
     const petProfile = {
         petName: document.getElementById('petName').value,
         breed: document.getElementById('breed').value,
-        sex: document.getElementById('sex').value,
         age: document.getElementById('age').value,
         weight: document.getElementById('weight').value,
         allergies: document.getElementById('allergies').value,
         medicalHistory: document.getElementById('medicalHistory').value,
         dietPlan: document.getElementById('dietPlan').value,
-        petPhoto: document.getElementById('petPhoto').files[0],
         vaccinationReminder: document.getElementById('vaccinationReminder').value,
         medicalHistoryReminder: document.getElementById('medicalHistoryReminder').value,
         dietReminder: document.getElementById('dietReminder').value,
+        petPhoto: document.getElementById('petPhoto').files[0]
     };
 
-    // Save pet profile in localStorage
-    let savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+    const savedProfiles = JSON.parse(localStorage.getItem('savedProfiles')) || [];
     savedProfiles.push(petProfile);
-    localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
-
-    // Alert and reload saved data
+    localStorage.setItem('savedProfiles', JSON.stringify(savedProfiles));
     alert('Pet profile saved!');
     loadSavedPetProfile();
 });
 
 // Load Saved Pet Profiles
 function loadSavedPetProfile() {
-    const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+    const savedProfiles = JSON.parse(localStorage.getItem('savedProfiles')) || [];
     const savedProfilesList = document.getElementById('savedProfilesList');
     savedProfilesList.innerHTML = ''; // Clear existing list
 
     savedProfiles.forEach((profile, index) => {
         const li = document.createElement('li');
         li.innerHTML = `
-            <h3>${profile.petName}</h3>
-            <p>Breed: ${profile.breed}, Sex: ${profile.sex}, Age: ${profile.age}, Weight: ${profile.weight}</p>
+            <h4>${profile.petName}</h4>
+            <p>Breed: ${profile.breed}</p>
+            <p>Age: ${profile.age}, Weight: ${profile.weight}</p>
             <p>Allergies: ${profile.allergies}</p>
             <p>Medical History: ${profile.medicalHistory}</p>
             <p>Diet Plan: ${profile.dietPlan}</p>
             <p>Vaccination Reminder: ${profile.vaccinationReminder}</p>
             <p>Medical History Reminder: ${profile.medicalHistoryReminder}</p>
             <p>Diet Reminder: ${profile.dietReminder}</p>
-            <img src="${URL.createObjectURL(profile.petPhoto)}" alt="Pet Photo" width="100"><br><br>
-            <button onclick="deleteProfile(${index})">Delete</button>
+            <img src="${URL.createObjectURL(profile.petPhoto)}" alt="${profile.petName} Photo" width="100"><br><br>
+            <button onclick="deleteProfile(${index})">Delete Profile</button>
         `;
         savedProfilesList.appendChild(li);
     });
@@ -106,11 +92,14 @@ function loadSavedPetProfile() {
 
 // Delete Pet Profile
 function deleteProfile(index) {
-    let savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+    const savedProfiles = JSON.parse(localStorage.getItem('savedProfiles')) || [];
     savedProfiles.splice(index, 1);
-    localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+    localStorage.setItem('savedProfiles', JSON.stringify(savedProfiles));
     loadSavedPetProfile();
 }
 
-// Initial load
-loadSavedPetProfile();
+// Toggle Reminder Section Visibility
+function toggleReminderSection() {
+    const reminderSection = document.getElementById('reminderSection');
+    reminderSection.style.display = reminderSection.style.display === 'none' ? 'block' : 'none';
+}
