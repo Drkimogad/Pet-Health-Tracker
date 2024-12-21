@@ -1,14 +1,18 @@
-// Dummy storage for users
+// Dummy storage for users (you can replace this with localStorage)
 const users = [];
 
 // Handle Sign-Up
 document.getElementById('signUp').addEventListener('submit', function (event) {
     event.preventDefault();
+    
     const email = document.getElementById('signUpEmail').value;
     const password = document.getElementById('signUpPassword').value;
 
+    // Store the new user
     users.push({ email, password });
     alert('Sign-up successful! You can now log in.');
+    
+    // Switch to Login Form
     document.getElementById('signUpForm').style.display = 'none';
     document.getElementById('loginForm').style.display = 'block';
 });
@@ -16,16 +20,22 @@ document.getElementById('signUp').addEventListener('submit', function (event) {
 // Handle Login
 document.getElementById('login').addEventListener('submit', function (event) {
     event.preventDefault();
+    
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
 
+    // Check if the user exists
     const user = users.find(user => user.email === email && user.password === password);
-
+    
     if (user) {
         alert('Login successful!');
+        
+        // Show Main Content and Hide Authentication Forms
         document.getElementById('authSection').style.display = 'none';
         document.getElementById('mainContent').style.display = 'block';
         document.getElementById('logoutButton').style.display = 'block';
+        
+        // Load saved pet data if available
         loadSavedPetProfile();
     } else {
         alert('Invalid credentials! Please try again.');
@@ -37,6 +47,7 @@ document.getElementById('logoutButton').addEventListener('click', function () {
     document.getElementById('authSection').style.display = 'block';
     document.getElementById('mainContent').style.display = 'none';
     document.getElementById('logoutButton').style.display = 'none';
+    
     alert('Logged out successfully!');
 });
 
@@ -58,48 +69,51 @@ document.getElementById('dietForm').addEventListener('submit', function (event) 
         petPhoto: document.getElementById('petPhoto').files[0]
     };
 
-    const savedProfiles = JSON.parse(localStorage.getItem('savedProfiles')) || [];
+    // Save pet profile in localStorage
+    let savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
     savedProfiles.push(petProfile);
-    localStorage.setItem('savedProfiles', JSON.stringify(savedProfiles));
+    localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+
+    // Alert and reload saved data
     alert('Pet profile saved!');
     loadSavedPetProfile();
 });
 
-// Load Saved Pet Profiles
+// Load Saved Pet Profile
 function loadSavedPetProfile() {
-    const savedProfiles = JSON.parse(localStorage.getItem('savedProfiles')) || [];
+    const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
     const savedProfilesList = document.getElementById('savedProfilesList');
-    savedProfilesList.innerHTML = ''; // Clear existing list
+    savedProfilesList.innerHTML = '';  // Clear existing list
 
     savedProfiles.forEach((profile, index) => {
         const li = document.createElement('li');
+        li.classList.add('profile-item');
+        
+        const photo = profile.petPhoto ? `<img src="${URL.createObjectURL(profile.petPhoto)}" alt="Pet Photo" class="profile-photo">` : '';
         li.innerHTML = `
-            <h4>${profile.petName}</h4>
-            <p>Breed: ${profile.breed}</p>
-            <p>Age: ${profile.age}, Weight: ${profile.weight}</p>
-            <p>Allergies: ${profile.allergies}</p>
-            <p>Medical History: ${profile.medicalHistory}</p>
-            <p>Diet Plan: ${profile.dietPlan}</p>
-            <p>Vaccination Reminder: ${profile.vaccinationReminder}</p>
-            <p>Medical History Reminder: ${profile.medicalHistoryReminder}</p>
-            <p>Diet Reminder: ${profile.dietReminder}</p>
-            <img src="${URL.createObjectURL(profile.petPhoto)}" alt="${profile.petName} Photo" width="100"><br><br>
-            <button onclick="deleteProfile(${index})">Delete Profile</button>
+            <strong>${profile.petName}</strong><br>
+            Breed: ${profile.breed}, Age: ${profile.age}, Weight: ${profile.weight}<br>
+            Allergies: ${profile.allergies}<br>
+            Medical History: ${profile.medicalHistory}<br>
+            Diet Plan: ${profile.dietPlan}<br>
+            Vaccination Reminder: ${profile.vaccinationReminder}<br>
+            Medical History Reminder: ${profile.medicalHistoryReminder}<br>
+            Diet Reminder: ${profile.dietReminder}<br>
+            ${photo}<br>
+            <button onclick="deleteProfile(${index})">Delete</button>
         `;
+        
         savedProfilesList.appendChild(li);
     });
 }
 
 // Delete Pet Profile
 function deleteProfile(index) {
-    const savedProfiles = JSON.parse(localStorage.getItem('savedProfiles')) || [];
+    let savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
     savedProfiles.splice(index, 1);
-    localStorage.setItem('savedProfiles', JSON.stringify(savedProfiles));
-    loadSavedPetProfile();
+    localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+    loadSavedPetProfile();  // Reload the saved profiles
 }
 
-// Toggle Reminder Section Visibility
-function toggleReminderSection() {
-    const reminderSection = document.getElementById('reminderSection');
-    reminderSection.style.display = reminderSection.style.display === 'none' ? 'block' : 'none';
-}
+// Initial load
+loadSavedPetProfile();
