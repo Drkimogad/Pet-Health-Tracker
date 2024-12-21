@@ -2,7 +2,7 @@
 const users = [];
 
 // Handle Sign-Up
-document.getElementById('signUpForm').addEventListener('submit', function (event) {
+document.getElementById('signUp').addEventListener('click', function (event) {
     event.preventDefault();
     
     const email = document.getElementById('signUpEmail').value;
@@ -18,7 +18,7 @@ document.getElementById('signUpForm').addEventListener('submit', function (event
 });
 
 // Handle Login
-document.getElementById('loginForm').addEventListener('submit', function (event) {
+document.getElementById('login').addEventListener('click', function (event) {
     event.preventDefault();
     
     const email = document.getElementById('loginEmail').value;
