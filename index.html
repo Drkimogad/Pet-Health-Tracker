@@ -10,55 +10,82 @@
     <div class="background-container">
         <header>
             <h1>Welcome to your dashboard</h1>
-            <h1>Pet Diet Planner</h1>
+            <h2>Pet Diet Planner</h2>
         </header>
 
+        <!-- Authentication Section (Sign Up/Login) -->
         <div id="authSection">
-            <!-- Login/Sign-up section remains unchanged -->
+            <!-- Sign Up Form -->
+            <div id="signUpForm">
+                <h2>Sign Up</h2>
+                <form id="signUp">
+                    <label for="signUpEmail">Email:</label>
+                    <input type="email" id="signUpEmail" required><br><br>
+
+                    <label for="signUpPassword">Password:</label>
+                    <input type="password" id="signUpPassword" required><br><br>
+
+                    <button type="submit">Sign Up</button>
+                </form>
+            </div>
+
+            <!-- Login Form -->
+            <div id="loginForm" style="display: none;">
+                <h2>Login</h2>
+                <form id="login">
+                    <label for="loginEmail">Email:</label>
+                    <input type="email" id="loginEmail" required><br><br>
+
+                    <label for="loginPassword">Password:</label>
+                    <input type="password" id="loginPassword" required><br><br>
+
+                    <button type="submit">Login</button>
+                </form>
+            </div>
         </div>
 
-        <div id="mainContent" style="display: none;">
-            <main class="content">
-                <div class="form-container">
-                    <form id="dietForm">
-                        <label for="petName">Pet Name:</label>
-                        <input type="text" id="petName" required><br><br>
+        <!-- Main Content Section (Visible After Login) -->
+        <main id="mainContent" style="display: none;">
+            <div class="form-container">
+                <form id="dietForm">
+                    <label for="petName">Pet Name:</label>
+                    <input type="text" id="petName" required><br><br>
 
-                        <label for="breed">Breed:</label>
-                        <input type="text" id="breed"><br><br>
+                    <label for="breed">Breed:</label>
+                    <input type="text" id="breed"><br><br>
 
-                        <label for="age">Age:</label>
-                        <input type="number" id="age" min="0"><br><br>
+                    <label for="age">Age:</label>
+                    <input type="number" id="age" min="0"><br><br>
 
-                        <label for="weight">Weight:</label>
-                        <input type="number" id="weight" min="0"><br><br>
+                    <label for="weight">Weight:</label>
+                    <input type="number" id="weight" min="0"><br><br>
 
-                        <label for="allergies">Allergies:</label>
-                        <textarea id="allergies" placeholder="Enter any allergies"></textarea><br><br>
+                    <label for="allergies">Allergies:</label>
+                    <textarea id="allergies" placeholder="Enter any allergies"></textarea><br><br>
 
-                        <label for="medicalHistory">Medical History:</label>
-                        <textarea id="medicalHistory" placeholder="Enter medical history"></textarea><br><br>
+                    <label for="medicalHistory">Medical History:</label>
+                    <textarea id="medicalHistory" placeholder="Enter medical history"></textarea><br><br>
 
-                        <label for="dietPlan">Diet Plan:</label>
-                        <textarea id="dietPlan" required placeholder="Enter diet plan"></textarea><br><br>
+                    <label for="dietPlan">Diet Plan:</label>
+                    <textarea id="dietPlan" required placeholder="Enter diet plan"></textarea><br><br>
 
-                        <button type="submit">Save Pet Profile</button>
-                    </form>
-                </div>
+                    <button type="submit">Save Pet Profile</button>
+                </form>
+            </div>
 
-                <!-- UPDATED SECTION START -->
-                <div id="savedProfilesSection">
-                    <h2>Saved Pet Profiles</h2>
-                    <ul id="savedProfilesList"></ul>
-                </div>
-                <!-- UPDATED SECTION END -->
-            </main>
-        </div>
+            <div class="pet-profile-list">
+                <h3>Saved Pet Profiles</h3>
+                <ul id="savedProfilesList"></ul>
+            </div>
+
+            <button id="logoutButton" style="display: none;">Logout</button>
+        </main>
 
         <footer>
             <p>&copy; 2024 Pet Diet Planner. All rights reserved.</p>
         </footer>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
