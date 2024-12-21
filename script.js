@@ -56,10 +56,10 @@ document.getElementById('dietForm').addEventListener('submit', function (event) 
     event.preventDefault();
 
     const petProfile = {
+        petimage: document.getElementById('petimage').value, 
         petName: document.getElementById('petName').value,
-        breed: document.getElementById('breed').value,
-        age: document.getElementById('age').value,
-        weight: document.getElementById('weight').value,
+        breed,sex,age&weight: document.getElementById('breed,sex,age&weight').value,
+        vvaccinations&deworming: document.getElementById('vaccinations&deworming).value,
         allergies: document.getElementById('allergies').value,
         medicalHistory: document.getElementById('medicalHistory').value,
         dietPlan: document.getElementById('dietPlan').value
