@@ -36,7 +36,7 @@ document.getElementById('login').addEventListener('submit', function (event) {
         document.getElementById('logoutButton').style.display = 'block';  // Show logout button
         
         // Load saved pet data if available
-        loadSavedPetProfile();
+        loadSavedPetProfiles();
     } else {
         alert('Invalid credentials! Please try again.');
     }
@@ -66,26 +66,28 @@ document.getElementById('dietForm').addEventListener('submit', function (event) 
     };
 
     // Save pet profile in localStorage
-    localStorage.setItem('petProfile', JSON.stringify(petProfile));
+    let savedProfiles = JSON.parse(localStorage.getItem('savedProfiles')) || [];
+    savedProfiles.push(petProfile);
+    localStorage.setItem('savedProfiles', JSON.stringify(savedProfiles));
 
     // Alert and reload saved data
     alert('Pet profile saved!');
-    loadSavedPetProfile();
+    loadSavedPetProfiles();
 });
 
-// Load Saved Pet Profile
-function loadSavedPetProfile() {
-    const petProfile = JSON.parse(localStorage.getItem('petProfile'));
-    if (petProfile) {
-        document.getElementById('petName').value = petProfile.petName;
-        document.getElementById('breed').value = petProfile.breed;
-        document.getElementById('age').value = petProfile.age;
-        document.getElementById('weight').value = petProfile.weight;
-        document.getElementById('allergies').value = petProfile.allergies;
-        document.getElementById('medicalHistory').value = petProfile.medicalHistory;
-        document.getElementById('dietPlan').value = petProfile.dietPlan;
-    }
+// Load Saved Pet Profiles
+function loadSavedPetProfiles() {
+    const savedProfiles = JSON.parse(localStorage.getItem('savedProfiles')) || [];
+    const savedProfilesList = document.getElementById('savedProfilesList');
+    
+    savedProfilesList.innerHTML = ''; // Clear current list
+
+    savedProfiles.forEach(profile => {
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>${profile.petName}</strong> - ${profile.breed} (${profile.age} years old)`;
+        savedProfilesList.appendChild(li);
+    });
 }
 
 // Initial load
-loadSavedPetProfile();
+loadSavedPetProfiles();
