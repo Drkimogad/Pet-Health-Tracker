@@ -1,5 +1,5 @@
-// Dummy storage for users (you can replace this with localStorage)
 const users = [];
+const savedProfiles = [];
 
 // Handle Sign-Up
 document.getElementById('signUp').addEventListener('submit', function (event) {
@@ -8,11 +8,9 @@ document.getElementById('signUp').addEventListener('submit', function (event) {
     const email = document.getElementById('signUpEmail').value;
     const password = document.getElementById('signUpPassword').value;
 
-    // Store the new user
     users.push({ email, password });
     alert('Sign-up successful! You can now log in.');
     
-    // Switch to Login Form
     document.getElementById('signUpForm').style.display = 'none';
     document.getElementById('loginForm').style.display = 'block';
 });
@@ -24,21 +22,18 @@ document.getElementById('login').addEventListener('submit', function (event) {
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
 
-    // Check if the user exists
     const user = users.find(user => user.email === email && user.password === password);
     
     if (user) {
         alert('Login successful!');
         
-        // Show Main Content and Hide Authentication Forms
         document.getElementById('authSection').style.display = 'none';
         document.getElementById('mainContent').style.display = 'block';
         document.getElementById('logoutButton').style.display = 'block';
         
-        // Load saved pet data if available
-        loadSavedPetProfile();
+        loadSavedPetProfiles();
     } else {
-        alert('Invalid credentials! Please try again.');
+        alert('Invalid credentials!');
     }
 });
 
@@ -47,73 +42,66 @@ document.getElementById('logoutButton').addEventListener('click', function () {
     document.getElementById('authSection').style.display = 'block';
     document.getElementById('mainContent').style.display = 'none';
     document.getElementById('logoutButton').style.display = 'none';
-    
     alert('Logged out successfully!');
 });
 
-// Save Pet Profile
+// Handle Saving Pet Profile
 document.getElementById('dietForm').addEventListener('submit', function (event) {
     event.preventDefault();
 
-    const petProfile = {
-        petName: document.getElementById('petName').value,
-        breed: document.getElementById('breed').value,
-        age: document.getElementById('age').value,
-        weight: document.getElementById('weight').value,
-        allergies: document.getElementById('allergies').value,
-        medicalHistory: document.getElementById('medicalHistory').value,
-        dietPlan: document.getElementById('dietPlan').value,
-        vaccinationReminder: document.getElementById('vaccinationReminder').value,
-        medicalHistoryReminder: document.getElementById('medicalHistoryReminder').value,
-        dietReminder: document.getElementById('dietReminder').value,
-        petPhoto: document.getElementById('petPhoto').files[0]
+    const petName = document.getElementById('petName').value;
+    const breed = document.getElementById('breed').value;
+    const allergies = document.getElementById('allergies').value;
+    const medicalHistory = document.getElementById('medicalHistory').value;
+    const dietPlan = document.getElementById('dietPlan').value;
+    const vaccinationReminder = document.getElementById('vaccinationReminder').value;
+    const medicalHistoryReminder = document.getElementById('medicalHistoryReminder').value;
+    const dietReminder = document.getElementById('dietReminder').value;
+    const groomingReminder = document.getElementById('groomingReminder').value;
+    
+    const petPhoto = document.getElementById('petPhoto').files[0];
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        savedProfiles.push({
+            petName,
+            breed,
+            allergies,
+            medicalHistory,
+            dietPlan,
+            vaccinationReminder,
+            medicalHistoryReminder,
+            dietReminder,
+            groomingReminder,
+            petPhoto: e.target.result
+        });
+
+        loadSavedPetProfiles();
     };
 
-    // Save pet profile in localStorage
-    let savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-    savedProfiles.push(petProfile);
-    localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
-
-    // Alert and reload saved data
-    alert('Pet profile saved!');
-    loadSavedPetProfile();
+    if (petPhoto) {
+        reader.readAsDataURL(petPhoto);
+    }
 });
 
-// Load Saved Pet Profile
-function loadSavedPetProfile() {
-    const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+// Load Saved Pet Profiles
+function loadSavedPetProfiles() {
     const savedProfilesList = document.getElementById('savedProfilesList');
-    savedProfilesList.innerHTML = '';  // Clear existing list
+    savedProfilesList.innerHTML = '';
 
     savedProfiles.forEach((profile, index) => {
-        const li = document.createElement('li');
-        li.classList.add('profile-item');
-        
-        const photo = profile.petPhoto ? `<img src="${URL.createObjectURL(profile.petPhoto)}" alt="Pet Photo" class="profile-photo">` : '';
-        li.innerHTML = `
-            <strong>${profile.petName}</strong><br>
-            Breed: ${profile.breed}, Age: ${profile.age}, Weight: ${profile.weight}<br>
-            Allergies: ${profile.allergies}<br>
-            Medical History: ${profile.medicalHistory}<br>
-            Diet Plan: ${profile.dietPlan}<br>
-            Vaccination Reminder: ${profile.vaccinationReminder}<br>
-            Medical History Reminder: ${profile.medicalHistoryReminder}<br>
-            Diet Reminder: ${profile.dietReminder}<br>
-            ${photo}<br>
+        const listItem = document.createElement('li');
+        listItem.innerHTML = `
+            <img src="${profile.petPhoto}" alt="${profile.petName}">
+            <span>${profile.petName} - ${profile.breed}</span>
             <button onclick="deleteProfile(${index})">Delete</button>
         `;
-        
-        savedProfilesList.appendChild(li);
+        savedProfilesList.appendChild(listItem);
     });
 }
 
 // Delete Pet Profile
 function deleteProfile(index) {
-    let savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
     savedProfiles.splice(index, 1);
-    localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
-    loadSavedPetProfile();  // Reload the saved profiles
+    loadSavedPetProfiles();
 }
-
-// Initial load
-loadSavedPetProfile();
