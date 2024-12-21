@@ -1,89 +1,65 @@
+/* Basic styles for layout and buttons */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
     margin: 0;
     padding: 0;
+    background-color: #f0f0f0;
 }
 
 .background-container {
-    width: 100%;
-    max-width: 800px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
     background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 header {
     text-align: center;
+    margin-bottom: 20px;
 }
 
 h1 {
     font-size: 2em;
-    color: #333;
 }
 
 h2 {
     font-size: 1.5em;
-    color: #666;
 }
 
 form {
-    display: flex;
-    flex-direction: column;
-    margin: 20px 0;
+    background-color: #e0e0e0;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
 }
 
-form label {
-    font-size: 1em;
+input, textarea, button {
+    width: 100%;
+    padding: 10px;
     margin: 5px 0;
 }
 
-form input, form textarea {
-    padding: 10px;
-    margin-bottom: 10px;
-    font-size: 1em;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-form button {
-    padding: 10px;
-    font-size: 1em;
+button {
     background-color: #4CAF50;
     color: white;
     border: none;
-    border-radius: 5px;
     cursor: pointer;
 }
 
-form button:hover {
+button:hover {
     background-color: #45a049;
 }
 
-#authSection {
-    margin-bottom: 30px;
+#savedProfilesList {
+    list-style-type: none;
+    padding: 0;
 }
 
-#authSection form {
-    width: 100%;
-    max-width: 300px;
-    margin: 0 auto;
-}
-
-#authSection #loginForm {
-    display: none;
-}
-
-.pet-profile-list {
-    margin-top: 30px;
-}
-
-footer {
-    text-align: center;
-    margin-top: 30px;
-    font-size: 0.9em;
-    color: #777;
+#savedProfilesList li {
+    background-color: #f9f9f9;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
 }
 
 #logoutButton {
@@ -97,4 +73,23 @@ footer {
 
 #logoutButton:hover {
     background-color: #e53935;
+}
+
+#petImagePreview {
+    max-width: 200px;
+    max-height: 200px;
+}
+
+@media print {
+    body {
+        font-size: 12px;
+    }
+
+    #mainContent {
+        display: block;
+    }
+
+    #authSection, #logoutButton, #printButton {
+        display: none;
+    }
 }
