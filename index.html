@@ -9,84 +9,78 @@
 <body>
     <div class="background-container">
         <header>
-            <h1>Welcome to your dashboard</h1>
-            <h1>Pet Diet Planner</h1>
+            <h1>Welcome to your Pet Diet Planner</h1>
         </header>
 
-        <!-- Authentication Section -->
+        <!-- Authentication Section (Login/Sign-Up) -->
         <div id="authSection">
-            <form id="signUpForm">
+            <div id="signUpForm">
                 <h2>Sign Up</h2>
                 <input type="email" id="signUpEmail" placeholder="Email" required>
                 <input type="password" id="signUpPassword" placeholder="Password" required>
-                <button type="submit">Sign Up</button>
-            </form>
-
-            <form id="loginForm" style="display:none;">
+                <button type="submit" id="signUp">Sign Up</button>
+            </div>
+            <div id="loginForm" style="display: none;">
                 <h2>Login</h2>
                 <input type="email" id="loginEmail" placeholder="Email" required>
                 <input type="password" id="loginPassword" placeholder="Password" required>
-                <button type="submit">Login</button>
-            </form>
+                <button type="submit" id="login">Login</button>
+            </div>
         </div>
 
-        <!-- Main Content Section -->
-        <main id="mainContent" style="display:none;">
-            <div class="form-container">
-                <form id="dietForm">
-                    <label for="petName">Pet Name:</label>
-                    <input type="text" id="petName" required><br><br>
+        <!-- Main Content (Visible after login) -->
+        <div id="mainContent" style="display:none;">
+            <main class="content">
+                <div class="form-container">
+                    <form id="dietForm">
+                        <label for="petName">Pet Name:</label>
+                        <input type="text" id="petName" required><br><br>
 
-                    <label for="breed">Breed:</label>
-                    <input type="text" id="breed"><br><br>
+                        <label for="breed">Breed:</label>
+                        <input type="text" id="breed"><br><br>
 
-                    <label for="age">Age:</label>
-                    <input type="number" id="age" min="0"><br><br>
+                        <label for="age">Age:</label>
+                        <input type="number" id="age" min="0"><br><br>
 
-                    <label for="weight">Weight:</label>
-                    <input type="number" id="weight" min="0"><br><br>
+                        <label for="weight">Weight:</label>
+                        <input type="number" id="weight" min="0"><br><br>
 
-                    <label for="allergies">Allergies:</label>
-                    <textarea id="allergies" placeholder="Enter any allergies"></textarea><br><br>
+                        <label for="allergies">Allergies:</label>
+                        <textarea id="allergies" placeholder="Enter any allergies"></textarea><br><br>
 
-                    <label for="medicalHistory">Medical History:</label>
-                    <textarea id="medicalHistory" placeholder="Enter medical history"></textarea><br><br>
+                        <label for="medicalHistory">Medical History:</label>
+                        <textarea id="medicalHistory" placeholder="Enter medical history"></textarea><br><br>
 
-                    <label for="dietPlan">Diet Plan:</label>
-                    <textarea id="dietPlan" required placeholder="Enter diet plan"></textarea><br><br>
+                        <label for="dietPlan">Diet Plan:</label>
+                        <textarea id="dietPlan" required placeholder="Enter diet plan"></textarea><br><br>
 
-                    <label for="vaccinationHistory">Vaccination History:</label>
-                    <textarea id="vaccinationHistory" placeholder="Enter vaccination history"></textarea><br><br>
+                        <label for="vaccinations">Vaccinations:</label>
+                        <textarea id="vaccinations" placeholder="Enter vaccinations history"></textarea><br><br>
 
-                    <label for="dewormingHistory">Deworming History:</label>
-                    <textarea id="dewormingHistory" placeholder="Enter deworming history"></textarea><br><br>
+                        <label for="deworming">Deworming History:</label>
+                        <textarea id="deworming" placeholder="Enter deworming history"></textarea><br><br>
 
-                    <label for="petImage">Pet Image:</label>
-                    <input type="file" id="petImageUpload" accept="image/*"><br><br>
+                        <label for="petPhoto">Pet Photo:</label>
+                        <input type="file" id="petPhoto"><br><br>
 
-                    <button type="submit">Save Pet Profile</button>
-                </form>
-            </div>
+                        <button type="submit">Save Pet Profile</button>
+                    </form>
+                </div>
 
-            <div class="image-container">
-                <h2>Pet Profile</h2>
-                <img src="" alt="Pet Image" id="petImagePreview" style="display:none;">
-                <p>Add a picture of your pet here!</p>
-            </div>
+                <div id="profilesListContainer">
+                    <h2>Saved Pet Profiles</h2>
+                    <ul id="profilesList"></ul>
+                </div>
 
-            <section>
-                <h2>Saved Pet Profiles</h2>
-                <ul id="savedProfilesList"></ul>
-            </section>
-
-            <button id="printButton">Print Profile</button>
-        </main>
+                <button id="printButton">Print Profile</button>
+                <button id="logoutButton" style="display:none;">Logout</button>
+            </main>
+        </div>
 
         <footer>
             <p>&copy; 2024 Pet Diet Planner. All rights reserved.</p>
         </footer>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
