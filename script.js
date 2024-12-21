@@ -31,9 +31,9 @@ document.getElementById('login').addEventListener('submit', function (event) {
         alert('Login successful!');
         
         // Show Main Content and Hide Authentication Forms
-        document.getElementById('authSection').style.display = 'none';  // Hide login/signup page
-        document.getElementById('mainContent').style.display = 'block';  // Show main content
-        document.getElementById('logoutButton').style.display = 'block';  // Show logout button
+        document.getElementById('authSection').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+        document.getElementById('logoutButton').style.display = 'block';
         
         // Load saved pet data if available
         loadSavedPetProfiles();
@@ -44,9 +44,9 @@ document.getElementById('login').addEventListener('submit', function (event) {
 
 // Handle Logout
 document.getElementById('logoutButton').addEventListener('click', function () {
-    document.getElementById('authSection').style.display = 'block';  // Show login/signup page
-    document.getElementById('mainContent').style.display = 'none';  // Hide main content
-    document.getElementById('logoutButton').style.display = 'none';  // Hide logout button
+    document.getElementById('authSection').style.display = 'block';
+    document.getElementById('mainContent').style.display = 'none';
+    document.getElementById('logoutButton').style.display = 'none';
     
     alert('Logged out successfully!');
 });
@@ -56,13 +56,16 @@ document.getElementById('dietForm').addEventListener('submit', function (event) 
     event.preventDefault();
 
     const petProfile = {
-        petimage: document.getElementById('petimage').value, 
         petName: document.getElementById('petName').value,
-        breed,sex,age&weight: document.getElementById('breed,sex,age&weight').value,
-        vvaccinations&deworming: document.getElementById('vaccinations&deworming).value,
+        breed: document.getElementById('breed').value,
+        age: document.getElementById('age').value,
+        weight: document.getElementById('weight').value,
         allergies: document.getElementById('allergies').value,
         medicalHistory: document.getElementById('medicalHistory').value,
-        dietPlan: document.getElementById('dietPlan').value
+        dietPlan: document.getElementById('dietPlan').value,
+        vaccinationHistory: document.getElementById('vaccinationHistory').value,
+        dewormingHistory: document.getElementById('dewormingHistory').value,
+        photo: document.getElementById('petImagePreview').src
     };
 
     // Save pet profile in localStorage
@@ -70,7 +73,6 @@ document.getElementById('dietForm').addEventListener('submit', function (event) 
     savedProfiles.push(petProfile);
     localStorage.setItem('savedProfiles', JSON.stringify(savedProfiles));
 
-    // Alert and reload saved data
     alert('Pet profile saved!');
     loadSavedPetProfiles();
 });
@@ -78,16 +80,36 @@ document.getElementById('dietForm').addEventListener('submit', function (event) 
 // Load Saved Pet Profiles
 function loadSavedPetProfiles() {
     const savedProfiles = JSON.parse(localStorage.getItem('savedProfiles')) || [];
-    const savedProfilesList = document.getElementById('savedProfilesList');
-    
-    savedProfilesList.innerHTML = ''; // Clear current list
+    const profilesList = document.getElementById('savedProfilesList');
+    profilesList.innerHTML = '';
 
-    savedProfiles.forEach(profile => {
-        const li = document.createElement('li');
-        li.innerHTML = `<strong>${profile.petName}</strong> - ${profile.breed} (${profile.age} years old)`;
-        savedProfilesList.appendChild(li);
+    savedProfiles.forEach((profile, index) => {
+        const listItem = document.createElement('li');
+        listItem.innerHTML = `
+            <strong>${profile.petName}</strong>
+            <button onclick="deleteProfile(${index})">Delete</button>
+            <p>Breed: ${profile.breed}</p>
+            <p>Age: ${profile.age}</p>
+            <p>Weight: ${profile.weight}</p>
+            <p>Diet Plan: ${profile.dietPlan}</p>
+            <img src="${profile.photo}" alt="Pet Photo" style="max-width: 100px;">
+        `;
+        profilesList.appendChild(listItem);
     });
 }
+
+// Delete Saved Pet Profile
+function deleteProfile(index) {
+    let savedProfiles = JSON.parse(localStorage.getItem('savedProfiles')) || [];
+    savedProfiles.splice(index, 1);
+    localStorage.setItem('savedProfiles', JSON.stringify(savedProfiles));
+    loadSavedPetProfiles();
+}
+
+// Print Profile
+document.getElementById('printButton').addEventListener('click', function () {
+    window.print();
+});
 
 // Initial load
 loadSavedPetProfiles();
