@@ -1,4 +1,3 @@
-// Dummy storage for users (you can replace this with localStorage)
 const users = [];
 
 // Handle Sign-Up
@@ -66,8 +65,7 @@ document.getElementById('dietForm').addEventListener('submit', function (event) 
         vaccinationReminder: document.getElementById('vaccinationReminder').value,
         medicalHistoryReminder: document.getElementById('medicalHistoryReminder').value,
         dietReminder: document.getElementById('dietReminder').value,
-        groomingReminder: document.getElementById('groomingReminder').value,
-        petPhoto: document.getElementById('petPhoto').files[0]
+        petPhoto: document.getElementById('petPhoto').files[0] ? URL.createObjectURL(document.getElementById('petPhoto').files[0]) : ''
     };
 
     // Save pet profile in localStorage
@@ -80,75 +78,68 @@ document.getElementById('dietForm').addEventListener('submit', function (event) 
     loadSavedPetProfile();
 });
 
-// Load Saved Pet Profiles
+// Load Saved Pet Profile
 function loadSavedPetProfile() {
-    const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+    const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
     const savedProfilesList = document.getElementById('savedProfilesList');
-    savedProfilesList.innerHTML = '';
+    savedProfilesList.innerHTML = ''; // Clear the list before adding new profiles
 
-    savedProfiles.forEach((profile, index) => {
-        const profileCard = document.createElement('li');
-        profileCard.classList.add('profile-card');
-        profileCard.innerHTML = `
-            <div class="profile-card-header">
-                <h4>${profile.petName}</h4>
-                <button class="delete-btn" data-index="${index}">Delete</button>
-            </div>
-            <div class="profile-card-body">
-                <p><strong>Breed:</strong> ${profile.breed}</p>
-                <p><strong>Age:</strong> ${profile.age}</p>
-                <p><strong>Weight:</strong> ${profile.weight}</p>
-                <p><strong>Allergies:</strong> ${profile.allergies}</p>
-                <p><strong>Medical History:</strong> ${profile.medicalHistory}</p>
-                <p><strong>Diet Plan:</strong> ${profile.dietPlan}</p>
-                <p><strong>Vaccination Reminder:</strong> ${profile.vaccinationReminder}</p>
-                <p><strong>Medical History Reminder:</strong> ${profile.medicalHistoryReminder}</p>
-                <p><strong>Food Renewal Reminder:</strong> ${profile.dietReminder}</p>
-                <p><strong>Grooming Reminder:</strong> ${profile.groomingReminder}</p>
-                ${profile.petPhoto ? `<img src="${URL.createObjectURL(profile.petPhoto)}" alt="Pet Photo" class="pet-photo">` : ''}
-                <button class="print-btn" onclick="printProfile(${index})">Print</button>
-            </div>
-        `;
-        savedProfilesList.appendChild(profileCard);
-    });
+    if (savedProfiles) {
+        savedProfiles.forEach((profile, index) => {
+            const petCard = document.createElement('li');
+            petCard.classList.add('pet-card');
 
-    // Delete pet profile
-    document.querySelectorAll('.delete-btn').forEach(button => {
-        button.addEventListener('click', function () {
-            const index = button.getAttribute('data-index');
-            deletePetProfile(index);
+            petCard.innerHTML = `
+                <div class="pet-card-content">
+                    <h4>${profile.petName}</h4>
+                    <p>Breed: ${profile.breed}</p>
+                    <p>Age: ${profile.age}</p>
+                    <p>Weight: ${profile.weight}</p>
+                    <p>Allergies: ${profile.allergies}</p>
+                    <p>Medical History: ${profile.medicalHistory}</p>
+                    <p>Diet Plan: ${profile.dietPlan}</p>
+                    <p>Vaccination Reminder: ${profile.vaccinationReminder}</p>
+                    <p>Medical History Reminder: ${profile.medicalHistoryReminder}</p>
+                    <p>Diet Reminder: ${profile.dietReminder}</p>
+                    <img src="${profile.petPhoto}" alt="Pet Photo" class="pet-photo"/>
+                </div>
+                <div class="pet-card-actions">
+                    <button class="delete-btn" onclick="deletePetProfile(${index})">Delete</button>
+                    <button class="print-btn" onclick="printPetProfile(${index})">Print</button>
+                </div>
+            `;
+            savedProfilesList.appendChild(petCard);
         });
-    });
+    }
 }
 
 // Delete Pet Profile
 function deletePetProfile(index) {
-    let savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-    savedProfiles.splice(index, 1);
+    let savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
+    savedProfiles.splice(index, 1); // Remove the profile at the given index
     localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
-    loadSavedPetProfile();
+    loadSavedPetProfile(); // Reload the profiles after deletion
 }
 
 // Print Pet Profile
-function printProfile(index) {
-    const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+function printPetProfile(index) {
+    const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
     const profile = savedProfiles[index];
-    const printWindow = window.open('', '', 'width=600,height=800');
-    printWindow.document.write(`
-        <h1>Pet Profile</h1>
-        <p><strong>Name:</strong> ${profile.petName}</p>
-        <p><strong>Breed:</strong> ${profile.breed}</p>
-        <p><strong>Age:</strong> ${profile.age}</p>
-        <p><strong>Weight:</strong> ${profile.weight}</p>
-        <p><strong>Allergies:</strong> ${profile.allergies}</p>
-        <p><strong>Medical History:</strong> ${profile.medicalHistory}</p>
-        <p><strong>Diet Plan:</strong> ${profile.dietPlan}</p>
-        <p><strong>Vaccination Reminder:</strong> ${profile.vaccinationReminder}</p>
-        <p><strong>Medical History Reminder:</strong> ${profile.medicalHistoryReminder}</p>
-        <p><strong>Food Renewal Reminder:</strong> ${profile.dietReminder}</p>
-        <p><strong>Grooming Reminder:</strong> ${profile.groomingReminder}</p>
-        ${profile.petPhoto ? `<img src="${URL.createObjectURL(profile.petPhoto)}" alt="Pet Photo">` : ''}
-    `);
+
+    const printWindow = window.open('', '', 'height=600,width=800');
+    printWindow.document.write('<html><head><title>Print Pet Profile</title></head><body>');
+    printWindow.document.write(`<h1>${profile.petName}</h1>`);
+    printWindow.document.write(`<img src="${profile.petPhoto}" alt="Pet Photo" style="width: 300px; height: auto;" />`);
+    printWindow.document.write(`<p>Breed: ${profile.breed}</p>`);
+    printWindow.document.write(`<p>Age: ${profile.age}</p>`);
+    printWindow.document.write(`<p>Weight: ${profile.weight}</p>`);
+    printWindow.document.write(`<p>Allergies: ${profile.allergies}</p>`);
+    printWindow.document.write(`<p>Medical History: ${profile.medicalHistory}</p>`);
+    printWindow.document.write(`<p>Diet Plan: ${profile.dietPlan}</p>`);
+    printWindow.document.write(`<p>Vaccination Reminder: ${profile.vaccinationReminder}</p>`);
+    printWindow.document.write(`<p>Medical History Reminder: ${profile.medicalHistoryReminder}</p>`);
+    printWindow.document.write(`<p>Diet Reminder: ${profile.dietReminder}</p>`);
+    printWindow.document.write('</body></html>');
     printWindow.document.close();
     printWindow.print();
 }
