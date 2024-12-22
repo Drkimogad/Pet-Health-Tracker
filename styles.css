@@ -1,230 +1,199 @@
-/* General Styles for the Page */
+/* General Layout */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4; /* Light grey background for the entire page */
+    background-color: #f4f4f4;
     margin: 0;
     padding: 0;
 }
 
-/* Background Container */
-.background-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-/* Header Styles */
 header {
-    background-color: #4CAF50; /* Green background */
+    background-color: #4CAF50;
     color: white;
+    padding: 15px 0;
     text-align: center;
-    padding: 10px;
 }
 
 h1 {
     margin: 0;
 }
 
-/* Auth Section (Login/Sign-Up) */
+/* Authentication Section */
 #authSection {
-    text-align: center;
-    padding: 20px;
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
 }
 
 #signUpForm, #loginForm {
-    display: inline-block;
-    text-align: left;
+    background-color: white;
     padding: 20px;
-    background-color: #ffffff;
-    border-radius: 5px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    width: 300px;
 }
 
-input[type="email"], input[type="password"], input[type="text"], input[type="number"], input[type="file"], textarea, select {
+form input, form button {
     width: 100%;
     padding: 10px;
-    margin: 10px 0;
+    margin: 5px 0;
+    border: 1px solid #ccc;
     border-radius: 5px;
-    border: 1px solid #ddd;
+}
+
+form button {
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #45a049;
 }
 
 /* Main Content Section */
 #mainContent {
     display: none;
+    margin: 30px auto;
+    width: 80%;
+    max-width: 900px;
+}
+
+.form-container {
     background-color: white;
     padding: 20px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
 }
 
-/* Form container inside the main content */
-.form-container {
-    max-width: 800px;
-    margin: 0 auto;
+form textarea, form input[type="text"], form input[type="number"], form input[type="date"], form select {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
 }
 
-/* Section for saved pet profiles */
-#savedProfilesList {
-    list-style: none;
+label {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+h3 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+ul {
+    list-style-type: none;
     padding: 0;
 }
 
 .saved-profile-card {
-    display: flex;
-    flex-wrap: wrap;
-    background-color: #fff;
+    background-color: white;
     padding: 15px;
-    margin: 10px 0;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-}
-
-.saved-profile-card img {
-    max-width: 100px;
-    margin-right: 15px;
-}
-
-.saved-profile-card div {
-    flex-grow: 1;
-}
-
-/* Reminders Section */
-#reminderSection {
-    background-color: #f2f2f2;
-    padding: 15px;
-    margin-top: 20px;
-    border-radius: 5px;
-}
-
-#reminderSection h3 {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px;
-    margin: 0;
-}
-
-/* Button Styles */
-button {
-    background-color: #4CAF50; /* Green background */
-    color: white; /* White text */
-    border: none; /* Remove default border */
-    padding: 10px 20px; /* Add padding */
-    text-align: center; /* Center text */
-    text-decoration: none; /* Remove underline */
-    display: inline-block; /* Allow multiple buttons side by side */
-    font-size: 16px; /* Adjust font size */
-    border-radius: 5px; /* Rounded corners */
-    cursor: pointer; /* Change cursor to pointer */
-}
-
-/* Delete and Print Button Styles */
-.delete-btn, .print-btn {
-    background-color: #4CAF50; /* Green background */
-    color: white; /* White text */
-}
-
-.delete-btn:hover, .print-btn:hover {
-    background-color: #45a049; /* Darker green on hover */
-}
-
-/* Reduce size for delete and print buttons */
-.delete-btn, .print-btn {
-    padding: 6px 12px; /* Smaller padding */
-    font-size: 14px; /* Slightly smaller font size */
-}
-
-/* Footer Styles */
-footer {
-    background-color: #4CAF50; /* Green footer */
-    color: white;
-    text-align: center;
-    padding: 10px 0;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-}
-
-/* Save Pet Profile Button */
-button[type="submit"] {
-    background-color: #4CAF50;
-    color: white;
-    font-size: 18px;
-    padding: 15px;
-    border-radius: 5px;
-    width: 100%;
-}
-
-/* Save Pet Profiles Section */
-#savedProfilesList {
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    margin-top: 20px;
-}
-
-.saved-profile {
-    background-color: white;
-    padding: 20px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: space-between;
-}
-
-.saved-profile img {
-    max-width: 80px;
-    border-radius: 5px;
-}
-
-.saved-profile .profile-info {
-    flex-grow: 1;
-    padding-left: 20px;
-}
-
-.saved-profile .profile-info h4 {
-    margin-top: 0;
-}
-
-.saved-profile .profile-actions {
-    display: flex;
     align-items: center;
 }
 
-.saved-profile .profile-actions button {
-    background-color: red;
+.saved-profile-card img {
+    width: 100%;          /* Ensure the image takes up the full width of its container */
+    max-width: 70%;       /* Limit the image width to 70% of the card container */
+    height: auto;         /* Keep the aspect ratio */
+    object-fit: cover;    /* Ensure the image covers the area without stretching */
+    margin: 0 auto;       /* Center the image within the card */
+    display: block;       /* Make sure the image is a block element */
+}
+
+.saved-profile-card button {
+    background-color: #f44336;  /* Red color for delete button */
     color: white;
-    padding: 5px 10px;
     border: none;
-    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 12px;
     cursor: pointer;
+    border-radius: 3px;
+}
+
+.saved-profile-card button:hover {
+    background-color: #d32f2f;
+}
+
+.saved-profile-card button.print-button {
+    background-color: #4CAF50;
+    margin-top: 10px;
+}
+
+.saved-profile-card button.print-button:hover {
+    background-color: #45a049;
+}
+
+/* Reminders Section */
+#reminders {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 5px;
+}
+
+#reminders label {
+    font-size: 1em;
+}
+
+#reminders input {
     margin-left: 10px;
 }
 
-.saved-profile .profile-actions button:hover {
-    background-color: darkred;
+/* Footer */
+footer {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    left: 0;
+    z-index: 1000;
 }
 
-/* Adjust the layout for smaller screens */
-@media (max-width: 768px) {
-    .saved-profile-card {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .saved-profile-card img {
-        margin-bottom: 15px;
-    }
-
-    .saved-profile .profile-actions {
-        flex-direction: column;
-    }
-}
-/* Saved Profile Card Image Styles */
-.saved-profile-card img {
-    width: 70%;  /* Set the image width to 70% of the container */
-    height: auto;  /* Ensure the aspect ratio is preserved */
-    object-fit: cover;  /* Ensure the image is cropped to fit the container */
-    margin-right: 15px;
+footer p {
+    margin: 0;
 }
 
+/* Styling for the Delete and Print Buttons in Saved Pet Profile */
+.delete-button {
+    background-color: #f44336; /* Red delete button */
+    color: white;
+    padding: 8px 15px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
 
+.delete-button:hover {
+    background-color: #d32f2f;
+}
+
+.print-button {
+    background-color: #4CAF50; /* Green print button */
+    color: white;
+    padding: 8px 15px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.print-button:hover {
+    background-color: #45a049;
+}
