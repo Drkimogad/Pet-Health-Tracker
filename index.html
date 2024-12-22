@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pet Health Tracker</title> <!-- Updated title -->
+    <title>Pet Health Tracker</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="background-container">
         <header>
-            <h1>Pet Health Tracker</h1> <!-- Updated header -->
+            <h1>Pet Health Tracker</h1>
         </header>
 
         <!-- Authentication Section (Login/Sign-Up) -->
@@ -45,12 +45,25 @@
                     <input type="text" id="petName" required><br><br>
 
                     <label for="breed">Breed:</label>
-                    <input type="text" id="breed" required placeholder="Breed"><br><br>
+                    <input type="text" id="breed" required placeholder="Breed"><br><br> 
 
+                    <input type="number" id="age" required placeholder="Age"><br><br> 
+
+                    <input type="number" id="weight" required placeholder="Weight"><br><br>
+
+                    <select id="sex" required>
+                        <option value="">Select Sex</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select><br><br>
+
+                    <label for="allergies">Allergies:</label>
                     <textarea id="allergies" placeholder="Allergies (if any)"></textarea><br><br>
 
+                    <label for="medicalHistory">Medical History:</label>
                     <textarea id="medicalHistory" placeholder="Enter any medical history"></textarea><br><br>
 
+                    <label for="dietPlan">Diet Plan:</label>
                     <textarea id="dietPlan" placeholder="Enter diet plan for pet"></textarea><br><br>
 
                     <label for="vaccinationReminder">Vaccination Reminder:</label>
@@ -76,12 +89,10 @@
         <!-- Logout Button -->
         <button id="logoutButton" style="display: none;">Logout</button>
 
+        <footer>
+            <p>© 2024 Pet Health Tracker. All rights reserved.</p>
+        </footer>
     </div>
-
-    <!-- Footer Section -->
-    <footer>
-        <p>&copy; 2024 Pet Health Tracker. All Rights Reserved.</p>
-    </footer>
 
     <script src="script.js"></script>
 </body>
