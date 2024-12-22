@@ -219,4 +219,11 @@ button[type="submit"] {
         flex-direction: column;
     }
 }
+/* Saved Profile Card Image Styles */
+.saved-profile-card img {
+    max-width: 120px; /* Limit the image width */
+    max-height: 120px; /* Limit the image height */
+    object-fit: cover; /* Ensure the image is cropped to fit the container */
+    margin-right: 15px;
+}
 
