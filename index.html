@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pet Diet Planner</title>
+    <title>Pet Health Tracker</title> <!-- Updated title -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="background-container">
         <header>
-            <h1>Pet Diet Planner</h1>
+            <h1>Pet Health Tracker</h1> <!-- Updated header -->
         </header>
 
         <!-- Authentication Section (Login/Sign-Up) -->
@@ -47,17 +47,10 @@
                     <label for="breed">Breed:</label>
                     <input type="text" id="breed" required placeholder="Breed"><br><br>
 
-                    <input type="number" id="age" required placeholder="Age"><br><br>
-
-                    <input type="number" id="weight" required placeholder="Weight"><br><br>
-
-                    <label for="allergies">Allergies:</label>
                     <textarea id="allergies" placeholder="Allergies (if any)"></textarea><br><br>
 
-                    <label for="medicalHistory">Medical History:</label>
                     <textarea id="medicalHistory" placeholder="Enter any medical history"></textarea><br><br>
 
-                    <label for="dietPlan">Diet Plan:</label>
                     <textarea id="dietPlan" placeholder="Enter diet plan for pet"></textarea><br><br>
 
                     <label for="vaccinationReminder">Vaccination Reminder:</label>
@@ -78,14 +71,17 @@
 
             <h3>Saved Pet Profiles</h3>
             <ul id="savedProfilesList"></ul>
-
-            <!-- New Pet Profile with Print & Delete Buttons -->
-            <div id="savedProfiles"></div> <!-- Where the saved profiles are displayed with print and delete buttons -->
         </main>
 
         <!-- Logout Button -->
         <button id="logoutButton" style="display: none;">Logout</button>
+
     </div>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2024 Pet Health Tracker. All Rights Reserved.</p>
+    </footer>
 
     <script src="script.js"></script>
 </body>
