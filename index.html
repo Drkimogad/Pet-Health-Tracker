@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Diet Planner</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="background-container">
+        <header>
+            <h1>Pet Diet Planner</h1>
+        </header>
+
+        <!-- Authentication Section (Login/Sign-Up) -->
+        <section id="authSection">
+            <div id="signUpForm">
+                <h2>Sign-Up</h2>
+                <form id="signUp">
+                    <label for="signUpEmail">Email:</label>
+                    <input type="email" id="signUpEmail" required><br><br>
+                    <label for="signUpPassword">Password:</label>
+                    <input type="password" id="signUpPassword" required><br><br>
+                    <button type="submit">Sign Up</button>
+                </form>
+            </div>
+
+            <div id="loginForm" style="display: none;">
+                <h2>Login</h2>
+                <form id="login">
+                    <label for="loginEmail">Email:</label>
+                    <input type="email" id="loginEmail" required><br><br>
+                    <label for="loginPassword">Password:</label>
+                    <input type="password" id="loginPassword" required><br><br>
+                    <button type="submit">Login</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Main Content Section -->
+        <main id="mainContent" style="display: none;">
+            <div class="form-container">
+                <form id="dietForm">
+                    <label for="petName">Pet Name:</label>
+                    <input type="text" id="petName" required><br><br>
+
+                    <label for="breed">Breed:</label>
+                    <input type="text" id="breed" required placeholder="Breed"><br><br>
+
+                    <label for="age">Age:</label>
+                    <input type="number" id="age" required placeholder="Age"><br><br>
+
+                    <label for="weight">Weight:</label>
+                    <input type="number" id="weight" required placeholder="Weight"><br><br>
+
+                    <label for="allergies">Allergies:</label>
+                    <textarea id="allergies" placeholder="Allergies (if any)"></textarea><br><br>
+
+                    <label for="medicalHistory">Medical History:</label>
+                    <textarea id="medicalHistory" placeholder="Enter any medical history"></textarea><br><br>
+
+                    <label for="dietPlan">Diet Plan:</label>
+                    <textarea id="dietPlan" placeholder="Enter diet plan for pet"></textarea><br><br>
+
+                    <label for="vaccinationReminder">Vaccination Reminder:</label>
+                    <input type="date" id="vaccinationReminder" required><br><br>
+
+                    <label for="medicalHistoryReminder">Medical History Reminder:</label>
+                    <input type="date" id="medicalHistoryReminder" required><br><br>
+
+                    <label for="dietReminder">Diet Reminder:</label>
+                    <input type="date" id="dietReminder" required><br><br>
+
+                    <label for="petPhoto">Upload Pet Photo:</label>
+                    <input type="file" id="petPhoto" accept="image/*"><br><br>
+
+                    <button type="submit">Save Pet Profile</button>
+                </form>
+            </div>
+
+            <h3>Saved Pet Profiles</h3>
+            <ul id="savedProfilesList"></ul>
+        </main>
+
+        <!-- Logout Button -->
+        <button id="logoutButton" style="display: none;">Logout</button>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Pet Diet Planner. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

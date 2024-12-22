@@ -1,0 +1,87 @@
+/* Style for Header and Main Content */
+header {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    padding: 10px;
+}
+
+h1 {
+    font-family: Arial, sans-serif;
+}
+
+/* Form and Main Content */
+.form-container {
+    padding: 20px;
+    margin: 20px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+input[type="text"], input[type="number"], input[type="email"], input[type="password"], textarea, input[type="date"], input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Saved Profiles Section */
+#savedProfilesList {
+    list-style: none;
+    padding: 0;
+}
+
+#savedProfilesList li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+#savedProfilesList img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+#savedProfilesList button {
+    margin-left: 10px;
+    background-color: #ff0000;
+    color: white;
+}
+
+/* Reminders Section */
+.reminder-section {
+    background-color: #e7f4e7;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.reminder-section h3 {
+    color: #4CAF50;
+}
+
+button {
+    width: 100%;
+    padding: 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
