@@ -47,6 +47,12 @@
                     <label for="breed">Breed:</label>
                     <input type="text" id="breed" required placeholder="Breed"><br><br>
 
+                    <label for="age">Age:</label>
+                    <input type="number" id="age" required placeholder="Age"><br><br>
+
+                    <label for="weight">Weight:</label>
+                    <input type="number" id="weight" required placeholder="Weight"><br><br>
+
                     <label for="allergies">Allergies:</label>
                     <textarea id="allergies" placeholder="Allergies (if any)"></textarea><br><br>
 
@@ -56,20 +62,14 @@
                     <label for="dietPlan">Diet Plan:</label>
                     <textarea id="dietPlan" placeholder="Enter diet plan for pet"></textarea><br><br>
 
-                    <div class="reminder-section">
-                        <h3>Reminders</h3>
-                        <label for="vaccinationReminder">Vaccinations and Deworming Reminder:</label>
-                        <input type="date" id="vaccinationReminder" required><br><br>
+                    <label for="vaccinationReminder">Vaccination Reminder:</label>
+                    <input type="date" id="vaccinationReminder" required><br><br>
 
-                        <label for="medicalHistoryReminder">Medical Check-ups Reminder:</label>
-                        <input type="date" id="medicalHistoryReminder" required><br><br>
+                    <label for="medicalHistoryReminder">Medical History Reminder:</label>
+                    <input type="date" id="medicalHistoryReminder" required><br><br>
 
-                        <label for="dietReminder">Food Renewal Reminder:</label>
-                        <input type="date" id="dietReminder" required><br><br>
-
-                        <label for="groomingReminder">Grooming Reminder:</label>
-                        <input type="date" id="groomingReminder" required><br><br>
-                    </div>
+                    <label for="dietReminder">Diet Reminder:</label>
+                    <input type="date" id="dietReminder" required><br><br>
 
                     <label for="petPhoto">Upload Pet Photo:</label>
                     <input type="file" id="petPhoto" accept="image/*"><br><br>
@@ -79,8 +79,7 @@
             </div>
 
             <h3>Saved Pet Profiles</h3>
-            <ul id="savedProfilesList"></ul>
-            <button onclick="window.print()">Print Profile</button>
+            <div id="savedProfilesList" class="profile-container"></div>
         </main>
 
         <!-- Logout Button -->
