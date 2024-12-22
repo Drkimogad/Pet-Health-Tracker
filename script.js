@@ -7,6 +7,7 @@ function handleLogin(event) {
     if (email && password) {
         document.getElementById("authSection").style.display = "none";
         document.getElementById("mainContent").style.display = "block";
+        document.getElementById("logoutButton").style.display = "inline-block"; // Show logout button
     }
 }
 
@@ -50,6 +51,52 @@ function loadSavedPetProfiles() {
     });
 }
 
+// Function to save a new pet profile
+function savePetProfile(event) {
+    event.preventDefault();
+
+    const petName = document.getElementById("petName").value;
+    const breed = document.getElementById("breed").value;
+    const age = document.getElementById("age").value;
+    const weight = document.getElementById("weight").value;
+    const allergies = document.getElementById("allergies").value;
+    const medicalHistory = document.getElementById("medicalHistory").value;
+    const dietPlan = document.getElementById("dietPlan").value;
+    const vaccinationReminder = document.getElementById("vaccinationReminder").value;
+    const medicalHistoryReminder = document.getElementById("medicalHistoryReminder").value;
+    const dietReminder = document.getElementById("dietReminder").value;
+    const petPhoto = document.getElementById("petPhoto").files[0];
+
+    const reader = new FileReader();
+    reader.onloadend = function () {
+        const petProfile = {
+            petName,
+            breed,
+            age,
+            weight,
+            allergies,
+            medicalHistory,
+            dietPlan,
+            vaccinationReminder,
+            medicalHistoryReminder,
+            dietReminder,
+            petPhoto: reader.result, // Use base64 for image
+        };
+
+        const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+        savedProfiles.push(petProfile);
+        localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+
+        loadSavedPetProfiles();  // Reload profiles after saving
+    };
+
+    if (petPhoto) {
+        reader.readAsDataURL(petPhoto);
+    } else {
+        alert("Please upload a photo!");
+    }
+}
+
 // Function to delete a pet profile
 function deletePetProfile(index) {
     const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
@@ -78,10 +125,19 @@ function printProfile(index) {
     printWindow.document.close();
 }
 
+// Logout functionality
+function logout() {
+    document.getElementById("authSection").style.display = "block";
+    document.getElementById("mainContent").style.display = "none";
+    document.getElementById("logoutButton").style.display = "none";
+}
+
 // On page load, load saved pet profiles
 window.onload = function() {
     loadSavedPetProfiles();
 
     document.getElementById("login").addEventListener("submit", handleLogin);
     document.getElementById("signUp").addEventListener("submit", handleSignUp);
+    document.getElementById("dietForm").addEventListener("submit", savePetProfile);
+    document.getElementById("logoutButton").addEventListener("click", logout);
 };
