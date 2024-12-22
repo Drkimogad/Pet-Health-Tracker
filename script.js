@@ -1,3 +1,28 @@
+// Function to handle user login
+function handleLogin(event) {
+    event.preventDefault();
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
+    // Implement logic for user login (mocked for this example)
+    if (email && password) {
+        document.getElementById("authSection").style.display = "none";
+        document.getElementById("mainContent").style.display = "block";
+    }
+}
+
+// Function to handle user sign up
+function handleSignUp(event) {
+    event.preventDefault();
+    const email = document.getElementById("signUpEmail").value;
+    const password = document.getElementById("signUpPassword").value;
+    // Implement sign-up logic (mocked for this example)
+    if (email && password) {
+        alert("Sign up successful! Please log in.");
+        document.getElementById("signUpForm").style.display = "none";
+        document.getElementById("loginForm").style.display = "block";
+    }
+}
+
 // Function to save and display pet profiles
 function loadSavedPetProfiles() {
     const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
@@ -54,4 +79,9 @@ function printProfile(index) {
 }
 
 // On page load, load saved pet profiles
-window.onload = loadSavedPetProfiles;
+window.onload = function() {
+    loadSavedPetProfiles();
+
+    document.getElementById("login").addEventListener("submit", handleLogin);
+    document.getElementById("signUp").addEventListener("submit", handleSignUp);
+};
