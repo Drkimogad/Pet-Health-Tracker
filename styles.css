@@ -1,87 +1,222 @@
-/* Style for Header and Main Content */
+/* General Styles for the Page */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4; /* Light grey background for the entire page */
+    margin: 0;
+    padding: 0;
+}
+
+/* Background Container */
+.background-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header Styles */
 header {
-    background-color: #4CAF50;
+    background-color: #4CAF50; /* Green background */
     color: white;
     text-align: center;
     padding: 10px;
 }
 
 h1 {
-    font-family: Arial, sans-serif;
+    margin: 0;
 }
 
-/* Form and Main Content */
-.form-container {
+/* Auth Section (Login/Sign-Up) */
+#authSection {
+    text-align: center;
     padding: 20px;
-    margin: 20px;
-    background-color: #f4f4f4;
-    border-radius: 8px;
-    border: 1px solid #ddd;
 }
 
-input[type="text"], input[type="number"], input[type="email"], input[type="password"], textarea, input[type="date"], input[type="file"] {
+#signUpForm, #loginForm {
+    display: inline-block;
+    text-align: left;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+input[type="email"], input[type="password"], input[type="text"], input[type="number"], input[type="file"], textarea, select {
     width: 100%;
     padding: 10px;
-    margin: 8px 0;
-    border-radius: 4px;
+    margin: 10px 0;
+    border-radius: 5px;
     border: 1px solid #ddd;
 }
 
-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+/* Main Content Section */
+#mainContent {
+    display: none;
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
 
-button:hover {
-    background-color: #45a049;
+/* Form container inside the main content */
+.form-container {
+    max-width: 800px;
+    margin: 0 auto;
 }
 
-/* Saved Profiles Section */
+/* Section for saved pet profiles */
 #savedProfilesList {
     list-style: none;
     padding: 0;
 }
 
-#savedProfilesList li {
+.saved-profile-card {
     display: flex;
-    align-items: center;
-    margin-bottom: 10px;
+    flex-wrap: wrap;
+    background-color: #fff;
+    padding: 15px;
+    margin: 10px 0;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
 }
 
-#savedProfilesList img {
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-    margin-right: 10px;
+.saved-profile-card img {
+    max-width: 100px;
+    margin-right: 15px;
 }
 
-#savedProfilesList button {
-    margin-left: 10px;
-    background-color: #ff0000;
-    color: white;
+.saved-profile-card div {
+    flex-grow: 1;
 }
 
 /* Reminders Section */
-.reminder-section {
-    background-color: #e7f4e7;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-}
-
-.reminder-section h3 {
-    color: #4CAF50;
-}
-
-button {
-    width: 100%;
+#reminderSection {
+    background-color: #f2f2f2;
     padding: 15px;
+    margin-top: 20px;
+    border-radius: 5px;
+}
+
+#reminderSection h3 {
     background-color: #4CAF50;
     color: white;
-    border: none;
-    cursor: pointer;
+    padding: 10px;
+    margin: 0;
 }
+
+/* Button Styles */
+button {
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    border: none; /* Remove default border */
+    padding: 10px 20px; /* Add padding */
+    text-align: center; /* Center text */
+    text-decoration: none; /* Remove underline */
+    display: inline-block; /* Allow multiple buttons side by side */
+    font-size: 16px; /* Adjust font size */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Change cursor to pointer */
+}
+
+/* Delete and Print Button Styles */
+.delete-btn, .print-btn {
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+}
+
+.delete-btn:hover, .print-btn:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+/* Reduce size for delete and print buttons */
+.delete-btn, .print-btn {
+    padding: 6px 12px; /* Smaller padding */
+    font-size: 14px; /* Slightly smaller font size */
+}
+
+/* Footer Styles */
+footer {
+    background-color: #4CAF50; /* Green footer */
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Save Pet Profile Button */
+button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    font-size: 18px;
+    padding: 15px;
+    border-radius: 5px;
+    width: 100%;
+}
+
+/* Save Pet Profiles Section */
+#savedProfilesList {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+.saved-profile {
+    background-color: white;
+    padding: 20px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+}
+
+.saved-profile img {
+    max-width: 80px;
+    border-radius: 5px;
+}
+
+.saved-profile .profile-info {
+    flex-grow: 1;
+    padding-left: 20px;
+}
+
+.saved-profile .profile-info h4 {
+    margin-top: 0;
+}
+
+.saved-profile .profile-actions {
+    display: flex;
+    align-items: center;
+}
+
+.saved-profile .profile-actions button {
+    background-color: red;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.saved-profile .profile-actions button:hover {
+    background-color: darkred;
+}
+
+/* Adjust the layout for smaller screens */
+@media (max-width: 768px) {
+    .saved-profile-card {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .saved-profile-card img {
+        margin-bottom: 15px;
+    }
+
+    .saved-profile .profile-actions {
+        flex-direction: column;
+    }
+}
+
