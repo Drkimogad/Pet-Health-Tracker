@@ -103,12 +103,11 @@ ul {
 }
 
 .saved-profile-card img {
-    width: 100%;          /* Ensure the image takes up the full width of its container */
-    max-width: 70%;       /* Limit the image width to 70% of the card container */
-    height: auto;         /* Keep the aspect ratio */
-    object-fit: cover;    /* Ensure the image covers the area without stretching */
-    margin: 0 auto;       /* Center the image within the card */
-    display: block;       /* Make sure the image is a block element */
+    width: 30%;           /* Set image to 30% of the container width */
+    height: auto;         /* Maintain aspect ratio */
+    object-fit: contain;  /* Ensure image fits within the container */
+    margin: 0 auto;       /* Center the image */
+    display: block;       /* Block-level element for better alignment */
 }
 
 .saved-profile-card button {
