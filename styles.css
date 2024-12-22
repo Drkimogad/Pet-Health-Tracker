@@ -67,148 +67,103 @@ form button:hover {
     margin-bottom: 30px;
 }
 
-form textarea, form input[type="text"], form input[type="number"], form input[type="date"], form select {
+form textarea, form input[type="text"], form input[type="number"], form input[type="file"], form input[type="date"] {
     width: 100%;
     padding: 10px;
-    margin: 5px 0;
+    margin: 10px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
-    box-sizing: border-box;
 }
 
-label {
-    margin-top: 10px;
-    font-weight: bold;
-}
-
-h3 {
-    font-size: 1.5em;
-    margin-bottom: 20px;
-}
-
-ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.saved-profile-card {
-    background-color: white;
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.saved-profile-card img {
-    width: 30%;           /* Set image to 30% of the container width */
-    height: auto;         /* Maintain aspect ratio */
-    object-fit: contain;  /* Ensure image fits within the container */
-    margin: 0 auto;       /* Center the image */
-    display: block;       /* Block-level element for better alignment */
-}
-
-.saved-profile-card button {
-    background-color: #f44336;  /* Red color for delete button */
+/* Button Styles */
+button {
+    padding: 10px 15px;
+    background-color: #4CAF50;
     color: white;
     border: none;
-    padding: 5px 10px;
-    font-size: 12px;
+    border-radius: 5px;
     cursor: pointer;
-    border-radius: 3px;
-}
-
-.saved-profile-card button:hover {
-    background-color: #d32f2f;
-}
-
-.saved-profile-card button.print-button {
-    background-color: #4CAF50;
     margin-top: 10px;
 }
 
-.saved-profile-card button.print-button:hover {
+button:hover {
     background-color: #45a049;
 }
 
-/* Reminders Section */
-#reminders {
-    background-color: #4CAF50;
-    color: white;
-    padding: 15px;
+/* Saved Pet Profiles Section */
+#savedProfilesList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
     margin-top: 20px;
+}
+
+.pet-card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 250px;
+    text-align: center;
+}
+
+.pet-card img {
+    max-width: 100%;
+    height: auto;
+    width: 100%;
+    object-fit: cover;
+}
+
+.delete-btn, .print-btn {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
     border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
 }
 
-#reminders label {
-    font-size: 1em;
+.delete-btn:hover, .print-btn:hover {
+    background-color: darkred;
 }
 
-#reminders input {
-    margin-left: 10px;
-}
-
-/* Footer */
-footer {
+/* Print Button Styles */
+.print-btn {
     background-color: #4CAF50;
     color: white;
-    text-align: center;
+    margin-top: 10px;
+}
+
+.print-btn:hover {
+    background-color: #45a049;
+}
+
+/* Footer Section */
+footer {
+    background-color: #f4f4f4;
+    color: #333;
     padding: 10px;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    left: 0;
-    z-index: 1000;
+    text-align: center;
+    margin-top: 30px;
 }
 
 footer p {
     margin: 0;
 }
 
-/* Styling for the Delete and Print Buttons in Saved Pet Profile */
-.delete-button {
-    background-color: #f44336; /* Red delete button */
-    color: white;
-    padding: 8px 15px;
-    font-size: 14px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.delete-button:hover {
-    background-color: #d32f2f;
-}
-
-.print-button {
-    background-color: #4CAF50; /* Green print button */
-    color: white;
-    padding: 8px 15px;
-    font-size: 14px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    margin-top: 10px;
-}
-
-.print-button:hover {
-    background-color: #45a049;
-}
-
-/* Styling for Logout Button */
+/* Logout Button */
 #logoutButton {
-    background-color: #4CAF50; /* Green logout button */
+    background-color: #f44336;
     color: white;
     padding: 10px 15px;
     border: none;
-    font-size: 14px;
-    cursor: pointer;
     border-radius: 5px;
+    cursor: pointer;
     margin-top: 20px;
 }
 
 #logoutButton:hover {
-    background-color: #45a049;
+    background-color: #d32f2f;
 }
