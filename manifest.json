@@ -1,5 +1,5 @@
 {
-  "name": "Pet Health Tracker",
+  "name": "Pet-Health-Tracker",
   "short_name": "PetTracker",
   "description": "A simple web app converted to a PWA",
   "start_url": "/index.html",
