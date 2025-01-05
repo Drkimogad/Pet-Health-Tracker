@@ -1,7 +1,17 @@
-/* Style for Header and Main Content */
+:root {
+    --primary-color: #4CAF50;
+    --secondary-color: #45a049;
+    --background-color: #f4f4f4;
+    --text-color: white;
+    --border-color: #ddd;
+    --reminder-bg-color: #e7f4e7;
+    --reminder-text-color: #4CAF50;
+}
+
+/* Header Styles */
 header {
-    background-color: #4CAF50;
-    color: white;
+    background-color: var(--primary-color);
+    color: var(--text-color);
     text-align: center;
     padding: 10px;
 }
@@ -10,13 +20,13 @@ h1 {
     font-family: Arial, sans-serif;
 }
 
-/* Form and Main Content */
+/* Form Container Styles */
 .form-container {
     padding: 20px;
     margin: 20px;
-    background-color: #f4f4f4;
+    background-color: var(--background-color);
     border-radius: 8px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
 }
 
 input[type="text"], input[type="number"], input[type="email"], input[type="password"], textarea, input[type="date"], input[type="file"] {
@@ -24,12 +34,13 @@ input[type="text"], input[type="number"], input[type="email"], input[type="passw
     padding: 10px;
     margin: 8px 0;
     border-radius: 4px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
 }
 
+/* Button Styles */
 button {
-    background-color: #4CAF50;
-    color: white;
+    background-color: var(--primary-color);
+    color: var(--text-color);
     padding: 10px;
     border: none;
     border-radius: 4px;
@@ -37,7 +48,7 @@ button {
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: var(--secondary-color);
 }
 
 /* Saved Profiles Section */
@@ -61,27 +72,75 @@ button:hover {
 
 #savedProfilesList button {
     margin-left: 10px;
-    background-color: #339900;
-    color: white;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
 }
 
 /* Reminders Section */
 .reminder-section {
-    background-color: #e7f4e7;
+    background-color: var(--reminder-bg-color);
     padding: 20px;
     border-radius: 8px;
     margin-bottom: 20px;
 }
 
 .reminder-section h3 {
-    color: #4CAF50;
+    color: var(--reminder-text-color);
 }
 
-button {
-    width: 100%;
-    padding: 15px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
+/* Media Queries for Responsiveness */
+@media (max-width: 600px) {
+    .form-container {
+        padding: 10px;
+        margin: 10px;
+    }
+
+    input[type="text"], input[type="number"], input[type="email"], input[type="password"], textarea, input[type="date"], input[type="file"] {
+        padding: 8px;
+    }
+
+    button {
+        padding: 10px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    body {
+        background-color: white;
+        margin: 0;
+        padding: 0;
+    }
+
+    .background-container {
+        background-color: white;
+        padding: 0;
+    }
+
+    .form-container {
+        border: none;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        page-break-inside: avoid;
+    }
+
+    header, footer {
+        display: none;
+    }
+
+    button {
+        display: none;
+    }
+
+    input[type="text"], input[type="number"], input[type="email"], input[type="password"], textarea, input[type="date"], input[type="file"] {
+        border: 1px solid black;
+        padding: 5px;
+        margin: 5px 0;
+    }
+
+    #savedProfilesList img {
+        width: 100px;
+        height: 100px;
+    }
 }
