@@ -44,10 +44,10 @@ button {
     padding: 15px;
     background-color: #4CAF50;
     color: white;
-    border: none;
-    cursor: pointer;
+    border: 2px solid white; /* White outline for buttons */
     border-radius: 4px;
     text-align: center;
+    cursor: pointer;
 }
 
 button:hover {
@@ -68,6 +68,7 @@ button:focus {
 #savedProfilesList li {
     display: flex;
     align-items: center;
+    justify-content: space-between; /* Push buttons to the right */
     margin-bottom: 10px;
 }
 
@@ -83,12 +84,27 @@ button:focus {
 
 #savedProfilesList button {
     margin-left: 10px;
+    margin-right: 20px; /* Push buttons to the right */
     background-color: #339900;
     color: white;
 }
 
 #savedProfilesList button:hover {
     background-color: #287a00;
+}
+
+/* Font Adjustments */
+#savedProfilesList h2 {
+    font-size: 22px; /* Larger font for "Saved Pet Profile" */
+}
+
+/* Additional Spacing */
+.logout-button {
+    margin-bottom: 20px; /* Space between logout button and footer */
+}
+
+.signup-login-buttons {
+    margin-bottom: 20px; /* Space between sign-up/login buttons and footer */
 }
 
 /* Reminders Section */
@@ -103,6 +119,14 @@ button:focus {
     font-size: 20px;
     margin-bottom: 15px;
     color: #4CAF50;
+}
+
+/* Print Window Styling */
+@media print {
+    body {
+        font-size: 16px; /* Larger font size for print */
+        line-height: 1.5;
+    }
 }
 
 /* Responsive Design for Smaller Screens */
