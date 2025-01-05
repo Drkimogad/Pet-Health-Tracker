@@ -1,7 +1,7 @@
 {
   "name": "Pet-Health-Tracker",
   "version": "1.0.0",
-  "description": "A simple web app converted to a PWA",
+  "description": "A simple App that allows you to track your pet health effeciently",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
