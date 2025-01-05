@@ -2,7 +2,7 @@
   "name": "Pet-Health-Tracker",
   "short_name": "PetTracker",
   "description": "A simple web app converted to a PWA",
-  "start_url": "/index.html",
+  "start_url": "https://drkimogad.github.io/Pet-Health-Tracker/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",
