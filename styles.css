@@ -21,33 +21,49 @@ h1 {
 }
 
 /* Form Container Styles */
-.form-container {
+.form-container, #signUpForm, #loginForm {
     padding: 20px;
-    margin: 20px;
+    margin: 20px auto;
     background-color: var(--background-color);
     border-radius: 8px;
     border: 1px solid var(--border-color);
+    text-align: center;  /* Center the form content */
+    max-width: 400px;  /* Set a max width for the forms */
 }
 
-input[type="text"], input[type="number"], input[type="email"], input[type="password"], textarea, input[type="date"], input[type="file"] {
-    width: 100%;
+/* Form Input Fields */
+input[type="text"], input[type="number"], input[type="email"], input[type="password"], textarea, input[type="date"], input[type="file"], #signUpForm input[type="email"], #signUpForm input[type="password"], #loginForm input[type="email"], #loginForm input[type="password"] {
+    width: 50%; /* Set the width to 50% */
     padding: 10px;
-    margin: 8px 0;
+    margin: 8px auto; /* Center the input fields */
     border-radius: 4px;
     border: 1px solid var(--border-color);
+    box-sizing: border-box;
+    display: block; /* Ensure the input fields are block-level elements */
 }
 
-/* Button Styles */
-button {
+/* Form Labels */
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--primary-color);
+}
+
+/* Submit Button */
+button, #signUpForm button, #loginForm button {
+    width: 50%; /* Set the width to 50% */
+    padding: 10px;
     background-color: var(--primary-color);
     color: var(--text-color);
-    padding: 10px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 16px;
+    margin: 8px auto; /* Center the button */
+    display: block; /* Ensure the button is a block-level element */
 }
 
-button:hover {
+button:hover, #signUpForm button:hover, #loginForm button:hover {
     background-color: var(--secondary-color);
 }
 
@@ -90,17 +106,20 @@ button:hover {
 
 /* Media Queries for Responsiveness */
 @media (max-width: 600px) {
-    .form-container {
-        padding: 10px;
+    .form-container, #signUpForm, #loginForm {
+        padding: 15px;
         margin: 10px;
     }
 
-    input[type="text"], input[type="number"], input[type="email"], input[type="password"], textarea, input[type="date"], input[type="file"] {
+    input[type="text"], input[type="number"], input[type="email"], input[type="password"], textarea, input[type="date"], input[type="file"], #signUpForm input[type="email"], #signUpForm input[type="password"], #loginForm input[type="email"], #loginForm input[type="password"] {
         padding: 8px;
+        width: 75%; /* Adjust to 75% for smaller screens */
     }
 
-    button {
-        padding: 10px;
+    button, #signUpForm button, #loginForm button {
+        padding: 8px;
+        font-size: 14px;
+        width: 75%; /* Adjust to 75% for smaller screens */
     }
 }
 
@@ -117,7 +136,7 @@ button:hover {
         padding: 0;
     }
 
-    .form-container {
+    .form-container, #signUpForm, #loginForm {
         border: none;
         margin: 0;
         padding: 0;
@@ -129,11 +148,11 @@ button:hover {
         display: none;
     }
 
-    button {
+    button, #signUpForm button, #loginForm button {
         display: none;
     }
 
-    input[type="text"], input[type="number"], input[type="email"], input[type="password"], textarea, input[type="date"], input[type="file"] {
+    input[type="text"], input[type="number"], input[type="email"], input[type="password"], textarea, input[type="date"], input[type="file"], #signUpForm input[type="email"], #signUpForm input[type="password"], #loginForm input[type="email"], #loginForm input[type="password"] {
         border: 1px solid black;
         padding: 5px;
         margin: 5px 0;
