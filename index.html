@@ -20,9 +20,11 @@
                 <h2>Sign-Up</h2>
                 <form id="signUp">
                     <label for="signUpEmail">Email:</label>
-                    <input type="email" id="signUpEmail" required><br><br>
+                    <!-- Added autocomplete attribute -->
+                    <input type="email" id="signUpEmail" name="email" required autocomplete="email"><br><br>
                     <label for="signUpPassword">Password:</label>
-                    <input type="password" id="signUpPassword" required><br><br>
+                    <!-- Added autocomplete attribute -->
+                    <input type="password" id="signUpPassword" name="password" required autocomplete="new-password"><br><br>
                     <button type="submit">Sign Up</button>
                 </form>
             </div>
@@ -31,9 +33,11 @@
                 <h2>Login</h2>
                 <form id="login">
                     <label for="loginEmail">Email:</label>
-                    <input type="email" id="loginEmail" required><br><br>
+                    <!-- Added autocomplete attribute -->
+                    <input type="email" id="loginEmail" name="email" required autocomplete="email"><br><br>
                     <label for="loginPassword">Password:</label>
-                    <input type="password" id="loginPassword" required><br><br>
+                    <!-- Added autocomplete attribute -->
+                    <input type="password" id="loginPassword" name="password" required autocomplete="current-password"><br><br>
                     <button type="submit">Login</button>
                 </form>
             </div>
@@ -44,37 +48,37 @@
             <div class="form-container">
                 <form id="dietForm">
                     <label for="petName">Pet Name:</label>
-                    <input type="text" id="petName" required><br><br>
+                    <input type="text" id="petName" name="petName" required><br><br>
 
                     <label for="breed">Breed:</label>
-                    <input type="text" id="breed" required placeholder="Breed"><br><br>
+                    <input type="text" id="breed" name="breed" required placeholder="Breed"><br><br>
 
                     <label for="age">Age:</label>
-                    <input type="number" id="age" required placeholder="Age"><br><br>
+                    <input type="number" id="age" name="age" required placeholder="Age"><br><br>
 
                     <label for="weight">Weight:</label>
-                    <input type="number" id="weight" required placeholder="Weight"><br><br>
+                    <input type="number" id="weight" name="weight" required placeholder="Weight"><br><br>
 
                     <label for="allergies">Allergies:</label>
-                    <textarea id="allergies" placeholder="Allergies (if any)"></textarea><br><br>
+                    <textarea id="allergies" name="allergies" placeholder="Allergies (if any)"></textarea><br><br>
 
                     <label for="medicalHistory">Medical History:</label>
-                    <textarea id="medicalHistory" placeholder="Enter any medical history"></textarea><br><br>
+                    <textarea id="medicalHistory" name="medicalHistory" placeholder="Enter any medical history"></textarea><br><br>
 
                     <label for="dietPlan">Diet Plan:</label>
-                    <textarea id="dietPlan" placeholder="Enter diet plan for pet"></textarea><br><br>
+                    <textarea id="dietPlan" name="dietPlan" placeholder="Enter diet plan for pet"></textarea><br><br>
 
                     <label for="vaccinationReminder">Vaccination Reminder:</label>
-                    <input type="date" id="vaccinationReminder" required><br><br>
+                    <input type="date" id="vaccinationReminder" name="vaccinationReminder" required><br><br>
 
                     <label for="medicalHistoryReminder">Medical History Reminder:</label>
-                    <input type="date" id="medicalHistoryReminder" required><br><br>
+                    <input type="date" id="medicalHistoryReminder" name="medicalHistoryReminder" required><br><br>
 
                     <label for="dietReminder">Diet Reminder:</label>
-                    <input type="date" id="dietReminder" required><br><br>
+                    <input type="date" id="dietReminder" name="dietReminder" required><br><br>
 
                     <label for="petPhoto">Upload Pet Photo:</label>
-                    <input type="file" id="petPhoto" accept="image/*"><br><br>
+                    <input type="file" id="petPhoto" name="petPhoto" accept="image/*"><br><br>
 
                     <button type="submit">Save Pet Profile</button>
                 </form>
