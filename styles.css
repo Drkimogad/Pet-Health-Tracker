@@ -1,43 +1,62 @@
-/* Style for Header and Main Content */
-header {
+/* Style for Header and Footer */
+header, footer {
     background-color: #4CAF50;
     color: white;
     text-align: center;
     padding: 10px;
+    margin: 0 auto;
+    max-width: 800px; /* Centralized width */
 }
 
+/* General Heading Styles */
 h1 {
     font-family: Arial, sans-serif;
+    font-size: 24px;
+    margin-bottom: 20px;
 }
 
 /* Form and Main Content */
 .form-container {
     padding: 20px;
-    margin: 20px;
+    margin: 20px auto;
     background-color: #f4f4f4;
     border-radius: 8px;
     border: 1px solid #ddd;
+    max-width: 800px; /* Centralized form */
 }
 
 input[type="text"], input[type="number"], input[type="email"], input[type="password"], textarea, input[type="date"], input[type="file"] {
-    width: 100%;
+    width: 70%; /* Reduced width */
+    margin: 10px auto;
+    display: block;
     padding: 10px;
-    margin: 8px 0;
     border-radius: 4px;
     border: 1px solid #ddd;
 }
 
+input:focus, textarea:focus {
+    outline: 2px solid #4CAF50;
+    outline-offset: 2px;
+}
+
 button {
+    width: 100%;
+    padding: 15px;
     background-color: #4CAF50;
     color: white;
-    padding: 10px;
     border: none;
-    border-radius: 4px;
     cursor: pointer;
+    border-radius: 4px;
+    text-align: center;
 }
 
 button:hover {
     background-color: #45a049;
+}
+
+button:focus {
+    outline: 2px solid #4CAF50;
+    outline-offset: 2px;
 }
 
 /* Saved Profiles Section */
@@ -57,12 +76,19 @@ button:hover {
     height: 50px;
     object-fit: cover;
     margin-right: 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 #savedProfilesList button {
     margin-left: 10px;
     background-color: #339900;
     color: white;
+}
+
+#savedProfilesList button:hover {
+    background-color: #287a00;
 }
 
 /* Reminders Section */
@@ -74,14 +100,28 @@ button:hover {
 }
 
 .reminder-section h3 {
+    font-size: 20px;
+    margin-bottom: 15px;
     color: #4CAF50;
 }
 
-button {
-    width: 100%;
-    padding: 15px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
+/* Responsive Design for Smaller Screens */
+@media (max-width: 768px) {
+    input[type="text"], input[type="number"], input[type="email"], input[type="password"], textarea, input[type="date"], input[type="file"] {
+        width: 100%; /* Full width on small screens */
+    }
+
+    header, footer, .form-container {
+        max-width: 100%; /* Adapts to smaller screens */
+        padding: 10px;
+    }
+
+    #savedProfilesList li {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #savedProfilesList img {
+        margin-bottom: 10px;
+    }
 }
