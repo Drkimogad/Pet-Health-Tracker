@@ -1,0 +1,14 @@
+{
+  "name": "Pet-Health-Tracker",
+  "version": "1.0.0",
+  "description": "A simple web app converted to a PWA",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Karim",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
