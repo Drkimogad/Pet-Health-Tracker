@@ -15,6 +15,64 @@ h1 {
     margin-bottom: 20px;
 }
 
+/* Sign-up, Login, Save Pet Profile, and Logout Buttons */
+.signup-login-buttons, .logout-button, .save-pet-profile-button {
+    width: 100%; /* Full width */
+    padding: 10px 0; /* Adjust padding for better appearance */
+}
+
+/* Print Profile, Delete Profile, and Delete Buttons for Reminders */
+button.printProfileButton, button.deleteProfileButton, button.deleteReminderButton {
+    font-size: 14px; /* Increased font size for better visibility */
+    padding: 6px 12px; /* Adjusted padding for better appearance */
+}
+
+/* Saved Profiles Section Enhancements */
+#savedProfilesList {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto; /* Centered */
+    max-width: 800px; /* Centralized width */
+}
+
+#savedProfilesList li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Push buttons to the right */
+    margin-bottom: 20px; /* Increased margin for better spacing */
+    padding: 10px; /* Added padding for better readability */
+    background-color: #f9f9f9; /* Light background for contrast */
+    border: 1px solid #ddd; /* Border for definition */
+    border-radius: 8px; /* Rounded corners */
+}
+
+#savedProfilesList img {
+    width: 60px; /* Increased size */
+    height: 60px; /* Increased size */
+    object-fit: cover;
+    margin-right: 15px; /* More spacing */
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#savedProfilesList h2 {
+    font-size: 24px; /* Increased font size */
+    color: #333; /* Darker color for readability */
+}
+
+#savedProfilesList button {
+    margin-left: 10px;
+    margin-right: 20px; /* Push buttons to the right */
+    background-color: #339900;
+    color: white;
+    width: auto; /* Auto width to fit text */
+}
+
+#savedProfilesList button:hover {
+    background-color: #287a00;
+}
+
 ul {
     list-style-image: url('https://raw.githubusercontent.com/Drkimogad/Pet-Health-Tracker/main/Dog.png');
     list-style-type: none; /* To remove default marker */
