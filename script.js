@@ -1,5 +1,3 @@
-const users = [];
-
 // Handle Sign-Up
 document.getElementById('signUp').addEventListener('submit', function (event) {
     event.preventDefault();
@@ -177,7 +175,7 @@ function loadSavedPetProfile() {
             button.addEventListener('click', (event) => {
                 const profileIndex = event.target.dataset.profileIndex;
                 const reminderKey = event.target.dataset.reminder;
-                deleteOverdueReminder(profileIndex, reminderKey);
+                deleteReminder(profileIndex, reminderKey);
             });
         });
     }
@@ -213,10 +211,10 @@ function printPetProfile(index) {
     printWindow.print();
 }
 
-// Delete Overdue Reminder
-function deleteOverdueReminder(profileIndex, reminderKey) {
+// Delete Reminder
+function deleteReminder(profileIndex, reminderKey) {
     let savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
-    delete savedProfiles[profileIndex][reminderKey];  // Remove the reminder from the profile
+    delete savedProfiles[profileIndex][reminderKey];  // Remove the specific reminder from the profile
     localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
     loadSavedPetProfile();  // Refresh the list to reflect the change
 }
