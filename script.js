@@ -83,21 +83,28 @@ const reminderFields = {
 };
 
 // Check and Highlight Upcoming/Overdue Reminders
-function highlightReminders(reminders) {
+function highlightReminders(reminders, index) {
     const today = new Date();
+    const overdueContainer = document.getElementById(`overdueReminders-${index}`);
+    const upcomingContainer = document.getElementById(`upcomingReminders-${index}`);
+
+    overdueContainer.innerHTML = '';
+    upcomingContainer.innerHTML = '';
+
     Object.keys(reminders).forEach((reminderKey) => {
         const reminderDate = new Date(reminders[reminderKey]);
         const daysDiff = Math.ceil((reminderDate - today) / (1000 * 60 * 60 * 24));
         const reminderLabel = reminderFields[reminderKey];
 
         if (daysDiff < 0) {
-            document.getElementById('overdueReminders').innerHTML += `
+            overdueContainer.innerHTML += `
                 <div class="reminder overdue">
                     <span class="exclamation">❗</span> ${reminderLabel} is overdue by ${Math.abs(daysDiff)} day(s)!
+                    <button class="deleteReminderButton" data-profile-index="${index}" data-reminder="${reminderKey}">Delete</button>
                 </div>
             `;
         } else if (daysDiff <= REMINDER_THRESHOLD_DAYS) {
-            document.getElementById('upcomingReminders').innerHTML += `
+            upcomingContainer.innerHTML += `
                 <div class="reminder upcoming">
                     ${reminderLabel} is coming up in ${daysDiff} day(s)!
                 </div>
@@ -110,12 +117,8 @@ function highlightReminders(reminders) {
 function loadSavedPetProfile() {
     const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
     const savedProfilesList = document.getElementById('savedProfilesList');
-    const overdueContainer = document.getElementById('overdueReminders');
-    const upcomingContainer = document.getElementById('upcomingReminders');
 
     savedProfilesList.innerHTML = '';
-    overdueContainer.innerHTML = '';
-    upcomingContainer.innerHTML = '';
 
     if (savedProfiles) {
         savedProfiles.forEach((profile, index) => {
@@ -124,8 +127,6 @@ function loadSavedPetProfile() {
                 medicalHistoryReminder: profile.medicalHistoryReminder,
                 dietReminder: profile.dietReminder
             };
-
-            highlightReminders(reminders);
 
             const petCard = document.createElement('li');
             petCard.classList.add('pet-card');
@@ -142,9 +143,40 @@ function loadSavedPetProfile() {
                     <p>Medical History Reminder: ${profile.medicalHistoryReminder}</p>
                     <p>Diet Reminder: ${profile.dietReminder}</p>
                     <img src="${profile.petPhoto}" alt="Pet Photo" class="pet-photo"/>
+                    <button class="deleteProfileButton" data-index="${index}">Delete Profile</button>
+                    <button class="printProfileButton" data-index="${index}">Print Profile</button>
+                    <div id="overdueReminders-${index}" class="overdueReminders"></div>
+                    <div id="upcomingReminders-${index}" class="upcomingReminders"></div>
                 </div>
             `;
             savedProfilesList.appendChild(petCard);
+
+            // Highlight reminders for the profile
+            highlightReminders(reminders, index);
+        });
+
+        // Add event listeners for delete and print buttons for each profile
+        document.querySelectorAll('.deleteProfileButton').forEach((button) => {
+            button.addEventListener('click', (event) => {
+                const index = event.target.dataset.index;
+                deletePetProfile(index);
+            });
+        });
+
+        document.querySelectorAll('.printProfileButton').forEach((button) => {
+            button.addEventListener('click', (event) => {
+                const index = event.target.dataset.index;
+                printPetProfile(index);
+            });
+        });
+
+        // Add event listeners for delete reminder buttons for each profile
+        document.querySelectorAll('.deleteReminderButton').forEach((button) => {
+            button.addEventListener('click', (event) => {
+                const profileIndex = event.target.dataset.profileIndex;
+                const reminderKey = event.target.dataset.reminder;
+                deleteOverdueReminder(profileIndex, reminderKey);
+            });
         });
     }
 }
@@ -178,4 +210,12 @@ function printPetProfile(index) {
     printWindow.document.write('</body></html>');
     printWindow.document.close();
     printWindow.print();
+}
+
+// Delete Overdue Reminder
+function deleteOverdueReminder(profileIndex, reminderKey) {
+    let savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
+    delete savedProfiles[profileIndex][reminderKey];
+    localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+    loadSavedPetProfile();
 }
