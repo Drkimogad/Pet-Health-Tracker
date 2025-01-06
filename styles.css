@@ -121,6 +121,11 @@ button:focus {
     color: #4CAF50;
 }
 
+.reminder-section .delete-button {
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the right */
+}
+
 /* Print Window Styling */
 @media print {
     body {
