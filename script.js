@@ -94,11 +94,6 @@ const reminderFields = {
 // Check and Highlight Upcoming/Overdue Reminders
 function highlightReminders(reminders, index) {
     const today = new Date();
-    const overdueContainer = document.getElementById(`overdueReminders-${index}`);
-    const upcomingContainer = document.getElementById(`upcomingReminders-${index}`);
-
-    overdueContainer.innerHTML = '';
-    upcomingContainer.innerHTML = '';
 
     Object.keys(reminders).forEach((reminderKey) => {
         const reminderDate = new Date(reminders[reminderKey]);
@@ -107,7 +102,7 @@ function highlightReminders(reminders, index) {
 
         // Overdue reminders
         if (daysDiff < 0) {
-            overdueContainer.innerHTML += `
+            document.getElementById(`overdueReminders-${index}`).innerHTML += `
                 <div class="reminder overdue">
                     <span class="exclamation">❗</span> ${reminderLabel} is overdue by ${Math.abs(daysDiff)} day(s)!
                     <button class="deleteReminderButton" data-profile-index="${index}" data-reminder="${reminderKey}">Delete</button>
@@ -116,7 +111,7 @@ function highlightReminders(reminders, index) {
         }
         // Upcoming reminders
         else if (daysDiff <= REMINDER_THRESHOLD_DAYS) {
-            upcomingContainer.innerHTML += `
+            document.getElementById(`upcomingReminders-${index}`).innerHTML += `
                 <div class="reminder upcoming">
                     ${reminderLabel} is coming up in ${daysDiff} day(s)!
                 </div>
