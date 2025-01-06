@@ -65,9 +65,9 @@ document.getElementById('dietForm').addEventListener('submit', function (event) 
         allergies: document.getElementById('allergies').value,
         medicalHistory: document.getElementById('medicalHistory').value,
         dietPlan: document.getElementById('dietPlan').value,
-        vaccinationReminder: document.getElementById('vaccinationsAndDewormingReminder').value,
-        medicalHistoryReminder: document.getElementById('medicalCheckupsReminder').value,
-        dietReminder: document.getElementById('groomingReminder').value,
+        vaccinationsAndDewormingReminder: document.getElementById('vaccinationsAndDewormingReminder').value,
+        medicalCheckupsReminder: document.getElementById('medicalCheckupsReminder').value,
+        groomingReminder: document.getElementById('groomingReminder').value,
         petPhoto: document.getElementById('petPhoto').files[0]
             ? URL.createObjectURL(document.getElementById('petPhoto').files[0])
             : ''
