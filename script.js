@@ -65,9 +65,9 @@ document.getElementById('dietForm').addEventListener('submit', function (event) 
         allergies: document.getElementById('allergies').value,
         medicalHistory: document.getElementById('medicalHistory').value,
         dietPlan: document.getElementById('dietPlan').value,
-        vaccinationReminder: document.getElementById('vaccinationReminder').value,
-        medicalHistoryReminder: document.getElementById('medicalHistoryReminder').value,
-        dietReminder: document.getElementById('dietReminder').value,
+        vaccinationReminder: document.getElementById('vaccinationsAndDewormingReminder').value,
+        medicalHistoryReminder: document.getElementById('medicalCheckupsReminder').value,
+        dietReminder: document.getElementById('groomingReminder').value,
         petPhoto: document.getElementById('petPhoto').files[0]
             ? URL.createObjectURL(document.getElementById('petPhoto').files[0])
             : ''
@@ -146,8 +146,9 @@ function loadSavedPetProfile() {
                     <p>Allergies: ${profile.allergies}</p>
                     <p>Medical History: ${profile.medicalHistory}</p>
                     <p>Diet Plan: ${profile.dietPlan}</p>
-                    <p>Medical History Reminder: ${profile.medicalHistoryReminder}</p>
-                    <p>Diet Reminder: ${profile.dietReminder}</p>
+                    <p>Vaccinations and Deworming Reminder: ${profile.vaccinationReminder}</p>
+                    <p>Medical Check-ups Reminder: ${profile.medicalHistoryReminder}</p>
+                    <p>Grooming Reminder: ${profile.dietReminder}</p>
                     <img src="${profile.petPhoto}" alt="Pet Photo" class="pet-photo"/>
                     <button class="deleteProfileButton" data-index="${index}">Delete Profile</button>
                     <button class="printProfileButton" data-index="${index}">Print Profile</button>
@@ -210,19 +211,21 @@ function printPetProfile(index) {
     printWindow.document.write(`<p>Allergies: ${profile.allergies}</p>`);
     printWindow.document.write(`<p>Medical History: ${profile.medicalHistory}</p>`);
     printWindow.document.write(`<p>Diet Plan: ${profile.dietPlan}</p>`);
-    printWindow.document.write(`<p>Medical History Reminder: ${profile.medicalHistoryReminder}</p>`);
-    printWindow.document.write(`<p>Diet Reminder: ${profile.dietReminder}</p>`);
+    printWindow.document.write(`<p>Vaccinations and Deworming Reminder: ${profile.vaccinationReminder}</p>`);
+    printWindow.document.write(`<p>Medical Check-ups Reminder: ${profile.medicalHistoryReminder}</p>`);
+    printWindow.document.write(`<p>Grooming Reminder: ${profile.dietReminder}</p>`);
     printWindow.document.write('</body></html>');
+
     printWindow.document.close();
     printWindow.print();
 }
 
 // Delete Overdue Reminder
 function deleteOverdueReminder(profileIndex, reminderKey) {
-    let savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
-    if (savedProfiles[profileIndex]) {
-        delete savedProfiles[profileIndex][reminderKey];
-        localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
-        loadSavedPetProfile();
-    }
+    const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
+    const profile = savedProfiles[profileIndex];
+    profile[reminderKey] = '';
+
+    localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+    loadSavedPetProfile();
 }
