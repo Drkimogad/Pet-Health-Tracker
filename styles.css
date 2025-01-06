@@ -186,3 +186,13 @@ button:focus {
     cursor: pointer;
     border-radius: 5px;
 }
+
+/* New styles for moving buttons to the right and reducing size */
+button.deleteProfileButton,
+button.printProfileButton,
+button.deleteReminderButton {
+    float: right;
+    padding: 5px 10px;
+    font-size: 14px;
+    margin: 5px;
+}
