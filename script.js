@@ -63,8 +63,14 @@ document.getElementById('dietForm').addEventListener('submit', function (event) 
         medicalHistory: document.getElementById('medicalHistory').value,
         dietPlan: document.getElementById('dietPlan').value,
         vaccinationReminder: document.getElementById('vaccinationReminder').value,
+        // *** Added ***
+        vaccinationReminderDate: new Date(document.getElementById('vaccinationReminder').value),
         medicalHistoryReminder: document.getElementById('medicalHistoryReminder').value,
+        // *** Added ***
+        medicalHistoryReminderDate: new Date(document.getElementById('medicalHistoryReminder').value),
         dietReminder: document.getElementById('dietReminder').value,
+        // *** Added ***
+        dietReminderDate: new Date(document.getElementById('dietReminder').value),
         petPhoto: document.getElementById('petPhoto').files[0] ? URL.createObjectURL(document.getElementById('petPhoto').files[0]) : ''
     };
 
@@ -89,6 +95,13 @@ function loadSavedPetProfile() {
             const petCard = document.createElement('li');
             petCard.classList.add('pet-card');
 
+            // *** Added ***
+            // Check if reminders are overdue
+            const now = new Date();
+            const vaccinationOverdue = new Date(profile.vaccinationReminderDate) < now;
+            const medicalHistoryOverdue = new Date(profile.medicalHistoryReminderDate) < now;
+            const dietOverdue = new Date(profile.dietReminderDate) < now;
+
             petCard.innerHTML = `
                 <div class="pet-card-content">
                     <h4>${profile.petName}</h4>
@@ -98,9 +111,18 @@ function loadSavedPetProfile() {
                     <p>Allergies: ${profile.allergies}</p>
                     <p>Medical History: ${profile.medicalHistory}</p>
                     <p>Diet Plan: ${profile.dietPlan}</p>
-                    <p>Vaccination Reminder: ${profile.vaccinationReminder}</p>
-                    <p>Medical History Reminder: ${profile.medicalHistoryReminder}</p>
-                    <p>Diet Reminder: ${profile.dietReminder}</p>
+                    <p>
+                        Vaccination Reminder: ${profile.vaccinationReminder} 
+                        ${vaccinationOverdue ? '<span style="color: red; font-weight: bold;">❗</span>' : ''}
+                    </p>
+                    <p>
+                        Medical History Reminder: ${profile.medicalHistoryReminder} 
+                        ${medicalHistoryOverdue ? '<span style="color: red; font-weight: bold;">❗</span>' : ''}
+                    </p>
+                    <p>
+                        Diet Reminder: ${profile.dietReminder} 
+                        ${dietOverdue ? '<span style="color: red; font-weight: bold;">❗</span>' : ''}
+                    </p>
                     <img src="${profile.petPhoto}" alt="Pet Photo" class="pet-photo"/>
                 </div>
                 <div class="pet-card-actions">
