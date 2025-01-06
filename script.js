@@ -3,15 +3,13 @@ const users = [];
 // Handle Sign-Up
 document.getElementById('signUp').addEventListener('submit', function (event) {
     event.preventDefault();
-    
+
     const email = document.getElementById('signUpEmail').value;
     const password = document.getElementById('signUpPassword').value;
 
-    // Store the new user
     users.push({ email, password });
     alert('Sign-up successful! You can now log in.');
-    
-    // Switch to Login Form
+
     document.getElementById('signUpForm').style.display = 'none';
     document.getElementById('loginForm').style.display = 'block';
 });
@@ -19,22 +17,18 @@ document.getElementById('signUp').addEventListener('submit', function (event) {
 // Handle Login
 document.getElementById('login').addEventListener('submit', function (event) {
     event.preventDefault();
-    
+
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
 
-    // Check if the user exists
-    const user = users.find(user => user.email === email && user.password === password);
-    
+    const user = users.find((user) => user.email === email && user.password === password);
+
     if (user) {
         alert('Login successful!');
-        
-        // Show Main Content and Hide Authentication Forms
         document.getElementById('authSection').style.display = 'none';
         document.getElementById('mainContent').style.display = 'block';
         document.getElementById('logoutButton').style.display = 'block';
-        
-        // Load saved pet data if available
+
         loadSavedPetProfile();
     } else {
         alert('Invalid credentials! Please try again.');
@@ -46,7 +40,7 @@ document.getElementById('logoutButton').addEventListener('click', function () {
     document.getElementById('authSection').style.display = 'block';
     document.getElementById('mainContent').style.display = 'none';
     document.getElementById('logoutButton').style.display = 'none';
-    
+
     alert('Logged out successfully!');
 });
 
@@ -63,45 +57,78 @@ document.getElementById('dietForm').addEventListener('submit', function (event) 
         medicalHistory: document.getElementById('medicalHistory').value,
         dietPlan: document.getElementById('dietPlan').value,
         vaccinationReminder: document.getElementById('vaccinationReminder').value,
-        // *** Added ***
-        vaccinationReminderDate: new Date(document.getElementById('vaccinationReminder').value),
         medicalHistoryReminder: document.getElementById('medicalHistoryReminder').value,
-        // *** Added ***
-        medicalHistoryReminderDate: new Date(document.getElementById('medicalHistoryReminder').value),
         dietReminder: document.getElementById('dietReminder').value,
-        // *** Added ***
-        dietReminderDate: new Date(document.getElementById('dietReminder').value),
-        petPhoto: document.getElementById('petPhoto').files[0] ? URL.createObjectURL(document.getElementById('petPhoto').files[0]) : ''
+        petPhoto: document.getElementById('petPhoto').files[0]
+            ? URL.createObjectURL(document.getElementById('petPhoto').files[0])
+            : ''
     };
 
-    // Save pet profile in localStorage
     let savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
     savedProfiles.push(petProfile);
     localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
 
-    // Alert and reload saved data
     alert('Pet profile saved!');
     loadSavedPetProfile();
 });
 
-// Load Saved Pet Profile
+// Reminder Threshold in Days
+const REMINDER_THRESHOLD_DAYS = 3;
+
+// Updated Reminder Names
+const reminderFields = {
+    vaccinationReminder: "Vaccinations and Deworming Reminder",
+    medicalHistoryReminder: "Medical Check-ups Reminder",
+    dietReminder: "Grooming Reminder"
+};
+
+// Check and Highlight Upcoming/Overdue Reminders
+function highlightReminders(reminders) {
+    const today = new Date();
+    Object.keys(reminders).forEach((reminderKey) => {
+        const reminderDate = new Date(reminders[reminderKey]);
+        const daysDiff = Math.ceil((reminderDate - today) / (1000 * 60 * 60 * 24));
+        const reminderLabel = reminderFields[reminderKey];
+
+        if (daysDiff < 0) {
+            document.getElementById('overdueReminders').innerHTML += `
+                <div class="reminder overdue">
+                    <span class="exclamation">❗</span> ${reminderLabel} is overdue by ${Math.abs(daysDiff)} day(s)!
+                </div>
+            `;
+        } else if (daysDiff <= REMINDER_THRESHOLD_DAYS) {
+            document.getElementById('upcomingReminders').innerHTML += `
+                <div class="reminder upcoming">
+                    ${reminderLabel} is coming up in ${daysDiff} day(s)!
+                </div>
+            `;
+        }
+    });
+}
+
+// Load Saved Pet Profiles
 function loadSavedPetProfile() {
     const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
     const savedProfilesList = document.getElementById('savedProfilesList');
-    savedProfilesList.innerHTML = ''; // Clear the list before adding new profiles
+    const overdueContainer = document.getElementById('overdueReminders');
+    const upcomingContainer = document.getElementById('upcomingReminders');
+
+    savedProfilesList.innerHTML = '';
+    overdueContainer.innerHTML = '';
+    upcomingContainer.innerHTML = '';
 
     if (savedProfiles) {
         savedProfiles.forEach((profile, index) => {
+            const reminders = {
+                vaccinationReminder: profile.vaccinationReminder,
+                medicalHistoryReminder: profile.medicalHistoryReminder,
+                dietReminder: profile.dietReminder
+            };
+
+            highlightReminders(reminders);
+
             const petCard = document.createElement('li');
             petCard.classList.add('pet-card');
-
-            // *** Added ***
-            // Check if reminders are overdue
-            const now = new Date();
-            const vaccinationOverdue = new Date(profile.vaccinationReminderDate) < now;
-            const medicalHistoryOverdue = new Date(profile.medicalHistoryReminderDate) < now;
-            const dietOverdue = new Date(profile.dietReminderDate) < now;
-
             petCard.innerHTML = `
                 <div class="pet-card-content">
                     <h4>${profile.petName}</h4>
@@ -111,23 +138,10 @@ function loadSavedPetProfile() {
                     <p>Allergies: ${profile.allergies}</p>
                     <p>Medical History: ${profile.medicalHistory}</p>
                     <p>Diet Plan: ${profile.dietPlan}</p>
-                    <p>
-                        Vaccination Reminder: ${profile.vaccinationReminder} 
-                        ${vaccinationOverdue ? '<span style="color: red; font-weight: bold;">❗</span>' : ''}
-                    </p>
-                    <p>
-                        Medical History Reminder: ${profile.medicalHistoryReminder} 
-                        ${medicalHistoryOverdue ? '<span style="color: red; font-weight: bold;">❗</span>' : ''}
-                    </p>
-                    <p>
-                        Diet Reminder: ${profile.dietReminder} 
-                        ${dietOverdue ? '<span style="color: red; font-weight: bold;">❗</span>' : ''}
-                    </p>
+                    <p>Vaccination Reminder: ${profile.vaccinationReminder}</p>
+                    <p>Medical History Reminder: ${profile.medicalHistoryReminder}</p>
+                    <p>Diet Reminder: ${profile.dietReminder}</p>
                     <img src="${profile.petPhoto}" alt="Pet Photo" class="pet-photo"/>
-                </div>
-                <div class="pet-card-actions">
-                    <button class="delete-btn" onclick="deletePetProfile(${index})">Delete</button>
-                    <button class="print-btn" onclick="printPetProfile(${index})">Print</button>
                 </div>
             `;
             savedProfilesList.appendChild(petCard);
@@ -138,9 +152,9 @@ function loadSavedPetProfile() {
 // Delete Pet Profile
 function deletePetProfile(index) {
     let savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
-    savedProfiles.splice(index, 1); // Remove the profile at the given index
+    savedProfiles.splice(index, 1);
     localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
-    loadSavedPetProfile(); // Reload the profiles after deletion
+    loadSavedPetProfile();
 }
 
 // Print Pet Profile
