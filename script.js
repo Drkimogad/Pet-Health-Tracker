@@ -130,9 +130,9 @@ function loadSavedPetProfile() {
     if (savedProfiles) {
         savedProfiles.forEach((profile, index) => {
             const reminders = {
-                vaccinationReminder: profile.vaccinationReminder,
-                medicalHistoryReminder: profile.medicalHistoryReminder,
-                dietReminder: profile.dietReminder
+                vaccinationsAndDewormingReminder: profile.vaccinationsAndDewormingReminder,
+                medicalCheckupsReminder: profile.medicalCheckupsReminder,
+                groomingReminder: profile.groomingReminder
             };
 
             const petCard = document.createElement('li');
@@ -211,9 +211,9 @@ function printPetProfile(index) {
     printWindow.document.write(`<p>Allergies: ${profile.allergies}</p>`);
     printWindow.document.write(`<p>Medical History: ${profile.medicalHistory}</p>`);
     printWindow.document.write(`<p>Diet Plan: ${profile.dietPlan}</p>`);
-    printWindow.document.write(`<p>Vaccinations and Deworming Reminder: ${profile.vaccinationReminder}</p>`);
-    printWindow.document.write(`<p>Medical Check-ups Reminder: ${profile.medicalHistoryReminder}</p>`);
-    printWindow.document.write(`<p>Grooming Reminder: ${profile.dietReminder}</p>`);
+    printWindow.document.write(`<p>Vaccinations and Deworming Reminder: ${profile.vaccinationsAndDewormingReminder}</p>`);
+    printWindow.document.write(`<p>Medical Check-ups Reminder: ${profile.medicalCheckupsReminder}</p>`);
+    printWindow.document.write(`<p>Grooming Reminder: ${profile.groomingReminder}</p>`);
     printWindow.document.write('</body></html>');
 
     printWindow.document.close();
