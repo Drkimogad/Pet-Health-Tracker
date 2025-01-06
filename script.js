@@ -96,7 +96,7 @@ function highlightReminders(reminders, index) {
         const daysDiff = Math.ceil((reminderDate - today) / (1000 * 60 * 60 * 24));
         const reminderLabel = reminderFields[reminderKey];
 
-        // Update the overdue and upcoming reminders based on dates
+        // Overdue reminders
         if (daysDiff < 0) {
             overdueContainer.innerHTML += `
                 <div class="reminder overdue">
@@ -104,7 +104,9 @@ function highlightReminders(reminders, index) {
                     <button class="deleteReminderButton" data-profile-index="${index}" data-reminder="${reminderKey}">Delete</button>
                 </div>
             `;
-        } else if (daysDiff <= REMINDER_THRESHOLD_DAYS) {
+        }
+        // Upcoming reminders
+        else if (daysDiff <= REMINDER_THRESHOLD_DAYS) {
             upcomingContainer.innerHTML += `
                 <div class="reminder upcoming">
                     ${reminderLabel} is coming up in ${daysDiff} day(s)!
@@ -170,18 +172,13 @@ function loadSavedPetProfile() {
             });
         });
 
-        // Remove delete buttons for vaccination reminder
+        // Handle delete button for overdue reminders
         document.querySelectorAll('.deleteReminderButton').forEach((button) => {
-            // Remove delete button for vaccination reminder specifically
-            if (button.dataset.reminder === 'vaccinationReminder') {
-                button.style.display = 'none'; // Hide the button related to vaccination reminder
-            } else {
-                button.addEventListener('click', (event) => {
-                    const profileIndex = event.target.dataset.profileIndex;
-                    const reminderKey = event.target.dataset.reminder;
-                    deleteOverdueReminder(profileIndex, reminderKey);
-                });
-            }
+            button.addEventListener('click', (event) => {
+                const profileIndex = event.target.dataset.profileIndex;
+                const reminderKey = event.target.dataset.reminder;
+                deleteOverdueReminder(profileIndex, reminderKey);
+            });
         });
     }
 }
@@ -216,4 +213,10 @@ function printPetProfile(index) {
     printWindow.print();
 }
 
-// Delete Over
+// Delete Overdue Reminder
+function deleteOverdueReminder(profileIndex, reminderKey) {
+    let savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
+    delete savedProfiles[profileIndex][reminderKey];  // Remove the reminder from the profile
+    localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+    loadSavedPetProfile();  // Refresh the list to reflect the change
+}
