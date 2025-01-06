@@ -1,3 +1,5 @@
+const users = [];
+
 // Handle Sign-Up
 document.getElementById('signUp').addEventListener('submit', function (event) {
     event.preventDefault();
@@ -5,9 +7,18 @@ document.getElementById('signUp').addEventListener('submit', function (event) {
     const email = document.getElementById('signUpEmail').value;
     const password = document.getElementById('signUpPassword').value;
 
+    // Check if user already exists
+    const existingUser = users.find(user => user.email === email);
+    if (existingUser) {
+        alert('User already exists! Please log in.');
+        return;
+    }
+
+    // Add new user
     users.push({ email, password });
     alert('Sign-up successful! You can now log in.');
 
+    // Switch to login form
     document.getElementById('signUpForm').style.display = 'none';
     document.getElementById('loginForm').style.display = 'block';
 });
@@ -175,7 +186,7 @@ function loadSavedPetProfile() {
             button.addEventListener('click', (event) => {
                 const profileIndex = event.target.dataset.profileIndex;
                 const reminderKey = event.target.dataset.reminder;
-                deleteReminder(profileIndex, reminderKey);
+                deleteOverdueReminder(profileIndex, reminderKey);
             });
         });
     }
@@ -211,10 +222,12 @@ function printPetProfile(index) {
     printWindow.print();
 }
 
-// Delete Reminder
-function deleteReminder(profileIndex, reminderKey) {
+// Delete Overdue Reminder
+function deleteOverdueReminder(profileIndex, reminderKey) {
     let savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
-    delete savedProfiles[profileIndex][reminderKey];  // Remove the specific reminder from the profile
-    localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
-    loadSavedPetProfile();  // Refresh the list to reflect the change
+    if (savedProfiles[profileIndex]) {
+        delete savedProfiles[profileIndex][reminderKey];
+        localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+        loadSavedPetProfile();
+    }
 }
