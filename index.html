@@ -20,10 +20,8 @@
                 <h2>Sign-Up</h2>
                 <form id="signUp">
                     <label for="signUpEmail">Email:</label>
-                    <!-- Added autocomplete attribute -->
                     <input type="email" id="signUpEmail" name="email" required autocomplete="email"><br><br>
                     <label for="signUpPassword">Password:</label>
-                    <!-- Added autocomplete attribute -->
                     <input type="password" id="signUpPassword" name="password" required autocomplete="new-password"><br><br>
                     <button type="submit">Sign Up</button>
                 </form>
@@ -33,10 +31,8 @@
                 <h2>Login</h2>
                 <form id="login">
                     <label for="loginEmail">Email:</label>
-                    <!-- Added autocomplete attribute -->
                     <input type="email" id="loginEmail" name="email" required autocomplete="email"><br><br>
                     <label for="loginPassword">Password:</label>
-                    <!-- Added autocomplete attribute -->
                     <input type="password" id="loginPassword" name="password" required autocomplete="current-password"><br><br>
                     <button type="submit">Login</button>
                 </form>
@@ -53,13 +49,10 @@
                     <label for="breed">Breed:</label>
                     <input type="text" id="breed" name="breed" required placeholder="Breed"><br><br>
 
-                    <!-- Modified Age and Weight to allow text input -->
                     <label for="age">Age:</label>
-                    <!-- Changed placeholder to reflect text input, e.g., "2 years old Labrador" -->
                     <input type="text" id="age" name="age" required placeholder="Age (e.g., 2 years old Labrador)"><br><br>
 
                     <label for="weight">Weight:</label>
-                    <!-- Changed placeholder to reflect text input, e.g., "12 kg" -->
                     <input type="text" id="weight" name="weight" required placeholder="Weight (e.g., 12 kg)"><br><br>
 
                     <label for="allergies">Allergies:</label>
@@ -71,7 +64,6 @@
                     <label for="dietPlan">Diet Plan:</label>
                     <textarea id="dietPlan" name="dietPlan" placeholder="Enter diet plan for pet"></textarea><br><br>
 
-                    <!-- Modified Reminder Titles -->
                     <label for="vaccinationReminder">Vaccinations and Deworming Reminder:</label>
                     <input type="date" id="vaccinationReminder" name="vaccinationReminder" required><br><br>
 
@@ -90,6 +82,14 @@
 
             <h3>Saved Pet Profiles</h3>
             <ul id="savedProfilesList"></ul>
+
+            <!-- Added Reminder Overdue Section -->
+            <section id="overdueRemindersSection">
+                <h3>Overdue Reminders</h3>
+                <ul id="overdueRemindersList">
+                    <!-- Overdue reminders will dynamically populate here -->
+                </ul>
+            </section>
         </main>
 
         <!-- Logout Button -->
