@@ -86,9 +86,9 @@ const REMINDER_THRESHOLD_DAYS = 3;
 
 // Updated Reminder Names
 const reminderFields = {
-    vaccinationReminder: "Vaccinations and Deworming Reminder",
-    medicalHistoryReminder: "Medical Check-ups Reminder",
-    dietReminder: "Grooming Reminder"
+    vaccinationsAndDewormingReminder: "Vaccinations and Deworming Reminder",
+    medicalCheckupsReminder: "Medical Check-ups Reminder",
+    groomingReminder: "Grooming Reminder"
 };
 
 // Check and Highlight Upcoming/Overdue Reminders
