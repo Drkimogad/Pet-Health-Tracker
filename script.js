@@ -146,9 +146,9 @@ function loadSavedPetProfile() {
                     <p>Allergies: ${profile.allergies}</p>
                     <p>Medical History: ${profile.medicalHistory}</p>
                     <p>Diet Plan: ${profile.dietPlan}</p>
-                    <p>Vaccinations and Deworming Reminder: ${profile.vaccinationReminder}</p>
-                    <p>Medical Check-ups Reminder: ${profile.medicalHistoryReminder}</p>
-                    <p>Grooming Reminder: ${profile.dietReminder}</p>
+                    <p>Vaccinations and Deworming Reminder: ${profile.vaccinationsAndDewormingReminder}</p>
+                    <p>Medical Check-ups Reminder: ${profile.medicalCheckupsReminder}</p>
+                    <p>Grooming Reminder: ${profile.groomingReminder}</p>
                     <img src="${profile.petPhoto}" alt="Pet Photo" class="pet-photo"/>
                     <button class="deleteProfileButton" data-index="${index}">Delete Profile</button>
                     <button class="printProfileButton" data-index="${index}">Print Profile</button>
