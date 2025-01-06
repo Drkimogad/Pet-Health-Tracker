@@ -15,6 +15,10 @@ h1 {
     margin-bottom: 20px;
 }
 
+ul {
+    list-style-image: url('https://raw.Drkimogad.github.io/Pet-Health-Tracker/Dog.png');
+    list-style-type: none; /* To remove default marker */
+}
 /* Form and Main Content */
 .form-container {
     padding: 20px;
