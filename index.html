@@ -43,39 +43,7 @@
         <main id="mainContent" style="display: none;">
             <div class="form-container">
                 <form id="dietForm">
-                    <label for="petName">Pet Name:</label>
-                    <input type="text" id="petName" name="petName" required><br><br>
-
-                    <label for="breed">Breed:</label>
-                    <input type="text" id="breed" name="breed" required placeholder="Breed"><br><br>
-
-                    <label for="age">Age:</label>
-                    <input type="text" id="age" name="age" required placeholder="Age (e.g., 2 years old Labrador)"><br><br>
-
-                    <label for="weight">Weight:</label>
-                    <input type="text" id="weight" name="weight" required placeholder="Weight (e.g., 12 kg)"><br><br>
-
-                    <label for="allergies">Allergies:</label>
-                    <textarea id="allergies" name="allergies" placeholder="Allergies (if any)"></textarea><br><br>
-
-                    <label for="medicalHistory">Medical History:</label>
-                    <textarea id="medicalHistory" name="medicalHistory" placeholder="Enter any medical history"></textarea><br><br>
-
-                    <label for="dietPlan">Diet Plan:</label>
-                    <textarea id="dietPlan" name="dietPlan" placeholder="Enter diet plan for pet"></textarea><br><br>
-
-                    <label for="vaccinationReminder">Vaccinations and Deworming Reminder:</label>
-                    <input type="date" id="vaccinationReminder" name="vaccinationReminder" required><br><br>
-
-                    <label for="medicalHistoryReminder">Medical Check-ups Reminder:</label>
-                    <input type="date" id="medicalHistoryReminder" name="medicalHistoryReminder" required><br><br>
-
-                    <label for="dietReminder">Grooming Reminder:</label>
-                    <input type="date" id="dietReminder" name="dietReminder" required><br><br>
-
-                    <label for="petPhoto">Upload Pet Photo:</label>
-                    <input type="file" id="petPhoto" name="petPhoto" accept="image/*"><br><br>
-
+                    <!-- Form fields for pet profile details (petName, breed, age, etc.) here -->
                     <button type="submit">Save Pet Profile</button>
                 </form>
             </div>
@@ -83,9 +51,14 @@
             <h3>Saved Pet Profiles</h3>
             <ul id="savedProfilesList"></ul>
 
-            <!-- Added buttons for deleting and printing saved profiles -->
-            <button id="deleteProfilesButton">Delete All Pet Profiles</button>
-            <button id="printProfilesButton">Print Pet Profiles</button>
+            <!-- Added Reminder Overdue Section -->
+            <section id="overdueRemindersSection">
+                <h3>Overdue Reminders</h3>
+                <ul id="overdueRemindersList">
+                    <!-- Overdue reminders will dynamically populate here -->
+                </ul>
+                <button id="deleteOverdueRemindersButton">Delete All Overdue Reminders</button>
+            </section>
 
             <!-- Reminder Containers -->
             <section id="remindersSection">
@@ -95,7 +68,6 @@
                 <h3>Overdue Reminders</h3>
                 <div id="overdueReminders" class="reminders-container"></div>
             </section>
-
         </main>
 
         <!-- Logout Button -->
