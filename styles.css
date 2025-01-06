@@ -175,3 +175,14 @@ button:focus {
     font-weight: bold;
     margin-left: 5px;
 }
+
+/* Style for delete button for overdue reminders */
+.reminder.overdue .deleteReminderButton {
+    display: inline-block;
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
