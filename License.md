@@ -1,5 +1,5 @@
 
-Copyright © 2025 [Your Name or Organization]
+Copyright © 2025 [Dr karim Gad]
 All rights reserved.
 
 This software and associated documentation files (the "Software") are proprietary and confidential. 
@@ -13,4 +13,4 @@ FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT. IN NO EVENT SHALL THE AUT
 OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE 
 OR OTHER DEALINGS IN THE SOFTWARE.
 
-For permissions or inquiries, please contact: [Your Contact Information]
+For permissions or inquiries, please contact: [dr_kimogad@yahoo.com]
