@@ -81,23 +81,28 @@
             </div>
 
             <h3>Saved Pet Profiles</h3>
-            <ul id="savedProfilesList">
-                <!-- Each saved profile will dynamically have a delete and print button -->
-                <li class="profile-item">
-                    <p>Pet Name: Fido</p>
-                    <button class="deleteProfileButton">Delete</button>
-                    <button class="printProfileButton">Print</button>
-                </li>
-            </ul>
+            <div id="savedProfilesContainer">
+                <ul id="savedProfilesList">
+                    <!-- Each saved profile will dynamically have a delete and print button -->
+                    <li class="profile-item">
+                        <p>Pet Name: Fido</p>
+                        <button class="deleteProfileButton">Delete</button>
+                        <button class="printProfileButton">Print</button>
+                    </li>
+                </ul>
+                <div id="savedProfilesImage">
+                    <img src="path_to_image.jpg" alt="Pet Image">
+                </div>
+            </div>
 
             <!-- Reminder Containers -->
             <section id="remindersSection">
-                 <div id="upcomingReminders-0" class="reminders-container">
+                <div id="upcomingReminders-0" class="reminders-container">
                     <!-- Upcoming reminders will be dynamically inserted here -->
-                 </div>
+                </div>
 
-                 <div id="overdueReminders-0" class="reminders-container">
-                 <!-- Overdue reminders will be dynamically inserted here -->
+                <div id="overdueReminders-0" class="reminders-container">
+                    <!-- Overdue reminders will be dynamically inserted here -->
                 </div>
             </section>
 
