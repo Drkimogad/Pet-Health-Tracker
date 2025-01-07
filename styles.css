@@ -29,7 +29,7 @@ button.printProfileButton, button.deleteProfileButton, button.deleteReminderButt
 
 /* Saved Profiles Section Enhancements */
 #savedProfilesList {
-    list-style-image: url('https://raw.githubusercontent.com/Drkimogad/Pet-Health-Tracker/main/pawprint.png');
+    list-style-image: url('https://drkimogad.github.io/Pet-Health-Tracker/favicon.ico');
     padding: 0;
     margin: 0 auto; /* Centered */
     max-width: 800px; /* Centralized width */
