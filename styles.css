@@ -117,12 +117,6 @@ button:focus {
     outline-offset: 2px;
 }
 
-/* Saved Profiles Section */
-#savedProfilesList {
-    list-style: none;
-    padding: 0;
-}
-
 #savedProfilesList li {
     display: flex;
     align-items: center;
