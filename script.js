@@ -229,3 +229,31 @@ function deleteOverdueReminder(profileIndex, reminderKey) {
     localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
     loadSavedPetProfile();
 }
+
+//JavaScript Snippet to Check for Updates
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+            .then((registration) => {
+                console.log('Service Worker registered with scope:', registration.scope);
+                // Check for service worker updates
+                registration.update();
+
+                // Listen for when a new service worker is available and update it
+                registration.addEventListener('updatefound', () => {
+                    const installingWorker = registration.installing;
+                    installingWorker.addEventListener('statechange', () => {
+                        if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            // New version available, notify user and skip waiting
+                            if (confirm('A new version of the app is available. Would you like to update?')) {
+                                installingWorker.postMessage({ action: 'skipWaiting' });
+                            }
+                        }
+                    });
+                });
+            })
+            .catch((error) => {
+                console.error('Error registering service worker:', error);
+            });
+    });
+}
