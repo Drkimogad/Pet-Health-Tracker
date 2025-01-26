@@ -1,4 +1,4 @@
-const CACHE_NAME = 'PetStudio-cache-v2'; // Update cache version
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v2'; // Update cache version
 const urlsToCache = [
     'https://drkimogad.github.io/Pet-Health-Tracker/',                // Main page URL
     'https://drkimogad.github.io/Pet-Health-Tracker/index.html',      // Ensure main HTML page is cached
