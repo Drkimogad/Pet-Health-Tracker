@@ -1,6 +1,6 @@
 {
   "name": "Pet-Health-Tracker",
-  "short_name": "PetTracker",
+  "short_name": "Pet Health Tracker",
   "description": "A simple App that allows you to track your pet health effeciently",
   "start_url": "https://drkimogad.github.io/Pet-Health-Tracker/index.html",
   "display": "standalone",
