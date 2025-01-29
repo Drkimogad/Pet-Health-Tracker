@@ -3,6 +3,7 @@ const urlsToCache = [
     'https://drkimogad.github.io/Pet-Health-Tracker/',
     'https://drkimogad.github.io/Pet-Health-Tracker/index.html',
     'https://drkimogad.github.io/Pet-Health-Tracker/styles.css',
+    'https://drkimogad.github.io/Pet-Health-Tracker/service-worker.js',
     'https://drkimogad.github.io/Pet-Health-Tracker/script.js',
     'https://drkimogad.github.io/Pet-Health-Tracker/manifest.json',
     'https://drkimogad.github.io/Pet-Health-Tracker/icons/icon-192x192.png',
