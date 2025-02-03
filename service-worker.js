@@ -31,13 +31,13 @@ self.addEventListener('fetch', (event) => {
             }
             return fetch(event.request).catch(() => {
                 if (event.request.mode === 'navigate') {
-                    return caches.match('/offline.html');
+                    return caches.match('https://drkimogad.github.io/Pet-Health-Tracker/offline.html');
                 }
             });
         }).catch((err) => {
             console.error('Error fetching:', err);
             if (event.request.mode === 'navigate') {
-                return caches.match('/offline.html');
+                return caches.match('https://drkimogad.github.io/Pet-Health-Tracker/offline.html');
             }
         })
     );
