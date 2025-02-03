@@ -12,54 +12,81 @@ const urlsToCache = [
     'https://drkimogad.github.io/Pet-Health-Tracker/offline.html'
 ];
 
+// Install event: Cache necessary assets
 self.addEventListener('install', (event) => {
-    self.skipWaiting();
+    self.skipWaiting(); // Forces the new service worker to take control immediately
+
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll(urlsToCache);
-        }).catch((err) => {
-            console.error('Error caching assets:', err);
+            console.log('Caching assets during install');
+            return cache.addAll(urlsToCache)
+                .then(() => {
+                    console.log('Assets successfully cached!');
+                    // Debugging: List cached URLs
+                    cache.keys().then((requestUrls) => {
+                        requestUrls.forEach((url) => {
+                            console.log('Cached URL:', url);
+                        });
+                    });
+                })
+                .catch((err) => {
+                    console.error('Error caching assets:', err);
+                });
         })
     );
 });
 
+// Fetch event: Serve assets from cache or fetch from network if not cached
 self.addEventListener('fetch', (event) => {
+    console.log('Fetching request for:', event.request.url);
+
     event.respondWith(
         caches.match(event.request).then((cachedResponse) => {
             if (cachedResponse) {
-                return cachedResponse;
+                console.log('Serving from cache:', event.request.url);
+                return cachedResponse; // Serve from cache
             }
+
+            // If the request is for an HTML file (navigation), return the offline page
+            if (event.request.mode === 'navigate') {
+                return caches.match('https://drkimogad.github.io/Pet-Health-Tracker/offline.html');  // Ensure offline.html is cached
+            }
+
+            console.log('Fetching from network:', event.request.url);
             return fetch(event.request).catch(() => {
-                if (event.request.mode === 'navigate') {
-                    return caches.match('https://drkimogad.github.io/Pet-Health-Tracker/offline.html');
-                }
+                // Offline fallback if fetch fails (e.g., user is offline)
+                return caches.match('https://drkimogad.github.io/Pet-Health-Tracker/offline.html');  // Ensure offline.html is cached
             });
         }).catch((err) => {
             console.error('Error fetching:', err);
-            if (event.request.mode === 'navigate') {
-                return caches.match('https://drkimogad.github.io/Pet-Health-Tracker/offline.html');
-            }
+            // In case of any unexpected errors, fallback to offline.html
+            return caches.match('https://drkimogad.github.io/Pet-Health-Tracker/offline.html');
         })
     );
 });
 
+// Activate event: Clean up old caches and take control immediately
 self.addEventListener('activate', (event) => {
-    const cacheWhitelist = [CACHE_NAME];
+    const cacheWhitelist = [CACHE_NAME];  // Only keep the current cache
+
     event.waitUntil(
         caches.keys().then((cacheNames) => {
             return Promise.all(
                 cacheNames.map((cacheName) => {
                     if (!cacheWhitelist.includes(cacheName)) {
-                        return caches.delete(cacheName);
+                        console.log('Deleting old cache:', cacheName);
+                        return caches.delete(cacheName); // Delete old caches
                     }
                 })
             );
         }).then(() => {
-            self.clients.claim();
+            console.log('Service Worker activated and ready');
+            self.clients.claim();  // Claim clients immediately after activation
         })
     );
 });
 
+// NEW: Check for updates and fetch new service worker
 self.addEventListener('message', (event) => {
     if (event.data.action === 'skipWaiting') {
         self.skipWaiting();
