@@ -1,4 +1,17 @@
- const CACHE_NAME = 'Pet-Health-Tracker-cache-v4'; // Updated cache version
+// service-worker.js (add this at the top)
+// Check for updates and fetch new service worker
+self.addEventListener('message', (event) => {
+    if (event.data === 'skipWaiting') {
+        self.skipWaiting();
+        self.clients.claim().then(() => {
+            self.clients.matchAll().then(clients => {
+                clients.forEach(client => client.postMessage('reload'));
+            });
+        });
+    }
+});
+
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v4'; // Updated cache version
 const OFFLINE_URL = new URL('offline.html', self.location.href).href;
 const INDEX_URL = new URL('index.html', self.location.href).href;
 
@@ -78,9 +91,3 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-// Check for updates and fetch new service worker
-self.addEventListener('message', (event) => {
-    if (event.data.action === 'skipWaiting') {
-        self.skipWaiting();
-    }
-});
