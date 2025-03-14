@@ -1,86 +1,80 @@
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v3';
+ const CACHE_NAME = 'Pet-Health-Tracker-cache-v4'; // Updated cache version
+const OFFLINE_URL = new URL('offline.html', self.location.href).href;
+const INDEX_URL = new URL('index.html', self.location.href).href;
+
 const urlsToCache = [
-    'https://drkimogad.github.io/Pet-Health-Tracker/',
-    'https://drkimogad.github.io/Pet-Health-Tracker/index.html',
+    // Removed root URL to avoid potential redirect issues
+    INDEX_URL,
     'https://drkimogad.github.io/Pet-Health-Tracker/styles.css',
     'https://drkimogad.github.io/Pet-Health-Tracker/script.js',
     'https://drkimogad.github.io/Pet-Health-Tracker/manifest.json',
     'https://drkimogad.github.io/Pet-Health-Tracker/icons/icon-192x192.png',
     'https://drkimogad.github.io/Pet-Health-Tracker/icons/icon-512x512.png',
     'https://drkimogad.github.io/Pet-Health-Tracker/favicon.ico',
-    'https://drkimogad.github.io/Pet-Health-Tracker/offline.html'
+    OFFLINE_URL
 ];
 
-// Function to normalize request URLs
+// normalize URLs function 
 function normalizeURL(url) {
     const urlObj = new URL(url);
-    urlObj.search = ''; // Remove query parameters
+    urlObj.search = '';
     return urlObj.href;
 }
 
-// Install event: Cache necessary assets
+// Install event 
 self.addEventListener('install', (event) => {
-    self.skipWaiting(); // Forces the new service worker to take control immediately
+    self.skipWaiting();
     event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            console.log('Caching assets during install');
-            return cache.addAll(urlsToCache)
-                .then(() => {
-                    console.log('Assets successfully cached!');
-                })
-                .catch((err) => {
-                    console.error('Error caching assets:', err);
-                });
-        })
+        caches.open(CACHE_NAME)
+            .then(cache => cache.addAll(urlsToCache))
+            .catch(err => console.error('Install error:', err))
     );
 });
 
-// Fetch event: Serve assets from cache or fetch from network if not cached
+// Fetch event 
 self.addEventListener('fetch', (event) => {
-    console.log('Fetching request for:', event.request.url);
+    const requestUrl = normalizeURL(event.request.url);
+    
     event.respondWith(
-        caches.match(normalizeURL(event.request.url)).then((cachedResponse) => {
-            if (cachedResponse) {
-                console.log('Serving from cache:', event.request.url);
-                return cachedResponse; // Serve from cache
-            }
-            console.log('Fetching from network:', event.request.url);
-            return fetch(event.request).then((networkResponse) => {
-                if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
-                    return networkResponse;
-                }
+        caches.match(requestUrl).then(cachedResponse => {
+            // Return cached response if found
+            if (cachedResponse) return cachedResponse;
+            
+            // Clone request for potential caching
+            const fetchRequest = event.request.clone();
+            
+            return fetch(fetchRequest).then(networkResponse => {
+                if (!networkResponse.ok) throw new Error('Network response not ok');
+                
+                // Clone response for caching
                 const responseToCache = networkResponse.clone();
-                caches.open(CACHE_NAME).then((cache) => {
-                    cache.put(event.request, responseToCache);
+                caches.open(CACHE_NAME).then(cache => {
+                    cache.put(requestUrl, responseToCache);
                 });
+                
                 return networkResponse;
-            }).catch(() => {
-                return caches.match(normalizeURL('/offline.html'));  // Ensure offline.html is cached
+            }).catch(async () => {
+                // Handle navigation requests separately
+                if (event.request.mode === 'navigate') {
+                    const cachedIndex = await caches.match(INDEX_URL);
+                    return cachedIndex || caches.match(OFFLINE_URL);
+                }
+                return caches.match(OFFLINE_URL);
             });
-        }).catch((err) => {
-            console.error('Error fetching:', err);
-            return caches.match(normalizeURL('/offline.html'));
         })
     );
 });
 
-// Activate event: Clean up old caches and take control immediately
+// Activate event 
 self.addEventListener('activate', (event) => {
-    const cacheWhitelist = [CACHE_NAME];  // Only keep the current cache
     event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames.map((cacheName) => {
-                    if (!cacheWhitelist.includes(cacheName)) {
-                        console.log('Deleting old cache:', cacheName);
-                        return caches.delete(cacheName); // Delete old caches
-                    }
-                })
-            );
-        }).then(() => {
-            console.log('Service Worker activated and ready');
-            self.clients.claim();  // Claim clients immediately after activation
-        })
+        caches.keys().then(cacheNames => 
+            Promise.all(
+                cacheNames.map(cacheName => 
+                    cacheName !== CACHE_NAME ? caches.delete(cacheName) : null
+                )
+            ).then(() => self.clients.claim())
+        )
     );
 });
 
