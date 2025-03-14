@@ -233,7 +233,7 @@ function deleteOverdueReminder(profileIndex, reminderKey) {
 //JavaScript Snippet to Check for Updates and sw registration 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js') // Use relative path
+        navigator.serviceWorker.register('https://drkimogad.github.io/Pet-Health-Tracker/service-worker.js') // Use relative path
             .then((registration) => {
                 console.log('SW registered:', registration);
                 
