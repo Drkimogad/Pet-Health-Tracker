@@ -11,6 +11,13 @@ const urlsToCache = [
     'https://drkimogad.github.io/Pet-Health-Tracker/offline.html'
 ];
 
+// Function to normalize request URLs
+function normalizeURL(url) {
+    const urlObj = new URL(url);
+    urlObj.search = ''; // Remove query parameters
+    return urlObj.href;
+}
+
 // Install event: Cache necessary assets
 self.addEventListener('install', (event) => {
     self.skipWaiting(); // Forces the new service worker to take control immediately
@@ -34,19 +41,13 @@ self.addEventListener('install', (event) => {
         })
     );
 });
-// Function to normalize request URLs
-function normalizeURL(url) {
-    const urlObj = new URL(url);
-    urlObj.search = ''; // Remove query parameters
-    return urlObj.href;
-}
 
 // Fetch event: Serve assets from cache or fetch from network if not cached
 self.addEventListener('fetch', (event) => {
     console.log('Fetching request for:', event.request.url);
 
     event.respondWith(
-        caches.match(event.request).then((cachedResponse) => {
+        caches.match(normalizeURL(event.request.url)).then((cachedResponse) => {
             if (cachedResponse) {
                 console.log('Serving from cache:', event.request.url);
                 return cachedResponse; // Serve from cache
@@ -54,18 +55,18 @@ self.addEventListener('fetch', (event) => {
 
             // If the request is for an HTML file (navigation), return the offline page
             if (event.request.mode === 'navigate') {
-                return caches.match('/index.html');  // Ensure index.html is cached
+                return caches.match(normalizeURL('/index.html'));  // Ensure index.html is cached
             }
 
             console.log('Fetching from network:', event.request.url);
             return fetch(event.request).catch(() => {
                 // Offline fallback if fetch fails (e.g., user is offline)
-                return caches.match('/offline.html');  // Ensure offline.html is cached
+                return caches.match(normalizeURL('/offline.html'));  // Ensure offline.html is cached
             });
         }).catch((err) => {
             console.error('Error fetching:', err);
             // In case of any unexpected errors, fallback to offline.html
-            return caches.match('/offline.html');
+            return caches.match(normalizeURL('/offline.html'));
         })
     );
 });
@@ -91,7 +92,7 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-// NEW: Check for updates and fetch new service worker
+// Check for updates and fetch new service worker
 self.addEventListener('message', (event) => {
     if (event.data.action === 'skipWaiting') {
         self.skipWaiting();
