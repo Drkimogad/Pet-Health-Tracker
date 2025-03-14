@@ -111,18 +111,6 @@
         <p>&copy; 2024 Pet Health Tracker. All rights reserved.</p>
     </footer>
 
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('https://drkimogad.github.io/Pet-Health-Tracker/service-worker.js').then(function(registration) {
-                    console.log('Service Worker registered with scope:', registration.scope);
-                }).catch(function(error) {
-                    console.log('Service Worker registration failed:', error);
-                });
-            });
-        }
-    </script>
-
     <script src="script.js"></script>
 </body>
 </html>
