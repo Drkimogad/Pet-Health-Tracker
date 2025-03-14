@@ -35,6 +35,12 @@ self.addEventListener('install', (event) => {
         })
     );
 });
+// Function to normalize request URLs
+function normalizeURL(url) {
+    const urlObj = new URL(url);
+    urlObj.search = ''; // Remove query parameters
+    return urlObj.href;
+}
 
 // Fetch event: Serve assets from cache or fetch from network if not cached
 self.addEventListener('fetch', (event) => {
