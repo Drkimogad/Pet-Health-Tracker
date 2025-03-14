@@ -230,30 +230,21 @@ function deleteOverdueReminder(profileIndex, reminderKey) {
     loadSavedPetProfile();
 }
 
-//JavaScript Snippet to Check for Updates
+//JavaScript Snippet to Check for Updates and sw registration 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('https://drkimogad.github.io/Pet-Health-Tracker/service-worker.js')
+        navigator.serviceWorker.register('/sw.js') // Use relative path
             .then((registration) => {
-                console.log('Service Worker registered with scope:', registration.scope);
-                // Check for service worker updates
-                registration.update();
-
-                // Listen for when a new service worker is available and update it
-                registration.addEventListener('updatefound', () => {
-                    const installingWorker = registration.installing;
-                    installingWorker.addEventListener('statechange', () => {
-                        if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            // New version available, notify user and skip waiting
-                            if (confirm('A new version of the app is available. Would you like to update?')) {
-                                installingWorker.postMessage({ action: 'skipWaiting' });
-                            }
-                        }
-                    });
+                console.log('SW registered:', registration);
+                
+                // Check for updates every hour
+                setInterval(() => registration.update(), 60 * 60 * 1000);
+                
+                // Handle controller change (new SW activated)
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    window.location.reload();
                 });
             })
-            .catch((error) => {
-                console.error('Error registering service worker:', error);
-            });
+            .catch(console.error);
     });
 }
