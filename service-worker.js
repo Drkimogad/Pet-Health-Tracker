@@ -1,5 +1,6 @@
-// service-worker.js (add this at the top)
-// Check for updates and fetch new service worker
+// service-worker.js
+
+// Handle updates and force refresh
 self.addEventListener('message', (event) => {
     if (event.data === 'skipWaiting') {
         self.skipWaiting();
@@ -11,30 +12,22 @@ self.addEventListener('message', (event) => {
     }
 });
 
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v4'; // Updated cache version
-const OFFLINE_URL = new URL('offline.html', self.location.href).href;
-const INDEX_URL = new URL('index.html', self.location.href).href;
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v5'; // Updated cache version
+const OFFLINE_URL = '/offline.html';
+const INDEX_URL = '/index.html';
 
 const urlsToCache = [
-    // Removed root URL to avoid potential redirect issues
     INDEX_URL,
-    'https://drkimogad.github.io/Pet-Health-Tracker/styles.css',
-    'https://drkimogad.github.io/Pet-Health-Tracker/script.js',
-    'https://drkimogad.github.io/Pet-Health-Tracker/manifest.json',
-    'https://drkimogad.github.io/Pet-Health-Tracker/icons/icon-192x192.png',
-    'https://drkimogad.github.io/Pet-Health-Tracker/icons/icon-512x512.png',
-    'https://drkimogad.github.io/Pet-Health-Tracker/favicon.ico',
+    '/styles.css',
+    '/script.js',
+    '/manifest.json',
+    '/icons/icon-192x192.png',
+    '/icons/icon-512x512.png',
+    '/favicon.ico',
     OFFLINE_URL
 ];
 
-// normalize URLs function 
-function normalizeURL(url) {
-    const urlObj = new URL(url);
-    urlObj.search = '';
-    return urlObj.href;
-}
-
-// Install event 
+// Install event: Precache static assets
 self.addEventListener('install', (event) => {
     self.skipWaiting();
     event.waitUntil(
@@ -44,33 +37,20 @@ self.addEventListener('install', (event) => {
     );
 });
 
-// Fetch event 
+// Fetch event: Serve from cache, then update cache
 self.addEventListener('fetch', (event) => {
-    const requestUrl = normalizeURL(event.request.url);
-    
     event.respondWith(
-        caches.match(requestUrl).then(cachedResponse => {
-            // Return cached response if found
+        caches.match(event.request).then(cachedResponse => {
             if (cachedResponse) return cachedResponse;
-            
-            // Clone request for potential caching
-            const fetchRequest = event.request.clone();
-            
-            return fetch(fetchRequest).then(networkResponse => {
-                if (!networkResponse.ok) throw new Error('Network response not ok');
-                
-                // Clone response for caching
-                const responseToCache = networkResponse.clone();
-                caches.open(CACHE_NAME).then(cache => {
-                    cache.put(requestUrl, responseToCache);
+            return fetch(event.request).then(networkResponse => {
+                if (!networkResponse || !networkResponse.ok) throw new Error('Network response not ok');
+                return caches.open(CACHE_NAME).then(cache => {
+                    cache.put(event.request, networkResponse.clone());
+                    return networkResponse;
                 });
-                
-                return networkResponse;
-            }).catch(async () => {
-                // Handle navigation requests separately
+            }).catch(() => {
                 if (event.request.mode === 'navigate') {
-                    const cachedIndex = await caches.match(INDEX_URL);
-                    return cachedIndex || caches.match(OFFLINE_URL);
+                    return caches.match(INDEX_URL) || caches.match(OFFLINE_URL);
                 }
                 return caches.match(OFFLINE_URL);
             });
@@ -78,7 +58,7 @@ self.addEventListener('fetch', (event) => {
     );
 });
 
-// Activate event 
+// Activate event: Cleanup old caches
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then(cacheNames => 
@@ -90,4 +70,3 @@ self.addEventListener('activate', (event) => {
         )
     );
 });
-
