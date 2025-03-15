@@ -31,19 +31,19 @@ const urlsToCache = [
 self.addEventListener('install', (event) => {
     self.skipWaiting();
     event.waitUntil(
-    caches.open(CACHE_NAME).then(async (cache) => {
-        for (const url of urlsToCache) {
-            try {
-                console.log(`Caching: ${url}`);
-                await cache.add(url);
-                console.log(`Cached successfully: ${url}`);
-            } catch (error) {
-                console.warn(`Failed to cache ${url}:`, error);
+        caches.open(CACHE_NAME).then(async (cache) => {
+            for (const url of urlsToCache) {
+                try {
+                    console.log(`Caching: ${url}`);
+                    await cache.add(url);
+                    console.log(`Cached successfully: ${url}`);
+                } catch (error) {
+                    console.warn(`Failed to cache ${url}:`, error);
+                }
             }
-        }
-    })
-);
-
+        })
+    ); // 🔹 This bracket was missing!
+});
 
 // Fetch event: Serve from cache, then update cache
 self.addEventListener('fetch', (event) => {
