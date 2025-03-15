@@ -30,11 +30,104 @@
         .retry-btn:hover {
             background-color: #45a049;
         }
+        .logs-container {
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            text-align: left;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .log-entry {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+        /* NEW: Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1e1e1e;
+                color: #ffffff;
+            }
+            .logs-container {
+                background: #333;
+                box-shadow: none;
+            }
+        }
+        /* NEW: Offline Icon */
+        .offline-icon {
+            font-size: 50px;
+            animation: pulse 1.5s infinite alternate;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        /* NEW: Last Online Time */
+        #lastOnline {
+            font-size: 0.9em;
+            margin-top: 10px;
+            color: #777;
+        }
     </style>
 </head>
 <body>
+    <div class="offline-icon">📴</div>
     <h1>Oops! You're Offline</h1>
     <p>It seems like you're not connected to the internet. Please check your connection.</p>
     <button class="retry-btn" onclick="window.location.reload();">Try Again</button>
+
+    <!-- NEW: Last Online Time -->
+    <p id="lastOnline">Last Online: <span id="lastOnlineTime">Unknown</span></p>
+
+    <!-- Pet Logs Section -->
+    <div class="logs-container" id="logsContainer">
+        <h2>Last Recorded Pet Logs</h2>
+        <div id="logEntries">No data available.</div>
+    </div>
+
+    <script>
+        // ✅ **NEW: Load Pet Logs from Local Storage**
+        function loadOfflineLogs() {
+            const logsContainer = document.getElementById("logEntries");
+            const logs = JSON.parse(localStorage.getItem("petLogs")) || [];
+
+            if (logs.length === 0) {
+                logsContainer.innerHTML = "<p>No saved pet logs available.</p>";
+                return;
+            }
+
+            logsContainer.innerHTML = logs.map(log => `
+                <div class="log-entry">
+                    <strong>${log.petName}</strong> - ${log.date}
+                    <p>Exercise: ${log.exercise} | Duration: ${log.duration} mins</p>
+                </div>
+            `).join('');
+        }
+
+        // ✅ **NEW: Store Last Online Time**
+        function updateLastOnlineTime() {
+            const lastOnline = localStorage.getItem("lastOnline");
+            if (lastOnline) {
+                document.getElementById("lastOnlineTime").textContent = lastOnline;
+            }
+        }
+
+        // ✅ **NEW: Save Last Online Time Before Going Offline**
+        window.addEventListener("online", () => {
+            const now = new Date().toLocaleString();
+            localStorage.setItem("lastOnline", now);
+        });
+
+        // Call functions on page load
+        loadOfflineLogs();
+        updateLastOnlineTime();
+    </script>
 </body>
 </html>
