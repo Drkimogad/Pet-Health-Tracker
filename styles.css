@@ -1,268 +1,156 @@
-/* Style for Header and Footer */
+/* 🌍 Universal Styles */
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f5f5f5;
+    color: #333;
+    padding: 50px;
+    margin: 0;
+}
+
+/* Header and Footer */
 header, footer {
     background-color: #4CAF50;
     color: white;
     text-align: center;
     padding: 10px;
     margin: 0 auto;
-    max-width: 800px; /* Centralized width */
+    max-width: 1000px;
+    border-radius: 5px;
 }
 
 /* General Heading Styles */
 h1 {
-    font-family: Arial, sans-serif;
     font-size: 24px;
     margin-bottom: 20px;
 }
 
-/* Sign-up, Login, Save Pet Profile, and Logout Buttons */
-.signup-login-buttons, .logout-button, .save-pet-profile-button {
-    width: 100%; /* Full width */
-    padding: 10px 0; /* Adjust padding for better appearance */
-}
-
-/* Print Profile, Delete Profile, and Delete Buttons for Reminders */
-button.printProfileButton, button.deleteProfileButton, button.deleteReminderButton {
-    font-size: 14px; /* Increased font size for better visibility */
-    padding: 6px 12px; /* Adjusted padding for better appearance */
-}
-
-/* Saved Profiles Section Enhancements */
-#savedProfilesList {
-    list-style-image: url('https://drkimogad.github.io/Pet-Health-Tracker/favicon.ico');
-    padding: 0;
-    margin: 0 auto; /* Centered */
-    max-width: 800px; /* Centralized width */
-}
-
-#savedProfilesList li {
-    display: flex;
-    align-items: center;
-    justify-content: space-between; /* Push buttons to the right */
-    margin-bottom: 20px; /* Increased margin for better spacing */
-    padding: 10px; /* Added padding for better readability */
-    background-color: #f9f9f9; /* Light background for contrast */
-    border: 1px solid #ddd; /* Border for definition */
-    border-radius: 8px; /* Rounded corners */
-}
-
-#savedProfilesList img {
-    width: 60px; /* Increased size */
-    height: 60px; /* Increased size */
-    object-fit: cover;
-    margin-right: 15px; /* More spacing */
-    border-radius: 4px;
-    border: 1px solid #ddd;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-#savedProfilesList h2 {
-    font-size: 24px; /* Increased font size */
-    color: #333; /* Darker color for readability */
-}
-
-#savedProfilesList button {
-    margin-left: 10px;
-    margin-right: 20px; /* Push buttons to the right */
-    background-color: #339900;
-    color: white;
-    width: auto; /* Auto width to fit text */
-}
-
-#savedProfilesList button:hover {
-    background-color: #287a00;
-}
-
-/* Form and Main Content */
-.form-container {
-    padding: 20px;
-    margin: 20px auto;
-    background-color: #f4f4f4;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    max-width: 800px; /* Centralized form */
-}
-
-input[type="text"], input[type="number"], input[type="email"], input[type="password"], textarea, input[type="date"], input[type="file"] {
-    width: 70%; /* Reduced width */
-    margin: 10px auto;
-    display: block;
-    padding: 10px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-}
-
-input:focus, textarea:focus {
-    outline: 2px solid #4CAF50;
-    outline-offset: 2px;
-}
-
+/* Buttons */
 button {
-    width: 100%; /* Auto width to fit text */
-    padding: 8px 12px; /* Reduced padding */
+    padding: 10px 16px;
     background-color: #4CAF50;
     color: white;
-    border: 2px solid white; /* White outline for buttons */
-    border-radius: 4px;
-    text-align: center;
+    border: 2px solid white;
+    border-radius: 6px;
     cursor: pointer;
+    font-size: 1em;
 }
 
 button:hover {
     background-color: #45a049;
 }
 
-button:focus {
-    outline: 2px solid #4CAF50;
-    outline-offset: 2px;
+/* Saved Profiles Section */
+#savedProfilesList {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    max-width: 900px;
 }
 
 #savedProfilesList li {
     display: flex;
     align-items: center;
-    justify-content: space-between; /* Push buttons to the right */
-    margin-bottom: 10px;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
 }
 
 #savedProfilesList img {
     width: 70px;
     height: 70px;
     object-fit: cover;
-    margin-right: 10px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-right: 15px;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+}
+
+#savedProfilesList h2 {
+    font-size: 22px;
+    color: #333;
 }
 
 #savedProfilesList button {
-    margin-left: 10px;
-    margin-right: 20px; /* Push buttons to the right */
     background-color: #339900;
     color: white;
-    width: 100%; /* Auto width to fit text */
+    padding: 8px 14px;
+    border-radius: 6px;
 }
 
 #savedProfilesList button:hover {
     background-color: #287a00;
 }
 
-/* Font Adjustments */
-#savedProfilesList h2 {
-    font-size: 22px; /* Larger font for "Saved Pet Profile" */
-}
-
-/* Additional Spacing */
-.logout-button {
-    margin-bottom: 20px; /* Space between logout button and footer */
-}
-
-.signup-login-buttons {
-    margin-bottom: 20px; /* Space between sign-up/login buttons and footer */
-}
-
-/* Reminders Section */
-.reminder-section {
-    background-color: #e7f4e7;
+/* Form Styling */
+.form-container {
     padding: 20px;
+    margin: 20px auto;
+    background-color: #f4f4f4;
     border-radius: 8px;
-    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    max-width: 800px;
 }
 
-.reminder-section h3 {
-    font-size: 20px;
-    margin-bottom: 15px;
-    color: #4CAF50;
+input, textarea, select {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 6px;
+    border: 1px solid #ddd;
 }
 
-.reminder-section .delete-button {
-    display: flex;
-    justify-content: flex-end; /* Align buttons to the right */
+input:focus, textarea:focus {
+    outline: 2px solid #4CAF50;
 }
 
-/* Print Window Styling */
-@media print {
-    body {
-        font-size: 16px; /* Larger font size for print */
-        line-height: 1.5;
-    }
-}
-
-/* Responsive Design for Smaller Screens */
-@media (max-width: 768px) {
-    input[type="text"], input[type="number"], input[type="email"], input[type="password"], textarea, input[type="date"], input[type="file"] {
-        width: 100%; /* Full width on small screens */
-    }
-
-    header, footer, .form-container {
-        max-width: 100%; /* Adapts to smaller screens */
-        padding: 10px;
-    }
-
-    #savedProfilesList li {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    #savedProfilesList img {
-        margin-bottom: 10px;
-    }
-}
-/* Other existing styles */
-
-/* Add your new styles for overdue reminders */
+/* Reminders */
 .reminder.overdue {
     color: red;
     font-weight: bold;
-    font-size: 16px;
 }
 
 .reminder.upcoming {
     color: green;
     font-weight: normal;
-    font-size: 16px;
 }
 
 .exclamation {
     color: red;
     font-size: 18px;
     font-weight: bold;
-    margin-left: 5px;
 }
 
-/* Style for delete button for overdue reminders */
-.reminder.overdue .deleteReminderButton {
-    display: inline-block;
-    background-color: #ff4d4d;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    font-size: 14px;
-    cursor: pointer;
-    border-radius: 4px;
+/* Responsive Design */
+@media (max-width: 1024px) {
+    header, footer, .form-container {
+        max-width: 95%;
+    }
+    #savedProfilesList li {
+        flex-direction: column;
+        text-align: center;
+    }
+    #savedProfilesList img {
+        margin-bottom: 10px;
+    }
 }
 
-/* New styles for moving buttons to the right and reducing size */
-button.deleteProfileButton,
-button.printProfileButton,
-button.deleteReminderButton {
-    float: right;
-    padding: 5px 10px;
-    font-size: 14px;
-    margin: 2px;
-    width: 30%; /* Ensure width fits the text size */
+@media (max-width: 768px) {
+    input, textarea {
+        width: 100%;
+    }
+    button {
+        width: 100%;
+        padding: 12px;
+    }
 }
 
-/* Styles for petProfile blocks */
-.petProfile {
-    background-color: #f4f4f4; /* Default background color */
-}
-
-.petProfile input[type="text"]:focus,
-.petProfile input[type="number"]:focus,
-.petProfile input[type="email"]:focus,
-.petProfile input[type="password"]:focus,
-.petProfile textarea:focus,
-.petProfile input[type="date"]:focus,
-.petProfile input[type="file"]:focus {
-    background-color: #e0ffe0; /* Change background color on focus */
+@media print {
+    body {
+        font-size: 16px;
+        line-height: 1.5;
+    }
 }
