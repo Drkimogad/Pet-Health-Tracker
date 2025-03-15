@@ -41,7 +41,7 @@ self.addEventListener('fetch', (event) => {
                 });
             }).catch(() => {
                 if (event.request.mode === 'navigate') {
-                    return caches.match(/'index.html') || caches.match(OFFLINE_URL);
+                    return caches.match('index.html') || caches.match(OFFLINE_URL);
                 }
                 return caches.match('/offline.html');
             });
