@@ -118,7 +118,7 @@ function deletePetProfile(index) {
 // Service Worker Registration
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js')
+        navigator.serviceWorker.register('https://drkimogad.github.io/Pet-Health-Tracker/service-worker.js')
             .then((registration) => {
                 console.log('SW registered:', registration);
                 setInterval(() => registration.update(), 60 * 60 * 1000);
