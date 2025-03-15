@@ -115,6 +115,13 @@ function deletePetProfile(index) {
     loadSavedPetProfile();
 }
 
+// **Save Pet Exercise Logs for Offline Access**
+function savePetLog(logData) {
+    let logs = JSON.parse(localStorage.getItem('petLogs')) || [];
+    logs.push(logData);
+    localStorage.setItem('petLogs', JSON.stringify(logs));
+}
+
 // Service Worker Registration
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
