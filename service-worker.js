@@ -1,30 +1,13 @@
-// service-worker.js
-
-// Handle updates and force refresh
-self.addEventListener('message', (event) => {
-    if (event.data === 'skipWaiting') {
-        self.skipWaiting();
-        self.clients.claim().then(() => {
-            self.clients.matchAll().then(clients => {
-                clients.forEach(client => client.postMessage('reload'));
-            });
-        });
-    }
-});
-
 const CACHE_NAME = 'Pet-Health-Tracker-cache-v5'; // Updated cache version
-const OFFLINE_URL = '/offline.html';
-const INDEX_URL = '/index.html';
-
 const urlsToCache = [
-    INDEX_URL,
-    '/styles.css',
-    '/script.js',
-    '/manifest.json',
-    '/icons/icon-192x192.png',
-    '/icons/icon-512x512.png',
-    '/favicon.ico',
-    OFFLINE_URL
+    'https://drkimogad.github.io/Pet-Health-Tracker/index.html',
+    'https://drkimogad.github.io/Pet-Health-Tracker/styles.css',
+    'https://drkimogad.github.io/Pet-Health-Tracker/script.js',
+    'https://drkimogad.github.io/Pet-Health-Tracker/manifest.json',
+    'https://drkimogad.github.io/Pet-Health-Tracker/icons/icon-192x192.png',
+    'https://drkimogad.github.io/Pet-Health-Tracker/icons/icon-512x512.png',
+    'https://drkimogad.github.io/Pet-Health-Tracker/favicon.ico',
+    'https://drkimogad.github.io/Pet-Health-Tracker/offline.html'
 ];
 
 // Install event: Precache static assets
@@ -58,9 +41,9 @@ self.addEventListener('fetch', (event) => {
                 });
             }).catch(() => {
                 if (event.request.mode === 'navigate') {
-                    return caches.match(INDEX_URL) || caches.match(OFFLINE_URL);
+                    return caches.match(/'index.html') || caches.match(OFFLINE_URL);
                 }
-                return caches.match(OFFLINE_URL);
+                return caches.match('/offline.html');
             });
         })
     );
@@ -77,4 +60,16 @@ self.addEventListener('activate', (event) => {
             ).then(() => self.clients.claim())
         )
     );
+});
+
+// Handle updates and force refresh
+self.addEventListener('message', (event) => {
+    if (event.data === 'skipWaiting') {
+        self.skipWaiting();
+        self.clients.claim().then(() => {
+            self.clients.matchAll().then(clients => {
+                clients.forEach(client => client.postMessage('reload'));
+            });
+        });
+    }
 });
