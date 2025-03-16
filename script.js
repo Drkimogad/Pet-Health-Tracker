@@ -146,3 +146,27 @@ function savePetLog(logData) {
   logs.push(logData);
   localStorage.setItem('petLogs', JSON.stringify(logs));
 }
+
+// Service Worker State Monitor
+navigator.serviceWorker.addEventListener('controllerchange', () => {
+  console.log('SW controller changed - reloading');
+  window.location.reload();
+});
+
+// Offline Detection
+window.addEventListener('offline', () => {
+  document.documentElement.classList.add('offline');
+  alert('You are now offline. App may have limited functionality.');
+});
+
+// Debugging Helper
+function swStatus() {
+  if (!navigator.serviceWorker.controller) {
+    return 'No controller';
+  }
+  return {
+    controller: navigator.serviceWorker.controller.scriptURL,
+    state: navigator.serviceWorker.controller.state,
+    scope: navigator.serviceWorker.controller.scope
+  };
+}
