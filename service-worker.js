@@ -1,90 +1,115 @@
-// 🟢 ENHANCEMENT 5: Explicit cache version update
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v6';
-// 🟢 ENHANCEMENT 1: Define offline URL
-const OFFLINE_URL = 'https://drkimogad.github.io/Pet-Health-Tracker/offline.html';
-const CACHED_INDEX = 'https://drkimogad.github.io/Pet-Health-Tracker/index.html';
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v7'; // Incremented version
+const OFFLINE_URL = '/Pet-Health-Tracker/offline.html';
+const CACHED_INDEX = '/Pet-Health-Tracker/index.html';
 
-const urlsToCache = [
-  CACHED_INDEX,
-  'https://drkimogad.github.io/Pet-Health-Tracker/styles.css',
-  'https://drkimogad.github.io/Pet-Health-Tracker/script.js',
-  'https://drkimogad.github.io/Pet-Health-Tracker/manifest.json',
-  'https://drkimogad.github.io/Pet-Health-Tracker/icons/icon-192x192.png',
-  'https://drkimogad.github.io/Pet-Health-Tracker/icons/icon-512x512.png',
-  'https://drkimogad.github.io/Pet-Health-Tracker/favicon.ico',
-  OFFLINE_URL
-];
+// 🟢 1. Precaching with Network Timeout
+const PRE_CACHE_TIMEOUT = 3000; // 3 seconds
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
+  console.log('[SW] Installing version', CACHE_NAME);
+  
   event.waitUntil(
     caches.open(CACHE_NAME).then(async (cache) => {
-      for (const url of urlsToCache) {
-        try {
-          await cache.add(url);
-        } catch (error) {
-          console.warn(`Failed to cache ${url}:`, error);
-        }
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), PRE_CACHE_TIMEOUT);
+      
+      try {
+        await Promise.all(urlsToCache.map(async (url) => {
+          const response = await fetch(url, { 
+            signal: controller.signal,
+            cache: 'reload' // Bypass HTTP cache
+          });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          await cache.put(url, response);
+        }));
+      } catch (error) {
+        console.error('[SW] Precache failed:', error);
+        // Partial caching is acceptable
+      } finally {
+        clearTimeout(timeoutId);
       }
     })
   );
 });
 
-// 🟢 ENHANCEMENT 3: NetworkFirst for navigation + 🟢 ENHANCEMENT 7: Cache updates
+// 🟢 2. Enhanced Fetch Handler
 self.addEventListener('fetch', (event) => {
-  // Handle navigation requests
+  const url = new URL(event.request.url);
+  console.log(`[SW] Fetch: ${url.pathname}`, event.request.mode);
+
+  // A. Handle API/External Requests
+  if (url.origin !== location.origin) {
+    return; // Let browser handle external requests
+  }
+
+  // B. Navigation Requests
   if (event.request.mode === 'navigate') {
     event.respondWith(
-      fetch(event.request)
-        .catch(() => caches.match(CACHED_INDEX)
-          .then(response => response || caches.match(OFFLINE_URL))
-        )
+      (async () => {
+        try {
+          // Network-first with timeout
+          const networkPromise = fetch(event.request);
+          const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Timeout')), 2000);
+          
+          await Promise.race([networkPromise, timeoutPromise]);
+          return networkPromise;
+        } catch (error) {
+          console.log('[SW] Serving cached index for', url.pathname);
+          return caches.match(CACHED_INDEX)
+            || caches.match(OFFLINE_URL);
+        }
+      })()
     );
     return;
   }
 
-  // Handle other requests
+  // C. Static Assets
   event.respondWith(
-    caches.match(event.request).then(cachedResponse => {
-      const fetchPromise = fetch(event.request).then(networkResponse => {
-        // 🟢 ENHANCEMENT 7: Update cache for successful GET requests
-        if (event.request.method === 'GET' && networkResponse.status === 200) {
-          const clone = networkResponse.clone();
+    (async () => {
+      const cached = await caches.match(event.request);
+      if (cached) {
+        console.log('[SW] Cache hit:', url.pathname);
+        return cached;
+      }
+
+      try {
+        const response = await fetch(event.request);
+        console.log('[SW] Network response:', url.pathname);
+        // Cache successful GET requests
+        if (response.ok && event.request.method === 'GET') {
+          const clone = response.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
         }
-        return networkResponse;
-      });
-
-      return cachedResponse || fetchPromise.catch(() => {
-        // 🟢 ENHANCEMENT 2: Consistent offline handling
+        return response;
+      } catch (error) {
+        console.log('[SW] Offline fallback for:', url.pathname);
         if (event.request.destination === 'image') {
-          return caches.match('https://drkimogad.github.io/Pet-Health-Tracker/icons/icon-512x512.png');
+          return caches.match('/Pet-Health-Tracker/icons/icon-512x512.png');
         }
         return caches.match(OFFLINE_URL);
+      }
+    })()
+  );
+});
+
+// 🟢 3. Robust Activation
+self.addEventListener('activate', (event) => {
+  console.log('[SW] Activating new version');
+  event.waitUntil(
+    caches.keys().then(cacheList => {
+      return Promise.all(
+        cacheList.map(cacheName => {
+          if (cacheName !== CACHE_NAME) {
+            console.log('[SW] Deleting old cache:', cacheName);
+            return caches.delete(cacheName);
+          }
+        })
+      ).then(() => {
+        console.log('[SW] Claiming clients');
+        return self.clients.claim();
       });
     })
   );
-});
-
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then(cacheNames => 
-      Promise.all(
-        cacheNames.map(cacheName => 
-          cacheName !== CACHE_NAME ? caches.delete(cacheName) : null
-        )
-      ).then(() => self.clients.claim())
-    )
-  );
-});
-
-self.addEventListener('message', (event) => {
-  if (event.data === 'skipWaiting') {
-    self.skipWaiting();
-    self.clients.claim().then(() => {
-      self.clients.matchAll().then(clients => {
-        clients.forEach(client => client.postMessage('reload'));
-      });
-    });
-  }
 });
