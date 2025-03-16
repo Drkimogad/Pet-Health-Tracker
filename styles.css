@@ -124,6 +124,20 @@ input:focus, textarea:focus {
     font-weight: bold;
 }
 
+.offline-warning {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    padding: 1rem;
+    text-align: center;
+    background: #fff3e0;
+    color: #ef6c00;
+    border-bottom: 2px solid #ef6c00;
+}
+
+
 /* Responsive Design */
 @media (max-width: 1024px) {
     header, footer, .form-container {
