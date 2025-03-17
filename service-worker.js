@@ -14,14 +14,6 @@ const urlsToCache = [
 ];
 
 // Enhanced Install Event
-self.addEventListener('install', (event) => {
-  self.skipWaiting();
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
-  );
-});
-
-// Optimized Fetch Handler
 self.addEventListener('fetch', (event) => {
   const request = event.request;
   const url = new URL(request.url);
@@ -31,14 +23,21 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       (async () => {
         try {
+          console.log('Trying to fetch from network:', request.url);
           // Try network first
           const networkResponse = await fetch(request);
+          console.log('Network fetch successful:', request.url);
           return networkResponse;
         } catch (err) {
+          console.error('Network fetch failed:', request.url, err);
           // Fallback to cached index
           const cachedIndex = await caches.match(CACHED_INDEX);
-          if (cachedIndex) return cachedIndex;
+          if (cachedIndex) {
+            console.log('Returning cached index.html');
+            return cachedIndex;
+          }
           // Ultimate fallback
+          console.warn('Cached index.html not found, returning offline page');
           return caches.match(OFFLINE_URL);
         }
       })()
@@ -48,7 +47,14 @@ self.addEventListener('fetch', (event) => {
 
   // Static assets
   event.respondWith(
-    caches.match(request).then(cached => cached || fetch(request))
+    caches.match(request).then(cached => {
+      if (cached) {
+        console.log('Returning cached asset:', request.url);
+        return cached;
+      }
+      console.log('Fetching from network:', request.url);
+      return fetch(request);
+    })
   );
 });
 
