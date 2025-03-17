@@ -1,6 +1,22 @@
+// ======== 1. ADDED AUTH STATE CHECK ========
+document.addEventListener('DOMContentLoaded', () => {
+  const authSection = document.getElementById('authSection');
+  const mainContent = document.getElementById('mainContent');
+  const logoutButton = document.getElementById('logoutButton');
+  const loggedInUser = localStorage.getItem('loggedInUser');
+
+  if (loggedInUser) {
+    authSection.style.display = 'none';
+    mainContent.style.display = 'block';
+    logoutButton.style.display = 'block';
+    loadSavedPetProfile();
+  }
+});
+// ======== END OF ADDITION ========
+
 const users = JSON.parse(localStorage.getItem('users')) || [];
 
-// Handle Sign-Up
+// Handle Sign-Up (UNCHANGED)
 document.getElementById('signUp').addEventListener('submit', function (event) {
     event.preventDefault();
 
@@ -21,7 +37,7 @@ document.getElementById('signUp').addEventListener('submit', function (event) {
     document.getElementById('loginForm').style.display = 'block';
 });
 
-// Handle Login
+// Handle Login (MODIFIED)
 document.getElementById('login').addEventListener('submit', function (event) {
     event.preventDefault();
 
@@ -30,6 +46,9 @@ document.getElementById('login').addEventListener('submit', function (event) {
 
     const user = users.find((user) => user.email === email && user.password === password);
     if (user) {
+        // ======== ADDED LINE ========
+        localStorage.setItem('loggedInUser', JSON.stringify(user));
+        // ============================
         alert('Login successful!');
         document.getElementById('authSection').style.display = 'none';
         document.getElementById('mainContent').style.display = 'block';
@@ -40,15 +59,18 @@ document.getElementById('login').addEventListener('submit', function (event) {
     }
 });
 
-// Handle Logout
+// Handle Logout (MODIFIED)
 document.getElementById('logoutButton').addEventListener('click', function () {
+    // ======== ADDED LINE ========
+    localStorage.removeItem('loggedInUser');
+    // ============================
     document.getElementById('authSection').style.display = 'block';
     document.getElementById('mainContent').style.display = 'none';
     document.getElementById('logoutButton').style.display = 'none';
     alert('Logged out successfully!');
 });
 
-// Save Pet Profile
+// Save Pet Profile (UNCHANGED)
 document.getElementById('dietForm').addEventListener('submit', function (event) {
     event.preventDefault();
 
@@ -71,12 +93,11 @@ document.getElementById('dietForm').addEventListener('submit', function (event) 
     let savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
     savedProfiles.push(petProfile);
     localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
-
     alert('Pet profile saved!');
     loadSavedPetProfile();
 });
 
-// Load Saved Pet Profiles
+// Load Saved Pet Profiles (UNCHANGED)
 function loadSavedPetProfile() {
     const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
     const savedProfilesList = document.getElementById('savedProfilesList');
@@ -107,7 +128,7 @@ function loadSavedPetProfile() {
     });
 }
 
-// Delete Pet Profile
+// Delete Pet Profile (UNCHANGED)
 function deletePetProfile(index) {
     let savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
     savedProfiles.splice(index, 1);
@@ -115,24 +136,39 @@ function deletePetProfile(index) {
     loadSavedPetProfile();
 }
 
-// **Save Pet Exercise Logs for Offline Access**
+// Save Pet Exercise Logs (UNCHANGED)
 function savePetLog(logData) {
     let logs = JSON.parse(localStorage.getItem('petLogs')) || [];
     logs.push(logData);
     localStorage.setItem('petLogs', JSON.stringify(logs));
 }
 
-// Service Worker Registration
+// ======== UPDATED SERVICE WORKER REGISTRATION ========
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('https://drkimogad.github.io/Pet-Health-Tracker/service-worker.js')
-            .then((registration) => {
-                console.log('SW registered:', registration);
-                setInterval(() => registration.update(), 60 * 60 * 1000);
-                navigator.serviceWorker.addEventListener('controllerchange', () => {
-                    window.location.reload();
+        navigator.serviceWorker.register(
+            'https://drkimogad.github.io/Pet-Health-Tracker/service-worker.js',
+            {
+                scope: '/Pet-Health-Tracker/'
+            }
+        ).then((registration) => {
+            console.log('SW registered:', registration);
+            setInterval(() => registration.update(), 60 * 60 * 1000);
+            
+            // Enhanced update handling
+            registration.addEventListener('updatefound', () => {
+                const newWorker = registration.installing;
+                newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'activated') {
+                        window.location.reload();
+                    }
                 });
-            })
-            .catch(console.error);
+            });
+            
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                window.location.reload();
+            });
+        }).catch(console.error);
     });
 }
+// ======== END OF UPDATE ========
