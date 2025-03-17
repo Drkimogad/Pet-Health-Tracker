@@ -14,6 +14,24 @@ const urlsToCache = [
 ];
 
 // Enhanced Install Event
+self.addEventListener('install', (event) => {
+  console.log('Service Worker: Install event');
+  self.skipWaiting();
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache => {
+      console.log('Caching resources');
+      return cache.addAll(urlsToCache);
+    }).then(() => {
+      return caches.keys().then(keys => {
+        console.log('Current caches:', keys);
+      });
+    }).catch(err => {
+      console.error('Error while caching resources:', err);
+    })
+  );
+});
+
+// Optimized Fetch Handler
 self.addEventListener('fetch', (event) => {
   const request = event.request;
   const url = new URL(request.url);
@@ -60,6 +78,7 @@ self.addEventListener('fetch', (event) => {
 
 // Aggressive Activation
 self.addEventListener('activate', (event) => {
+  console.log('Service Worker: Activate event');
   event.waitUntil(
     caches.keys().then(keys => Promise.all(
       keys.map(key => key !== CACHE_NAME ? caches.delete(key) : null)
