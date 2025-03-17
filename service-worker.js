@@ -16,7 +16,7 @@ const urlsToCache = [
 // Enhanced Install Event
 self.addEventListener('install', (event) => {
   console.log('Service Worker: Install event');
-  self.skipWaiting();
+  self.skipWaiting(); // Force the waiting service worker to become the active service worker
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
       console.log('Caching resources');
@@ -82,6 +82,11 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then(keys => Promise.all(
       keys.map(key => key !== CACHE_NAME ? caches.delete(key) : null)
-    )).then(() => self.clients.claim())
+    )).then(() => {
+      console.log('Service Worker: Activation complete');
+      self.clients.claim();
+    }).catch(err => {
+      console.error('Error during activation:', err);
+    })
   );
 });
