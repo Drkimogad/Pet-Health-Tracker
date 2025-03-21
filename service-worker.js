@@ -1,15 +1,15 @@
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v9';
-const OFFLINE_URL = 'https://drkimogad.github.io/Pet-Health-Tracker/offline.html';
-const CACHED_INDEX = 'https://drkimogad.github.io/Pet-Health-Tracker/index.html';
+const CACHE_NAME = 'Pet-Health-Tracker-cache-10';
+const OFFLINE_URL = './offline.html';
+const CACHED_INDEX = './index.html';
 
 const urlsToCache = [
   CACHED_INDEX,
-  'https://drkimogad.github.io/Pet-Health-Tracker/styles.css',
-  'https://drkimogad.github.io/Pet-Health-Tracker/script.js',
-  'https://drkimogad.github.io/Pet-Health-Tracker/manifest.json',
-  'https://drkimogad.github.io/Pet-Health-Tracker/icons/icon-192x192.png',
-  'https://drkimogad.github.io/Pet-Health-Tracker/icons/icon-512x512.png',
-  'https://drkimogad.github.io/Pet-Health-Tracker/favicon.ico',
+  './styles.css',
+  './script.js',
+  './manifest.json',
+  './icons/icon-192x192.png',
+  './icons/icon-512x512.png',
+  './favicon.ico',
   OFFLINE_URL
 ];
 
