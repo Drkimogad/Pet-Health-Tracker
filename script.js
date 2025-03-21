@@ -251,7 +251,7 @@ function deleteOverdueReminder(profileIndex, reminderKey) {
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register(
-            'https://drkimogad.github.io/Pet-Health-Tracker/service-worker.js',
+            './service-worker.js',
             {
                 scope: '/Pet-Health-Tracker/'
             }
