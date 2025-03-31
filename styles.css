@@ -119,6 +119,27 @@ button:hover {
   background-color: var(--primary-dark);
 }
 
+/* Edit Button */
+.editProfileButton {
+  background: #2196F3 !important;
+}
+
+/* Share Button */
+.shareProfileButton {
+  background: #673AB7 !important;
+}
+
+/* Button States */
+button:active {
+  transform: scale(0.98);
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+
 #logoutButton {
   display: block;
   margin: 20px auto;
