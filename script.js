@@ -148,11 +148,15 @@ function loadSavedPetProfile() {
           <div id="overdueReminders-${index}" class="overdueReminders"></div>
           <div id="upcomingReminders-${index}" class="upcomingReminders"></div>
           <!-- Buttons -->
-          <button class="deleteProfileButton" data-index="${index}">Delete</button>
-          <button class="printProfileButton" data-index="${index}">Print</button>
-          <button class="generateQRButton" data-index="${index}">QR Code</button>
-        </div>
-      `;
+         <div class="pet-card-buttons">
+            <button class="editProfileButton" data-index="${index}">✏️ Edit</button>
+            <button class="shareProfileButton" data-index="${index}">📤 Share</button>
+            <button class="deleteProfileButton" data-index="${index}">🗑️ Delete</button>
+            <button class="printProfileButton" data-index="${index}">🖨️ Print</button>
+            <button class="generateQRButton" data-index="${index}">🔳 QR Code</button>
+         </div>
+     </div>
+    `;
       savedProfilesList.appendChild(petCard);
       highlightReminders(profile, index);
     });
@@ -187,12 +191,100 @@ function generateQRCode(profileIndex) {
 // ======== 8. HELPER FUNCTIONS (UNCHANGED) ========
 // ... (highlightReminders, deletePetProfile, printPetProfile, etc. remain exactly as in your original code) ...
         // Add event listeners for delete and print buttons for each profile
-        document.querySelectorAll('.deleteProfileButton').forEach((button) => {
-            button.addEventListener('click', (event) => {
-                const index = event.target.dataset.index;
-                deletePetProfile(index);
-            });
-        });
+// Add these new handlers:
+document.querySelectorAll('.editProfileButton').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    const index = e.target.dataset.index;
+    editPetProfile(index);
+  });
+});
+
+document.querySelectorAll('.shareProfileButton').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    const index = e.target.dataset.index;
+    sharePetProfile(index);
+  });
+});
+
+
+  // Your edit logic here //
+  // Edit Profile Handler
+function editPetProfile(index) {
+  const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
+  const profile = savedProfiles[index];
+  
+  // Auto-fill form with existing data
+  document.getElementById('petName').value = profile.petName;
+  document.getElementById('breed').value = profile.breed;
+  document.getElementById('age').value = profile.age;
+  document.getElementById('weight').value = profile.weight;
+  document.getElementById('microchipId').value = profile.microchip?.id || '';
+  document.getElementById('microchipDate').value = profile.microchip?.date || '';
+  document.getElementById('microchipVendor').value = profile.microchip?.vendor || '';
+  document.getElementById('allergies').value = profile.allergies;
+  document.getElementById('medicalHistory').value = profile.medicalHistory;
+  document.getElementById('dietPlan').value = profile.dietPlan;
+  document.getElementById('moodSelector').value = profile.mood || '';
+  document.getElementById('emergencyContactName').value = profile.emergencyContacts?.[0]?.name || '';
+  document.getElementById('emergencyContactPhone').value = profile.emergencyContacts?.[0]?.phone || '';
+  document.getElementById('emergencyContactRelationship').value = profile.emergencyContacts?.[0]?.relationship || '';
+  document.getElementById('vaccinationsAndDewormingReminder').value = profile.vaccinationsAndDewormingReminder || '';
+  document.getElementById('medicalCheckupsReminder').value = profile.medicalCheckupsReminder || '';
+  document.getElementById('groomingReminder').value = profile.groomingReminder || '';
+
+  // Delete old profile
+  savedProfiles.splice(index, 1);
+  localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+  
+  // Scroll to form
+  document.getElementById('dietForm').scrollIntoView();
+}
+  console.log("Edit profile:", index);
+}
+//____________________
+//share pet profile//
+//----------------------
+  // Your share logic here
+  function sharePetProfile(index) {
+  const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
+  const profile = savedProfiles[index];
+  
+  const shareData = {
+    title: `${profile.petName}'s Health Profile`,
+    text: `Pet Details:
+Name: ${profile.petName}
+Breed: ${profile.breed}
+Age: ${profile.age}
+Allergies: ${profile.allergies || 'None'}
+Emergency Contact: ${profile.emergencyContacts?.[0]?.name || 'None'} (${profile.emergencyContacts?.[0]?.phone || 'N/A'})`,
+    url: window.location.href
+  };
+
+  // Web Share API (mobile)
+  if (navigator.share) {
+    navigator.share(shareData).catch(e => {
+      // Fallback if share cancelled
+      console.log('Share cancelled:', e);
+    });
+  } 
+  // Fallback for desktop
+  else {
+    const text = `${shareData.title}\n${shareData.text}\n${shareData.url}`;
+    prompt('Copy to share:', text);
+  }
+  }
+  navigator.share?.({
+    title: `Share ${savedProfiles[index].petName}'s Profile`,
+    text: `Check out ${savedProfiles[index].petName}'s health details`,
+    url: window.location.href
+  }).catch(console.error);
+}
+   document.querySelectorAll('.deleteProfileButton').forEach((button) => {
+   button.addEventListener('click', (event) => {
+   const index = event.target.dataset.index;
+   deletePetProfile(index);
+    });
+});
 
         document.querySelectorAll('.printProfileButton').forEach((button) => {
             button.addEventListener('click', (event) => {
