@@ -6,18 +6,18 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>Welcome to your dashboard</title>
+    <title>Pet Health Tracker</title>
     <link rel="icon" href="./favicon.ico" type="image/x-icon">    
     <link rel="manifest" href="./manifest.json">
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
     <noscript>
-  <div class="offline-warning">
-    <h2>JavaScript Required</h2>
-    <p>Please enable JavaScript to use this application.</p>
-    <p>When offline, you can still view cached content.</p>
-  </div>
+        <div class="offline-warning">
+            <h2>JavaScript Required</h2>
+            <p>Please enable JavaScript to use this application.</p>
+            <p>When offline, you can still view cached content.</p>
+        </div>
     </noscript>
     
     <div class="background-container">
@@ -25,15 +25,17 @@
             <h1>Pet Health Tracker</h1>
         </header>
 
-        <!-- Authentication Section (Login/Sign-Up) -->
+        <!-- Authentication Section -->
         <section id="authSection">
             <div id="signUpForm">
                 <h2>Sign-Up</h2>
                 <form id="signUp">
                     <label for="signUpEmail">Email:</label>
-                    <input type="email" id="signUpEmail" name="email" required autocomplete="email"><br><br>
+                    <input type="email" id="signUpEmail" name="email" required autocomplete="email">
+                    
                     <label for="signUpPassword">Password:</label>
-                    <input type="password" id="signUpPassword" name="password" required autocomplete="new-password"><br><br>
+                    <input type="password" id="signUpPassword" name="password" required autocomplete="new-password">
+                    
                     <button type="submit">Sign Up</button>
                 </form>
             </div>
@@ -42,9 +44,11 @@
                 <h2>Login</h2>
                 <form id="login">
                     <label for="loginEmail">Email:</label>
-                    <input type="email" id="loginEmail" name="email" required autocomplete="email"><br><br>
+                    <input type="email" id="loginEmail" name="email" required autocomplete="email">
+                    
                     <label for="loginPassword">Password:</label>
-                    <input type="password" id="loginPassword" name="password" required autocomplete="current-password"><br><br>
+                    <input type="password" id="loginPassword" name="password" required autocomplete="current-password">
+                    
                     <button type="submit">Login</button>
                 </form>
             </div>
@@ -54,64 +58,120 @@
         <main id="mainContent" style="display: none;">
             <div class="form-container">
                 <form id="dietForm">
-                    <label for="petName">Pet Name:</label>
-                    <input type="text" id="petName" name="petName" required><br><br>
+                    <!-- Basic Info Section -->
+                    <fieldset>
+                        <legend>Basic Information</legend>
+                        
+                        <label for="petName">Pet Name:</label>
+                        <input type="text" id="petName" name="petName" required>
+                        
+                        <label for="breed">Breed:</label>
+                        <input type="text" id="breed" name="breed" required>
+                        
+                        <label for="age">Age:</label>
+                        <input type="text" id="age" name="age" required>
+                        
+                        <label for="weight">Weight:</label>
+                        <input type="text" id="weight" name="weight" required>
+                    </fieldset>
 
-                    <label for="breed">Breed:</label>
-                    <input type="text" id="breed" name="breed" required placeholder="Breed"><br><br>
+                    <!-- Microchip Info Section -->
+                    <fieldset>
+                        <legend>Microchip Information</legend>
+                        
+                        <label for="microchipId">Microchip ID:</label>
+                        <input type="text" id="microchipId" name="microchipId">
+                        
+                        <label for="microchipDate">Implant Date:</label>
+                        <input type="date" id="microchipDate" name="microchipDate">
+                        
+                        <label for="microchipVendor">Vendor:</label>
+                        <input type="text" id="microchipVendor" name="microchipVendor">
+                    </fieldset>
 
-                    <label for="age">Age:</label>
-                    <input type="text" id="age" name="age" required placeholder="Age (e.g., 2 years old Labrador)"><br><br>
+                    <!-- Health Info Section -->
+                    <fieldset>
+                        <legend>Health Information</legend>
+                        
+                        <label for="allergies">Allergies:</label>
+                        <textarea id="allergies" name="allergies"></textarea>
+                        
+                        <label for="medicalHistory">Medical History:</label>
+                        <textarea id="medicalHistory" name="medicalHistory"></textarea>
+                        
+                        <label for="dietPlan">Diet Plan:</label>
+                        <textarea id="dietPlan" name="dietPlan"></textarea>
+                        
+                        <label for="moodSelector">Current Mood:</label>
+                        <select id="moodSelector" name="mood">
+                            <option value="">Select mood...</option>
+                            <option value="😊 Happy">Happy</option>
+                            <option value="😢 Sad">Sad</option>
+                            <option value="😡 Angry">Angry</option>
+                            <option value="🥱 Tired">Tired</option>
+                            <option value="🤒 Sick">Sick</option>
+                        </select>
+                    </fieldset>
 
-                    <label for="weight">Weight:</label>
-                    <input type="text" id="weight" name="weight" required placeholder="Weight (e.g., 12 kg)"><br><br>
+                    <!-- Emergency Contacts Section -->
+                    <fieldset>
+                        <legend>Emergency Contact</legend>
+                        
+                        <label for="emergencyContactName">Name:</label>
+                        <input type="text" id="emergencyContactName" name="emergencyContactName">
+                        
+                        <label for="emergencyContactPhone">Phone:</label>
+                        <input type="tel" id="emergencyContactPhone" name="emergencyContactPhone">
+                        
+                        <label for="emergencyContactRelationship">Relationship:</label>
+                        <input type="text" id="emergencyContactRelationship" name="emergencyContactRelationship" placeholder="Vet/Owner/etc.">
+                    </fieldset>
 
-                    <label for="allergies">Allergies:</label>
-                    <textarea id="allergies" name="allergies" placeholder="Allergies (if any)"></textarea><br><br>
+                    <!-- Reminders Section -->
+                    <fieldset>
+                        <legend>Reminders</legend>
+                        
+                        <label for="vaccinationsAndDewormingReminder">Vaccinations/Deworming:</label>
+                        <input type="date" id="vaccinationsAndDewormingReminder" name="vaccinationsAndDewormingReminder">
+                        
+                        <label for="medicalCheckupsReminder">Medical Check-ups:</label>
+                        <input type="date" id="medicalCheckupsReminder" name="medicalCheckupsReminder">
+                        
+                        <label for="groomingReminder">Grooming:</label>
+                        <input type="date" id="groomingReminder" name="groomingReminder">
+                    </fieldset>
 
-                    <label for="medicalHistory">Medical History:</label>
-                    <textarea id="medicalHistory" name="medicalHistory" placeholder="Enter any medical history"></textarea><br><br>
-
-                    <label for="dietPlan">Diet Plan:</label>
-                    <textarea id="dietPlan" name="dietPlan" placeholder="Enter diet plan for pet"></textarea><br><br>
-
-                    <label for="vaccinationsAndDewormingReminder">Vaccinations and Deworming Reminder:</label>
-                    <input type="date" id="vaccinationsAndDewormingReminder" name="vaccinationsAndDewormingReminder"><br><br>
-
-                    <label for="medicalCheckupsReminder">Medical Check-ups Reminder:</label>
-                    <input type="date" id="medicalCheckupsReminder" name="medicalCheckupsReminder"><br><br>
-
-                    <label for="groomingReminder">Grooming Reminder:</label>
-                    <input type="date" id="groomingReminder" name="groomingReminder"><br><br>
-
-                    <label for="petPhoto">Upload Pet Photo:</label>
-                    <input type="file" id="petPhoto" name="petPhoto" accept="image/*"><br><br>
+                    <!-- Photo Upload -->
+                    <fieldset>
+                        <legend>Pet Photo</legend>
+                        <label for="petPhoto">Upload Photo:</label>
+                        <input type="file" id="petPhoto" name="petPhoto" accept="image/*">
+                    </fieldset>
 
                     <button type="submit">Save Pet Profile</button>
                 </form>
             </div>
 
-            <h3>Saved Pet Profiles</h3>
-            <ul id="savedProfilesList">
-                <!-- Each saved profile will dynamically have a delete and print button -->
-                <li class="profile-item">
-                    <p>Pet Name: Fido</p>
-                    <button class="deleteProfileButton">Delete</button>
-                    <button class="printProfileButton">Print</button>
-                </li>
-            </ul>
-
-            <!-- Reminder Containers -->
-            <section id="remindersSection">
-                 <div id="upcomingReminders-0" class="reminders-container">
-                    <!-- Upcoming reminders will be dynamically inserted here -->
-                 </div>
-
-                 <div id="overdueReminders-0" class="reminders-container">
-                 <!-- Overdue reminders will be dynamically inserted here -->
-                </div>
+            <!-- Saved Profiles Section -->
+            <section class="saved-profiles">
+                <h3>Saved Pet Profiles</h3>
+                <ul id="savedProfilesList">
+                    <!-- Dynamically populated by script.js -->
+                </ul>
             </section>
 
+            <!-- Reminders Display -->
+            <section id="remindersSection">
+                <div class="reminders-container" id="upcomingReminders">
+                    <h4>Upcoming Reminders</h4>
+                    <!-- Dynamically populated -->
+                </div>
+                
+                <div class="reminders-container" id="overdueReminders">
+                    <h4>Overdue Reminders</h4>
+                    <!-- Dynamically populated -->
+                </div>
+            </section>
         </main>
 
         <!-- Logout Button -->
@@ -119,7 +179,7 @@
     </div>
   
     <footer>
-        <p>&copy; 2024 Pet Health Tracker. All rights reserved.</p>
+        <p>&copy; 2024 Pet Health Tracker</p>
     </footer>
 
     <script src="script.js"></script>
