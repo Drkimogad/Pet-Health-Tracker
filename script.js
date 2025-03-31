@@ -16,30 +16,41 @@ document.addEventListener('DOMContentLoaded', () => {
 const users = JSON.parse(localStorage.getItem('users')) || [];
 
 // ======== 2. SIGN-UP HANDLER ========
-document.getElementById('signUp').addEventListener('submit', function (event) {
+document.getElementById('signUp').addEventListener('submit', function(event) {
   event.preventDefault();
-  const email = document.getElementById('signUpEmail').value;
-  const password = document.getElementById('signUpPassword').value;
+  
+  const email = document.getElementById('signUpEmail').value.trim();
+  const password = document.getElementById('signUpPassword').value.trim();
 
   // Validation
-  if (!email.includes("@") || !email.includes(".")) {
-    alert("Invalid email!");
-    return;
-  }
-  if (password.length < 6) {
-    alert("Password must be ≥6 characters!");
+  if (!email || !password) {
+    alert('Please fill all fields');
     return;
   }
 
-  const existingUser = users.find(user => user.email === email);
-  if (existingUser) {
-    alert('User already exists!');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    alert('Invalid email format');
+    return;
+  }
+
+  if (password.length < 6) {
+    alert('Password must be at least 6 characters');
+    return;
+  }
+
+  const users = JSON.parse(localStorage.getItem('users')) || [];
+  
+  if (users.some(user => user.email === email)) {
+    alert('Email already registered');
     return;
   }
 
   users.push({ email, password });
   localStorage.setItem('users', JSON.stringify(users));
-  alert('Sign-up successful!');
+  
+  alert('Sign-up successful! Please login');
+  document.getElementById('signUpForm').style.display = 'none';
+  document.getElementById('loginForm').style.display = 'block';
   event.target.reset();
 });
 
