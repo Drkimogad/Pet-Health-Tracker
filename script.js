@@ -49,8 +49,8 @@ document.getElementById('signUp').addEventListener('submit', function(event) {
   localStorage.setItem('users', JSON.stringify(users));
   
   alert('Sign-up successful! Please login');
-  document.getElementById('signUpForm').style.display = 'none';
-  document.getElementById('loginForm').style.display = 'block';
+  document.getElementById('signUp').style.display = 'none';
+  document.getElementById('login').style.display = 'block';
   event.target.reset();
 });
 
