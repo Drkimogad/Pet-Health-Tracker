@@ -32,10 +32,12 @@ document.getElementById('signUp').addEventListener('submit', function(event) {
             console.log("Firebase Sign-up successful:", user);
             console.log("Full userCredential:", userCredential); // Added logging
             alert('Sign-up successful! Please login');
+            setTimeout(() => {
             document.getElementById('signUp').style.display = 'none';
             document.getElementById('login').style.display = 'block';
             event.target.reset();
-        })
+            }, 100); // Add a 100ms delay
+            
         .catch((error) => {
             // Handle errors here.
             const errorCode = error.code;
