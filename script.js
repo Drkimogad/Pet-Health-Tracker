@@ -272,17 +272,31 @@ function highlightReminders(reminders, index) {
 function generateQRCode(profileIndex) {
     const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
     const profile = savedProfiles[profileIndex];
-    const qrText = `
+
+    if (!profile) {
+        alert("Profile not found!");
+        return;
+    }
+
+    let qrText = `
         PET PROFILE
-        Name: ${profile.petName}
-        Allergies: ${profile.allergies}
-        Contact: <span class="math-inline">\{profile\.emergencyContacts\[0\]?\.name \|\| 'N/A'\} \(</span>{profile.emergencyContacts[0]?.phone || 'N/A'})
+        Name: ${profile.petName || 'N/A'}
+        Breed: ${profile.breed || 'N/A'}
+        Age: ${profile.age || 'N/A'}
+        Weight: ${profile.weight || 'N/A'}
+        Microchip ID: ${profile.microchip?.id || 'N/A'}
+        Allergies: ${profile.allergies || 'N/A'}
+        Medical History: ${profile.medicalHistory || 'N/A'}
+        Diet Plan: ${profile.dietPlan || 'N/A'}
+        Vaccinations: ${profile.vaccinationsAndDewormingReminder || 'N/A'}
+        Emergency Contact: ${profile.emergencyContacts?.[0]?.name || 'N/A'} (${profile.emergencyContacts?.[0]?.phone || 'N/A'})
     `;
 
-    const canvas = document.createElement('canvas');
-    QRCode.toCanvas(canvas, qrText, { width: 200 }, (error) => {
-        if (error) alert("QR generation failed!");
-        else {
+    QRCode.toCanvas(document.createElement('canvas'), qrText, { width: 300 }, (error, canvas) => {
+        if (error) {
+            console.error("QR generation error:", error);
+            alert("QR generation failed!");
+        } else {
             const qrWindow = window.open('', 'QR Code');
             qrWindow.document.write('<h2>Scan for Pet Info</h2>');
             qrWindow.document.body.appendChild(canvas);
@@ -290,39 +304,135 @@ function generateQRCode(profileIndex) {
     });
 }
 
-// ======== 8. HELPER FUNCTIONS ========
-// Edit Profile Handler
-function editPetProfile(index) {
-    const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
-    const profile = savedProfiles[index];
-
-    // Auto-fill form with existing data
-    document.getElementById('petName').value = profile.petName;
-    document.getElementById('breed').value = profile.breed;
-    document.getElementById('age').value = profile.age;
-    document.getElementById('weight').value = profile.weight;
-    document.getElementById('microchipId').value = profile.microchip?.id || '';
-    document.getElementById('microchipDate').value = profile.microchip?.date || '';
-    document.getElementById('microchipVendor').value = profile.microchip?.vendor || '';
-    document.getElementById('allergies').value = profile.allergies;
-    document.getElementById('medicalHistory').value = profile.medicalHistory;
-    document.getElementById('dietPlan').value = profile.dietPlan;
-    document.getElementById('moodSelector').value = profile.mood || '';
-    document.getElementById('emergencyContactName').value = profile.emergencyContacts?.[0]?.name || '';
-    document.getElementById('emergencyContactPhone').value = profile.emergencyContacts?.[0]?.phone || '';
-    document.getElementById('emergencyContactRelationship').value = profile.emergencyContacts?.[0]?.relationship || '';
-    document.getElementById('vaccinationsAndDewormingReminder').value = profile.vaccinationsAndDewormingReminder || '';
-    document.getElementById('medicalCheckupsReminder').value = profile.medicalCheckupsReminder || '';
-    document.getElementById('groomingReminder').value = profile.groomingReminder || '';
-
-    // Delete old profile
-    savedProfiles.splice(index, 1);
-    localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
-
-    // Scroll to form
-    document.getElementById('dietForm').scrollIntoView();
-    console.log("Edit profile:", index);
+function attachProfileButtonListeners() {
+    document.querySelectorAll('.generateQRButton').forEach(button => {
+        button.addEventListener('click', function() {
+            const index = this.getAttribute('data-index');
+            generateQRCode(index);
+        });
+    });
 }
+
+// Assuming loadSavedPetProfile() is called after DOMContentLoaded and loads pet profiles
+// and then calls attachProfileButtonListeners()
+
+// ======== 8. HELPER FUNCTIONS ========
+// Edit Form//
+let editingProfileIndex = null;
+
+        function editPetProfile(index) {
+            const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
+            const profile = savedProfiles[index];
+
+            editingProfileIndex = index;
+
+            document.getElementById('petName').value = profile.petName;
+            document.getElementById('breed').value = profile.breed;
+            document.getElementById('age').value = profile.age;
+            document.getElementById('weight').value = profile.weight;
+            document.getElementById('microchipId').value = profile.microchip?.id || '';
+            document.getElementById('microchipDate').value = profile.microchip?.date || '';
+            document.getElementById('microchipVendor').value = profile.microchip?.vendor || '';
+            document.getElementById('allergies').value = profile.allergies;
+            document.getElementById('medicalHistory').value = profile.medicalHistory;
+            document.getElementById('dietPlan').value = profile.dietPlan;
+            document.getElementById('moodSelector').value = profile.mood || '';
+            document.getElementById('emergencyContactName').value = profile.emergencyContacts?.[0]?.name || '';
+            document.getElementById('emergencyContactPhone').value = profile.emergencyContacts?.[0]?.phone || '';
+            document.getElementById('emergencyContactRelationship').value = profile.emergencyContacts?.[0]?.relationship || '';
+            document.getElementById('vaccinationsAndDewormingReminder').value = profile.vaccinationsAndDewormingReminder || '';
+            document.getElementById('medicalCheckupsReminder').value = profile.medicalCheckupsReminder || '';
+            document.getElementById('groomingReminder').value = profile.groomingReminder || '';
+
+            // Pet photo
+            if (profile.petPhoto) {
+                document.getElementById('petPhotoPreview').src = profile.petPhoto;
+                document.getElementById('petPhotoPreview').style.display = 'block';
+            } else {
+                document.getElementById('petPhotoPreview').src = '';
+                document.getElementById('petPhotoPreview').style.display = 'none';
+            }
+
+            document.getElementById('dietForm').scrollIntoView();
+        }
+
+        document.getElementById('cancelEdit').addEventListener('click', function() {
+            editingProfileIndex = null;
+            document.getElementById('dietForm').reset();
+            document.getElementById('petPhotoPreview').src = '';
+            document.getElementById('petPhotoPreview').style.display = 'none';
+        });
+
+        document.getElementById('petPhoto').addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('petPhotoPreview').src = e.target.result;
+                    document.getElementById('petPhotoPreview').style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            } else {
+                document.getElementById('petPhotoPreview').src = '';
+                document.getElementById('petPhotoPreview').style.display = 'none';
+            }
+        });
+
+        document.getElementById('clearImage').addEventListener('click', function() {
+            document.getElementById('petPhoto').value = '';
+            document.getElementById('petPhotoPreview').src = '';
+            document.getElementById('petPhotoPreview').style.display = 'none';
+        });
+
+        document.getElementById('dietForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const petProfile = {
+                petName: document.getElementById('petName').value,
+                breed: document.getElementById('breed').value,
+                age: document.getElementById('age').value,
+                weight: document.getElementById('weight').value,
+                microchip: {
+                    id: document.getElementById('microchipId').value,
+                    date: document.getElementById('microchipDate').value,
+                    vendor: document.getElementById('microchipVendor').value,
+                },
+                allergies: document.getElementById('allergies').value,
+                medicalHistory: document.getElementById('medicalHistory').value,
+                dietPlan: document.getElementById('dietPlan').value,
+                emergencyContacts: [
+                    {
+                        name: document.getElementById('emergencyContactName').value,
+                        phone: document.getElementById('emergencyContactPhone').value,
+                        relationship: document.getElementById('emergencyContactRelationship').value,
+                    },
+                ],
+                mood: document.getElementById('moodSelector').value,
+                vaccinationsAndDewormingReminder: document.getElementById('vaccinationsAndDewormingReminder').value,
+                medicalCheckupsReminder: document.getElementById('medicalCheckupsReminder').value,
+                groomingReminder: document.getElementById('groomingReminder').value,
+                petPhoto: document.getElementById('petPhoto').files[0]
+                    ? URL.createObjectURL(document.getElementById('petPhoto').files[0])
+                    : document.getElementById('petPhotoPreview').src, // Use preview src if no new file
+            };
+
+            let savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+
+            if (editingProfileIndex !== null) {
+                savedProfiles[editingProfileIndex] = petProfile;
+                editingProfileIndex = null;
+                alert('Profile updated!');
+            } else {
+                savedProfiles.push(petProfile);
+                alert('Profile saved!');
+            }
+
+            localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+            // loadSavedPetProfile(); // Replace with your load function
+            event.target.reset();
+            document.getElementById('petPhotoPreview').src = '';
+            document.getElementById('petPhotoPreview').style.display = 'none';
+        });
 
 // Share Pet Profile
 function sharePetProfile(index) {
