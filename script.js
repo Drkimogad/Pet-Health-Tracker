@@ -30,10 +30,20 @@ document.getElementById('signUp').addEventListener('submit', function(event) {
             // Sign-up successful.
             console.log("Firebase Sign-up successful:", userCredential.user);
             alert('Sign-up successful! Redirecting to login...');
-            document.getElementById('authSection').style.display = 'block'; // Show the auth section
-            document.getElementById('mainContent').style.display = 'none';  // Hide main content
-            document.getElementById('login').style.display = 'block';      // Show login form
-            document.getElementById('signUp').style.display = 'none';     // Hide signup form
+            console.log("Attempting to hide signUp and show login using display");
+
+            const signUpElement = document.getElementById('signUp');
+            const loginElement = document.getElementById('login');
+
+            console.log("signUpElement current display:", getComputedStyle(signUpElement).display);
+            console.log("loginElement current display:", getComputedStyle(loginElement).display);
+
+            signUpElement.style.display = 'none';
+            loginElement.style.display = 'block';
+
+            console.log("signUpElement new display:", getComputedStyle(signUpElement).display);
+            console.log("loginElement new display:", getComputedStyle(loginElement).display);
+
             event.target.reset();
         })
         .catch((error) => {
