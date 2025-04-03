@@ -1,4 +1,5 @@
 // Reminders instamp alert//
+const REMINDER_THRESHOLD_DAYS = 3; // Or any other number of days you prefer
 const reminderFields = {
     vaccinationsAndDewormingReminder: 'Vaccinations/Deworming',
     medicalCheckupsReminder: 'Medical Check-ups',
