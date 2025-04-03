@@ -22,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
             petPhotoPreview.style.display = 'none';
         }
     });
-});
 
     if (loggedInUser) {
         authSection.style.display = 'none';
@@ -30,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         logoutButton.style.display = 'block';
         loadSavedPetProfile();
     }
-});
+}); // Corrected closing brace here
 
 const users = JSON.parse(localStorage.getItem('users')) || [];
 
