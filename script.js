@@ -175,6 +175,12 @@ document.getElementById('dietForm').addEventListener('submit', function (event) 
 });
 
 // ======== 6. LOAD PET PROFILES (WITH NEW FIELDS) ========
+function formatReminder(dateTimeString) {
+    if (!dateTimeString) return 'N/A';
+    const date = new Date(dateTimeString);
+    return date.toLocaleString();
+}
+
 function loadSavedPetProfile() {
     const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
     const savedProfilesList = document.getElementById('savedProfilesList');
