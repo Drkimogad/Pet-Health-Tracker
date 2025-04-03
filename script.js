@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 const users = JSON.parse(localStorage.getItem('users')) || [];
 
 // ======== 2. SIGN-UP HANDLER ========
+// ======== 2. SIGN-UP HANDLER ========
 document.getElementById('signUp').addEventListener('submit', function(event) {
     event.preventDefault();
 
@@ -32,19 +33,11 @@ document.getElementById('signUp').addEventListener('submit', function(event) {
             alert('Sign-up successful! Redirecting to login...');
             console.log("Attempting to hide signUp and show login using display");
 
-            const signUpElement = document.getElementById('signUp');
-            const loginElement = document.getElementById('login');
-
-            console.log("signUpElement current display:", getComputedStyle(signUpElement).display);
-            console.log("loginElement current display:", getComputedStyle(loginElement).display);
-
-            signUpElement.style.display = 'none';
-            loginElement.style.display = 'block';
-
-            console.log("signUpElement new display:", getComputedStyle(signUpElement).display);
-            console.log("loginElement new display:", getComputedStyle(loginElement).display);
-
-            event.target.reset();
+            Promise.resolve().then(() => { // Ensure this runs in the next microtask
+                document.getElementById('signUp').style.display = 'none';
+                document.getElementById('login').style.display = 'block';
+                event.target.reset();
+            });
         })
         .catch((error) => {
             // Handle errors here.
