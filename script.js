@@ -264,7 +264,7 @@ function highlightReminders(reminders, index) {
         }
     });
 }
-
+//* delete overdue reminder function
 function deleteOverdueReminder(profileIndex, reminderKey) {
     const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
     if (savedProfiles && savedProfiles[profileIndex]) {
