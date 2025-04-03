@@ -282,7 +282,6 @@ Emergency Contact: ${profile.emergencyContacts?.[0]?.name || 'None'} (${profile.
     const text = `${shareData.title}\n${shareData.text}\n${shareData.url}`;
     prompt('Copy to share:', text);
   }
-  }
   navigator.share?.({
     title: `Share ${savedProfiles[index].petName}'s Profile`,
     text: `Check out ${savedProfiles[index].petName}'s health details`,
