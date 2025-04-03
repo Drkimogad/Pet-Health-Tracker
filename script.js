@@ -22,36 +22,28 @@ document.getElementById('signUp').addEventListener('submit', function(event) {
     const email = document.getElementById('signUpEmail').value.trim();
     const password = document.getElementById('signUpPassword').value.trim();
 
-    // Validation
-    if (!email || !password) {
-        alert('Please fill all fields');
-        return;
-    }
+    // Validation...
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        alert('Invalid email format');
-        return;
-    }
-
-    if (password.length < 6) {
-        alert('Password must be at least 6 characters');
-        return;
-    }
-
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-
-    if (users.some(user => user.email === email)) {
-        alert('Email already registered');
-        return;
-    }
-
-    users.push({ email, password });
-    localStorage.setItem('users', JSON.stringify(users));
-
-    alert('Sign-up successful! Please login');
-    document.getElementById('signUp').style.display = 'none';
-    document.getElementById('login').style.display = 'block';
-    event.target.reset();
+    // Use Firebase to create a new user
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            // Sign-up successful.
+            const user = userCredential.user;
+            console.log("Firebase Sign-up successful:", user);
+            console.log("Full userCredential:", userCredential); // Added logging
+            alert('Sign-up successful! Please login');
+            document.getElementById('signUp').style.display = 'none';
+            document.getElementById('login').style.display = 'block';
+            event.target.reset();
+        })
+        .catch((error) => {
+            // Handle errors here.
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.error("Firebase Sign-up error:", errorCode, errorMessage);
+            console.error("Full Firebase error object:", error); // Added logging
+            alert('Sign-up failed: ' + errorMessage);
+        });
 });
 
 // ======== 3. LOGIN HANDLER ========
