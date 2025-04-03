@@ -31,13 +31,9 @@ document.getElementById('signUp').addEventListener('submit', function(event) {
             // Sign-up successful.
             console.log("Firebase Sign-up successful:", userCredential.user);
             alert('Sign-up successful! Redirecting to login...');
-            console.log("Attempting to hide signUp and show login using display");
 
-            Promise.resolve().then(() => { // Ensure this runs in the next microtask
-                document.getElementById('signUp').style.display = 'none';
-                document.getElementById('login').style.display = 'block';
-                event.target.reset();
-            });
+            // Force a page reload
+            window.location.reload();
         })
         .catch((error) => {
             // Handle errors here.
@@ -47,7 +43,6 @@ document.getElementById('signUp').addEventListener('submit', function(event) {
             alert('Sign-up failed: ' + errorMessage);
         });
 });
-
 // ======== 3. LOGIN HANDLER ========
 document.getElementById('login').addEventListener('submit', function (event) {
     event.preventDefault();
