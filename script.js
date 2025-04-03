@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 const users = JSON.parse(localStorage.getItem('users')) || [];
 
 // ======== 2. SIGN-UP HANDLER ========
+// ======== 2. SIGN-UP HANDLER ========
 document.getElementById('signUp').addEventListener('submit', function(event) {
     event.preventDefault();
 
@@ -36,8 +37,8 @@ document.getElementById('signUp').addEventListener('submit', function(event) {
             document.getElementById('signUp').style.display = 'none';
             document.getElementById('login').style.display = 'block';
             event.target.reset();
-            
-        .catch((error) => { // This is where the .catch() should be
+        })
+        .catch((error) => { // Correct placement of .catch()
             // Handle errors here.
             const errorCode = error.code;
             const errorMessage = error.message;
