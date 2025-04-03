@@ -7,10 +7,10 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Pet Health Tracker</title>
-    <link rel="icon" href="./favicon.ico" type="image/x-icon">    
+    <link rel="icon" href="./favicon.ico" type="image/x-icon">
     <link rel="manifest" href="./manifest.json">
     <link rel="stylesheet" href="./styles.css">
-     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging-compat.js"></script>
@@ -24,15 +24,15 @@
             appId: "1:251170885789:web:2c16a20f96da9f6a960474",
             measurementId: "G-GKD3RVNVLV"
         };
-      
+
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-      
+
         // Get references to the services
         const auth = firebase.auth();
         const firestore = firebase.firestore();
         const messaging = firebase.messaging();
-      </script>
+    </script>
 </head>
 <body>
     <noscript>
@@ -42,23 +42,22 @@
             <p>When offline, you can still view cached content.</p>
         </div>
     </noscript>
-    
+
     <div class="background-container">
         <header>
             <h1>Pet Health Tracker</h1>
         </header>
 
-        <!-- Authentication Section -->
         <section id="authSection">
             <div id="signUpForm">
                 <h2>Sign-Up</h2>
                 <form id="signUp">
                     <label for="signUpEmail">Email:</label>
                     <input type="email" id="signUpEmail" name="email" required autocomplete="email">
-                    
+
                     <label for="signUpPassword">Password:</label>
                     <input type="password" id="signUpPassword" name="password" required autocomplete="new-password">
-                    
+
                     <button type="submit">Sign Up</button>
                 </form>
             </div>
@@ -68,72 +67,67 @@
                 <form id="login">
                     <label for="loginEmail">Email:</label>
                     <input type="email" id="loginEmail" name="email" required autocomplete="email">
-                    
+
                     <label for="loginPassword">Password:</label>
                     <input type="password" id="loginPassword" name="password" required autocomplete="current-password">
-                    
+
                     <button type="submit">Login</button>
                 </form>
             </div>
         </section>
 
-        <!-- Main Content Section -->
         <main id="mainContent" style="display: none;">
             <div class="form-container">
                 <form id="dietForm">
-                    <!-- Basic Info Section -->
                     <fieldset>
                         <legend>Basic Information</legend>
-                        
+
                         <label for="petName">Pet Name:</label>
                         <input type="text" id="petName" name="petName" required>
 
-                    <!-- Photo Upload -->
-                    <fieldset>
-                        <legend>Pet Photo</legend>
-                        <label for="petPhoto">Upload Photo:</label>
-                        <input type="file" id="petPhoto" name="petPhoto" accept="image/*">
-                        <img id="petPhotoPreview" src="#" alt="Pet Photo Preview" style="max-width: 100px; max-height: 100px; display: none;">
-                    </fieldset>
+                        <fieldset>
+                            <legend>Pet Photo</legend>
+                            <label for="petPhoto">Upload Photo:</label>
+                            <input type="file" id="petPhoto" name="petPhoto" accept="image/*">
+                            <img id="petPhotoPreview" src="#" alt="Pet Photo Preview" style="max-width: 100px; max-height: 100px; display: none;">
+                        </fieldset>
                         <button type="submit">Save Pet Profile</button>
-                        
+
                         <label for="breed">Breed:</label>
                         <input type="text" id="breed" name="breed" required>
-                        
+
                         <label for="age">Age:</label>
                         <input type="text" id="age" name="age" required>
-                        
+
                         <label for="weight">Weight:</label>
                         <input type="text" id="weight" name="weight" required>
                     </fieldset>
 
-                    <!-- Microchip Info Section -->
                     <fieldset>
                         <legend>Microchip Information</legend>
-                        
+
                         <label for="microchipId">Microchip ID:</label>
                         <input type="text" id="microchipId" name="microchipId">
-                        
+
                         <label for="microchipDate">Implant Date:</label>
                         <input type="date" id="microchipDate" name="microchipDate">
-                        
+
                         <label for="microchipVendor">Vendor:</label>
                         <input type="text" id="microchipVendor" name="microchipVendor">
                     </fieldset>
 
-                    <!-- Health Info Section -->
                     <fieldset>
                         <legend>Health Information</legend>
-                        
+
                         <label for="allergies">Allergies:</label>
                         <textarea id="allergies" name="allergies"></textarea>
-                        
+
                         <label for="medicalHistory">Medical History:</label>
                         <textarea id="medicalHistory" name="medicalHistory"></textarea>
-                        
+
                         <label for="dietPlan">Diet Plan:</label>
                         <textarea id="dietPlan" name="dietPlan"></textarea>
-                        
+
                         <label for="moodSelector">Current Mood:</label>
                         <select id="moodSelector" name="mood">
                             <option value="">Select mood...</option>
@@ -145,62 +139,54 @@
                         </select>
                     </fieldset>
 
-                    <!-- Emergency Contacts Section -->
                     <fieldset>
                         <legend>Emergency Contact</legend>
-                        
+
                         <label for="emergencyContactName">Name:</label>
                         <input type="text" id="emergencyContactName" name="emergencyContactName">
-                        
+
                         <label for="emergencyContactPhone">Phone:</label>
                         <input type="tel" id="emergencyContactPhone" name="emergencyContactPhone">
-                        
+
                         <label for="emergencyContactRelationship">Relationship:</label>
                         <input type="text" id="emergencyContactRelationship" name="emergencyContactRelationship" placeholder="Vet/Owner/etc.">
                     </fieldset>
 
-                    <!-- Reminders Section -->
                     <fieldset>
                         <legend>Reminders</legend>
-                        
+
                         <label for="vaccinationsAndDewormingReminder">Vaccinations/Deworming:</label>
-                        <input type="date" id="vaccinationsAndDewormingReminder" name="vaccinationsAndDewormingReminder">
-                        
+                        <input type="datetime-local" id="vaccinationsAndDewormingReminder" name="vaccinationsAndDewormingReminder">
+
                         <label for="medicalCheckupsReminder">Medical Check-ups:</label>
-                        <input type="date" id="medicalCheckupsReminder" name="medicalCheckupsReminder">
-                        
+                        <input type="datetime-local" id="medicalCheckupsReminder" name="medicalCheckupsReminder">
+
                         <label for="groomingReminder">Grooming:</label>
-                        <input type="date" id="groomingReminder" name="groomingReminder">
+                        <input type="datetime-local" id="groomingReminder" name="groomingReminder">
                     </fieldset>
                 </form>
             </div>
 
-            <!-- Saved Profiles Section -->
             <section class="saved-profiles">
                 <h3>Saved Pet Profiles</h3>
                 <ul id="savedProfilesList">
-                    <!-- Dynamically populated by script.js -->
-                </ul>
+                    </ul>
             </section>
 
-            <!-- Reminders Display -->
             <section id="remindersSection">
                 <div class="reminders-container" id="upcomingReminders">
                     <h4>Upcoming Reminders</h4>
-                    <!-- Dynamically populated -->
-                </div>
-                
+                    </div>
+
                 <div class="reminders-container" id="overdueReminders">
                     <h4>Overdue Reminders</h4>
-                    <!-- Dynamically populated -->
-                </div>
+                    </div>
             </section>
         </main>
 
-        <!-- Logout Button -->
         <button id="logoutButton" style="display: none;">Logout</button>
     </div>
-  
+
     <footer>
         <p>&copy; 2024 Pet Health Tracker</p>
     </footer>
