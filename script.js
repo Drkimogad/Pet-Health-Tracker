@@ -152,7 +152,7 @@ document.getElementById('dietForm').addEventListener('submit', function (event) 
         mood: document.getElementById('moodSelector').value,
         vaccinationsAndDewormingReminder: document.getElementById('vaccinationsAndDewormingReminder').value,
         medicalCheckupsReminder: document.getElementById('medicalCheckupsReminder').value,
-        groomingReminder: document.getElementById('groomingReminder').value,
+        groomingReminder: documentgetElementById('groomingReminder').value,
         petPhoto: document.getElementById('petPhoto').files[0]
             ? URL.createObjectURL(document.getElementById('petPhoto').files[0])
             : '',
@@ -174,12 +174,6 @@ function loadSavedPetProfile() {
 
     if (savedProfiles) {
         savedProfiles.forEach((profile, index) => {
-            const reminders = {
-                vaccinationsAndDewormingReminder: profile.vaccinationsAndDewormingReminder,
-                medicalCheckupsReminder: profile.medicalCheckupsReminder,
-                groomingReminder: profile.groomingReminder
-            };
-
             const emergencyContact = profile.emergencyContacts[0] || {};
 
             const petCard = document.createElement('li');
@@ -202,24 +196,56 @@ function loadSavedPetProfile() {
                     <p>Vaccinations/Deworming: ${formatReminder(profile.vaccinationsAndDewormingReminder)}</p>
                     <p>Medical Check-ups: ${formatReminder(profile.medicalCheckupsReminder)}</p>
                     <p>Grooming: ${formatReminder(profile.groomingReminder)}</p>
-                    <div id="overdueReminders-${index}" class="overdueReminders"></div>
-                    <div id="upcomingReminders-${index}" class="upcomingReminders"></div>
-                    <div class="pet-card-buttons">
-                        <button class="editProfileButton" data-index="${index}">Edit</button>
-                        <button class="deleteProfileButton" data-index="${index}">Delete</button>
-                        <button class="printProfileButton" data-index="${index}">Print</button>
-                        <button class="shareProfileButton" data-index="${index}">Share</button>
-                        <button class="generateQRButton" data-index="${index}">QR Code</button>
-                    </div>
                 </div>
             `;
             savedProfilesList.appendChild(petCard);
-
-            // Highlight reminders for the profile
-            highlightReminders(reminders, index);
         });
+
+        // Highlight reminders for all profiles
+        highlightAllReminders(savedProfiles);
         attachProfileButtonListeners();
     }
+}
+
+function highlightAllReminders(savedProfiles) {
+    const upcomingContainer = document.getElementById('upcomingReminders');
+    const overdueContainer = document.getElementById('overdueReminders');
+    upcomingContainer.innerHTML = '<h4>Upcoming Reminders</h4>';
+    overdueContainer.innerHTML = '<h4>Overdue Reminders</h4>';
+
+    savedProfiles.forEach((profile, index) => {
+        const reminders = {
+            vaccinationsAndDewormingReminder: profile.vaccinationsAndDewormingReminder,
+            medicalCheckupsReminder: profile.medicalCheckupsReminder,
+            groomingReminder: profile.groomingReminder
+        };
+
+        const today = new Date();
+
+        Object.keys(reminders).forEach((reminderKey) => {
+            const reminderDateTime = reminders[reminderKey] ? new Date(reminders[reminderKey]) : null;
+            if (!reminderDateTime) return;
+
+            const timeDiff = reminderDateTime.getTime() - today.getTime();
+            const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+            const reminderLabel = reminderFields[reminderKey];
+
+            if (timeDiff < 0) {
+                overdueContainer.innerHTML += `
+                    <div class="reminder overdue">
+                        <span class="exclamation">❗</span> ${reminderLabel} was due on ${reminderDateTime.toLocaleString()}
+                        <button class="deleteReminderButton" data-profile-index="${index}" data-reminder="${reminderKey}">Delete</button>
+                    </div>
+                `;
+            } else if (daysDiff <= REMINDER_THRESHOLD_DAYS) {
+                upcomingContainer.innerHTML += `
+                    <div class="reminder upcoming">
+                        ${reminderLabel} is on ${reminderDateTime.toLocaleString()}
+                    </div>
+                `;
+            }
+        });
+    });
 }
 
 function formatReminder(dateTimeString) {
@@ -228,39 +254,6 @@ function formatReminder(dateTimeString) {
     return date.toLocaleString();
 }
 
-function highlightReminders(reminders, index) {
-    const today = new Date();
-
-    Object.keys(reminders).forEach((reminderKey) => {
-        const reminderDateTime = reminders[reminderKey] ? new Date(reminders[reminderKey]) : null;
-        if (!reminderDateTime) return; // Skip if no reminder set
-
-        const timeDiff = reminderDateTime.getTime() - today.getTime();
-        const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-        const reminderLabel = reminderFields[reminderKey];
-
-        const overdueContainer = document.getElementById(`overdueReminders-${index}`);
-        const upcomingContainer = document.getElementById(`upcomingReminders-${index}`);
-
-        // Overdue reminders
-        if (timeDiff < 0) {
-            overdueContainer.innerHTML += `
-                <div class="reminder overdue">
-                    <span class="exclamation">❗</span> ${reminderLabel} was due on ${reminderDateTime.toLocaleString()}
-                    <button class="deleteReminderButton" data-profile-index="${index}" data-reminder="${reminderKey}">Delete</button>
-                </div>
-            `;
-        }
-        // Upcoming reminders
-        else if (daysDiff <= REMINDER_THRESHOLD_DAYS) {
-            upcomingContainer.innerHTML += `
-                <div class="reminder upcoming">
-                    ${reminderLabel} is on ${reminderDateTime.toLocaleString()}
-                </div>
-            `;
-        }
-    });
-}
 //* delete overdue reminder function
 function deleteOverdueReminder(profileIndex, reminderKey) {
     const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
