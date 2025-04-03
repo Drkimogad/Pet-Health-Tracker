@@ -188,12 +188,6 @@ function loadSavedPetProfile() {
 
     if (savedProfiles) {
         savedProfiles.forEach((profile, index) => {
-            const reminders = {
-                vaccinationsAndDewormingReminder: profile.vaccinationsAndDewormingReminder,
-                medicalCheckupsReminder: profile.medicalCheckupsReminder,
-                groomingReminder: profile.groomingReminder
-            };
-
             const emergencyContact = profile.emergencyContacts[0] || {};
 
             const petCard = document.createElement('li');
@@ -211,7 +205,7 @@ function loadSavedPetProfile() {
                     <p>Allergies: ${profile.allergies}</p>
                     <p>Medical History: ${profile.medicalHistory}</p>
                     <p>Diet Plan: ${profile.dietPlan}</p>
-                    <p>Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relationship || 'N/A'}) - ${emergencyContact.phone || 'N/A'}</p>
+                    <p>Emergency Contact: ${emergency:Contact.name || 'N/A'} (${emergencyContact.relationship || 'N/A'}) - ${emergencyContact.phone || 'N/A'}</p>
                     <p>Mood: ${profile.mood || 'N/A'}</p>
                     <p>Vaccinations/Deworming: ${formatReminder(profile.vaccinationsAndDewormingReminder)}</p>
                     <p>Medical Check-ups: ${formatReminder(profile.medicalCheckupsReminder)}</p>
@@ -230,6 +224,11 @@ function loadSavedPetProfile() {
             savedProfilesList.appendChild(petCard);
 
             // Highlight reminders for the profile
+            const reminders = {
+                vaccinationsAndDewormingReminder: profile.vaccinationsAndDewormingReminder,
+                medicalCheckupsReminder: profile.medicalCheckupsReminder,
+                groomingReminder: profile.groomingReminder
+            };
             highlightReminders(reminders, index);
         });
         attachProfileButtonListeners();
