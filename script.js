@@ -1,3 +1,9 @@
+// Reminders instamp alert//
+const reminderFields = {
+    vaccinationsAndDewormingReminder: 'Vaccinations/Deworming',
+    medicalCheckupsReminder: 'Medical Check-ups',
+    groomingReminder: 'Grooming',
+};
 // ======== 1. AUTH STATE CHECK ========
 document.addEventListener('DOMContentLoaded', () => {
     const authSection = document.getElementById('authSection');
