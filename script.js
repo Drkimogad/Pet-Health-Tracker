@@ -310,8 +310,7 @@ Emergency Contact: ${profile.emergencyContacts?.[0]?.name || 'None'} (${profile.
                 deleteOverdueReminder(profileIndex, reminderKey);
             });
         });
-    }
-}
+     }
 
 // Delete Pet Profile
 function deletePetProfile(index) {
