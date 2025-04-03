@@ -170,7 +170,6 @@ document.getElementById('dietForm').addEventListener('submit', function (event) 
     localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
     alert('Profile saved!');
     loadSavedPetProfile();
-    highlightAllReminders(savedProfiles); // Added this line
     event.target.reset();
 });
 
