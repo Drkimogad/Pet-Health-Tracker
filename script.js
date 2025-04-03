@@ -249,7 +249,6 @@ function editPetProfile(index) {
   
   // Scroll to form
   document.getElementById('dietForm').scrollIntoView();
-}
   console.log("Edit profile:", index);
 }
 //____________________
