@@ -35,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
 const users = JSON.parse(localStorage.getItem('users')) || [];
 
 // ======== 2. SIGN-UP HANDLER ========
-// ======== 2. SIGN-UP HANDLER ========
 document.getElementById('signUp').addEventListener('submit', function(event) {
     event.preventDefault();
 
@@ -76,7 +75,7 @@ document.getElementById('signUp').addEventListener('submit', function(event) {
             alert('Sign-up failed: ' + errorMessage);
         });
 });
-// ======== 3. LOGIN HANDLER ========
+
 // ======== 3. LOGIN HANDLER (FIREBASE INTEGRATION) ========
 document.getElementById('login').addEventListener('submit', function (event) {
     event.preventDefault();
@@ -106,7 +105,6 @@ document.getElementById('login').addEventListener('submit', function (event) {
         });
 });
 
-// ======== 4. LOGOUT HANDLER ========
 // ======== 4. LOGOUT HANDLER (FIREBASE INTEGRATION) ========
 document.getElementById('logoutButton').addEventListener('click', function () {
     firebase.auth().signOut()
