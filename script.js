@@ -32,8 +32,22 @@ document.getElementById('signUp').addEventListener('submit', function(event) {
             console.log("Firebase Sign-up successful:", userCredential.user);
             alert('Sign-up successful! Redirecting to login...');
 
-            // Force a page reload
-            window.location.reload();
+            // Ensure we have a Firebase user object before redirecting
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+                    document.getElementById('signUpForm').style.display = 'none';
+                    document.getElementById('loginForm').style.display = 'block';
+                    event.target.reset();
+                } else {
+                    console.log("Firebase user object not immediately available after sign-up.");
+                    // Optionally, try again after a short delay
+                    setTimeout(() => {
+                        document.getElementById('signUpForm').style.display = 'none';
+                        document.getElementById('loginForm').style.display = 'block';
+                        event.target.reset();
+                    }, 500);
+                }
+            });
         })
         .catch((error) => {
             // Handle errors here.
