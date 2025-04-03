@@ -4,6 +4,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainContent = document.getElementById('mainContent');
     const logoutButton = document.getElementById('logoutButton');
     const loggedInUser = localStorage.getItem('loggedInUser');
+    // ... your existing DOMContentLoaded code ...
+    const petPhotoInput = document.getElementById('petPhoto');
+    const petPhotoPreview = document.getElementById('petPhotoPreview');
+
+    petPhotoInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                petPhotoPreview.src = e.target.result;
+                petPhotoPreview.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        } else {
+            petPhotoPreview.src = '#';
+            petPhotoPreview.style.display = 'none';
+        }
+    });
+});
 
     if (loggedInUser) {
         authSection.style.display = 'none';
