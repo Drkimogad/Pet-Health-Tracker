@@ -152,7 +152,7 @@ document.getElementById('dietForm').addEventListener('submit', function (event) 
         mood: document.getElementById('moodSelector').value,
         vaccinationsAndDewormingReminder: document.getElementById('vaccinationsAndDewormingReminder').value,
         medicalCheckupsReminder: document.getElementById('medicalCheckupsReminder').value,
-        groomingReminder: documentgetElementById('groomingReminder').value,
+        groomingReminder: document.getElementById('groomingReminder').value,
         petPhoto: document.getElementById('petPhoto').files[0]
             ? URL.createObjectURL(document.getElementById('petPhoto').files[0])
             : '',
