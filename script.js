@@ -58,23 +58,33 @@ document.getElementById('signUp').addEventListener('submit', function(event) {
         });
 });
 // ======== 3. LOGIN HANDLER ========
+// ======== 3. LOGIN HANDLER (FIREBASE INTEGRATION) ========
 document.getElementById('login').addEventListener('submit', function (event) {
     event.preventDefault();
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
 
-    const user = users.find(user => user.email === email && user.password === password);
-    if (user) {
-        localStorage.setItem('loggedInUser', JSON.stringify(user));
-        alert('Login successful!');
-        document.getElementById('authSection').style.display = 'none';
-        document.getElementById('mainContent').style.display = 'block';
-        document.getElementById('logoutButton').style.display = 'block';
-        loadSavedPetProfile();
-    } else {
-        alert('Invalid credentials!');
-    }
-    event.target.reset();
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value.trim();
+
+    firebase.auth().signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            // Login successful.
+            const user = userCredential.user;
+            console.log("Firebase Login successful:", user);
+            alert('Login successful!');
+            document.getElementById('authSection').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+            document.getElementById('logoutButton').style.display = 'block';
+            event.target.reset();
+            // We might want to load pet profiles here after successful login
+            // loadSavedPetProfile(); // Uncomment this if needed
+        })
+        .catch((error) => {
+            // Handle login errors.
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.error("Firebase Login error:", errorCode, errorMessage);
+            alert('Login failed: ' + errorMessage);
+        });
 });
 
 // ======== 4. LOGOUT HANDLER ========
