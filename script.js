@@ -265,6 +265,15 @@ function highlightReminders(reminders, index) {
     });
 }
 
+function deleteOverdueReminder(profileIndex, reminderKey) {
+    const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
+    if (savedProfiles && savedProfiles[profileIndex]) {
+        savedProfiles[profileIndex][reminderKey] = ''; // Or null, depending on your preference
+        localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+        loadSavedPetProfile();
+    }
+}
+
 // ======== 7. QR CODE GENERATION ========
 function generateQRCode(profileIndex) {
     const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
