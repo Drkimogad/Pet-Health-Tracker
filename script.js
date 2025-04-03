@@ -88,12 +88,22 @@ document.getElementById('login').addEventListener('submit', function (event) {
 });
 
 // ======== 4. LOGOUT HANDLER ========
+// ======== 4. LOGOUT HANDLER (FIREBASE INTEGRATION) ========
 document.getElementById('logoutButton').addEventListener('click', function () {
-    localStorage.removeItem('loggedInUser');
-    document.getElementById('authSection').style.display = 'block';
-    document.getElementById('mainContent').style.display = 'none';
-    document.getElementById('logoutButton').style.display = 'none';
-    alert('Logged out!');
+    firebase.auth().signOut()
+        .then(() => {
+            // Logout successful.
+            console.log("Firebase Logout successful");
+            document.getElementById('authSection').style.display = 'block';
+            document.getElementById('mainContent').style.display = 'none';
+            document.getElementById('logoutButton').style.display = 'none';
+            alert('Logged out successfully!');
+        })
+        .catch((error) => {
+            // Handle logout errors.
+            console.error("Firebase Logout error:", error);
+            alert('Logout failed. Please try again.');
+        });
 });
 
 // ======== 5. SAVE PET PROFILE (WITH NEW FIELDS) ========
