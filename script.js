@@ -392,6 +392,20 @@ if ('serviceWorker' in navigator) {
         ).then((registration) => {
             console.log('SW registered:', registration);
             setInterval(() => registration.update(), 60 * 60 * 1000);
-
+            
             // Enhanced update handling
-            registration.addEventListener('updatefound',
+            registration.addEventListener('updatefound', () => {
+                const newWorker = registration.installing;
+                newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'activated') {
+                        window.location.reload();
+                    }
+                });
+            });
+            
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                window.location.reload();
+            });
+        }).catch(console.error);
+    });
+}
