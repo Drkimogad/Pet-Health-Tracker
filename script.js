@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
 const users = JSON.parse(localStorage.getItem('users')) || [];
 
 // ======== 2. SIGN-UP HANDLER ========
-// ======== 2. SIGN-UP HANDLER ========
 document.getElementById('signUp').addEventListener('submit', function(event) {
     event.preventDefault();
 
@@ -29,21 +28,19 @@ document.getElementById('signUp').addEventListener('submit', function(event) {
     firebase.auth().createUserWithEmailAndPassword(email, password)
         .then((userCredential) => {
             // Sign-up successful.
-            const user = userCredential.user;
-            console.log("Firebase Sign-up successful:", user);
-            console.log("Full userCredential:", userCredential); // Added logging
-            alert('Sign-up successful! Please login');
-            console.log("Attempting to hide signUp and show login");
-            document.getElementById('signUp').style.display = 'none';
-            document.getElementById('login').style.display = 'block';
+            console.log("Firebase Sign-up successful:", userCredential.user);
+            alert('Sign-up successful! Redirecting to login...');
+            document.getElementById('authSection').style.display = 'block'; // Show the auth section
+            document.getElementById('mainContent').style.display = 'none';  // Hide main content
+            document.getElementById('login').style.display = 'block';      // Show login form
+            document.getElementById('signUp').style.display = 'none';     // Hide signup form
             event.target.reset();
         })
-        .catch((error) => { // Correct placement of .catch()
+        .catch((error) => {
             // Handle errors here.
             const errorCode = error.code;
             const errorMessage = error.message;
             console.error("Firebase Sign-up error:", errorCode, errorMessage);
-            console.error("Full Firebase error object:", error); // Added logging
             alert('Sign-up failed: ' + errorMessage);
         });
 });
