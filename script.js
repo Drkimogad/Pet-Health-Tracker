@@ -132,7 +132,18 @@ function loadSavedPetProfile() {
   const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
   const savedProfilesList = document.getElementById('savedProfilesList');
   savedProfilesList.innerHTML = '';
-
+  
+  // FIX: Added missing function definition
+  function attachProfileButtonListeners() {
+    document.querySelectorAll('.generateQRButton').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        generateQRCode(e.target.dataset.index);
+      });
+    });
+  }
+  attachProfileButtonListeners();
+}
+  
   if (savedProfiles) {
     savedProfiles.forEach((profile, index) => {
       const petCard = document.createElement('li');
@@ -276,9 +287,7 @@ Emergency Contact: ${profile.emergencyContacts?.[0]?.name || 'None'} (${profile.
       // Fallback if share cancelled
       console.log('Share cancelled:', e);
     });
-  } 
-  // Fallback for desktop
-  else {
+  } else {
     const text = `${shareData.title}\n${shareData.text}\n${shareData.url}`;
     prompt('Copy to share:', text);
   }
@@ -310,7 +319,6 @@ Emergency Contact: ${profile.emergencyContacts?.[0]?.name || 'None'} (${profile.
                 deleteOverdueReminder(profileIndex, reminderKey);
             });
         });
-     }
 
 // Delete Pet Profile
 function deletePetProfile(index) {
