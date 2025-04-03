@@ -175,88 +175,94 @@ function loadSavedPetProfile() {
     const savedProfilesList = document.getElementById('savedProfilesList');
     savedProfilesList.innerHTML = '';
 
-    function attachProfileButtonListeners() {
-        document.querySelectorAll('.generateQRButton').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                generateQRCode(e.target.dataset.index);
-            });
-        });
-
-        document.querySelectorAll('.editProfileButton').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const index = e.target.dataset.index;
-                editPetProfile(index);
-            });
-        });
-
-        document.querySelectorAll('.shareProfileButton').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const index = e.target.dataset.index;
-                sharePetProfile(index);
-            });
-        });
-
-        document.querySelectorAll('.deleteProfileButton').forEach((button) => {
-            button.addEventListener('click', (event) => {
-                const index = event.target.dataset.index;
-                deletePetProfile(index);
-            });
-        });
-
-        document.querySelectorAll('.printProfileButton').forEach((button) => {
-            button.addEventListener('click', (event) => {
-                const index = event.target.dataset.index;
-                printPetProfile(index);
-            });
-        });
-
-        // Handle delete button for overdue reminders
-        document.querySelectorAll('.deleteReminderButton').forEach((button) => {
-            button.addEventListener('click', (event) => {
-                const profileIndex = event.target.dataset.profileIndex;
-                const reminderKey = event.target.dataset.reminder;
-                deleteOverdueReminder(profileIndex, reminderKey);
-            });
-        });
-    }
-
     if (savedProfiles) {
         savedProfiles.forEach((profile, index) => {
+            const reminders = {
+                vaccinationsAndDewormingReminder: profile.vaccinationsAndDewormingReminder,
+                medicalCheckupsReminder: profile.medicalCheckupsReminder,
+                groomingReminder: profile.groomingReminder
+            };
+
+            const emergencyContact = profile.emergencyContacts[0] || {};
+
             const petCard = document.createElement('li');
             petCard.classList.add('pet-card');
             petCard.innerHTML = `
                 <div class="pet-card-content">
                     <h4>${profile.petName}</h4>
+                    <img src="${profile.petPhoto}" alt="Pet Photo" class="pet-photo"/>
                     <p>Breed: ${profile.breed}</p>
                     <p>Age: ${profile.age}</p>
                     <p>Weight: ${profile.weight}</p>
-                    <p>Microchip ID: ${profile.microchip.id || 'N/A'}</p>
-                    <p>Implant Date: ${profile.microchip.date || 'N/A'}</p>
-                    <p>Vendor: ${profile.microchip.vendor || 'N/A'}</p>
+                    <p>Microchip ID: ${profile.microchip?.id || 'N/A'}</p>
+                    <p>Implant Date: ${profile.microchip?.date || 'N/A'}</p>
+                    <p>Vendor: ${profile.microchip?.vendor || 'N/A'}</p>
                     <p>Allergies: ${profile.allergies}</p>
                     <p>Medical History: ${profile.medicalHistory}</p>
                     <p>Diet Plan: ${profile.dietPlan}</p>
-                    <p>Emergency Contact: <span class="math-inline">\{profile\.emergencyContacts\[0\]?\.name \|\| 'N/A'\} \(</span>{profile.emergencyContacts[0]?.relationship || 'N/A'}) - ${profile.emergencyContacts[0]?.phone || 'N/A'}</p>
-                    <p>Mood: <span class="math-inline">\{profile\.mood \|\| 'N/A'\}</p\>
-<img src\="</span>{profile.petPhoto}" alt="Pet Photo" class="pet-photo"/>
-                    <div id="overdueReminders-<span class="math-inline">\{index\}" class\="overdueReminders"\></div\>
-<div id\="upcomingReminders\-</span>{index}" class="upcomingReminders"></div>
+                    <p>Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relationship || 'N/A'}) - ${emergencyContact.phone || 'N/A'}</p>
+                    <p>Mood: ${profile.mood || 'N/A'}</p>
+                    <p>Vaccinations/Deworming: ${formatReminder(profile.vaccinationsAndDewormingReminder)}</p>
+                    <p>Medical Check-ups: ${formatReminder(profile.medicalCheckupsReminder)}</p>
+                    <p>Grooming: ${formatReminder(profile.groomingReminder)}</p>
+                    <div id="overdueReminders-${index}" class="overdueReminders"></div>
+                    <div id="upcomingReminders-${index}" class="upcomingReminders"></div>
                     <div class="pet-card-buttons">
-                        <button class="editProfileButton" data-index="<span class="math-inline">\{index\}"\>✏️ Edit</button\>
-<button class\="shareProfileButton" data\-index\="</span>{index}">📤 Share</button>
-                        <button class="deleteProfileButton" data-index="<span class="math-inline">\{index\}"\>🗑️ Delete</button\>
-<button class\="printProfileButton" data\-index\="</span>{index}">🖨️ Print</button>
-                        <button class="generateQRButton" data-index="${index}">🔳 QR Code</button>
+                        <button class="editProfileButton" data-index="${index}">Edit</button>
+                        <button class="deleteProfileButton" data-index="${index}">Delete</button>
+                        <button class="printProfileButton" data-index="${index}">Print</button>
+                        <button class="shareProfileButton" data-index="${index}">Share</button>
+                        <button class="generateQRButton" data-index="${index}">QR Code</button>
                     </div>
                 </div>
             `;
             savedProfilesList.appendChild(petCard);
-            highlightReminders(profile, index);
-        });
 
-        // Attach event listeners
+            // Highlight reminders for the profile
+            highlightReminders(reminders, index);
+        });
         attachProfileButtonListeners();
     }
+}
+
+function formatReminder(dateTimeString) {
+    if (!dateTimeString) return 'N/A';
+    const date = new Date(dateTimeString);
+    return date.toLocaleString();
+}
+
+function highlightReminders(reminders, index) {
+    const today = new Date();
+
+    Object.keys(reminders).forEach((reminderKey) => {
+        const reminderDateTime = reminders[reminderKey] ? new Date(reminders[reminderKey]) : null;
+        if (!reminderDateTime) return; // Skip if no reminder set
+
+        const timeDiff = reminderDateTime.getTime() - today.getTime();
+        const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+        const reminderLabel = reminderFields[reminderKey];
+
+        const overdueContainer = document.getElementById(`overdueReminders-${index}`);
+        const upcomingContainer = document.getElementById(`upcomingReminders-${index}`);
+
+        // Overdue reminders
+        if (timeDiff < 0) {
+            overdueContainer.innerHTML += `
+                <div class="reminder overdue">
+                    <span class="exclamation">❗</span> ${reminderLabel} was due on ${reminderDateTime.toLocaleString()}
+                    <button class="deleteReminderButton" data-profile-index="${index}" data-reminder="${reminderKey}">Delete</button>
+                </div>
+            `;
+        }
+        // Upcoming reminders
+        else if (daysDiff <= REMINDER_THRESHOLD_DAYS) {
+            upcomingContainer.innerHTML += `
+                <div class="reminder upcoming">
+                    ${reminderLabel} is on ${reminderDateTime.toLocaleString()}
+                </div>
+            `;
+        }
+    });
 }
 
 // ======== 7. QR CODE GENERATION ========
