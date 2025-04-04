@@ -404,7 +404,9 @@ function editPetProfile(index) {
     // Modified "Cancel" Button Event Listener (moved here):
     const cancelButton = document.getElementById('cancelEdit');
     if (cancelButton) {
-        cancelButton.addEventListener('click', function() {
+    // Remove any existing listener to prevent duplicates
+    cancelButton.replaceWith(cancelButton.cloneNode(true));
+    document.getElementById('cancelEdit').addEventListener('click', function() {
             if (editingProfileIndex !== null) {
                 // Restore original profile from sessionStorage
                 const originalProfile = JSON.parse(sessionStorage.getItem(`editingProfile_${editingProfileIndex}`));
