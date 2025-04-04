@@ -1,5 +1,8 @@
-// Reminders instamp alert//
-const REMINDER_THRESHOLD_DAYS = 3; // Or any other number of days you prefer
+// Global declaration//
+let editingProfileIndex = null;
+
+// Reminders in-app timestamp alert//
+const REMINDER_THRESHOLD_DAYS = 5; // Or any other number of days you prefer
 const reminderFields = {
     vaccinationsAndDewormingReminder: 'Vaccinations/Deworming',
     medicalCheckupsReminder: 'Medical Check-ups',
