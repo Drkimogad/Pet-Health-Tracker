@@ -295,6 +295,10 @@ function loadSavedPetProfile() {
                         <button class="shareProfileButton" data-index="${index}">Share</button>
                         <button class="generateQRButton" data-index="${index}">QR Code</button>
                     </div>
+                    <div class="reminder overdue">
+                    <span class="exclamation">❗</span> ${reminderLabel} was due on ${reminderDateTime.toLocaleString()}
+                    <button class="deleteReminderButton" data-profile-index="${index}" data-reminder="${reminderKey}">Delete</button>
+                    </div>
                 </div>
             `;
             savedProfilesList.appendChild(petCard);
