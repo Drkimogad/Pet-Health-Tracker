@@ -373,7 +373,8 @@ function deleteOverdueReminder(profileIndex, reminderKey) {
 
 
 // ======== 8. HELPER FUNCTIONS ========
-// Edit saved profile button functionality//function editPetProfile(index) {
+// Edit saved profile button functionality//
+function editPetProfile(index) {
     const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
     const profile = savedProfiles[index];
 
