@@ -29,9 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
             petPhotoPreview.style.display = 'none';
         }
     }
-// is there a syntax error here?//
-    // Check sessionStorage for in-progress edits
-    for (let i = 0; i < sessionStorage.length; i++) {
+                                   
+// Check sessionStorage for in-progress edits// 
+    (let i = 0; i < sessionStorage.length; i++) {
         const key = sessionStorage.key(i);
         if (key.startsWith('editingProfile_')) {
             const index = parseInt(key.split('_')[1]);
@@ -69,7 +69,53 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('dietForm').scrollIntoView();
             }
         }
-    }  
+    });
+
+// Modified "Cancel" Button Event Listener:
+document.getElementById('cancelEdit').addEventListener('click', function() {
+    if (editingProfileIndex !== null) {
+        // Restore original profile from sessionStorage
+        const originalProfile = JSON.parse(sessionStorage.getItem(`editingProfile_${editingProfileIndex}`));
+
+        if (originalProfile) {
+            document.getElementById('petName').value = originalProfile.petName;
+            document.getElementById('breed').value = originalProfile.breed;
+            document.getElementById('age').value = originalProfile.age;
+            document.getElementById('weight').value = originalProfile.weight;
+            document.getElementById('microchipId').value = originalProfile.microchip?.id || '';
+            document.getElementById('microchipDate').value = originalProfile.microchip?.date || '';
+            document.getElementById('microchipVendor').value = originalProfile.microchip?.vendor || '';
+            document.getElementById('allergies').value = originalProfile.allergies;
+            document.getElementById('medicalHistory').value = originalProfile.medicalHistory;
+            document.getElementById('dietPlan').value = originalProfile.dietPlan;
+            document.getElementById('moodSelector').value = originalProfile.mood || '';
+            document.getElementById('emergencyContactName').value = originalProfile.emergencyContacts?.[0]?.name || '';
+            document.getElementById('emergencyContactPhone').value = originalProfile.emergencyContacts?.[0]?.phone || '';
+            document.getElementById('emergencyContactRelationship').value = originalProfile.emergencyContacts?.[0]?.relationship || '';
+            document.getElementById('vaccinationsAndDewormingReminder').value = originalProfile.vaccinationsAndDewormingReminder || '';
+            document.getElementById('medicalCheckupsReminder').value = originalProfile.medicalCheckupsReminder || '';
+            document.getElementById('groomingReminder').value = originalProfile.groomingReminder || '';
+
+            // Pet photo
+            if (originalProfile.petPhoto) {
+                document.getElementById('petPhotoPreview').src = originalProfile.petPhoto;
+                document.getElementById('petPhotoPreview').style.display = 'block';
+            } else {
+                document.getElementById('petPhotoPreview').src = '';
+                document.getElementById('petPhotoPreview').style.display = 'none';
+            }
+        }
+
+        // Clear sessionStorage
+        sessionStorage.removeItem(`editingProfile_${editingProfileIndex}`);
+        editingProfileIndex = null;
+    }
+
+    document.getElementById('dietForm').reset();
+    document.getElementById('petPhotoPreview').src = '';
+    document.getElementById('petPhotoPreview').style.display = 'none';
+});
+
     if (loggedInUser) {
         authSection.style.display = 'none';
         mainContent.style.display = 'block';
@@ -329,8 +375,7 @@ function deleteOverdueReminder(profileIndex, reminderKey) {
 
 
 // ======== 8. HELPER FUNCTIONS ========
-// Edit saved profile button functionality//
-function editPetProfile(index) {
+// Edit saved profile button functionality//function editPetProfile(index) {
     const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
     const profile = savedProfiles[index];
 
@@ -357,51 +402,6 @@ function editPetProfile(index) {
     document.getElementById('medicalCheckupsReminder').value = profile.medicalCheckupsReminder || '';
     document.getElementById('groomingReminder').value = profile.groomingReminder || '';
 
-    // Modified "Cancel" Button Event Listener:
-    document.getElementById('cancelEdit').addEventListener('click', function() {
-    if (editingProfileIndex !== null) {
-        // Restore original profile from sessionStorage
-        const originalProfile = JSON.parse(sessionStorage.getItem(`editingProfile_${editingProfileIndex}`));
-
-        if (originalProfile) {
-            document.getElementById('petName').value = originalProfile.petName;
-            document.getElementById('breed').value = originalProfile.breed;
-            document.getElementById('age').value = originalProfile.age;
-            document.getElementById('weight').value = originalProfile.weight;
-            document.getElementById('microchipId').value = originalProfile.microchip?.id || '';
-            document.getElementById('microchipDate').value = originalProfile.microchip?.date || '';
-            document.getElementById('microchipVendor').value = originalProfile.microchip?.vendor || '';
-            document.getElementById('allergies').value = originalProfile.allergies;
-            document.getElementById('medicalHistory').value = originalProfile.medicalHistory;
-            document.getElementById('dietPlan').value = originalProfile.dietPlan;
-            document.getElementById('moodSelector').value = originalProfile.mood || '';
-            document.getElementById('emergencyContactName').value = originalProfile.emergencyContacts?.[0]?.name || '';
-            document.getElementById('emergencyContactPhone').value = originalProfile.emergencyContacts?.[0]?.phone || '';
-            document.getElementById('emergencyContactRelationship').value = originalProfile.emergencyContacts?.[0]?.relationship || '';
-            document.getElementById('vaccinationsAndDewormingReminder').value = originalProfile.vaccinationsAndDewormingReminder || '';
-            document.getElementById('medicalCheckupsReminder').value = originalProfile.medicalCheckupsReminder || '';
-            document.getElementById('groomingReminder').value = originalProfile.groomingReminder || '';
-
-            // Pet photo
-            if (originalProfile.petPhoto) {
-                document.getElementById('petPhotoPreview').src = originalProfile.petPhoto;
-                document.getElementById('petPhotoPreview').style.display = 'block';
-            } else {
-                document.getElementById('petPhotoPreview').src = '';
-                document.getElementById('petPhotoPreview').style.display = 'none';
-            }
-        }
-
-        // Clear sessionStorage
-        sessionStorage.removeItem(`editingProfile_${editingProfileIndex}`);
-        editingProfileIndex = null;
-    }
-
-    document.getElementById('dietForm').reset();
-    document.getElementById('petPhotoPreview').src = '';
-    document.getElementById('petPhotoPreview').style.display = 'none';
-});
-    
     if (profile.petPhoto) {
         document.getElementById('petPhotoPreview').src = profile.petPhoto;
         document.getElementById('petPhotoPreview').style.display = 'block';
@@ -412,7 +412,6 @@ function editPetProfile(index) {
 
     document.getElementById('dietForm').scrollIntoView();
 }
-
 
 // delete pet profile button functionality//
 function deletePetProfile(index) {
