@@ -479,11 +479,41 @@ Emergency Contact: ${profile.emergencyContacts?.[0]?.name || 'None'} (${profile.
 }
 
 // Delete Pet Profile
-function deletePetProfile(index) {
-    let savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
-    savedProfiles.splice(index, 1);
-    localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
-    loadSavedPetProfile();
+function attachProfileButtonListeners() {
+    document.querySelectorAll('.generateQRButton').forEach(button => {
+        button.addEventListener('click', function() {
+            const index = this.getAttribute('data-index');
+            generateQRCode(index);
+        });
+    });
+
+    document.querySelectorAll('.editProfileButton').forEach(button => {
+        button.addEventListener('click', function() {
+            const index = this.getAttribute('data-index');
+            editPetProfile(index);
+        });
+    });
+
+    document.querySelectorAll('.deleteProfileButton').forEach(button => {
+        button.addEventListener('click', function() {
+            const index = this.getAttribute('data-index');
+            deletePetProfile(index);
+        });
+    });
+
+    document.querySelectorAll('.printProfileButton').forEach(button => {
+        button.addEventListener('click', function() {
+            const index = this.getAttribute('data-index');
+            printPetProfile(index);
+        });
+    });
+
+    document.querySelectorAll('.shareProfileButton').forEach(button => {
+        button.addEventListener('click', function() {
+            const index = this.getAttribute('data-index');
+            sharePetProfile(index);
+        });
+    });
 }
 
 // Print Pet Profile
@@ -496,14 +526,22 @@ function printPetProfile(index) {
     printWindow.document.write(`
         <html>
             <head>
-                <title><span class="math-inline">\{profile\.petName\}'s Profile</title\>
-<link rel\="stylesheet" href\="styles\.css"\> </head\>
-<body class\="print\-mode"\>
-<h1\></span>{profile.petName}'s Health Profile</h1>
+                <title>${profile.petName}'s Profile</title>
+                <link rel="stylesheet" href="styles.css">
+                <style>
+                    body.print-mode { font-family: sans-serif; }
+                    .info-section { margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+                    .info-section h3 { margin-top: 0; }
+                    .pet-photo { max-width: 200px; height: auto; margin-bottom: 10px; }
+                </style>
+            </head>
+            <body class="print-mode">
+                <h1>${profile.petName}'s Health Profile</h1>
 
                 ${profile.petPhoto ? `<img src="${profile.petPhoto}" alt="Pet Photo" class="pet-photo">` : ''}
 
                 <div class="info-section">
+                    <h3>Basic Information</h3>
                     <p><strong>Breed:</strong> ${profile.breed || 'N/A'}</p>
                     <p><strong>Age:</strong> ${profile.age || 'N/A'}</p>
                     <p><strong>Weight:</strong> ${profile.weight || 'N/A'}</p>
@@ -520,11 +558,12 @@ function printPetProfile(index) {
                     <h3>Health</h3>
                     <p><strong>Allergies:</strong> ${profile.allergies || 'None'}</p>
                     <p><strong>Medical History:</strong> ${profile.medicalHistory || 'None'}</p>
-                    <p><strong>Diet Plan:</strong> <span class="math-inline">\{profile\.dietPlan \|\| 'Not specified'\}</p\>
-</div\>
-<div class\="info\-section"\>
-<h3\>Mood</h3\>
-<p\></span>{profile.mood || 'Not recorded'}</p>
+                    <p><strong>Diet Plan:</strong> ${profile.dietPlan || 'Not specified'}</p>
+                </div>
+
+                <div class="info-section">
+                    <h3>Mood</h3>
+                    <p>${profile.mood || 'Not recorded'}</p>
                 </div>
 
                 <div class="info-section">
