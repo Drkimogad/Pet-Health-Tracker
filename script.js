@@ -244,7 +244,7 @@ function loadSavedPetProfile() {
             petCard.innerHTML = `
                 <div class="pet-card-content">
                     <h4>${profile.petName}</h4>
-                    <img src="${profile.petPhoto}" alt="Pet Photo" class="pet-photo"/>
+                    ${profile.petPhoto ? `<img src="${profile.petPhoto}" alt="Pet Photo" class="pet-photo"/>` : ''}
                     <p>Breed: ${profile.breed}</p>
                     <p>Age: ${profile.age}</p>
                     <p>Weight: ${profile.weight}</p>
