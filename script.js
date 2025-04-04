@@ -287,7 +287,7 @@ function loadSavedPetProfile() {
     }
 }
 
-//* function to attached buttons to pet profiles*//
+//* 7 function to attached buttons to pet profiles*//
 function attachProfileButtonListeners() {
     const savedProfilesList = document.getElementById('savedProfilesList');
 
