@@ -449,9 +449,11 @@ function editPetProfile(index) {
                 }
 
                 // Clear sessionStorage
-                sessionStorage.removeItem(`editingProfile_${editingProfileIndex}`);
-                editingProfileIndex = null;
-            }
+                if (editingProfileIndex !== null) {
+        // Clear sessionStorage after successful update
+        sessionStorage.removeItem(`editingProfile_${editingProfileIndex}`);
+        editingProfileIndex = null; // <- Crucial reset
+    }
 
             document.getElementById('dietForm').reset();
             document.getElementById('petPhotoPreview').src = '';
