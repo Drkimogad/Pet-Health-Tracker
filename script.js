@@ -413,6 +413,15 @@ function editPetProfile(index) {
     document.getElementById('dietForm').scrollIntoView();
 }
 
+
+// delete pet profile button functionality//
+function deletePetProfile(index) {
+    let savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
+    savedProfiles.splice(index, 1);
+    localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+    loadSavedPetProfile(); // Make sure this function is defined elsewhere to reload the displayed list
+}
+
 // Print Pet Profile button functionality//
 function printPetProfile(index) {
     const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
