@@ -319,34 +319,42 @@ function attachProfileButtonListeners() {
 // highlighting upcoming and overdue ALERT reminders//
 function highlightReminders(reminders, index) {
     const today = new Date();
+    const overdueContainer = document.getElementById(`overdueReminders-${index}`);
+    const upcomingContainer = document.getElementById(`upcomingReminders-${index}`);
 
-    Object.keys(reminders).forEach((reminderKey) => {
-        const reminderDateTime = reminders[reminderKey] ? new Date(reminders[reminderKey]) : null;
-        if (!reminderDateTime) return;
+    // Clear existing reminders
+    overdueContainer.innerHTML = '';
+    upcomingContainer.innerHTML = '';
 
+    Object.entries(reminders).forEach(([reminderKey, reminderValue]) => {
+        if (!reminderValue) return;
+        
+        const reminderDateTime = new Date(reminderValue);
         const timeDiff = reminderDateTime.getTime() - today.getTime();
         const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
         const reminderLabel = reminderFields[reminderKey];
 
-        const overdueContainer = document.getElementById(`overdueReminders-${index}`);
-        const upcomingContainer = document.getElementById(`upcomingReminders-${index}`);
-
         // Overdue reminders
         if (timeDiff < 0) {
-            overdueContainer.innerHTML += `
-                <div class="reminder overdue">
-                    <span class="exclamation">❗</span> ${reminderLabel} was due on ${reminderDateTime.toLocaleString()}
-                    <button class="deleteReminderButton" data-profile-index="${index}" data-reminder="${reminderKey}">Delete</button>
-                </div>
+            const div = document.createElement('div');
+            div.className = 'reminder overdue';
+            div.innerHTML = `
+                <span class="exclamation">❗</span> 
+                ${reminderLabel} was due on ${reminderDateTime.toLocaleString()}
+                <button class="deleteReminderButton" 
+                        data-profile-index="${index}" 
+                        data-reminder="${reminderKey}">
+                    Delete
+                </button>
             `;
+            overdueContainer.appendChild(div);
         }
         // Upcoming reminders
         else if (daysDiff <= REMINDER_THRESHOLD_DAYS) {
-            upcomingContainer.innerHTML += `
-                <div class="reminder upcoming">
-                    ${reminderLabel} is on ${reminderDateTime.toLocaleString()}
-                </div>
-            `;
+            const div = document.createElement('div');
+            div.className = 'reminder upcoming';
+            div.textContent = `${reminderLabel} is on ${reminderDateTime.toLocaleString()}`;
+            upcomingContainer.appendChild(div);
         }
     });
 }
@@ -541,72 +549,138 @@ function sharePetProfile(index) {
 
     const shareData = {
         title: `${profile.petName}'s Health Profile`,
-        text: `Pet Details:\n` +
-              `Name: ${profile.petName || 'N/A'}\n` +
-              `Breed: ${profile.breed || 'N/A'}\n` +
-              `Age: ${profile.age || 'N/A'}\n` +
-              `Weight: ${profile.weight || 'N/A'}\n` +
-              `Microchip ID: ${profile.microchip?.id || 'N/A'}\n` +
-              `Allergies: ${profile.allergies || 'None'}\n` +
-              `Medical History: ${profile.medicalHistory || 'None'}\n` +
-              `Diet Plan: ${profile.dietPlan || 'Not specified'}\n` +
-              `Vaccinations/Deworming: ${profile.vaccinationsAndDewormingReminder || 'N/A'}\n` +
-              `Medical Check-ups: ${profile.medicalCheckupsReminder || 'N/A'}\n` +
-              `Grooming: ${profile.groomingReminder || 'N/A'}\n` +
-              `Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relationship || 'N/A'}) - ${emergencyContact.phone || 'N/A'}`,
+        text: `Pet Details:\n${Object.entries({
+            Name: profile.petName,
+            Breed: profile.breed,
+            Age: profile.age,
+            Weight: profile.weight,
+            'Microchip ID': profile.microchip?.id,
+            Allergies: profile.allergies,
+            'Medical History': profile.medicalHistory,
+            'Diet Plan': profile.dietPlan,
+            'Vaccinations/Deworming': profile.vaccinationsAndDewormingReminder,
+            'Medical Check-ups': profile.medicalCheckupsReminder,
+            Grooming: profile.groomingReminder,
+            'Emergency Contact': `${emergencyContact.name} (${emergencyContact.relationship}) - ${emergencyContact.phone}`
+        }).map(([key, val]) => `${key}: ${val || 'N/A'}`).join('\n')}`,
         url: window.location.href
     };
 
-    // Web Share API (mobile)
     if (navigator.share) {
         navigator.share(shareData)
             .then(() => console.log('Shared successfully'))
-            .catch((error) => console.log('Error sharing', error));
+            .catch(console.error);
     } else {
         const textToCopy = `${shareData.title}\n\n${shareData.text}\n\n${shareData.url}`;
-        prompt('Copy the following text to share:', textToCopy);
+        
+        // Modern clipboard API fallback
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(textToCopy)
+                .then(() => alert('Profile copied to clipboard!'))
+                .catch(() => prompt('Copy the following text:', textToCopy));
+        } else {
+            prompt('Copy the following text:', textToCopy);
+        }
     }
 }
-
 // ======== QR CODE GENERATION button functionality ========
 function generateQRCode(profileIndex) {
-    const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
+    const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
     const profile = savedProfiles[profileIndex];
-    const emergencyContact = profile.emergencyContacts?.[0] || {};
-
+    
     if (!profile) {
         alert("Profile not found!");
         return;
     }
 
-    let qrText = `
-        PET PROFILE
-        Name: ${profile.petName || 'N/A'}
-        Breed: ${profile.breed || 'N/A'}
-        Age: ${profile.age || 'N/A'}
-        Weight: ${profile.weight || 'N/A'}
-        Microchip ID: ${profile.microchip?.id || 'N/A'}
-        Allergies: ${profile.allergies || 'N/A'}
-        Medical History: ${profile.medicalHistory || 'N/A'}
-        Diet Plan: ${profile.dietPlan || 'N/A'}
-        Vaccinations/Deworming: ${profile.vaccinationsAndDewormingReminder || 'N/A'}
-        Medical Check-ups: ${profile.medicalCheckupsReminder || 'N/A'}
-        Grooming: ${profile.groomingReminder || 'N/A'}
-        Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relationship || 'N/A'}) - ${emergencyContact.phone || 'N/A'}
-    `;
+    const emergencyContact = profile.emergencyContacts?.[0] || {};
+    const microchip = profile.microchip || {};
 
-    QRCode.toCanvas(document.createElement('canvas'), qrText, { width: 300 }, (error, canvas) => {
-        if (error) {
-            console.error("QR generation error:", error);
-            alert("QR generation failed!");
-        } else {
-            const qrWindow = window.open('', 'QR Code');
-            qrWindow.document.write('<h2>Scan for Pet Info</h2>');
-            qrWindow.document.body.appendChild(canvas);
+    // Construct QR text with exactly your specified format
+    const qrText = `
+PET PROFILE
+Name: ${profile.petName || 'N/A'}
+Breed: ${profile.breed || 'N/A'}
+Age: ${profile.age || 'N/A'}
+Weight: ${profile.weight || 'N/A'}
+Microchip ID: ${microchip.id || 'N/A'}
+Allergies: ${profile.allergies || 'N/A'}
+Medical History: ${profile.medicalHistory || 'N/A'}
+Diet Plan: ${profile.dietPlan || 'N/A'}
+Vaccinations/Deworming: ${profile.vaccinationsAndDewormingReminder || 'N/A'}
+Medical Check-ups: ${profile.medicalCheckupsReminder || 'N/A'}
+Grooming: ${profile.groomingReminder || 'N/A'}
+Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relationship || 'N/A'}) - ${emergencyContact.phone || 'N/A'}
+    `.trim();
+
+    // Create QR window with proper styling
+    const qrWindow = window.open('', 'QR Code', 'width=400,height=500');
+    if (!qrWindow || qrWindow.closed) {
+        alert('Please allow pop-ups to generate QR code');
+        return;
+    }
+
+    // Generate QR code with error handling
+    QRCode.toCanvas(qrText, { 
+        width: 300,
+        errorCorrectionLevel: 'H'
+    }, (err, canvas) => {
+        if (err) {
+            qrWindow.close();
+            alert('Failed to generate QR code');
+            return;
         }
+
+        // Style the QR code display
+        canvas.style.margin = '20px auto';
+        canvas.style.display = 'block';
+        canvas.style.border = '2px solid #333';
+        canvas.style.borderRadius = '8px';
+
+        qrWindow.document.write(`
+            <html>
+                <head>
+                    <title>${profile.petName}'s QR Code</title>
+                    <style>
+                        body { 
+                            font-family: Arial, sans-serif; 
+                            text-align: center; 
+                            margin: 0;
+                            padding: 20px;
+                            background: #f5f5f5;
+                        }
+                        h2 { 
+                            color: #2c3e50; 
+                            margin-bottom: 10px;
+                        }
+                        .subtitle {
+                            color: #7f8c8d;
+                            margin-bottom: 20px;
+                        }
+                        .disclaimer {
+                            font-size: 0.9em;
+                            color: #95a5a6;
+                            margin-top: 20px;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <h2>${profile.petName}'s Health Profile</h2>
+                    <div class="subtitle">Scan for Emergency Information</div>
+                </body>
+            </html>
+        `);
+
+        qrWindow.document.body.appendChild(canvas);
+        qrWindow.document.body.innerHTML += `
+            <div class="disclaimer">
+                Contains essential pet health information<br>
+                Generated by Pet Health Tracker
+            </div>
+        `;
+        qrWindow.document.close();
     });
 }
-
 
 // ======== UPDATED SERVICE WORKER REGISTRATION ========
 if ('serviceWorker' in navigator) {
