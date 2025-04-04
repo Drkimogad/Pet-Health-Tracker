@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 document.getElementById('dietForm').scrollIntoView();
             }
-        }
+        } // Added closing brace here
     }
 
     // Modified "Cancel" Button Event Listener (moved here):
