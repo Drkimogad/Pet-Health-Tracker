@@ -434,7 +434,7 @@ let editingProfileIndex = null;
             document.getElementById('petPhotoPreview').style.display = 'none';
         });
 
-// Share Pet Profile
+// Share Pet Profile//
 function sharePetProfile(index) {
     const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
     const profile = savedProfiles[index];
@@ -446,7 +446,7 @@ Name: ${profile.petName}
 Breed: ${profile.breed}
 Age: ${profile.age}
 Allergies: ${profile.allergies || 'None'}
-Emergency Contact: <span class="math-inline">\{profile\.emergencyContacts?\.\[0\]?\.name \|\| 'None'\} \(</span>{profile.emergencyContacts?.[0]?.phone || 'N/A'})`,
+Emergency Contact: ${profile.emergencyContacts?.[0]?.name || 'None'} (${profile.emergencyContacts?.[0]?.phone || 'N/A'})`,
         url: window.location.href
     };
 
@@ -457,7 +457,7 @@ Emergency Contact: <span class="math-inline">\{profile\.emergencyContacts?\.\[0\
             console.log('Share cancelled:', e);
         });
     } else {
-        const text = `<span class="math-inline">\{shareData\.title\}\\n</span>{shareData.text}\n${shareData.url}`;
+        const text = `${shareData.title}\n${shareData.text}\n${shareData.url}`;
         prompt('Copy to share:', text);
     }
 }
