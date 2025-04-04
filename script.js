@@ -275,8 +275,7 @@ function loadSavedPetProfile() {
                 </div>
             `;
             savedProfilesList.appendChild(petCard);
-
-            // Highlight reminders for the profile
+//*  highlight reminders*//
             const reminders = {
                 vaccinationsAndDewormingReminder: profile.vaccinationsAndDewormingReminder,
                 medicalCheckupsReminder: profile.medicalCheckupsReminder,
@@ -287,7 +286,8 @@ function loadSavedPetProfile() {
         attachProfileButtonListeners();
     }
 }
-////----------------------//
+
+//* function to attached buttons to pet profiles*//
 function attachProfileButtonListeners() {
     const savedProfilesList = document.getElementById('savedProfilesList');
 
