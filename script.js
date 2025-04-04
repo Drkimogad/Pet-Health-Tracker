@@ -230,33 +230,6 @@ function formatReminder(dateTimeString) {
     return date.toLocaleString();
 }
 
-function attachProfileButtonListeners() {
-    const savedProfilesList = document.getElementById('savedProfilesList');
-
-    savedProfilesList.addEventListener('click', function(event) {
-        if (event.target.classList.contains('editProfileButton')) {
-            const index = parseInt(event.target.dataset.index);
-            editPetProfile(index);
-        } else if (event.target.classList.contains('deleteProfileButton')) {
-            const index = parseInt(event.target.dataset.index);
-            deletePetProfile(index);
-        } else if (event.target.classList.contains('printProfileButton')) {
-            const index = parseInt(event.target.dataset.index);
-            printPetProfile(index);
-        } else if (event.target.classList.contains('shareProfileButton')) {
-            const index = parseInt(event.target.dataset.index);
-            sharePetProfile(index);
-        } else if (event.target.classList.contains('generateQRButton')) {
-            const index = parseInt(event.target.dataset.index);
-            generateQRCode(index);
-        } else if (event.target.classList.contains('deleteReminderButton')) {
-            const profileIndex = parseInt(event.target.dataset.profileIndex);
-            const reminderKey = event.target.dataset.reminder;
-            deleteOverdueReminder(profileIndex, reminderKey);
-        }
-    });
-}
-
 function loadSavedPetProfile() {
     const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
     const savedProfilesList = document.getElementById('savedProfilesList');
@@ -314,6 +287,35 @@ function loadSavedPetProfile() {
         attachProfileButtonListeners();
     }
 }
+////----------------------//
+function attachProfileButtonListeners() {
+    const savedProfilesList = document.getElementById('savedProfilesList');
+
+    savedProfilesList.addEventListener('click', function(event) {
+        if (event.target.classList.contains('editProfileButton')) {
+            const index = parseInt(event.target.dataset.index);
+            editPetProfile(index);
+        } else if (event.target.classList.contains('deleteProfileButton')) {
+            const index = parseInt(event.target.dataset.index);
+            deletePetProfile(index);
+        } else if (event.target.classList.contains('printProfileButton')) {
+            const index = parseInt(event.target.dataset.index);
+            printPetProfile(index);
+        } else if (event.target.classList.contains('shareProfileButton')) {
+            const index = parseInt(event.target.dataset.index);
+            sharePetProfile(index);
+        } else if (event.target.classList.contains('generateQRButton')) {
+            const index = parseInt(event.target.dataset.index);
+            generateQRCode(index);
+        } else if (event.target.classList.contains('deleteReminderButton')) {
+            const profileIndex = parseInt(event.target.dataset.profileIndex);
+            const reminderKey = event.target.dataset.reminder;
+            deleteOverdueReminder(profileIndex, reminderKey);
+        }
+    });
+}
+
+
 // highlighting upcoming and overdue ALERT reminders//
 function highlightReminders(reminders, index) {
     const today = new Date();
