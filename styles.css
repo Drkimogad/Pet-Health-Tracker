@@ -273,6 +273,12 @@ button:disabled {
   z-index: 1000;
 }
 
+/* for sharing */
+@keyframes highlight {
+    0% { background: rgba(255,235,59,0.3); }
+    100% { background: transparent; }
+}
+
 /* ===== QR CODE STYLES ===== */
 .qr-window {
   padding: 20px;
