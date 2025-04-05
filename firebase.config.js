@@ -1,57 +1,38 @@
-
-
 <script>
-
   // Initialize Firebase App (using the compatibility API)
+const firebaseConfig = {
+            apiKey: "AIzaSyBIej7yNj0LkkLd6VtQxBL4mEDSsHLJvig",
+            authDomain: "pet-health-tracker-7164d.firebaseapp.com",
+            projectId: "pet-health-tracker-7164d",
+            storageBucket: "pet-health-tracker-7164d.firebasestorage.app",
+            messagingSenderId: "251170885789",
+            appId: "1:251170885789:web:2c16a20f96da9f6a960474",
+            measurementId: "G-GKD3RVNVLV"
+        };
 
-  const app = firebase.initializeApp({
-
-    apiKey: "AIzaSyB42agDYdC2-LF81f0YurmwiDmXptTpMVw",
-
-    authDomain: "swiftreach2025.firebaseapp.com",
-
-    projectId: "swiftreach2025",
-
-    storageBucket: "swiftreach2025.firebasestorage.app",
-
-    messagingSenderId: "540185558422",
-
-    appId: "1:540185558422:web:d560ac90eb1dff3e5071b7",
-
-    measurementId: "G-SNBPRVBPNM"
-
-  });
-
-
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const firestore = firebase.firestore();
+        const messaging = firebase.messaging();
 
   // Firestore Database Setup  
 
   const db = firebase.firestore(app);  // Initialize Firestore
-
   console.log("Firestore initialized and ready to use.");
-
-
 
   // Firebase Authentication Setup  
 
   const auth = firebase.auth(app);  // Initialize Firebase Authentication
-
   console.log("Authentication service initialized.");
-
-
 
   // Firebase Cloud Messaging Setup  
 
   const messaging = firebase.messaging(app);  // Initialize Messaging
-
   console.log("Firebase Cloud Messaging initialized.");
-
-
 
   // Set VAPID key and handle token generation
 
   messaging.getToken({ vapidKey: "BAL7SL85Z3cAH-T6oDGvfxV0oJhElCpnc7F_TaF2RQogy0gnUChGa_YtmwKdifC4c4pZ0NhUd4T6BFHGRxT79Gk" })
-
     .then((currentToken) => {
 
       if (currentToken) {
