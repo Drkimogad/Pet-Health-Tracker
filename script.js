@@ -479,123 +479,76 @@ function deletePetProfile(index) {
 }
 
 // Print Pet Profile button functionality//
-// ======== Print Pet Profile (MODIFIED) ========
 function printPetProfile(index) {
     const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
     const profile = savedProfiles[index];
 
     const printWindow = window.open('', '', 'height=600,width=800');
 
-    // Add loading state
-    printWindow.document.write(`
-        <html>
-            <head>
-                <title>Loading...</title>
-                <style>
-                    .loader {
-                        border: 5px solid #f3f3f3;
-                        border-radius: 50%;
-                        border-top: 5px solid #3498db;
-                        width: 50px;
-                        height: 50px;
-                        animation: spin 1s linear infinite;
-                        margin: 20% auto;
-                    }
-                    @keyframes spin {
-                        0% { transform: rotate(0deg); }
-                        100% { transform: rotate(360deg); }
-                    }
-                </style>
-            </head>
-            <body><div class="loader"></div></body>
-        </html>
-    `);
-
-    // Create temporary image to verify load
+    // Create temporary image with proper cross-origin handling
     const tempImg = new Image();
+    tempImg.crossOrigin = 'anonymous'; // Handle CORS if needed
+    
     tempImg.onload = function() {
-        // Image loaded successfully - build print content
+        // Convert image to data URL
+        const canvas = document.createElement('canvas');
+        canvas.width = tempImg.naturalWidth;
+        canvas.height = tempImg.naturalHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(tempImg, 0, 0);
+        
+        const dataUrl = canvas.toDataURL('image/png');
+
+        // Build print content with embedded data URL
         const printContent = `
             <html>
                 <head>
                     <title>${profile.petName}'s Profile</title>
-                    <link rel="stylesheet" href="styles.css">
                     <style>
-                        body.print-mode { font-family: sans-serif; }
-                        .info-section { margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
-                        .info-section h3 { margin-top: 0; }
-                        .pet-photo { max-width: 200px; height: auto; margin-bottom: 10px; }
+                        /* Your print styles */
                     </style>
                 </head>
                 <body class="print-mode">
-                    <h1>${profile.petName}'s Health Profile</h1>
-
-                    ${profile.petPhoto ? `<img src="${profile.petPhoto}" alt="Pet Photo" class="pet-photo">` : ''}
-
-                    <div class="info-section">
-                        <h3>Basic Information</h3>
-                        <p><strong>Breed:</strong> ${profile.breed || 'N/A'}</p>
-                        <p><strong>Age:</strong> ${profile.age || 'N/A'}</p>
-                        <p><strong>Weight:</strong> ${profile.weight || 'N/A'}</p>
-                    </div>
-
-                    <div class="info-section">
-                        <h3>Microchip</h3>
-                        <p><strong>ID:</strong> ${profile.microchip?.id || 'N/A'}</p>
-                        <p><strong>Date:</strong> ${profile.microchip?.date || 'N/A'}</p>
-                        <p><strong>Vendor:</strong> ${profile.microchip?.vendor || 'N/A'}</p>
-                    </div>
-
-                    <div class="info-section">
-                        <h3>Health</h3>
-                        <p><strong>Allergies:</strong> ${profile.allergies || 'None'}</p>
-                        <p><strong>Medical History:</strong> ${profile.medicalHistory || 'None'}</p>
-                        <p><strong>Diet Plan:</strong> ${profile.dietPlan || 'Not specified'}</p>
-                    </div>
-
-                    <div class="info-section">
-                        <h3>Mood</h3>
-                        <p>${profile.mood || 'Not recorded'}</p>
-                    </div>
-
-                    <div class="info-section">
-                        <h3>Emergency Contact</h3>
-                        <p><strong>Name:</strong> ${profile.emergencyContacts?.[0]?.name || 'N/A'}</p>
-                        <p><strong>Phone:</strong> ${profile.emergencyContacts?.[0]?.phone || 'N/A'}</p>
-                        <p><strong>Relationship:</strong> ${profile.emergencyContacts?.[0]?.relationship || 'N/A'}</p>
-                    </div>
-
-                    <div class="info-section">
-                        <h3>Reminders</h3>
-                        <p><strong>Vaccinations/Deworming:</strong> ${profile.vaccinationsAndDewormingReminder || 'None'}</p>
-                        <p><strong>Medical Check-ups:</strong> ${profile.medicalCheckupsReminder || 'None'}</p>
-                        <p><strong>Grooming:</strong> ${profile.groomingReminder || 'None'}</p>
-                    </div>
+                    <!-- Rest of your content -->
+                    ${dataUrl ? `<img src="${dataUrl}" class="pet-photo">` : ''}
+                    <!-- Rest of your content -->
                 </body>
             </html>
         `;
 
-        printWindow.document.write(''); // Clear the loading content
+        // Write content and handle print timing
         printWindow.document.write(printContent);
         printWindow.document.close();
 
-        // Add a small delay before printing *after* the image is loaded
-        setTimeout(() => {
-            printWindow.print();
-            printWindow.onafterprint = () => printWindow.close();
-        }, 300); // Adjust the delay (in milliseconds) as needed
+        // Wait for window to fully render content
+        printWindow.onload = () => {
+            // Small delay for rendering completion
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.onafterprint = () => {
+                    URL.revokeObjectURL(dataUrl); // Clean up
+                    printWindow.close();
+                };
+            }, 300);
+        };
     };
 
-    tempImg.onerror = function() {
+    tempImg.onerror = () => {
         printWindow.document.write('<h1>Error loading image</h1>');
-        printWindow.document.close();
-        setTimeout(() => {
-            printWindow.print();
-            printWindow.onafterprint = () => printWindow.close();
-        }, 300);
+        printWindow.print();
+        printWindow.close();
     };
 
-    tempImg.src = profile.petPhoto;
+    // Start loading process
+    if (profile.petPhoto) {
+        tempImg.src = profile.petPhoto;
+    } else {
+        // Handle case without photo
+        printWindow.document.write(printContentWithoutPhoto());
+        printWindow.document.close();
+        printWindow.print();
+        printWindow.close();
+    }
 }
 
 // Share Pet Profile button functionality//
