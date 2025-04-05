@@ -641,25 +641,34 @@ function sharePetProfile(index) {
     }
 }
 // ======== QR CODE GENERATION button functionality ========
-// ======== QR CODE GENERATION (MODIFIED) ========
 function generateQRCode(profileIndex) {
     const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
     const profile = savedProfiles[profileIndex];
 
-    const qrWindow = window.open('', 'QR Code', 'width=400,height=500');
+    if (!profile) {
+        alert("Profile not found!");
+        return;
+    }
 
-    // Loading state (same loader styles as print fix)
+    const qrWindow = window.open('', 'QR Code', 'width=400,height=500');
+    if (!qrWindow || qrWindow.closed) {
+        alert('Please allow pop-ups to generate QR code');
+        return;
+    }
+
+    // Initial loading state
     qrWindow.document.write(`
         <html>
             <head>
                 <title>Loading QR Code...</title>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
                 <style>
                     .loader {
-                        border: 5px solid #f3f3f3;
+                        border: 4px solid #f3f3f3;
+                        border-top: 4px solid #3498db;
                         border-radius: 50%;
-                        border-top: 5px solid #3498db;
-                        width: 50px;
-                        height: 50px;
+                        width: 40px;
+                        height: 40px;
                         animation: spin 1s linear infinite;
                         margin: 20% auto;
                     }
@@ -669,24 +678,18 @@ function generateQRCode(profileIndex) {
                     }
                 </style>
             </head>
-            <body><div class="loader"></div></body>
+            <body>
+                <div class="loader"></div>
+            </body>
         </html>
     `);
 
-    // Generate QR after window fully opens
-    setTimeout(() => {
-        try {
-            if (!profile) {
-                qrWindow.document.write('<h1>Error: Profile not found!</h1>');
-                qrWindow.document.close();
-                return;
-            }
+    // Wait for window and library to load
+    qrWindow.onload = () => {
+        const emergencyContact = profile.emergencyContacts?.[0] || {};
+        const microchip = profile.microchip || {};
 
-            const emergencyContact = profile.emergencyContacts?.[0] || {};
-            const microchip = profile.microchip || {};
-
-            // Construct QR text with exactly your specified format
-            const qrText = `
+        const qrText = `
 PET PROFILE
 Name: ${profile.petName || 'N/A'}
 Breed: ${profile.breed || 'N/A'}
@@ -700,111 +703,44 @@ Vaccinations/Deworming: ${profile.vaccinationsAndDewormingReminder || 'N/A'}
 Medical Check-ups: ${profile.medicalCheckupsReminder || 'N/A'}
 Grooming: ${profile.groomingReminder || 'N/A'}
 Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relationship || 'N/A'}) - ${emergencyContact.phone || 'N/A'}
-            `.trim();
+        `.trim();
 
-            QRCode.toCanvas(qrText, {
-                width: 300,
-                errorCorrectionLevel: 'H'
-            }, (err, canvas) => {
-                if (err) throw err;
-
-                // Clear loading state
-                qrWindow.document.body.innerHTML = '';
-
-                // Style the QR code display
-                canvas.style.margin = '20px auto';
-                canvas.style.display = 'block';
-                canvas.style.border = '2px solid #333';
-                canvas.style.borderRadius = '8px';
-
-                // Create control buttons container
-                const buttonContainer = qrWindow.document.createElement('div');
-                buttonContainer.style.margin = '20px 0';
-                buttonContainer.style.textAlign = 'center';
-
-                // Create download button
-                const downloadBtn = qrWindow.document.createElement('button');
-                downloadBtn.textContent = 'Download QR Code';
-                downloadBtn.style.cssText = `
-                    padding: 10px 20px;
-                    margin: 0 10px;
-                    background: #3498db;
-                    color: white;
-                    border: none;
-                    border-radius: 5px;
-                    cursor: pointer;
-                `;
-
-                // Create print button
-                const printBtn = qrWindow.document.createElement('button');
-                printBtn.textContent = 'Print';
-                printBtn.style.cssText = `
-                    padding: 10px 20px;
-                    margin: 0 10px;
-                    background: #2ecc71;
-                    color: white;
-                    border: none;
-                    border-radius: 5px;
-                    cursor: pointer;
-                `;
-
-                // Add button functionality
-                downloadBtn.onclick = () => {
-                    const link = qrWindow.document.createElement('a');
-                    link.download = `${profile.petName}_QR.png`;
-                    link.href = canvas.toDataURL('image/png');
-                    link.click();
-                };
-
-                printBtn.onclick = () => {
-                    qrWindow.print();
-                };
-
-                // Build the window content
-                qrWindow.document.write(`
-                    <html>
-                        <head>
-                            <title>${profile.petName}'s QR Code</title>
-                            <style>
-                                body { font-family: sans-serif; }
-                                h2 { text-align: center; color: #333; }
-                                .subtitle { text-align: center; color: #777; margin-bottom: 20px; }
-                                .disclaimer { text-align: center; color: #999; font-size: 0.8em; margin-top: 20px; }
-                                @media print {
-                                    button { display: none; }
-                                    canvas { border: none; margin: 0 auto; display: block; }
-                                    .subtitle, .disclaimer { display: none; }
-                                    h2 { margin-bottom: 10px; }
-                                }
-                            </style>
-                        </head>
-                        <body>
-                            <h2>${profile.petName}'s Health Profile</h2>
-                            <div class="subtitle">Scan for Emergency Information</div>
-                        </body>
-                    </html>
-                `);
-
-                // Add elements to window
-                buttonContainer.appendChild(downloadBtn);
-                buttonContainer.appendChild(printBtn);
-                qrWindow.document.body.appendChild(canvas);
-                qrWindow.document.body.appendChild(buttonContainer);
-                qrWindow.document.body.innerHTML += `
-                    <div class="disclaimer">
-                        Contains essential pet health information<br>
-                        Generated by Pet Health Tracker
+        try {
+            qrWindow.document.body.innerHTML = `
+                <div style="padding: 20px; text-align: center; font-family: sans-serif;">
+                    <h2>${profile.petName}'s Health Profile</h2>
+                    <div id="qrcode" style="margin: 20px auto;"></div>
+                    <div style="margin-top: 20px;">
+                        <button onclick="window.print()" style="padding: 10px 20px; margin: 0 10px; background: #2ecc71; color: white; border: none; border-radius: 5px; cursor: pointer;">Print</button>
+                        <button onclick="downloadQR()" style="padding: 10px 20px; margin: 0 10px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">Download</button>
                     </div>
-                `;
+                    <p style="margin-top: 20px; font-size: 0.8em; color: #777;">Scan for Emergency Information</p>
+                    <p style="font-size: 0.7em; color: #999; margin-top: 10px;">Generated by Pet Health Tracker</p>
+                </div>
+                <script>
+                    const qrcodeDiv = document.getElementById('qrcode');
+                    const qrcode = new QRCode(qrcodeDiv, {
+                        text: '${qrText.replace(/'/g, "\\\'")}',
+                        width: 256,
+                        height: 256,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
 
-                // Close document writing
-                qrWindow.document.close();
-            });
+                    function downloadQR() {
+                        const canvas = qrcodeDiv.querySelector('canvas');
+                        const link = document.createElement('a');
+                        link.download = '${profile.petName}_QR.png';
+                        link.href = canvas.toDataURL();
+                        link.click();
+                    }
+                </script>
+            `;
         } catch (error) {
-            qrWindow.document.write(`<h1>Error: ${error.message}</h1>`);
-            qrWindow.document.close();
+            qrWindow.document.body.innerHTML = `<h1 style="color: red">Error: ${error.message}</h1>`;
         }
-    }, 500); // Allow window to fully open
+    };
 }
 // ======== UPDATED SERVICE WORKER REGISTRATION ========
 if ('serviceWorker' in navigator) {
