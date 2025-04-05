@@ -9,15 +9,15 @@ const reminderFields = {
     groomingReminder: 'Grooming',
 };
 
-// ======== 1. AUTH STATE CHECK ======== (MODIFIED)
+// ======== AUTHENTICATION ========//
+// ======== A AUTH STATE CHECK ======== (MODIFIED)
 document.addEventListener('DOMContentLoaded', () => {
     const authSection = document.getElementById('authSection');
     const mainContent = document.getElementById('mainContent');
     const logoutButton = document.getElementById('logoutButton');
     const petPhotoInput = document.getElementById('petPhoto');
     const petPhotoPreview = document.getElementById('petPhotoPreview');
-    const loggedInUser = localStorage.getItem('loggedInUser');
-
+    
     // Firebase auth state persistence
     firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
         .then(() => {
@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     authSection.style.display = 'block';
                     mainContent.style.display = 'none';
                     logoutButton.style.display = 'none';
+                    switchAuthForm('login'); // Add this line
                 }
             });
         })
@@ -103,51 +104,51 @@ document.addEventListener('DOMContentLoaded', () => {
         loadSavedPetProfile();
     }
 });
+// ========B FORM SWITCHING HELPER ========
+function switchAuthForm(targetForm) {
+    // Hide all forms
+    document.getElementById('signUpForm').classList.remove('active');
+    document.getElementById('loginForm').classList.remove('active');
+    
+    // Show target form and reset it
+    const formElement = document.getElementById(`${targetForm}Form`);
+    formElement.classList.add('active');
+    formElement.querySelector('form').reset();
+}
 
-// ======== 2. SIGN-UP HANDLER ========
+// ========C FORM SWITCHING EVENT LISTENERS ========
+document.getElementById('showLogin').addEventListener('click', (e) => {
+    e.preventDefault();
+    switchAuthForm('login');
+});
+
+document.getElementById('showSignUp').addEventListener('click', (e) => {
+    e.preventDefault();
+    switchAuthForm('signUp');
+});
+
+// ========D UPDATED SIGN-UP HANDLER ========
 document.getElementById('signUp').addEventListener('submit', function(event) {
     event.preventDefault();
 
     const email = document.getElementById('signUpEmail').value.trim();
     const password = document.getElementById('signUpPassword').value.trim();
 
-    // Validation...
-
-    // Use Firebase to create a new user
     firebase.auth().createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-            // Sign-up successful.
-            console.log("Firebase Sign-up successful:", userCredential.user);
-            alert('Sign-up successful! Redirecting to login...');
-
-            // Ensure we have a Firebase user object before redirecting
-            firebase.auth().onAuthStateChanged((user) => {
-                if (user) {
-                    document.getElementById('signUpForm').style.display = 'none';
-                    document.getElementById('loginForm').style.display = 'block';
-                    event.target.reset();
-                } else {
-                    console.log("Firebase user object not immediately available after sign-up.");
-                    // Optionally, try again after a short delay
-                    setTimeout(() => {
-                        document.getElementById('signUpForm').style.display = 'none';
-                        document.getElementById('loginForm').style.display = 'block';
-                        event.target.reset();
-                    }, 500);
-                }
-            });
+        .then(() => {
+            alert('Sign-up successful! Please login.');
+            switchAuthForm('login');
+            this.reset(); // Reset sign-up form
         })
         .catch((error) => {
-            // Handle errors here.
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.error("Firebase Sign-up error:", errorCode, errorMessage);
-            alert('Sign-up failed: ' + errorMessage);
+            console.error("Sign-up error:", error);
+            alert(`Sign-up failed: ${error.message}`);
+            this.reset(); // Reset form on error
         });
 });
 
-// ======== 3. LOGIN HANDLER (FIREBASE INTEGRATION) ========
-document.getElementById('login').addEventListener('submit', function (event) {
+// ========E UPDATED LOGIN HANDLER ========
+document.getElementById('login').addEventListener('submit', function(event) {
     event.preventDefault();
 
     const email = document.getElementById('loginEmail').value.trim();
@@ -155,23 +156,13 @@ document.getElementById('login').addEventListener('submit', function (event) {
 
     firebase.auth().signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
-            // Login successful.
-            const user = userCredential.user;
-            console.log("Firebase Login successful:", user);
-            alert('Login successful!');
-            document.getElementById('authSection').style.display = 'none';
-            document.getElementById('mainContent').style.display = 'block';
-            document.getElementById('logoutButton').style.display = 'block';
-            event.target.reset();
-            // We might want to load pet profiles here after successful login
-            // loadSavedPetProfile(); // Uncomment this if needed
+            // Successful login handled by auth state observer
+            this.reset(); // Reset login form
         })
         .catch((error) => {
-            // Handle login errors.
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.error("Firebase Login error:", errorCode, errorMessage);
-            alert('Login failed: ' + errorMessage);
+            console.error("Login error:", error);
+            alert(`Login failed: ${error.message}`);
+            this.reset(); // Reset form on error
         });
 });
 
