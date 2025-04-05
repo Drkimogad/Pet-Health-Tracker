@@ -578,15 +578,21 @@ function printPetProfile(index) {
         printWindow.document.write(''); // Clear the loading content
         printWindow.document.write(printContent);
         printWindow.document.close();
-        printWindow.print();
-        printWindow.onafterprint = () => printWindow.close();
+
+        // Add a small delay before printing *after* the image is loaded
+        setTimeout(() => {
+            printWindow.print();
+            printWindow.onafterprint = () => printWindow.close();
+        }, 300); // Adjust the delay (in milliseconds) as needed
     };
 
     tempImg.onerror = function() {
         printWindow.document.write('<h1>Error loading image</h1>');
         printWindow.document.close();
-        printWindow.print();
-        printWindow.onafterprint = () => printWindow.close();
+        setTimeout(() => {
+            printWindow.print();
+            printWindow.onafterprint = () => printWindow.close();
+        }, 300);
     };
 
     tempImg.src = profile.petPhoto;
