@@ -249,6 +249,7 @@ document.getElementById('dietForm').addEventListener('submit', function(event) {
   event.target.reset();
   document.getElementById('petPhotoPreview').src = '';
   document.getElementById('petPhotoPreview').style.display = 'none';
+  document.getElementById('cancelEdit').style.display = 'none';
 });
 
 // ======== 6. LOAD SAVED PET PROFILES (WITH NEW FIELDS) ========
