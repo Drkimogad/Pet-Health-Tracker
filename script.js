@@ -166,21 +166,18 @@ document.getElementById('login').addEventListener('submit', function(event) {
         });
 });
 
-// ======== 4. LOGOUT HANDLER (FIREBASE INTEGRATION) ========
-document.getElementById('logoutButton').addEventListener('click', function () {
+// ======== F. LOGOUT HANDLER (FIREBASE INTEGRATION) ========
+document.getElementById('logoutButton').addEventListener('click', function() {
     firebase.auth().signOut()
         .then(() => {
-            // Logout successful.
             console.log("Firebase Logout successful");
-            document.getElementById('authSection').style.display = 'block';
-            document.getElementById('mainContent').style.display = 'none';
-            document.getElementById('logoutButton').style.display = 'none';
+            // Trigger form switching instead of direct DOM manipulation
+            switchAuthForm('login');
             alert('Logged out successfully!');
         })
         .catch((error) => {
-            // Handle logout errors.
-            console.error("Firebase Logout error:", error);
-            alert('Logout failed. Please try again.');
+            console.error("Logout error:", error);
+            alert(`Logout failed: ${error.message}`);
         });
 });
 
