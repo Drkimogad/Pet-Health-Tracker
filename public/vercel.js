@@ -1,7 +1,11 @@
-module.exports = async (req, res) => {
-  if (req.method === 'POST') {
-    // Handle subscription saving
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.status(200).json({ success: true });
-  }
-};
+{
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1",
+      "headers": {
+        "x-vercel-disable-auth": "1"
+      }
+    }
+  ]
+}
