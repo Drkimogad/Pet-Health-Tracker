@@ -5,7 +5,7 @@ const CACHED_INDEX = './index.html';
 const urlsToCache = [
   CACHED_INDEX,
   './styles.css',
-  './scripts/main.js',
+  './main.js',
   './manifest.json',
   './icons/icon-192x192.png',
   './icons/icon-512x512.png',
