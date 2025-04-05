@@ -25,10 +25,7 @@
             measurementId: "G-GKD3RVNVLV"
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-
-        // Get references to the services
         const auth = firebase.auth();
         const firestore = firebase.firestore();
         const messaging = firebase.messaging();
@@ -49,30 +46,28 @@
         </header>
 
         <section id="authSection">
-            <div id="signUpForm">
-                <h2>Sign-Up</h2>
+            <div id="signUpForm" class="auth-form active">
+                <h2>Sign Up</h2>
                 <form id="signUp">
                     <label for="signUpEmail">Email:</label>
                     <input type="email" id="signUpEmail" name="email" required autocomplete="email">
-
                     <label for="signUpPassword">Password:</label>
                     <input type="password" id="signUpPassword" name="password" required autocomplete="new-password">
-
                     <button type="submit">Sign Up</button>
                 </form>
+                <p class="form-switch">Already have an account? <a href="#" id="showLogin">Sign In</a></p>
             </div>
 
-            <div id="loginForm" style="display: none;">
+            <div id="loginForm" class="auth-form">
                 <h2>Login</h2>
                 <form id="login">
                     <label for="loginEmail">Email:</label>
                     <input type="email" id="loginEmail" name="email" required autocomplete="email">
-
                     <label for="loginPassword">Password:</label>
                     <input type="password" id="loginPassword" name="password" required autocomplete="current-password">
-
                     <button type="submit">Login</button>
                 </form>
+                <p class="form-switch">Don't have an account? <a href="#" id="showSignUp">Sign Up</a></p>
             </div>
         </section>
 
@@ -163,14 +158,14 @@
                         <label for="groomingReminder">Grooming:</label>
                         <input type="datetime-local" id="groomingReminder" name="groomingReminder">
                     </fieldset>
-                 <button type="submit">Save Pet Profile</button>
+                   <button type="submit">Save Pet Profile</button>
                 </form>
             </div>
 
             <section class="saved-profiles">
                 <h3>Saved Pet Profiles</h3>
                 <ul id="savedProfilesList">
-                    </ul>
+                </ul>
             </section>
         </main>
 
@@ -182,5 +177,25 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const signUpForm = document.getElementById('signUpForm');
+            const loginForm = document.getElementById('loginForm');
+            const showLoginLink = document.getElementById('showLogin');
+            const showSignUpLink = document.getElementById('showSignUp');
+
+            showLoginLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                signUpForm.classList.remove('active');
+                loginForm.classList.add('active');
+            });
+
+            showSignUpLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                loginForm.classList.remove('active');
+                signUpForm.classList.add('active');
+            });
+        });
+    </script>
 </body>
 </html>
