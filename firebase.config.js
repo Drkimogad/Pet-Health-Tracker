@@ -1,46 +1,77 @@
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyBIej7yNj0LkkLd6VtQxBL4mEDSsHLJvig",
-  authDomain: "pet-health-tracker-7164d.firebaseapp.com",
-  projectId: "pet-health-tracker-7164d",
-  storageBucket: "pet-health-tracker-7164d.firebasestorage.app",
-  messagingSenderId: "251170885789",
-  appId: "1:251170885789:web:2c16a20f96da9f6a960474",
-  measurementId: "G-GKD3RVNVLV"
 
-  export const formatReminderDate = (dateString) => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric'
+
+<script>
+
+  // Initialize Firebase App (using the compatibility API)
+
+  const app = firebase.initializeApp({
+
+    apiKey: "AIzaSyB42agDYdC2-LF81f0YurmwiDmXptTpMVw",
+
+    authDomain: "swiftreach2025.firebaseapp.com",
+
+    projectId: "swiftreach2025",
+
+    storageBucket: "swiftreach2025.firebasestorage.app",
+
+    messagingSenderId: "540185558422",
+
+    appId: "1:540185558422:web:d560ac90eb1dff3e5071b7",
+
+    measurementId: "G-SNBPRVBPNM"
+
   });
-};
 
-export const getProfileLink = (index) => {
-  return `${window.location.origin}?profile=${index}`;
-};
-export async function initNotifications() {
-  if ('serviceWorker' in navigator && 'PushManager' in window) {
-    try {
-      const registration = await navigator.serviceWorker.register('/sw.js');
-      await navigator.serviceWorker.ready;
-      
-      const permission = await Notification.requestPermission();
-      if (permission === 'granted') {
-        const token = await getFCMToken();
-        await saveSubscription(token);
+
+
+  // Firestore Database Setup  
+
+  const db = firebase.firestore(app);  // Initialize Firestore
+
+  console.log("Firestore initialized and ready to use.");
+
+
+
+  // Firebase Authentication Setup  
+
+  const auth = firebase.auth(app);  // Initialize Firebase Authentication
+
+  console.log("Authentication service initialized.");
+
+
+
+  // Firebase Cloud Messaging Setup  
+
+  const messaging = firebase.messaging(app);  // Initialize Messaging
+
+  console.log("Firebase Cloud Messaging initialized.");
+
+
+
+  // Set VAPID key and handle token generation
+
+  messaging.getToken({ vapidKey: "BAL7SL85Z3cAH-T6oDGvfxV0oJhElCpnc7F_TaF2RQogy0gnUChGa_YtmwKdifC4c4pZ0NhUd4T6BFHGRxT79Gk" })
+
+    .then((currentToken) => {
+
+      if (currentToken) {
+
+        console.log('Got FCM device token:', currentToken);
+
+        // Send the token to your server and update the UI if necessary
+
+      } else {
+
+        console.log('No registration token available. Request permission to generate one.');
+
       }
-    } catch (error) {
-      console.error('Notification initialization failed:', error);
-    }
-  }
-}
 
-async function getFCMToken() {
-  const messaging = firebase.messaging();
-  return messaging.getToken({ 
-    vapidKey: 'YOUR_VAPID_KEY' 
-  });
-}
+    })
+
+    .catch((err) => {
+
+      console.error('An error occurred while retrieving token: ', err);
+
+    });
+
+</script>
