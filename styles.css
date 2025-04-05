@@ -190,6 +190,11 @@ button:disabled {
   width: 150px;
 }
 
+#cancelEdit {
+    background-color: #e74c3c;
+    margin-left: 10px;
+}
+
 /* ===== SAVED PROFILES ===== */
 .saved-profiles {
   padding: 0 20px;
