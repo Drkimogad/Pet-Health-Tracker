@@ -814,31 +814,39 @@ Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relatio
   });
 }
 
-// ======== UPDATED SERVICE WORKER REGISTRATION ========
+// ======== COMBINED SERVICE WORKER REGISTRATION ========
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register(
-      './service-worker.js', {
-        scope: '/Pet-Health-Tracker/'
-      }
-    ).then((registration) => {
-      console.log('SW registered:', registration);
+    // Register Firebase as main service worker
+    navigator.serviceWorker.register('/firebase-messaging-sw.js', {
+      scope: '/Pet-Health-Tracker/'
+    })
+    .then((registration) => {
+      console.log('Firebase SW registered:', registration);
+      
+      // Auto-update checker
       setInterval(() => registration.update(), 60 * 60 * 1000);
 
-      // Enhanced update handling
+      // Update handling
       registration.addEventListener('updatefound', () => {
         const newWorker = registration.installing;
         newWorker.addEventListener('statechange', () => {
           if (newWorker.state === 'activated') {
+            console.log('New version available! Reloading...');
             window.location.reload();
           }
         });
       });
 
-      navigator.serviceWorker.addEventListener('controllerchange',
-        () => {
-          window.location.reload();
-        });
-    }).catch(console.error);
+      // Controller change handler
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        console.log('Controller changed, reloading...');
+        window.location.reload();
+      });
+    })
+    .catch((error) => {
+      console.error('Service Worker registration failed:', error);
+    });
   });
 }
+  
