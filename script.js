@@ -628,53 +628,72 @@ function printPetProfile(index) {
 
 // Share Pet Profile button functionality//
 function sharePetProfile(index) {
-  const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
-  const profile = savedProfiles[index];
-  const emergencyContact = profile.emergencyContacts?.[0] || {};
+    const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
+    const profile = savedProfiles[index];
+    const link = getProfileLink(index);
+    
+    const shareText = `
+🐾 ${profile.petName}'s Health Profile
+━━━━━━━━━━━━━━━━━━━━
+📋 Basic Information:
+   • Breed: ${profile.breed || 'N/A'}
+   • Age: ${profile.age || 'N/A'}
+   • Weight: ${profile.weight || 'N/A'}
 
-  const shareData = {
-    title: `${profile.petName}'s Health Profile`,
-    text: `Pet Details:\n${Object.entries({
-            Name: profile.petName,
-            Breed: profile.breed,
-            Age: profile.age,
-            Weight: profile.weight,
-            'Microchip ID': profile.microchip?.id,
-            Allergies: profile.allergies,
-            'Medical History': profile.medicalHistory,
-            'Diet Plan': profile.dietPlan,
-            'Vaccinations/Deworming': profile.vaccinationsAndDewormingReminder,
-            'Medical Check-ups': profile.medicalCheckupsReminder,
-            Grooming: profile.groomingReminder,
-            'Emergency Contact': `${emergencyContact.name} (${emergencyContact.relationship}) - ${emergencyContact.phone}`
-        }).map(([key, val]) => `
-    $ {
-      key
-    }: $ {
-      val || 'N/A'
-    }
-    `).join('\n')}`,
-    url: window.location.href
-  };
+🔍 Identification:
+   • Microchip ID: ${profile.microchip?.id || 'N/A'}
+   • Implant Date: ${profile.microchip?.date || 'N/A'}
+   • Vendor: ${profile.microchip?.vendor || 'N/A'}
 
-  if (navigator.share) {
-    navigator.share(shareData)
-      .then(() => console.log('Shared successfully'))
-      .catch(console.error);
-  } else {
-    const textToCopy =
-      `${shareData.title}\n\n${shareData.text}\n\n${shareData.url}`;
+🏥 Health Details:
+   • Allergies: ${profile.allergies || 'None'}
+   • Medical History: ${profile.medicalHistory || 'None'}
+   • Diet Plan: ${profile.dietPlan || 'Not specified'}
 
-    // Modern clipboard API fallback
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(textToCopy)
-        .then(() => alert('Profile copied to clipboard!'))
-        .catch(() => prompt('Copy the following text:', textToCopy));
+📅 Reminders:
+   • Vaccinations: ${profile.vaccinationsAndDewormingReminder || 'None'}
+   • Check-ups: ${profile.medicalCheckupsReminder || 'None'}
+   • Grooming: ${profile.groomingReminder || 'None'}
+
+🚨 Emergency Contact:
+   • ${profile.emergencyContacts?.[0]?.name || 'N/A'} 
+   (${profile.emergencyContacts?.[0]?.relationship || 'N/A'})
+   📞 ${profile.emergencyContacts?.[0]?.phone || 'N/A'}
+
+🔗 Full Profile: ${link}
+    `.trim();
+
+    if (navigator.share) {
+        navigator.share({
+            title: `${profile.petName}'s Health Profile`,
+            text: shareText,
+            url: link
+        }).catch(console.error);
     } else {
-      prompt('Copy the following text:', textToCopy);
+        navigator.clipboard?.writeText(shareText)
+            .then(() => alert('Profile copied to clipboard!'))
+            .catch(() => prompt('Copy this text:', shareText));
     }
-  }
 }
+
+// Enhanced deep link handler
+window.addEventListener('load', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const profileIndex = urlParams.get('profile');
+    
+    if (profileIndex !== null) {
+        // Wait for profiles to load
+        setTimeout(() => {
+            const petCard = document.querySelector(`.pet-card[data-index="${profileIndex}"]`);
+            if (petCard) {
+                petCard.scrollIntoView({ behavior: 'smooth' });
+                petCard.style.animation = 'highlight 1.5s ease-out';
+            }
+        }, 500); // Adjust delay if needed
+    }
+});
+
+
 // ======== QR CODE GENERATION button functionality ========
 function generateQRCode(profileIndex) {
   const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
