@@ -454,7 +454,8 @@ function editPetProfile(index) {
             document.getElementById('dietForm').reset();
             document.getElementById('petPhotoPreview').src = '';
             document.getElementById('petPhotoPreview').style.display = 'none';
-        });
+        }); // <-- Closing brace for the event listener
+    } // <-- Closing brace for the inner if (editingProfileIndex !== null)
     } else {
         console.error("Cancel button with ID 'cancelEdit' not found in the DOM when edit form is displayed.");
     }
