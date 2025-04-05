@@ -371,26 +371,29 @@ function deleteOverdueReminder(profileIndex, reminderKey) {
 function editPetProfile(index) {
     const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
     const profile = savedProfiles[index];
-
     editingProfileIndex = index;
 
-    // Store the original profile in sessionStorage
     sessionStorage.setItem(`editingProfile_${index}`, JSON.stringify(profile));
 
+    // Populate form fields (with optional chaining replaced)
     document.getElementById('petName').value = profile.petName;
     document.getElementById('breed').value = profile.breed;
     document.getElementById('age').value = profile.age;
     document.getElementById('weight').value = profile.weight;
-    document.getElementById('microchipId').value = profile.microchip?.id || '';
-    document.getElementById('microchipDate').value = profile.microchip?.date || '';
-    document.getElementById('microchipVendor').value = profile.microchip?.vendor || '';
+    document.getElementById('microchipId').value = (profile.microchip && profile.microchip.id) || '';
+    document.getElementById('microchipDate').value = (profile.microchip && profile.microchip.date) || '';
+    document.getElementById('microchipVendor').value = (profile.microchip && profile.microchip.vendor) || '';
     document.getElementById('allergies').value = profile.allergies;
     document.getElementById('medicalHistory').value = profile.medicalHistory;
     document.getElementById('dietPlan').value = profile.dietPlan;
     document.getElementById('moodSelector').value = profile.mood || '';
-    document.getElementById('emergencyContactName').value = profile.emergencyContacts?.[0]?.name || '';
-    document.getElementById('emergencyContactPhone').value = profile.emergencyContacts?.[0]?.phone || '';
-    document.getElementById('emergencyContactRelationship').value = profile.emergencyContacts?.[0]?.relationship || '';
+
+    // Emergency contacts with safe navigation
+    const emergencyContact = profile.emergencyContacts && profile.emergencyContacts[0];
+    document.getElementById('emergencyContactName').value = (emergencyContact && emergencyContact.name) || '';
+    document.getElementById('emergencyContactPhone').value = (emergencyContact && emergencyContact.phone) || '';
+    document.getElementById('emergencyContactRelationship').value = (emergencyContact && emergencyContact.relationship) || '';
+
     document.getElementById('vaccinationsAndDewormingReminder').value = profile.vaccinationsAndDewormingReminder || '';
     document.getElementById('medicalCheckupsReminder').value = profile.medicalCheckupsReminder || '';
     document.getElementById('groomingReminder').value = profile.groomingReminder || '';
@@ -405,36 +408,38 @@ function editPetProfile(index) {
 
     document.getElementById('dietForm').scrollIntoView();
 
-    // Modified "Cancel" Button Event Listener (moved here):
+    // Cancel button handling (fixed brace structure)
     const cancelButton = document.getElementById('cancelEdit');
     if (cancelButton) {
-    // Remove any existing listener to prevent duplicates
-    cancelButton.replaceWith(cancelButton.cloneNode(true));
-    document.getElementById('cancelEdit').addEventListener('click', function() {
+        // Clone to remove existing listeners
+        cancelButton.replaceWith(cancelButton.cloneNode(true));
+        document.getElementById('cancelEdit').addEventListener('click', function() {
             if (editingProfileIndex !== null) {
-                // Restore original profile from sessionStorage
                 const originalProfile = JSON.parse(sessionStorage.getItem(`editingProfile_${editingProfileIndex}`));
 
                 if (originalProfile) {
+                    // Restore all fields (using safe navigation)
                     document.getElementById('petName').value = originalProfile.petName;
                     document.getElementById('breed').value = originalProfile.breed;
                     document.getElementById('age').value = originalProfile.age;
                     document.getElementById('weight').value = originalProfile.weight;
-                    document.getElementById('microchipId').value = originalProfile.microchip?.id || '';
-                    document.getElementById('microchipDate').value = originalProfile.microchip?.date || '';
-                    document.getElementById('microchipVendor').value = originalProfile.microchip?.vendor || '';
+                    document.getElementById('microchipId').value = (originalProfile.microchip && originalProfile.microchip.id) || '';
+                    document.getElementById('microchipDate').value = (originalProfile.microchip && originalProfile.microchip.date) || '';
+                    document.getElementById('microchipVendor').value = (originalProfile.microchip && originalProfile.microchip.vendor) || '';
                     document.getElementById('allergies').value = originalProfile.allergies;
                     document.getElementById('medicalHistory').value = originalProfile.medicalHistory;
                     document.getElementById('dietPlan').value = originalProfile.dietPlan;
                     document.getElementById('moodSelector').value = originalProfile.mood || '';
-                    document.getElementById('emergencyContactName').value = originalProfile.emergencyContacts?.[0]?.name || '';
-                    document.getElementById('emergencyContactPhone').value = originalProfile.emergencyContacts?.[0]?.phone || '';
-                    document.getElementById('emergencyContactRelationship').value = originalProfile.emergencyContacts?.[0]?.relationship || '';
+                    
+                    const originalEmergencyContact = originalProfile.emergencyContacts && originalProfile.emergencyContacts[0];
+                    document.getElementById('emergencyContactName').value = (originalEmergencyContact && originalEmergencyContact.name) || '';
+                    document.getElementById('emergencyContactPhone').value = (originalEmergencyContact && originalEmergencyContact.phone) || '';
+                    document.getElementById('emergencyContactRelationship').value = (originalEmergencyContact && originalEmergencyContact.relationship) || '';
+
                     document.getElementById('vaccinationsAndDewormingReminder').value = originalProfile.vaccinationsAndDewormingReminder || '';
                     document.getElementById('medicalCheckupsReminder').value = originalProfile.medicalCheckupsReminder || '';
                     document.getElementById('groomingReminder').value = originalProfile.groomingReminder || '';
 
-                    // Pet photo
                     if (originalProfile.petPhoto) {
                         document.getElementById('petPhotoPreview').src = originalProfile.petPhoto;
                         document.getElementById('petPhotoPreview').style.display = 'block';
@@ -444,20 +449,17 @@ function editPetProfile(index) {
                     }
                 }
 
-                // Clear sessionStorage
-                if (editingProfileIndex !== null) {
-        // Clear sessionStorage after successful update
-        sessionStorage.removeItem(`editingProfile_${editingProfileIndex}`);
-        editingProfileIndex = null; // <- Crucial reset
-    }
+                // Cleanup
+                sessionStorage.removeItem(`editingProfile_${editingProfileIndex}`);
+                editingProfileIndex = null;
+            }
 
             document.getElementById('dietForm').reset();
             document.getElementById('petPhotoPreview').src = '';
             document.getElementById('petPhotoPreview').style.display = 'none';
-        }); // <-- Closing brace for the event listener
-    } // <-- Closing brace for the cancelButton.addEventListener    
-       else {
-        console.error("Cancel button with ID 'cancelEdit' not found in the DOM when edit form is displayed.");
+        }); // Correctly closes addEventListener
+    } else { // Properly matched else
+        console.error("Cancel button with ID 'cancelEdit' not found");
     }
 }
 
