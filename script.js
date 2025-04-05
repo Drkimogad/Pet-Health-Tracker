@@ -9,6 +9,37 @@ const reminderFields = {
     groomingReminder: 'Grooming',
 };
 // ======== 1. AUTH STATE CHECK ========
+// ======== 1. AUTH STATE CHECK ======== (MODIFIED)
+document.addEventListener('DOMContentLoaded', () => {
+    const authSection = document.getElementById('authSection');
+    const mainContent = document.getElementById('mainContent');
+    const logoutButton = document.getElementById('logoutButton');
+    
+    // Firebase auth state persistence
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+        .then(() => {
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+                    // User is signed in
+                    authSection.style.display = 'none';
+                    mainContent.style.display = 'block';
+                    logoutButton.style.display = 'block';
+                    loadSavedPetProfile();
+                } else {
+                    // User is signed out
+                    authSection.style.display = 'block';
+                    mainContent.style.display = 'none';
+                    logoutButton.style.display = 'none';
+                }
+            });
+        })
+        .catch((error) => {
+            console.error("Auth persistence error:", error);
+        });
+
+    // Rest of your existing DOMContentLoaded code...
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     const authSection = document.getElementById('authSection');
     const mainContent = document.getElementById('mainContent');
@@ -468,74 +499,117 @@ function deletePetProfile(index) {
 }
 
 // Print Pet Profile button functionality//
+// ======== Print Pet Profile (MODIFIED) ========
 function printPetProfile(index) {
     const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
     const profile = savedProfiles[index];
 
     const printWindow = window.open('', '', 'height=600,width=800');
 
+    // Add loading state
     printWindow.document.write(`
         <html>
             <head>
-                <title>${profile.petName}'s Profile</title>
-                <link rel="stylesheet" href="styles.css">
+                <title>Loading...</title>
                 <style>
-                    body.print-mode { font-family: sans-serif; }
-                    .info-section { margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
-                    .info-section h3 { margin-top: 0; }
-                    .pet-photo { max-width: 200px; height: auto; margin-bottom: 10px; }
+                    .loader {
+                        border: 5px solid #f3f3f3;
+                        border-radius: 50%;
+                        border-top: 5px solid #3498db;
+                        width: 50px;
+                        height: 50px;
+                        animation: spin 1s linear infinite;
+                        margin: 20% auto;
+                    }
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
                 </style>
             </head>
-            <body class="print-mode">
-                <h1>${profile.petName}'s Health Profile</h1>
-
-                ${profile.petPhoto ? `<img src="${profile.petPhoto}" alt="Pet Photo" class="pet-photo">` : ''}
-
-                <div class="info-section">
-                    <h3>Basic Information</h3>
-                    <p><strong>Breed:</strong> ${profile.breed || 'N/A'}</p>
-                    <p><strong>Age:</strong> ${profile.age || 'N/A'}</p>
-                    <p><strong>Weight:</strong> ${profile.weight || 'N/A'}</p>
-                </div>
-
-                <div class="info-section">
-                    <h3>Microchip</h3>
-                    <p><strong>ID:</strong> ${profile.microchip?.id || 'N/A'}</p>
-                    <p><strong>Date:</strong> ${profile.microchip?.date || 'N/A'}</p>
-                    <p><strong>Vendor:</strong> ${profile.microchip?.vendor || 'N/A'}</p>
-                </div>
-
-                <div class="info-section">
-                    <h3>Health</h3>
-                    <p><strong>Allergies:</strong> ${profile.allergies || 'None'}</p>
-                    <p><strong>Medical History:</strong> ${profile.medicalHistory || 'None'}</p>
-                    <p><strong>Diet Plan:</strong> ${profile.dietPlan || 'Not specified'}</p>
-                </div>
-
-                <div class="info-section">
-                    <h3>Mood</h3>
-                    <p>${profile.mood || 'Not recorded'}</p>
-                </div>
-
-                <div class="info-section">
-                    <h3>Emergency Contact</h3>
-                    <p><strong>Name:</strong> ${profile.emergencyContacts?.[0]?.name || 'N/A'}</p>
-                    <p><strong>Phone:</strong> ${profile.emergencyContacts?.[0]?.phone || 'N/A'}</p>
-                    <p><strong>Relationship:</strong> ${profile.emergencyContacts?.[0]?.relationship || 'N/A'}</p>
-                </div>
-
-                <div class="info-section">
-                    <h3>Reminders</h3>
-                    <p><strong>Vaccinations/Deworming:</strong> ${profile.vaccinationsAndDewormingReminder || 'None'}</p>
-                    <p><strong>Medical Check-ups:</strong> ${profile.medicalCheckupsReminder || 'None'}</p>
-                    <p><strong>Grooming:</strong> ${profile.groomingReminder || 'None'}</p>
-                </div>
-            </body>
+            <body><div class="loader"></div></body>
         </html>
     `);
 
-    printWindow.document.close();
-    printWindow.print();
+    // Create temporary image to verify load
+    const tempImg = new Image();
+    tempImg.onload = function() {
+        // Image loaded successfully - build print content
+        const printContent = `
+            <html>
+                <head>
+                    <title>${profile.petName}'s Profile</title>
+                    <link rel="stylesheet" href="styles.css">
+                    <style>
+                        body.print-mode { font-family: sans-serif; }
+                        .info-section { margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+                        .info-section h3 { margin-top: 0; }
+                        .pet-photo { max-width: 200px; height: auto; margin-bottom: 10px; }
+                    </style>
+                </head>
+                <body class="print-mode">
+                    <h1>${profile.petName}'s Health Profile</h1>
+
+                    ${profile.petPhoto ? `<img src="${profile.petPhoto}" alt="Pet Photo" class="pet-photo">` : ''}
+
+                    <div class="info-section">
+                        <h3>Basic Information</h3>
+                        <p><strong>Breed:</strong> ${profile.breed || 'N/A'}</p>
+                        <p><strong>Age:</strong> ${profile.age || 'N/A'}</p>
+                        <p><strong>Weight:</strong> ${profile.weight || 'N/A'}</p>
+                    </div>
+
+                    <div class="info-section">
+                        <h3>Microchip</h3>
+                        <p><strong>ID:</strong> ${profile.microchip?.id || 'N/A'}</p>
+                        <p><strong>Date:</strong> ${profile.microchip?.date || 'N/A'}</p>
+                        <p><strong>Vendor:</strong> ${profile.microchip?.vendor || 'N/A'}</p>
+                    </div>
+
+                    <div class="info-section">
+                        <h3>Health</h3>
+                        <p><strong>Allergies:</strong> ${profile.allergies || 'None'}</p>
+                        <p><strong>Medical History:</strong> ${profile.medicalHistory || 'None'}</p>
+                        <p><strong>Diet Plan:</strong> ${profile.dietPlan || 'Not specified'}</p>
+                    </div>
+
+                    <div class="info-section">
+                        <h3>Mood</h3>
+                        <p>${profile.mood || 'Not recorded'}</p>
+                    </div>
+
+                    <div class="info-section">
+                        <h3>Emergency Contact</h3>
+                        <p><strong>Name:</strong> ${profile.emergencyContacts?.[0]?.name || 'N/A'}</p>
+                        <p><strong>Phone:</strong> ${profile.emergencyContacts?.[0]?.phone || 'N/A'}</p>
+                        <p><strong>Relationship:</strong> ${profile.emergencyContacts?.[0]?.relationship || 'N/A'}</p>
+                    </div>
+
+                    <div class="info-section">
+                        <h3>Reminders</h3>
+                        <p><strong>Vaccinations/Deworming:</strong> ${profile.vaccinationsAndDewormingReminder || 'None'}</p>
+                        <p><strong>Medical Check-ups:</strong> ${profile.medicalCheckupsReminder || 'None'}</p>
+                        <p><strong>Grooming:</strong> ${profile.groomingReminder || 'None'}</p>
+                    </div>
+                </body>
+            </html>
+        `;
+
+        printWindow.document.write(''); // Clear the loading content
+        printWindow.document.write(printContent);
+        printWindow.document.close();
+        printWindow.print();
+        printWindow.onafterprint = () => printWindow.close();
+    };
+
+    tempImg.onerror = function() {
+        printWindow.document.write('<h1>Error loading image</h1>');
+        printWindow.document.close();
+        printWindow.print();
+        printWindow.onafterprint = () => printWindow.close();
+    };
+
+    tempImg.src = profile.petPhoto;
 }
 
 // Share Pet Profile button functionality//
