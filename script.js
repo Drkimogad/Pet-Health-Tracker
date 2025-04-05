@@ -482,73 +482,93 @@ function deletePetProfile(index) {
 function printPetProfile(index) {
     const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
     const profile = savedProfiles[index];
-
-    const printWindow = window.open('', '', 'height=600,width=800');
-
-    // Create temporary image with proper cross-origin handling
-    const tempImg = new Image();
-    tempImg.crossOrigin = 'anonymous'; // Handle CORS if needed
     
-    tempImg.onload = function() {
-        // Convert image to data URL
-        const canvas = document.createElement('canvas');
-        canvas.width = tempImg.naturalWidth;
-        canvas.height = tempImg.naturalHeight;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(tempImg, 0, 0);
-        
-        const dataUrl = canvas.toDataURL('image/png');
-
-        // Build print content with embedded data URL
-        const printContent = `
-            <html>
-                <head>
-                    <title>${profile.petName}'s Profile</title>
-                    <style>
-                        /* Your print styles */
-                    </style>
-                </head>
-                <body class="print-mode">
-                    <!-- Rest of your content -->
-                    ${dataUrl ? `<img src="${dataUrl}" class="pet-photo">` : ''}
-                    <!-- Rest of your content -->
-                </body>
-            </html>
-        `;
-
-        // Write content and handle print timing
-        printWindow.document.write(printContent);
-        printWindow.document.close();
-
-        // Wait for window to fully render content
-        printWindow.onload = () => {
-            // Small delay for rendering completion
-            setTimeout(() => {
-                printWindow.print();
-                printWindow.onafterprint = () => {
-                    URL.revokeObjectURL(dataUrl); // Clean up
-                    printWindow.close();
-                };
-            }, 300);
-        };
-    };
-
-    tempImg.onerror = () => {
-        printWindow.document.write('<h1>Error loading image</h1>');
-        printWindow.print();
-        printWindow.close();
-    };
-
-    // Start loading process
+    const printWindow = window.open('', '_blank', 'height=600,width=800');
+    
+    // Phase 1: Preload all assets
+    const assetPromises = [];
+    
+    // Handle pet photo loading
+    let photoDataURL = null;
     if (profile.petPhoto) {
-        tempImg.src = profile.petPhoto;
-    } else {
-        // Handle case without photo
-        printWindow.document.write(printContentWithoutPhoto());
-        printWindow.document.close();
-        printWindow.print();
-        printWindow.close();
+        assetPromises.push(new Promise((resolve, reject) => {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.naturalWidth;
+                canvas.height = img.naturalHeight;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+                photoDataURL = canvas.toDataURL('image/png');
+                resolve();
+            };
+            img.onerror = reject;
+            img.src = profile.petPhoto;
+        }));
     }
+
+    // Show loading state
+    printWindow.document.write(`
+        <html>
+            <head><title>Loading...</title></head>
+            <body style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+                <div class="loader">Generating Printable Version...</div>
+            </body>
+        </html>
+    `);
+
+    // Phase 2: Build content after assets load
+    Promise.all(assetPromises)
+        .then(() => {
+            const printContent = `
+                <html>
+                    <head>
+                        <title>${profile.petName}'s Profile</title>
+                        <style>
+                            ${document.querySelector('style').innerHTML}
+                            body { font-family: Arial, sans-serif; padding: 20px; }
+                            .print-section { margin-bottom: 25px; }
+                            .pet-photo-print { 
+                                max-width: 300px; 
+                                height: auto; 
+                                margin: 15px 0; 
+                                border: 2px solid #eee;
+                                border-radius: 8px;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>${profile.petName}'s Health Profile</h1>
+                        ${photoDataURL ? `<img src="${photoDataURL}" class="pet-photo-print">` : ''}
+                        <!-- Rest of your content sections -->
+                    </body>
+                </html>
+            `;
+
+            // Phase 3: Write final content
+            printWindow.document.write(printContent);
+            printWindow.document.close();
+
+            // Phase 4: Ensure DOM is ready
+            printWindow.document.addEventListener('DOMContentLoaded', () => {
+                // Phase 5: Wait for all subresources
+                printWindow.addEventListener('load', () => {
+                    // Phase 6: Small delay for rendering completion
+                    setTimeout(() => {
+                        printWindow.print();
+                        printWindow.onafterprint = () => {
+                            if (photoDataURL) URL.revokeObjectURL(photoDataURL);
+                            printWindow.close();
+                        };
+                    }, 500);
+                });
+            });
+        })
+        .catch(error => {
+            printWindow.document.body.innerHTML = `<h1>Error: ${error.message}</h1>`;
+            printWindow.print();
+        });
 }
 
 // Share Pet Profile button functionality//
@@ -604,17 +624,13 @@ function generateQRCode(profileIndex) {
     }
 
     const qrWindow = window.open('', 'QR Code', 'width=400,height=500');
-    if (!qrWindow || qrWindow.closed) {
-        alert('Please allow pop-ups to generate QR code');
-        return;
-    }
 
-    // Initial loading state
+    // Load QR library FIRST in the new window
     qrWindow.document.write(`
         <html>
             <head>
                 <title>Loading QR Code...</title>
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
                 <style>
                     .loader {
                         border: 4px solid #f3f3f3;
@@ -633,12 +649,34 @@ function generateQRCode(profileIndex) {
             </head>
             <body>
                 <div class="loader"></div>
+                <div id="qrcode-container" style="display: none; margin: 20px auto; text-align: center;"></div>
+                <div id="qr-controls" style="display: none; text-align: center; margin-top: 20px;">
+                    <button onclick="window.print()" style="padding: 10px 20px; margin: 0 10px; background: #2ecc71; color: white; border: none; border-radius: 5px; cursor: pointer;">Print</button>
+                    <button onclick="downloadQR()" style="padding: 10px 20px; margin: 0 10px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">Download</button>
+                    <p style="margin-top: 20px; font-size: 0.8em; color: #777;">Scan for Emergency Information</p>
+                    <p style="font-size: 0.7em; color: #999; margin-top: 10px;">Generated by Pet Health Tracker</p>
+                </div>
+                <script>
+                    function downloadQR() {
+                        const qrcodeContainer = document.getElementById('qrcode-container');
+                        const canvas = qrcodeContainer.querySelector('canvas');
+                        if (canvas) {
+                            const link = document.createElement('a');
+                            link.download = '${profile.petName}_QR.png';
+                            link.href = canvas.toDataURL();
+                            link.click();
+                        } else {
+                            alert('QR code not yet generated.');
+                        }
+                    }
+                </script>
             </body>
         </html>
     `);
+    qrWindow.document.close();
 
-    // Wait for window and library to load
-    qrWindow.onload = () => {
+    // Wait for library to load
+    qrWindow.addEventListener('load', () => {
         const emergencyContact = profile.emergencyContacts?.[0] || {};
         const microchip = profile.microchip || {};
 
@@ -659,42 +697,33 @@ Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relatio
         `.trim();
 
         try {
-            qrWindow.document.body.innerHTML = `
-                <div style="padding: 20px; text-align: center; font-family: sans-serif;">
-                    <h2>${profile.petName}'s Health Profile</h2>
-                    <div id="qrcode" style="margin: 20px auto;"></div>
-                    <div style="margin-top: 20px;">
-                        <button onclick="window.print()" style="padding: 10px 20px; margin: 0 10px; background: #2ecc71; color: white; border: none; border-radius: 5px; cursor: pointer;">Print</button>
-                        <button onclick="downloadQR()" style="padding: 10px 20px; margin: 0 10px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">Download</button>
-                    </div>
-                    <p style="margin-top: 20px; font-size: 0.8em; color: #777;">Scan for Emergency Information</p>
-                    <p style="font-size: 0.7em; color: #999; margin-top: 10px;">Generated by Pet Health Tracker</p>
-                </div>
-                <script>
-                    const qrcodeDiv = document.getElementById('qrcode');
-                    const qrcode = new QRCode(qrcodeDiv, {
-                        text: '${qrText.replace(/'/g, "\\\'")}',
-                        width: 256,
-                        height: 256,
-                        colorDark: "#000000",
-                        colorLight: "#ffffff",
-                        correctLevel: QRCode.CorrectLevel.H
-                    });
+            // Use the library from the NEW WINDOW's context
+            const qrcodeContainer = qrWindow.document.getElementById('qrcode-container');
+            qrcodeContainer.style.display = 'block';
+            const qrCode = new qrWindow.QRCode(qrcodeContainer, {
+                text: qrText,
+                width: 256,
+                height: 256,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: qrWindow.QRCode.CorrectLevel.H
+            });
 
-                    function downloadQR() {
-                        const canvas = qrcodeDiv.querySelector('canvas');
-                        const link = document.createElement('a');
-                        link.download = '${profile.petName}_QR.png';
-                        link.href = canvas.toDataURL();
-                        link.click();
-                    }
-                </script>
-            `;
+            // Show the controls
+            const qrControls = qrWindow.document.getElementById('qr-controls');
+            qrControls.style.display = 'block';
+
         } catch (error) {
-            qrWindow.document.body.innerHTML = `<h1 style="color: red">Error: ${error.message}</h1>`;
+            qrWindow.document.body.innerHTML = `<h1>Error: ${error.message}</h1>`;
+        } finally {
+            const loader = qrWindow.document.querySelector('.loader');
+            if (loader) {
+                loader.style.display = 'none';
+            }
         }
-    };
+    });
 }
+
 // ======== UPDATED SERVICE WORKER REGISTRATION ========
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
