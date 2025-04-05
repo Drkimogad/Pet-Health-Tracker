@@ -1,7 +1,6 @@
 <script>
-  
   // Initialize Firebase App (using the compatibility API) //
-const firebaseConfig = {
+        const firebaseConfig = {
             apiKey: "AIzaSyBIej7yNj0LkkLd6VtQxBL4mEDSsHLJvig",
             authDomain: "pet-health-tracker-7164d.firebaseapp.com",
             projectId: "pet-health-tracker-7164d",
