@@ -223,7 +223,7 @@ document.getElementById('dietForm').addEventListener('submit', function (event) 
     document.getElementById('petPhotoPreview').style.display = 'none';
 });
 
-// ======== 6. LOAD PET PROFILES (WITH NEW FIELDS) ========
+// ======== 6. LOAD SAVED PET PROFILES (WITH NEW FIELDS) ========
 function formatReminder(dateTimeString) {
     if (!dateTimeString) return 'N/A';
     const date = new Date(dateTimeString);
@@ -283,38 +283,34 @@ function loadSavedPetProfile() {
             };
             highlightReminders(reminders, index);
         });
-        attachProfileButtonListeners();
     }
 }
 
 //* 7 function to attached buttons to pet profiles*//
-function attachProfileButtonListeners() {
-    const savedProfilesList = document.getElementById('savedProfilesList');
+const savedProfilesList = document.getElementById('savedProfilesList');
 
-    savedProfilesList.addEventListener('click', function(event) {
-        if (event.target.classList.contains('editProfileButton')) {
-            const index = parseInt(event.target.dataset.index);
-            editPetProfile(index);
-        } else if (event.target.classList.contains('deleteProfileButton')) {
-            const index = parseInt(event.target.dataset.index);
-            deletePetProfile(index);
-        } else if (event.target.classList.contains('printProfileButton')) {
-            const index = parseInt(event.target.dataset.index);
-            printPetProfile(index);
-        } else if (event.target.classList.contains('shareProfileButton')) {
-            const index = parseInt(event.target.dataset.index);
-            sharePetProfile(index);
-        } else if (event.target.classList.contains('generateQRButton')) {
-            const index = parseInt(event.target.dataset.index);
-            generateQRCode(index);
-        } else if (event.target.classList.contains('deleteReminderButton')) {
-            const profileIndex = parseInt(event.target.dataset.profileIndex);
-            const reminderKey = event.target.dataset.reminder;
-            deleteOverdueReminder(profileIndex, reminderKey);
-        }
-    });
-}
-
+savedProfilesList.addEventListener('click', function(event) {
+    if (event.target.classList.contains('editProfileButton')) {
+        const index = parseInt(event.target.dataset.index);
+        editPetProfile(index);
+    } else if (event.target.classList.contains('deleteProfileButton')) {
+        const index = parseInt(event.target.dataset.index);
+        deletePetProfile(index);
+    } else if (event.target.classList.contains('printProfileButton')) {
+        const index = parseInt(event.target.dataset.index);
+        printPetProfile(index);
+    } else if (event.target.classList.contains('shareProfileButton')) {
+        const index = parseInt(event.target.dataset.index);
+        sharePetProfile(index);
+    } else if (event.target.classList.contains('generateQRButton')) {
+        const index = parseInt(event.target.dataset.index);
+        generateQRCode(index);
+    } else if (event.target.classList.contains('deleteReminderButton')) {
+        const profileIndex = parseInt(event.target.dataset.profileIndex);
+        const reminderKey = event.target.dataset.reminder;
+        deleteOverdueReminder(profileIndex, reminderKey);
+    }
+});
 
 // highlighting upcoming and overdue ALERT reminders//
 function highlightReminders(reminders, index) {
