@@ -41,20 +41,21 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error("Auth persistence error:", error);
     });
 
-  petPhotoInput.addEventListener('change', function() {
+// In DOMContentLoaded -> petPhotoInput event listener:
+petPhotoInput.addEventListener('change', function() {
     const file = this.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        petPhotoPreview.src = e.target.result;
-        petPhotoPreview.style.display = 'block';
-      }
-      reader.readAsDataURL(file);
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            petPhotoPreview.src = e.target.result; // Store as Data URL
+            petPhotoPreview.style.display = 'block';
+        };
+        reader.readAsDataURL(file); // ← This is key
     } else {
-      petPhotoPreview.src = '#';
-      petPhotoPreview.style.display = 'none';
+        petPhotoPreview.src = '';
+        petPhotoPreview.style.display = 'none';
     }
-  });
+});
 
   // Check sessionStorage for in-progress edits
   for (let i = 0; i < sessionStorage.length; i++) {
@@ -112,13 +113,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  if (loggedInUser) {
-    authSection.style.display = 'none';
-    mainContent.style.display = 'block';
-    logoutButton.style.display = 'block';
-    loadSavedPetProfile();
-  }
-});
+
+if (loggedInUser) {
+  authSection.style.display = 'none';
+  mainContent.style.display = 'block';
+  logoutButton.style.display = 'block';
+  loadSavedPetProfile(); // 1️⃣ First load profiles
+
+  // MOVE IMAGE PRELOADING HERE
+  const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+  savedProfiles.forEach(profile => {
+    if (profile.petPhoto) {
+      const img = new Image();
+      img.src = profile.petPhoto; // 2️⃣ Then preload images
+    }
+  });
+}
+
 // ========B FORM SWITCHING HELPER ========
 function switchAuthForm(targetForm) {
   // Hide all forms
@@ -225,10 +236,7 @@ document.getElementById('dietForm').addEventListener('submit', function(event) {
     medicalCheckupsReminder: document.getElementById(
       'medicalCheckupsReminder').value,
     groomingReminder: document.getElementById('groomingReminder').value,
-    petPhoto: document.getElementById('petPhoto').files[0] ?
-      URL.createObjectURL(document.getElementById('petPhoto').files[0]) : document.getElementById(
-        'petPhotoPreview')
-      .src, // Use preview src if no new file
+    petPhoto: document.getElementById('petPhotoPreview').src || '', // Always use data URL
   };
 
   let savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
@@ -273,7 +281,7 @@ function loadSavedPetProfile() {
       petCard.innerHTML = `
                 <div class="pet-card-content">
                     <h4>${profile.petName}</h4>
-                    ${profile.petPhoto ? `<img src="${profile.petPhoto}" alt="Pet Photo" class="pet-photo"/>` : ''}
+                    ${profile.petPhoto ? `<img src="${profile.petPhoto}" onload="this.style.display='block'" onerror="this.style.display='none'" class="pet-photo">` : ''}
                     <p>Breed: ${profile.breed}</p>
                     <p>Age: ${profile.age}</p>
                     <p>Weight: ${profile.weight}</p>
