@@ -1,3 +1,15 @@
+export const formatReminderDate = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric'
+  });
+};
+
+export const getProfileLink = (index) => {
+  return `${window.location.origin}?profile=${index}`;
+};
 export async function initNotifications() {
   if ('serviceWorker' in navigator && 'PushManager' in window) {
     try {
