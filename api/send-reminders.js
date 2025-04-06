@@ -96,35 +96,37 @@ export default async function handler(req, res) {
 
         remindersSnapshot.forEach(async (doc) => {
             const reminder = doc.data();
-            const userIdSnapshot = await db.doc(reminder.userId).get();
-            const userData = userIdSnapshot.data();
-            const userToken = userData ? userData.fcmToken : null; // Assuming FCM token is stored in user document
+            const userId = reminder.userId;
 
-            if (userToken) {
-                try {
+            try {
+                const userDoc = await db.doc(userId).get();
+                const userData = userDoc.data();
+                const userToken = userData ? userData.fcmToken : null; // Assuming FCM token is in the user document
+
+                if (userToken) {
                     // Send notification
                     const message = {
                         notification: {
                             title: '🐾 Pet Reminder',
-                            body: reminder.message // Use stored message
+                            body: reminder.message
                         },
                         token: userToken,
                     };
 
                     const response = await admin.messaging().send(message);
-                    console.log('Successfully sent message:', response);
+                    console.log('Successfully sent message to user:', userId, response);
 
                     await doc.ref.update({ notified: true });
-                    remindersSent.push({ id: doc.id, message: reminder.message, sent: true });
+                    remindersSent.push({ id: doc.id, message: reminder.message, userId: userId, sent: true });
 
-                } catch (error) {
-                    console.error('Error sending message to device token:', userToken, error);
-                    remindersSent.push({ id: doc.id, message: reminder.message, sent: false, error: error.message });
+                } else {
+                    console.warn('FCM token not found for user:', userId);
+                    await doc.ref.update({ notified: true }); // Mark as notified to avoid repeated attempts
+                    remindersSent.push({ id: doc.id, message: reminder.message, userId: userId, sent: false, error: 'FCM token not found' });
                 }
-            } else {
-                console.warn('FCM token not found for user:', reminder.userId);
-                await doc.ref.update({ notified: true }); // Mark as notified to avoid repeated attempts if token is missing
-                remindersSent.push({ id: doc.id, message: reminder.message, sent: false, error: 'FCM token not found' });
+            } catch (error) {
+                console.error('Error fetching user document or sending message for user:', userId, error);
+                remindersSent.push({ id: doc.id, message: reminder.message, userId: userId, sent: false, error: error.message });
             }
         });
 
