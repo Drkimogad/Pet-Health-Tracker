@@ -1,40 +1,33 @@
-  // Initialize Firebase App (using the compatibility API) //
-        const firebaseConfig = {
-            apiKey: "AIzaSyBIej7yNj0LkkLd6VtQxBL4mEDSsHLJvig",
-            authDomain: "pet-health-tracker-7164d.firebaseapp.com",
-            projectId: "pet-health-tracker-7164d",
-            storageBucket: "pet-health-tracker-7164d.firebasestorage.app",
-            messagingSenderId: "251170885789",
-            appId: "1:251170885789:web:2c16a20f96da9f6a960474",
-            measurementId: "G-GKD3RVNVLV"
-        };
-export default firebaseConfig;
+// firebase.config.js (Revised)
 
+// ====== FIREBASE CONFIG ======
+const firebaseConfig = {
+  apiKey: "AIzaSyBIej7yNj0LkkLd6VtQxBL4mEDSsHLJvig",
+  authDomain: "pet-health-tracker-7164d.firebaseapp.com",
+  projectId: "pet-health-tracker-7164d",
+  storageBucket: "pet-health-tracker-7164d.firebasestorage.app",
+  messagingSenderId: "251170885789",
+  appId: "1:251170885789:web:2c16a20f96da9f6a960474",
+  measurementId: "G-GKD3RVNVLV"
+};
+
+// ====== INITIALIZE FIREBASE ======
 firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const firestore = firebase.firestore();
+
+// ====== INITIALIZE SERVICES ======
+const auth = firebase.auth(); // No need for 'app' parameter
+const db = firebase.firestore(); // Direct access via global firebase
 const messaging = firebase.messaging();
 
-  // Firestore Database Setup  
-  const db = firebase.firestore(app);  // Initialize Firestore
-  console.log("Firestore initialized and ready to use.");
-  // Firebase Authentication Setup  
-  const auth = firebase.auth(app);  // Initialize Firebase Authentication
-  console.log("Authentication service initialized.");
-  // Firebase Cloud Messaging Setup  
-  const messaging = firebase.messaging(app);  // Initialize Messaging
-  console.log("Firebase Cloud Messaging initialized.");
-  // Set VAPID key and handle token generation
-  messaging.getToken({ vapidKey: "BCGyRZVIxHmasEQWfF5iCzxe1gLyIppQynZlyPm_BXPHWnv4xzxZwEjo9PuJbbk5Gi8ywLVXSxAYxcgt2QsmHVE" })
-    .then((currentToken) => {
-      if (currentToken) {
-        console.log('Got FCM device token:', currentToken);
-        // Send the token to your server and update the UI if necessary
-      } else {
-        console.log('No registration token available. Request permission to generate one.');
-      }
-    })
-    .catch((err) => {
-      console.error('An error occurred while retrieving token: ', err);
-    });
+// ====== FCM TOKEN HANDLING ======
+// Move this to pushNotifications.js if needed!
+messaging.getToken({ vapidKey: "BCGyRZVIxHmasEQWfF5iCzxe1gLyIppQynZlyPm_BXPHWnv4xzxZwEjo9PuJbbk5Gi8ywLVXSxAYxcgt2QsmHVE" })
+  .then((currentToken) => {
+    if (currentToken) console.log('FCM token:', currentToken);
+    else console.log('No token available');
+  })
+  .catch((err) => {
+    console.error('Token error:', err);
+  });
 
+console.log("Firebase services initialized");
