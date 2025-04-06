@@ -99,7 +99,7 @@ export default async function handler(req, res) {
             const userId = reminder.userId;
 
             try {
-                const userDoc = await db.doc(userId).get();
+                const userDoc = await db.collection('users').doc(userId).get(); // ✅ Correct
                 const userData = userDoc.data();
                 const userToken = userData ? userData.fcmToken : null; // Assuming FCM token is in the user document
 
