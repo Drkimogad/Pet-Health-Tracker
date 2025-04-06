@@ -1,16 +1,15 @@
-# Ignore node_modules directory
-node_modules/
+# Firebase
+/firebase-config.js
+/firebase-messaging-sw.js
 
-# Ignore log files
-*.log
-
-# Ignore compiled files
-*.class
-*.o
-
-# Ignore OS-specific files
-.DS_Store
-Thumbs.db
-
-# Ignore environment files
+# Environment
 .env
+.env.local
+
+# Sensitive Services
+/pushNotifications.js
+
+# Standard ignores
+node_modules/
+dist/
+.DS_Store
