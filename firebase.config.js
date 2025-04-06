@@ -12,11 +12,9 @@ self.firebaseConfig = { // <-- ADD THIS LINE
 };
 
 // ====== INITIALIZE FIREBASE ======
-firebase.initializeApp(firebaseConfig);
-
-// ====== INITIALIZE SERVICES ======
-const auth = firebase.auth(); // No need for 'app' parameter
-const db = firebase.firestore(); // Direct access via global firebase
+firebase.initializeApp(self.firebaseConfig); // <-- Use the global config
+const auth = firebase.auth();
+const db = firebase.firestore();
 const messaging = firebase.messaging();
 
 // ====== FCM TOKEN HANDLING ======
