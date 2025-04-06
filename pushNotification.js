@@ -15,7 +15,7 @@ try {
 }
 
 const messaging = getMessaging(app);
-const vapidKey = 'YOUR_VAPID_KEY'; // Replace with your actual VAPID key
+const vapidKey = 'BCGyRZVIxHmasEQWfF5iCzxe1gLyIppQynZlyPm_BXPHWnv4xzxZwEjo9PuJbbk5Gi8ywLVXSxAYxcgt2QsmHVE	'; // Replace with your actual VAPID key
 
 async function requestAndSaveFCMToken() {
   try {
