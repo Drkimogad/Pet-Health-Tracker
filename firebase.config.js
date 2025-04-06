@@ -25,7 +25,7 @@
   const messaging = firebase.messaging(app);  // Initialize Messaging
   console.log("Firebase Cloud Messaging initialized.");
   // Set VAPID key and handle token generation
-  messaging.getToken({ vapidKey: "BAL7SL85Z3cAH-T6oDGvfxV0oJhElCpnc7F_TaF2RQogy0gnUChGa_YtmwKdifC4c4pZ0NhUd4T6BFHGRxT79Gk" })
+  messaging.getToken({ vapidKey: "BCGyRZVIxHmasEQWfF5iCzxe1gLyIppQynZlyPm_BXPHWnv4xzxZwEjo9PuJbbk5Gi8ywLVXSxAYxcgt2QsmHVE" })
     .then((currentToken) => {
       if (currentToken) {
         console.log('Got FCM device token:', currentToken);
