@@ -1,7 +1,14 @@
 // No imports needed! Firebase is already available globally
-const auth = firebase.auth(); // Works
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
 const firestore = firebase.firestore();
-// Global declaration//
+const messaging = firebase.messaging();
+
+// Initialize push notifications
+initializePushNotifications(); // <-- Add this line
+
+
+// * Global declaration *//
 let editingProfileIndex = null;
 // Reminders in-app timestamp alert//
 const REMINDER_THRESHOLD_DAYS = 5; // Or any other number of days you prefer
