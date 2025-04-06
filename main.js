@@ -1,4 +1,6 @@
-import { setupNotifications } from './pushNotifications.js'; // Adjust path if needed
+// No imports needed! Firebase is already available globally
+const auth = firebase.auth(); // Works
+const firestore = firebase.firestore();
 // Global declaration//
 let editingProfileIndex = null;
 // Reminders in-app timestamp alert//
