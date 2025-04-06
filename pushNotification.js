@@ -24,7 +24,7 @@
     }
 
     function sendSubscriptionToServer(subscription) {
-        fetch('https://pet-studio.vercel.app/api/save-subscription', {
+        fetch('pet-health-tracker-sand.vercel.app/api/save-subscription', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ subscription }),
