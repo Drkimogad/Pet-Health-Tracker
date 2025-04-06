@@ -36,6 +36,8 @@ document.addEventListener('DOMContentLoaded', () => {
           mainContent.style.display = 'block';
           logoutButton.style.display = 'block';
           loadSavedPetProfile();
+          // Add notifications setup HERE (only once!)
+        setupNotifications(); // <-- ADD THIS LINE
         } else {
           // User is signed out
           authSection.style.display = 'block';
@@ -180,7 +182,7 @@ document.getElementById('signUp').addEventListener('submit', function(event) {
     });
 });
 
-// ========E UPDATED LOGIN HANDLER ========
+  // ======== UPDATED LOGIN HANDLER ========
 document.getElementById('login').addEventListener('submit', function(event) {
   event.preventDefault();
 
@@ -189,26 +191,14 @@ document.getElementById('login').addEventListener('submit', function(event) {
 
   firebase.auth().signInWithEmailAndPassword(email, password)
     .then((userCredential) => {
-      // Successful login handled by auth state observer
+      // Immediately after successful login
       this.reset(); // Reset login form
     })
     .catch((error) => {
       console.error("Login error:", error);
       alert(`Login failed: ${error.message}`);
-      this.reset(); // Reset form on error
+      this.reset();
     });
-});
-  
-//*----- calling setupNotifications------- *//
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      console.log('User is signed in, setting up notifications...');
-      setupNotifications();
-    } else {
-      console.log('User is signed out');
-      // Optionally, clear any stored FCM tokens or notification subscriptions
-    }
-  });
 });
   
 // ======== F. LOGOUT HANDLER (FIREBASE INTEGRATION) ========
