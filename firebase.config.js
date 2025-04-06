@@ -1,7 +1,7 @@
 // firebase.config.js (Revised)
 
 // ====== FIREBASE CONFIG ======
-const firebaseConfig = {
+self.firebaseConfig = { // <-- ADD THIS LINE
   apiKey: "AIzaSyBIej7yNj0LkkLd6VtQxBL4mEDSsHLJvig",
   authDomain: "pet-health-tracker-7164d.firebaseapp.com",
   projectId: "pet-health-tracker-7164d",
