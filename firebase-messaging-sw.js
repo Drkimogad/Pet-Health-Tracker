@@ -17,7 +17,6 @@
 // Firebase initialization (if not already initialized globally)
 
 if (!firebase.apps.length) {
-
   firebase.initializeApp({
             apiKey: "AIzaSyBIej7yNj0LkkLd6VtQxBL4mEDSsHLJvig",
             authDomain: "pet-health-tracker-7164d.firebaseapp.com",
@@ -33,10 +32,9 @@ if (!firebase.apps.length) {
   firebase.app(); // Use the default app
 }
 
-// Firebase messaging setup
+// Firebase messaging setup// 
 const messaging = firebase.messaging();
 // Push notification event - Handles background messages
-
 self.addEventListener('push', (event) => {
     let notificationData = { title: 'Pet-Health-Tracker Reminder', body: 'You have a new reminder!' };
     if (event.data) {
