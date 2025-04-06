@@ -16,6 +16,15 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging-compat.js"></script>
     <script src="firebase.config.js"></script> <!-- Add this line -->
     <script src="pushNotifications.js"></script>
+    <script>
+   // Pass config to service worker
+    self.firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    projectId: "YOUR_PROJECT_ID",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+    };
+  </script>
 </head>
 <body>
     <noscript>
