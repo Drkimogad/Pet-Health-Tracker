@@ -1,6 +1,10 @@
+// script.js (assuming this is your main.js or a script loaded after Firebase)
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { setupNotifications } from './pushNotifications.js'; // Adjust path if needed
+const auth = firebase.auth(); // Use the globally initialized auth
+
 // Global declaration//
 let editingProfileIndex = null;
-
 // Reminders in-app timestamp alert//
 const REMINDER_THRESHOLD_DAYS = 5; // Or any other number of days you prefer
 const reminderFields = {
@@ -9,7 +13,6 @@ const reminderFields = {
   groomingReminder: 'Grooming',
 };
 
-// ======== AUTHENTICATION ========//
 // ======== A AUTH STATE CHECK ======== (MODIFIED)
 document.addEventListener('DOMContentLoaded', () => {
   const authSection = document.getElementById('authSection');
@@ -113,7 +116,6 @@ petPhotoInput.addEventListener('change', function() {
     }
   }
 
-
 if (loggedInUser) {
   authSection.style.display = 'none';
   mainContent.style.display = 'block';
@@ -191,7 +193,19 @@ document.getElementById('login').addEventListener('submit', function(event) {
       this.reset(); // Reset form on error
     });
 });
-
+  
+//*----- calling setupNotifications------- *//
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      console.log('User is signed in, setting up notifications...');
+      setupNotifications();
+    } else {
+      console.log('User is signed out');
+      // Optionally, clear any stored FCM tokens or notification subscriptions
+    }
+  });
+});
+  
 // ======== F. LOGOUT HANDLER (FIREBASE INTEGRATION) ========
 document.getElementById('logoutButton').addEventListener('click', function() {
   firebase.auth().signOut()
