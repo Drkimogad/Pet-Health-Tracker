@@ -1,8 +1,4 @@
-// script.js (assuming this is your main.js or a script loaded after Firebase)
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { setupNotifications } from './pushNotifications.js'; // Adjust path if needed
-const auth = firebase.auth(); // Use the globally initialized auth
-
 // Global declaration//
 let editingProfileIndex = null;
 // Reminders in-app timestamp alert//
