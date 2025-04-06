@@ -38,7 +38,7 @@ const messaging = firebase.messaging();
 // Push notification event - Handles background messages
 
 self.addEventListener('push', (event) => {
-    let notificationData = { title: 'PetStudio Reminder', body: 'You have a new reminder!' };
+    let notificationData = { title: 'Pet-Health-Tracker Reminder', body: 'You have a new reminder!' };
     if (event.data) {
         try {
             const payload = event.data.json();
