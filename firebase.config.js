@@ -1,4 +1,3 @@
-<script>
   // Initialize Firebase App (using the compatibility API) //
         const firebaseConfig = {
             apiKey: "AIzaSyBIej7yNj0LkkLd6VtQxBL4mEDSsHLJvig",
@@ -9,11 +8,12 @@
             appId: "1:251170885789:web:2c16a20f96da9f6a960474",
             measurementId: "G-GKD3RVNVLV"
         };
+export default firebaseConfig;
 
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const firestore = firebase.firestore();
-        const messaging = firebase.messaging();
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const firestore = firebase.firestore();
+const messaging = firebase.messaging();
 
   // Firestore Database Setup  
   const db = firebase.firestore(app);  // Initialize Firestore
@@ -37,4 +37,4 @@
     .catch((err) => {
       console.error('An error occurred while retrieving token: ', err);
     });
-</script>
+
