@@ -12,10 +12,10 @@ initializePushNotifications(); // <-- Add this line
 let editingProfileIndex = null;
 // Reminders in-app timestamp alert//
 const REMINDER_THRESHOLD_DAYS = 5; // Or any other number of days you prefer
-const reminderFields = {
-  vaccinationsAndDewormingReminder: 'Vaccinations/Deworming',
-  medicalCheckupsReminder: 'Medical Check-ups',
-  groomingReminder: 'Grooming',
+const REMINDER_TYPES = {
+  vaccinationsAndDewormingReminder: 'vaccination',
+  medicalCheckupsReminder: 'checkup',
+  groomingReminder: 'grooming'
 };
 
 // ======== A AUTH STATE CHECK ======== (MODIFIED)
