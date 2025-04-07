@@ -878,6 +878,10 @@ if ('serviceWorker' in navigator) {
     })
     .then((registration) => {
       console.log('Firebase SW registered:', registration);
+        // Add this error listener
+    registration.addEventListener('error', (error) => {
+    console.error('SW error:', error);
+  });
       
       // Auto-update checker
       setInterval(() => registration.update(), 60 * 60 * 1000);
