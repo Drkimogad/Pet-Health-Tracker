@@ -1,3 +1,7 @@
+// Add these 2 lines at the TOP
+importScripts('https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging-compat.js');
+
 const CACHE_NAME = 'Pet-Health-Tracker-cache-10';
 const OFFLINE_URL = './offline.html';
 const CACHED_INDEX = './index.html';
@@ -88,6 +92,39 @@ self.addEventListener('activate', (event) => {
       self.clients.claim();
     }).catch(err => {
       console.error('Error during activation:', err);
+    })
+  );
+});
+
+// Add Firebase init // instead of firebase-messaging-sw.js//
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  projectId: "YOUR_PROJECT_ID",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+const messaging = firebase.messaging();
+
+// Background message handler
+messaging.onBackgroundMessage((payload) => {
+  const notificationTitle = payload.notification?.title || 'New Reminder';
+  const notificationOptions = {
+    body: payload.notification?.body || 'Check your pet health tracker!',
+    icon: 'https://drkimogad.github.io/Pet-Health-Tracker/icons/icon-192x192.png'
+  };
+  
+  return self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
+// Notification click handler
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(
+    clients.matchAll({type: 'window'}).then(clients => {
+      if (clients.length) {
+        return clients[0].focus();
+      }
+      return clients.openWindow('/');
     })
   );
 });
