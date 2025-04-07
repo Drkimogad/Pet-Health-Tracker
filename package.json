@@ -1,0 +1,16 @@
+{
+  "name": "Pet-Health-Tracker",
+  "version": "1.0.0",
+  "description": "A simple App that allows you to track your pet health effeciently",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Karim",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.17.1",
+    "firebase-admin": "^13.2.0"
+  }
+}
