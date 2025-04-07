@@ -56,26 +56,26 @@ if (!admin.apps.length) {
 }
 
 const db = getFirestore();  // ✅ Correctly initialize Firestore
-
-// src/utilities/reminder-messages.js (Incorporated here)
+// Allowed types (exact values)
+const ALLOWED_TYPES = ['vaccination', 'checkup', 'grooming'];
 function generateReminderMessage(type, petName, dueDate) {
-    const formattedDate = dueDate.toDate().toLocaleDateString('en-GB', {
-        day: 'numeric',
-        month: 'long'
-    });
+  const formattedDate = dueDate.toDate().toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long'
+  });
 
-    switch(type) {
-        case 'vaccination':
-            return `${petName}'s vaccination is due on ${formattedDate} 🩺`;
-        case 'checkup':
-            return `${petName} needs a medical checkup on ${formattedDate} 🏥`;
-        case 'grooming':
-            return `${petName}'s grooming appointment on ${formattedDate} ✂️`;
-        default:
-            return `${petName} has a pending care item on ${formattedDate}`;
-    }
+  switch(type) {
+    case 'vaccination':
+      return `${petName}'s vaccination is due on ${formattedDate} 🩺`;
+    case 'checkup':
+      return `${petName} needs a health checkup on ${formattedDate} 🏥`;
+    case 'grooming':
+      return `${petName}'s grooming appointment on ${formattedDate} ✂️`;
+    default:
+      return `${petName} has a care item due on ${formattedDate}`;
+  }
 }
-
+  
 export default async function handler(req, res) {
     // Set CORS headers for all requests
     res.setHeader("Access-Control-Allow-Origin", "*");
