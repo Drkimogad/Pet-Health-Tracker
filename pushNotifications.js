@@ -1,5 +1,3 @@
-// pushNotifications.js
-
 // Initialize Firebase services using global `firebase` object
 const messaging = firebase.messaging();
 const vapidKey = 'BCGyRZVIxHmasEQWfF5iCzxe1gLyIppQynZlyPm_BXPHWnv4xzxZwEjo9PuJbbk5Gi8ywLVXSxAYxcgt2QsmHVE'; // ⚠️ Add your key here
