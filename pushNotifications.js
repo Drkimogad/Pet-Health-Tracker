@@ -60,6 +60,25 @@ async function requestAndSaveFCMToken() {
   }
 }
 
+//* Required Helper Function (Add to pushNotifications.js)*//
+export async function sendPushNotification(token, { title, body }) {
+  const response = await fetch('https://fcm.googleapis.com/fcm/send', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `key=${process.env.FCM_SERVER_KEY}`
+    },
+    body: JSON.stringify({
+      to: token,
+      notification: { title, body }
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(`FCM error: ${response.statusText}`);
+  }
+}
+
 // Handle incoming messages (foreground)
 messaging.onMessage((payload) => {
   console.log('New notification:', payload);
