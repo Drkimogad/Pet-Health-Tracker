@@ -40,6 +40,26 @@ async function saveFCMTokenToFirestore(fcmToken) {
   }
 }
 
+// Add retry logic for token refresh
+async function requestAndSaveFCMToken() {
+  try {
+    const token = await messaging.getToken({ vapidKey });
+    if (token) {
+      console.log('FCM token:', token);
+      await saveFCMTokenToFirestore(token);
+      // Add periodic token refresh (optional)
+      setInterval(async () => {
+        const newToken = await messaging.getToken({ vapidKey });
+        if (newToken !== token) {
+          await saveFCMTokenToFirestore(newToken);
+        }
+      }, 604800000); // Refresh every 7 days
+    }
+  } catch (error) {
+    console.error('Token refresh failed:', error);
+  }
+}
+
 // Handle incoming messages (foreground)
 messaging.onMessage((payload) => {
   console.log('New notification:', payload);
