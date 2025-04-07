@@ -16,9 +16,9 @@ const REMINDER_THRESHOLD_DAYS = 5; // Or any other number of days you prefer
 
 const ALLOWED_REMINDER_TYPES = ['vaccination', 'checkup', 'grooming'];
 const REMINDER_TYPE_MAP = {
-  vaccinationsAndDewormingReminder: 'vaccination',
-  medicalCheckupsReminder: 'checkup',
-  groomingReminder: 'grooming'
+  vaccinationDue: 'vaccination',
+  checkupDue: 'checkup',
+  groomingDue: 'grooming'
 };
 
 // ======== A AUTH STATE CHECK ======== (MODIFIED)
@@ -223,6 +223,29 @@ document.getElementById('logoutButton').addEventListener('click', function() {
 document.getElementById('dietForm').addEventListener('submit', function(event) {
   event.preventDefault();
 
+  // ======== VALIDATION BLOCK START ========
+  try {
+    const reminders = {
+      vaccinationsAndDewormingReminder: validateReminder({
+        type: 'vaccinationsAndDewormingReminder',
+        dueDate: document.getElementById('vaccinationsAndDewormingReminder').value
+      }),
+      medicalCheckupsReminder: validateReminder({
+        type: 'medicalCheckupsReminder',
+        dueDate: document.getElementById('medicalCheckupsReminder').value
+      }),
+      groomingReminder: validateReminder({
+        type: 'groomingReminder',
+        dueDate: document.getElementById('groomingReminder').value
+      })
+    };
+  } catch (error) {
+    alert(`Validation Error: ${error.message}`);
+    return;
+  }
+  // ======== VALIDATION BLOCK END ========
+
+  // ======== ORIGINAL PROFILE CREATION (MODIFIED) ========
   const petProfile = {
     petName: document.getElementById('petName').value,
     breed: document.getElementById('breed').value,
@@ -239,23 +262,21 @@ document.getElementById('dietForm').addEventListener('submit', function(event) {
     emergencyContacts: [{
       name: document.getElementById('emergencyContactName').value,
       phone: document.getElementById('emergencyContactPhone').value,
-      relationship: document.getElementById(
-        'emergencyContactRelationship').value,
-    }, ],
+      relationship: document.getElementById('emergencyContactRelationship').value,
+    }],
     mood: document.getElementById('moodSelector').value,
-    vaccinationsAndDewormingReminder: document.getElementById(
-      'vaccinationsAndDewormingReminder').value,
-    medicalCheckupsReminder: document.getElementById(
-      'medicalCheckupsReminder').value,
-    groomingReminder: document.getElementById('groomingReminder').value,
-    petPhoto: document.getElementById('petPhotoPreview').src || '', // Always use data URL
+    // REPLACE THESE WITH VALIDATED FIELDS
+    vaccinationDue: reminders.vaccinationsAndDewormingReminder.dueDate,
+    checkupDue: reminders.medicalCheckupsReminder.dueDate,
+    groomingDue: reminders.groomingReminder.dueDate,
+    petPhoto: document.getElementById('petPhotoPreview').src || '',
   };
-
+  
+  // ======== REST OF YOUR ORIGINAL CODE  ========
   let savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-
+  
   if (editingProfileIndex !== null) {
     savedProfiles[editingProfileIndex] = petProfile;
-    // Clear sessionStorage
     sessionStorage.removeItem(`editingProfile_${editingProfileIndex}`);
     editingProfileIndex = null;
     alert('Profile updated!');
@@ -265,7 +286,7 @@ document.getElementById('dietForm').addEventListener('submit', function(event) {
   }
 
   localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
-  loadSavedPetProfile(); // Replace with your load function
+  loadSavedPetProfile();
   event.target.reset();
   document.getElementById('petPhotoPreview').src = '';
   document.getElementById('petPhotoPreview').style.display = 'none';
@@ -305,9 +326,9 @@ function loadSavedPetProfile() {
                     <p>Diet Plan: ${profile.dietPlan}</p>
                     <p>Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relationship || 'N/A'}) - ${emergencyContact.phone || 'N/A'}</p>
                     <p>Mood: ${profile.mood || 'N/A'}</p>
-                    <p>Vaccinations/Deworming: ${formatReminder(profile.vaccinationsAndDewormingReminder)}</p>
-                    <p>Medical Check-ups: ${formatReminder(profile.medicalCheckupsReminder)}</p>
-                    <p>Grooming: ${formatReminder(profile.groomingReminder)}</p>
+                    <p>Vaccinations/Deworming: ${formatReminder(profile.vaccinationDue)}</p> 
+                    <p>Medical Check-ups: ${formatReminder(profile.checkupDue)}</p>
+                    <p>Grooming: ${formatReminder(profile.groomingDue)}</p>
                     <div id="overdueReminders-${index}" class="overdueReminders"></div>
                     <div id="upcomingReminders-${index}" class="upcomingReminders"></div>
                     <div class="pet-card-buttons">
@@ -321,18 +342,27 @@ function loadSavedPetProfile() {
             `; // Removed the hardcoded reminder block
       savedProfilesList.appendChild(petCard);
 
-// When creating/saving reminders/ to be placed correctly/////
-function validateReminder(reminder) {
-  if (!ALLOWED_TYPES.includes(reminder.type)) {
-    throw new Error('Invalid reminder type');
+// ========REMINDERS VALIDATION FUNCTION ========//
+function validateReminder(reminderData) {
+  // Convert to standardized type
+  const standardizedType = REMINDER_TYPE_MAP[reminderData.type];
+  
+  if (!ALLOWED_REMINDER_TYPES.includes(standardizedType)) {
+    throw new Error(`Invalid reminder type: ${reminderData.type}`);
+  }
+
+  const dateValue = new Date(reminderData.dueDate);
+  if (isNaN(dateValue.getTime())) {
+    throw new Error('Invalid date format for reminder');
   }
   
-  if (!(reminder.dueDate instanceof firebase.firestore.Timestamp)) {
-    throw new Error('Invalid date format');
-  }
+  return {
+    type: standardizedType,
+    dueDate: dateValue
+  };
 }
- //-----------before-----------//   
-      const reminders = {
+ 
+const reminders = {
         vaccinationsAndDewormingReminder: profile
           .vaccinationsAndDewormingReminder,
         medicalCheckupsReminder: profile.medicalCheckupsReminder,
