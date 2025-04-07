@@ -17,7 +17,7 @@ messaging.onBackgroundMessage((payload) => {
   const notificationTitle = payload.notification?.title || 'New Reminder';
   const notificationOptions = {
     body: payload.notification?.body || 'Check your pet health tracker!',
-    icon: './icons/icon-192x192.png'
+    icon: '/Pet-Health-Tracker/icons/icon-192x192.png'
   };
   
   return self.registration.showNotification(notificationTitle, notificationOptions);
