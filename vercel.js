@@ -1,11 +1,8 @@
 {
-  "routes": [
+  "crons": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1",
-      "headers": {
-        "x-vercel-disable-auth": "1"
-      }
+      "path": "/api/send-reminders",
+      "schedule": "*/5 * * * *"
     }
   ]
 }
