@@ -318,6 +318,17 @@ function loadSavedPetProfile() {
             `; // Removed the hardcoded reminder block
       savedProfilesList.appendChild(petCard);
 
+// When creating/saving reminders/ to be placed correctly/////
+function validateReminder(reminder) {
+  if (!ALLOWED_TYPES.includes(reminder.type)) {
+    throw new Error('Invalid reminder type');
+  }
+  
+  if (!(reminder.dueDate instanceof firebase.firestore.Timestamp)) {
+    throw new Error('Invalid date format');
+  }
+}
+ //-----------before-----------//   
       const reminders = {
         vaccinationsAndDewormingReminder: profile
           .vaccinationsAndDewormingReminder,
