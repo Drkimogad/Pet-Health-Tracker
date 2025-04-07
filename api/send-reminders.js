@@ -68,9 +68,9 @@ function generateReminderMessage(type, petName, dueDate) {
     case 'vaccination':
       return `${petName}'s vaccination is due on ${formattedDate} 🩺`;
     case 'checkup':
-      return `${petName} needs a health checkup on ${formattedDate} 🏥`;
+      return `${petName} health checkup is due on ${formattedDate} 🏥`;
     case 'grooming':
-      return `${petName}'s grooming appointment on ${formattedDate} ✂️`;
+      return `${petName}'s grooming appointment is due on ${formattedDate} ✂️`;
     default:
       return `${petName} has a care item due on ${formattedDate}`;
   }
