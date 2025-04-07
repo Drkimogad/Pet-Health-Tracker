@@ -1,4 +1,4 @@
-// No imports needed! Firebase is already available globally
+//* FIREBASE IMPORT AND INITIALIZATION *//
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const firestore = firebase.firestore();
@@ -10,9 +10,12 @@ initializePushNotifications(); // <-- Add this line
 
 // * Global declaration *//
 let editingProfileIndex = null;
-// Reminders in-app timestamp alert//
+
+// ======== VALIDATION CONFIGURATION ========
 const REMINDER_THRESHOLD_DAYS = 5; // Or any other number of days you prefer
-const REMINDER_TYPES = {
+
+const ALLOWED_REMINDER_TYPES = ['vaccination', 'checkup', 'grooming'];
+const REMINDER_TYPE_MAP = {
   vaccinationsAndDewormingReminder: 'vaccination',
   medicalCheckupsReminder: 'checkup',
   groomingReminder: 'grooming'
