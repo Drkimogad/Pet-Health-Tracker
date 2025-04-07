@@ -873,7 +873,7 @@ Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relatio
 // ======== ENHANCED SERVICE WORKER REGISTRATION ========
 if ('serviceWorker' in navigator) {
   const SW_VERSION = 'v2.1'; // Update this when making SW changes
-  const SW_PATH = `${window.location.pathname.replace(/\/[^/]+$/, '')}/Pet-Health-Tracker/firebase-messaging-sw.js`;
+  const SW_PATH = `${window.location.pathname.replace(/\/[^/]+$/, '')}/Pet-Health-Tracker/service-worker.js`;
   const SW_SCOPE = `${window.location.pathname.replace(/\/[^/]+$/, '')}/`;
 
   window.addEventListener('load', async () => {
