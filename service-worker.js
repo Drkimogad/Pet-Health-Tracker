@@ -1,4 +1,4 @@
-// Add these 2 lines at the TOP
+//* COMBINED SW WITH FIREBASE MESSAGING SW *//
 importScripts('https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging-compat.js');
 
