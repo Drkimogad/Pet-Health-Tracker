@@ -873,7 +873,7 @@ Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relatio
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     // Register Firebase as main service worker
-    navigator.serviceWorker.register('/firebase-messaging-sw.js', {
+    navigator.serviceWorker.register('/Pet-Health-Tracker/firebase-messaging-sw.js', {
       scope: '/Pet-Health-Tracker/'
     })
     .then((registration) => {
