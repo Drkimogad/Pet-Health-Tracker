@@ -4,10 +4,11 @@ importScripts('https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging-comp
 
 // Initialize using global config from firebase.config.js
 firebase.initializeApp({
-  apiKey: self.firebaseConfig?.apiKey || "YOUR_API_KEY",
-  projectId: self.firebaseConfig?.projectId || "YOUR_PROJECT_ID",
-  messagingSenderId: self.firebaseConfig?.messagingSenderId || "YOUR_SENDER_ID",
-  appId: self.firebaseConfig?.appId || "YOUR_APP_ID"
+const firebaseConfig = {
+  apiKey: "AIzaSyBIej7yNj0LkkLd6VtQxBL4mEDSsHLJvig",
+  projectId: "pet-health-tracker-7164d",
+  messagingSenderId: "251170885789",
+  appId: "1:251170885789:web:2c16a20f96da9f6a960474"
 });
 
 const messaging = firebase.messaging();
