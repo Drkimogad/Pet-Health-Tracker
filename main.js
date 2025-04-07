@@ -873,15 +873,11 @@ Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relatio
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     // Register Firebase as main service worker
-    navigator.serviceWorker.register('/Pet-Health-Tracker/firebase-messaging-sw.js', {
+    navigator.serviceWorker.register('https://drkimogad.github.io/Pet-Health-Tracker/firebase-messaging-sw.js', {
       scope: '/Pet-Health-Tracker/'
     })
     .then((registration) => {
       console.log('Firebase SW registered:', registration);
-        // Add this error listener
-    registration.addEventListener('error', (error) => {
-    console.error('SW error:', error);
-  });
       
       // Auto-update checker
       setInterval(() => registration.update(), 60 * 60 * 1000);
