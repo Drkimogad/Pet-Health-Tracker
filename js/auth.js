@@ -1,3 +1,6 @@
+//In HTML: Change /js/... to ./js/... (e.g., <script type="module" src="./js/profiles.js"></script>).
+//In JS Imports: Use import { ... } from './profiles.js'; (no /js/ if files are in the same folder).
+
 // Importing firebase ftom CDN directly 
 const auth = firebase.auth();
 const firestore = firebase.firestore();
