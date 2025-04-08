@@ -104,7 +104,6 @@ function loadSavedPetProfile() {
   // Reinitialize auth listeners and buttons after rendering
   setupAuthListeners();
   initializeButtons();
-}
 
 // Initialize variable at top scope so it's accessible
 let editingProfileIndex = null;
