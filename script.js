@@ -1,14 +1,27 @@
-// initialization.js - Fixed Version
 // ======== FIREBASE INITIALIZATION ========
-firebase.initializeApp(firebaseConfig);
+// Import Firebase services (ensure these are in your HTML)
+// <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+// <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+// <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
-// Remove duplicate declarations
+const firebaseConfig = {
+  apiKey: "AIzaSyBIej7yNj0LkkLd6VtQxBL4mEDSsHLJvig",
+  projectId: "pet-health-tracker-7164d",
+  appId: "pet-health-tracker-7164d"
+};
+
+// Initialize Firebase once
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+
+// ======== SERVICE REFERENCES ========
 const auth = firebase.auth();
-const firestore = firebase.firestore();
-const messaging = firebase.messaging();
+const firestore = firebase.firestore()
 
-// Initialize push notifications
-initializePushNotifications(); // <-- Add this line
+// ======== NOTIFICATION SETUP ========
+// Import from pushNotifications.js (ensure proper module setup)
+// <script type="module" src="pushNotifications.js"></script>
 
 
 // * Global declaration *//
