@@ -878,14 +878,7 @@ Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relatio
 
 // ======== UPDATED COMBINED SERVICE WORKERS REGISTRATION ========//
 if ('serviceWorker' in navigator) {
-  // Register Caching SW (your custom sw.js)
-  navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
-    .then(reg => console.log('Caching SW registered (scope: /)', reg))
-    .catch(err => console.error('Caching SW failed:', err));
-
-  // Register Firebase Messaging SW
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/webPush-sw.js') // New SW file
-    .then(registration => console.log('SW registered'))
-    .catch(err => console.error('SW error:', err));
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(reg => console.log('SW registered:', reg))
+    .catch(err => console.error('SW registration failed:', err));
 }
