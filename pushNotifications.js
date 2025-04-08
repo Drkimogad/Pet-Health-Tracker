@@ -38,14 +38,6 @@ async function saveFCMTokenToFirestore(fcmToken) {
 // ======== NOTIFICATION PERMISSION & TOKEN ========
 async function requestAndSaveFCMToken() {
   try {
-    if (!('Notification' in window)) {
-      alert('This browser doesn't support notifications');
-      return;
-    }
-
-    const permission = await Notification.requestPermission();
-    if (permission !== 'granted') return;
-
     const token = await messaging.getToken({ vapidKey });
     if (token) {
       console.log('FCM Token:', token);
@@ -56,43 +48,53 @@ async function requestAndSaveFCMToken() {
   }
 }
 
-// ======== SEND NOTIFICATIONS (browser's native Web Push API) ========
-async function sendPushNotification(token, { title, body }) {
-  // Get service worker registration
-  const registration = await navigator.serviceWorker.ready;
-
-  // Send notification using Web Push Protocol
-  await registration.showNotification(title, {
-    body,
-    icon: './icons/icon-192x192.png',
-    vibrate: [200, 100, 200], // Optional vibration pattern
-    data: { url: '/' } // Add any custom data
-  });
-}
-
-// ======== INITIALIZE ON LOAD ========
-function setupNotifications() {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/firebase-messaging-sw.js')
-      .then(() => {
-        console.log('Firebase SW registered');
-        requestAndSaveFCMToken();
-      })
-      .catch(err => console.error('SW registration failed:', err));
-  } else {
-    console.warn('Service workers not supported');
+// ======== SEND NOTIFICATIONS ========
+async function sendPushNotification(title, body) {
+  try {
+    const registration = await navigator.serviceWorker.ready;
+    await registration.showNotification(title, {
+      body,
+      icon: './icons/icon-192x192.png',
+      vibrate: [200, 100, 200],
+      data: { url: '/' }
+    });
+  } catch (error) {
+    console.error('Notification failed:', error);
   }
 }
-// Add this to your setupNotifications()
+
+// ======== NOTIFICATION SETUP & INITIALIZATION ========
 async function setupNotifications() {
-  const permission = await Notification.requestPermission();
-  if (permission === 'granted') {
-    // Now you can call sendPushNotification()
+  if (!('serviceWorker' in navigator)) {
+    console.warn('Service workers not supported');
+    return;
+  }
+
+  if (!('Notification' in window)) {
+    console.warn('Notifications not supported');
+    return;
+  }
+
+  try {
+    // Register service worker
+    const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+    console.log('Service Worker registered');
+
+    // Request notification permission
+    const permission = await Notification.requestPermission();
+    if (permission === 'granted') {
+      console.log('Notification permission granted');
+      await requestAndSaveFCMToken();
+    } else {
+      console.log('Notification permission denied');
+    }
+  } catch (error) {
+    console.error('Setup failed:', error);
   }
 }
 
-// Start immediately
+// Initialize on app load
 setupNotifications();
 
-// ======== EXPORTS (IF NEEDED) ========
+// ======== EXPORTS ========
 export { setupNotifications, sendPushNotification };
