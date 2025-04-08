@@ -1,6 +1,8 @@
-import { reminders, formatReminder, highlightReminders } from './js/reminders-validation.js';
-import { auth, firestore } from './js/initialization.js';
-
+// Add these imports at the top:
+import { auth, firestore } from './initialization.js';
+import { reminders, formatReminder } from './reminders-validation.js';
+import { setupAuthListeners } from './auth.js';
+import { initializeButtons } from './buttons.js';
 
 // Save Pet profiles //
 document.getElementById('dietForm').addEventListener('submit', function(event) {
@@ -96,5 +98,8 @@ function loadSavedPetProfile() {
                 </div>
             `;
       savedProfilesList.appendChild(petCard);
+// Add this initialization call (bottom of file):
+setupAuthListeners();
+initializeButtons();
       
 export { editingProfileIndex, loadSavedPetProfile, deletePetProfile, editPetProfile, generateQRCode };
