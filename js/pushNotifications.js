@@ -1,7 +1,13 @@
 const auth = firebase.auth();
 const firestore = firebase.firestore();
+const messaging = firebase.messaging();
+const vapidKey = 'BCGyRZVIxHmasEQWfF5iCzxe1gLyIppQynZlyPm_BXPHWnv4xzxZwEjo9PuJbbk5Gi8ywLVXSxAYxcgt2QsmHVE';
 
-// Initialize Firebase services using global `firebase` object
+// Save FCM token to Firestore
+async function saveFCMTokenToFirestore(fcmToken) {
+  const user = auth.currentUser;
+  const db = firestore;
+
   if (user) {
     try {
       await db.collection('users').doc(user.uid).update({
@@ -16,28 +22,29 @@ const firestore = firebase.firestore();
   }
 }
 
-// Add retry logic for token refresh
+// Request permission and save FCM token (with retry logic)
 async function requestAndSaveFCMToken() {
   try {
     const token = await messaging.getToken({ vapidKey });
     if (token) {
       console.log('FCM token:', token);
       await saveFCMTokenToFirestore(token);
-      // Add periodic token refresh (optional)
+
+      // Refresh token every 7 days
       setInterval(async () => {
         const newToken = await messaging.getToken({ vapidKey });
         if (newToken !== token) {
           await saveFCMTokenToFirestore(newToken);
         }
-      }, 604800000); // Refresh every 7 days
+      }, 604800000); // 7 days in ms
     }
   } catch (error) {
     console.error('Token refresh failed:', error);
   }
 }
 
-//* Required Helper Function (Add to pushNotifications.js)*//
-export async function sendPushNotification(token, { title, body }) {
+// Send a push notification manually
+async function sendPushNotification(token, { title, body }) {
   const response = await fetch('https://fcm.googleapis.com/fcm/send', {
     method: 'POST',
     headers: {
@@ -55,9 +62,8 @@ export async function sendPushNotification(token, { title, body }) {
   }
 }
 
-// ====== FCM TOKEN HANDLING ======
-// Move this to pushNotifications.js if needed!
-messaging.getToken({ vapidKey: "BCGyRZVIxHmasEQWfF5iCzxe1gLyIppQynZlyPm_BXPHWnv4xzxZwEjo9PuJbbk5Gi8ywLVXSxAYxcgt2QsmHVE" })
+// Get and log current token
+messaging.getToken({ vapidKey })
   .then((currentToken) => {
     if (currentToken) console.log('FCM token:', currentToken);
     else console.log('No token available');
@@ -68,21 +74,26 @@ messaging.getToken({ vapidKey: "BCGyRZVIxHmasEQWfF5iCzxe1gLyIppQynZlyPm_BXPHWnv4
 
 console.log("Firebase services initialized");
 
-
-// Handle incoming messages (foreground)
+// Handle foreground messages
 messaging.onMessage((payload) => {
   console.log('New notification:', payload);
   if (payload.notification) {
     new Notification(payload.notification.title, {
       body: payload.notification.body,
-      icon: '/icons/icon-192x192.png' // Update path if needed
+      icon: '/icons/icon-192x192.png'
     });
   }
 });
 
-// Initialize notifications when the app loads
+// Call notification setup on load
 function setupNotifications() {
   requestAndSaveFCMToken();
 }
 setupNotifications();
-export { requestAndSaveFCMToken, saveFCMTokenToFirestore, sendPushNotification, setupNotifications };
+
+export {
+  requestAndSaveFCMToken,
+  saveFCMTokenToFirestore,
+  sendPushNotification,
+  setupNotifications
+};
