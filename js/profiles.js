@@ -1,3 +1,7 @@
+import { reminders, formatReminder, highlightReminders } from './js/reminders-validation.js';
+import { auth, firestore } from './js/initialization.js';
+
+
 // Save Pet profiles //
 document.getElementById('dietForm').addEventListener('submit', function(event) {
   event.preventDefault();
