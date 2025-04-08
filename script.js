@@ -1,200 +1,445 @@
-// Global declaration//
-let editingProfileIndex = null;
+// initialization.js - Fixed Version
+// ======== FIREBASE INITIALIZATION ========
+import { firebaseConfig } from './firebase.config.js';
+firebase.initializeApp(firebaseConfig);
 
-// Reminders in-app timestamp alert//
+// Remove duplicate declarations
+const auth = firebase.auth();
+const firestore = firebase.firestore();
+const messaging = firebase.messaging();
+
+// ======== REMINDERS VALIDATION CONFIGURATION ========
 const REMINDER_THRESHOLD_DAYS = 5; // Or any other number of days you prefer
-const reminderFields = {
-  vaccinationsAndDewormingReminder: 'Vaccinations/Deworming',
-  medicalCheckupsReminder: 'Medical Check-ups',
-  groomingReminder: 'Grooming',
+
+const ALLOWED_REMINDER_TYPES = ['vaccination', 'checkup', 'grooming'];
+const REMINDER_TYPE_MAP = {
+  vaccinationDue: 'vaccination',
+  checkupDue: 'checkup',
+  groomingDue: 'grooming'
 };
 
-// ======== AUTHENTICATION ========//
-// ======== A AUTH STATE CHECK ======== (MODIFIED)
-document.addEventListener('DOMContentLoaded', () => {
-  const authSection = document.getElementById('authSection');
-  const mainContent = document.getElementById('mainContent');
-  const logoutButton = document.getElementById('logoutButton');
-  const petPhotoInput = document.getElementById('petPhoto');
-  const petPhotoPreview = document.getElementById('petPhotoPreview');
+//Reminders validation function// 
+function validateReminder(reminderData) {
+  const standardizedType = REMINDER_TYPE_MAP[reminderData.type];
+  if (!ALLOWED_REMINDER_TYPES.includes(standardizedType)) {
+    throw new Error(`Invalid reminder type: ${reminderData.type}`);
+  }
+  
+  const dateValue = new Date(reminderData.dueDate);
+  if (isNaN(dateValue.getTime())) {
+    throw new Error('Invalid date format for reminder');
+  }
+  
+  return { type: standardizedType, dueDate: dateValue };
+}
+// ReminderFormating function//
+function formatReminder(dateTimeString) {
+  if (!dateTimeString) return 'N/A';
+  const date = new Date(dateTimeString);
+  return date.toLocaleString();
+}
+try {
+  const reminders = {
+    vaccinationDue: profile.vaccinationDue,  // Ensure this is defined
+    checkupDue: profile.checkupDue,          // Ensure this is defined
+    groomingDue: profile.groomingDue         // Ensure this is defined
+  };
 
-  // Firebase auth state persistence
-  firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-    .then(() => {
-      firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
-          // User is signed in
-          authSection.style.display = 'none';
-          mainContent.style.display = 'block';
-          logoutButton.style.display = 'block';
-          loadSavedPetProfile();
-        } else {
-          // User is signed out
-          authSection.style.display = 'block';
-          mainContent.style.display = 'none';
-          logoutButton.style.display = 'none';
-          switchAuthForm('login'); // Add this line
-        }
-      });
-    })
-    .catch((error) => {
-      console.error("Auth persistence error:", error);
+  // Log reminders to the console for debugging
+  console.log('Reminders:', reminders);
+
+  // Check if any of the reminders are undefined or invalid
+  if (!reminders.vaccinationDue || !reminders.checkupDue || !reminders.groomingDue) {
+    throw new Error('One or more reminder dates are missing or invalid.');
+  }
+
+  // Call the highlightReminders function
+  highlightReminders(reminders, index);
+} catch (error) {
+  // Log the error to the console for better debugging
+  console.error('Validation Error:', error);
+
+  // Alert the user
+  alert(`Validation Error: ${error.message}`);
+  return;
+}
+
+
+// ======== UPDATED REMINDERS BLOCK ======== //
+    const reminders = {
+        vaccinationDue: profile.vaccinationDue,  // CHANGED FROM vaccinationsAndDewormingReminder
+        checkupDue: profile.checkupDue,          // CHANGED FROM medicalCheckupsReminder
+        groomingDue: profile.groomingDue         // CHANGED FROM groomingReminder
+      };
+      highlightReminders(reminders, index);
     });
+  }
+}
 
-  petPhotoInput.addEventListener('change', function() {
-    const file = this.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        petPhotoPreview.src = e.target.result;
-        petPhotoPreview.style.display = 'block';
-      }
-      reader.readAsDataURL(file);
-    } else {
-      petPhotoPreview.src = '#';
-      petPhotoPreview.style.display = 'none';
+//** highlighting upcoming and overdue ALERT reminders**//
+// ======== UPDATE REMINDER LABELS ======== //
+const reminderFields = {
+  // CHANGED KEYS TO MATCH NEW FIELD NAMES
+  vaccinationDue: 'Vaccinations/Deworming',    // Before: vaccinationsAndDewormingReminder
+  checkupDue: 'Medical Check-ups',             // Before: medicalCheckupsReminder
+  groomingDue: 'Grooming'                      // Before: groomingReminder
+};
+
+// ======== UPDATED HIGHLIGHT REMINDERS FUNCTION ======== //
+function highlightReminders(reminders, index) {
+  const today = new Date();
+  const overdueContainer = document.getElementById(`overdueReminders-${index}`);
+  const upcomingContainer = document.getElementById(`upcomingReminders-${index}`);
+
+  overdueContainer.innerHTML = '';
+  upcomingContainer.innerHTML = '';
+
+  Object.entries(reminders).forEach(([reminderKey, reminderValue]) => {
+    if (!reminderValue) return;
+
+    // CHANGED: Parse ISO string to Date
+    const reminderDateTime = new Date(reminderValue);
+    const timeDiff = reminderDateTime.getTime() - today.getTime();
+    const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+    
+    // CHANGED: Use updated reminderFields with new keys
+    const reminderLabel = reminderFields[reminderKey];
+
+    if (timeDiff < 0) {
+      const div = document.createElement('div');
+      div.className = 'reminder overdue';
+      div.innerHTML = `
+        <span class="exclamation">❗</span> 
+        ${reminderLabel} was due on ${reminderDateTime.toLocaleString()}
+        <button class="deleteReminderButton" 
+                data-profile-index="${index}" 
+                data-reminder="${reminderKey}"> <!-- Key matches new field names -->
+            Delete
+        </button>
+      `;
+      overdueContainer.appendChild(div);
+    } else if (daysDiff <= REMINDER_THRESHOLD_DAYS) {
+      const div = document.createElement('div');
+      div.className = 'reminder upcoming';
+      div.textContent = `${reminderLabel} is on ${reminderDateTime.toLocaleString()}`;
+      upcomingContainer.appendChild(div);
     }
   });
+}
 
-  // Check sessionStorage for in-progress edits
-  for (let i = 0; i < sessionStorage.length; i++) {
-    const key = sessionStorage.key(i);
-    if (key.startsWith('editingProfile_')) {
-      const index = parseInt(key.split('_')[1]);
+// ======== UPDATED DELETE FUNCTION ======== //
+function deleteOverdueReminder(profileIndex, reminderKey) {
+  const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
+  const profile = savedProfiles[profileIndex];
+  
+  // CHANGED: Clear the correct field names
+  profile[reminderKey] = null;  // Changed from empty string to null for clarity
+  
+  localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+  loadSavedPetProfile();
+}
+
+// ======== SERVICE WORKER REGISTRATION ========
+if ('serviceWorker' in navigator) {
+  const SW_VERSION = 'v2.1';
+  const SW_PATH = `${window.location.pathname.replace(/\/[^/]+$/, '')}/service-worker.js`; // Fixed path
+  const SW_SCOPE = `${window.location.pathname.replace(/\/[^/]+$/, '')}/`;
+
+  // Debounced registration handler
+  const registerSW = async () => {
+    try {
+      if (!('indexedDB' in window)) {
+        showErrorToast('Browser lacks required features');
+        return;
+      }
+
+      const registration = await navigator.serviceWorker.register(
+        `${SW_PATH}?version=${SW_VERSION}`, 
+        { scope: SW_SCOPE, updateViaCache: 'none' }
+      );
+
+      // Optimized event handlers
+      const handleControllerChange = () => {
+        console.log('🔄 Controller changed');
+        if (document.visibilityState === 'visible') {
+          window.location.reload();
+        }
+      };
+
+      const handleUpdateFound = () => {
+        const newWorker = registration.installing;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'activated' && !navigator.serviceWorker.controller) {
+            window.requestIdleCallback(() => window.location.reload());
+          }
+        });
+      };
+
+      registration.addEventListener('updatefound', handleUpdateFound);
+      navigator.serviceWorker.addEventListener('controllerchange', handleControllerChange);
+
+      // Cleanup function
+      return () => {
+        registration.removeEventListener('updatefound', handleUpdateFound);
+        navigator.serviceWorker.removeEventListener('controllerchange', handleControllerChange);
+      };
+
+    } catch (error) {
+      console.error('SW registration failed:', error);
+      showErrorToast('Offline features limited');
+    }
+  };
+
+  // Debounced load handler
+  window.addEventListener('load', () => {
+    setTimeout(registerSW, 1000); // Delay registration
+  });
+}
+
+// ======== PERFORMANCE OPTIMIZATIONS ========
+// Throttled error display
+const showErrorToast = (message) => {
+  if (window.toastTimeout) return;
+  
+  const toast = document.createElement('div');
+  toast.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 15px;
+    background: #ff4444;
+    color: white;
+    border-radius: 5px;
+    z-index: 10000;
+  `;
+  toast.textContent = message;
+  document.body.appendChild(toast);
+
+  window.toastTimeout = setTimeout(() => {
+    document.body.removeChild(toast);
+    delete window.toastTimeout;
+  }, 5000);
+};
+
+
+// ======== AUTHENTICATION ========//
+// ======== A. AUTH STATE CHECK (FIXED) ========
+export function initializeAuth() {
+  document.addEventListener('DOMContentLoaded', () => {
+    const authSection = document.getElementById('authSection');
+    const mainContent = document.getElementById('mainContent');
+    const logoutButton = document.getElementById('logoutButton');
+    const petPhotoInput = document.getElementById('petPhoto');
+    const petPhotoPreview = document.getElementById('petPhotoPreview');
+
+    // Fixed: Added error boundary for persistence setup
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+      .then(() => {
+        const authStateHandler = (user) => {
+          if (user) {
+            authSection.style.display = 'none';
+            mainContent.style.display = 'block';
+            logoutButton.style.display = 'block';
+            
+            // Fixed: Added null checks for profile loading
+            try {
+              loadSavedPetProfile();
+              setupNotifications();
+            } catch (error) {
+              console.error('Profile loading error:', error);
+            }
+          } else {
+            authSection.style.display = 'block';
+            mainContent.style.display = 'none';
+            logoutButton.style.display = 'none';
+            switchAuthForm('login');
+          }
+        };
+
+        // Fixed: Proper cleanup of auth listener
+        const unsubscribe = firebase.auth().onAuthStateChanged(authStateHandler);
+        return () => unsubscribe();
+      })
+      .catch((error) => {
+        console.error("Auth persistence error:", error);
+        alert('Authentication system error. Please refresh the page.');
+      });
+
+    // Fixed: Added debounce to image preview handler
+    let previewTimeout;
+    petPhotoInput.addEventListener('change', function() {
+      clearTimeout(previewTimeout);
+      previewTimeout = setTimeout(() => {
+        const file = this.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            petPhotoPreview.src = e.target.result;
+            petPhotoPreview.style.display = 'block';
+          };
+          reader.readAsDataURL(file);
+        }
+      }, 300);
+    });
+
+    // Fixed: Optimized sessionStorage check
+    const editingSessionKeys = Array.from({ length: sessionStorage.length })
+      .map((_, i) => sessionStorage.key(i))
+      .filter(key => key.startsWith('editingProfile_'));
+
+    editingSessionKeys.forEach(key => {
+      const index = parseInt(key.split('_')[1], 10);
       const originalProfile = JSON.parse(sessionStorage.getItem(key));
 
       if (originalProfile) {
-        editingProfileIndex = index;
-        document.getElementById('petName').value = originalProfile.petName;
-        document.getElementById('breed').value = originalProfile.breed;
-        document.getElementById('age').value = originalProfile.age;
-        document.getElementById('weight').value = originalProfile.weight;
-        document.getElementById('microchipId').value = originalProfile
-          .microchip?.id || '';
-        document.getElementById('microchipDate').value = originalProfile
-          .microchip?.date || '';
-        document.getElementById('microchipVendor').value = originalProfile
-          .microchip?.vendor || '';
-        document.getElementById('allergies').value = originalProfile
-          .allergies;
-        document.getElementById('medicalHistory').value = originalProfile
-          .medicalHistory;
-        document.getElementById('dietPlan').value = originalProfile
-          .dietPlan;
-        document.getElementById('moodSelector').value = originalProfile
-          .mood || '';
-        document.getElementById('emergencyContactName').value =
-          originalProfile.emergencyContacts?.[0]?.name || '';
-        document.getElementById('emergencyContactPhone').value =
-          originalProfile.emergencyContacts?.[0]?.phone || '';
-        document.getElementById('emergencyContactRelationship').value =
-          originalProfile.emergencyContacts?.[0]?.relationship || '';
-        document.getElementById('vaccinationsAndDewormingReminder').value =
-          originalProfile.vaccinationsAndDewormingReminder || '';
-        document.getElementById('medicalCheckupsReminder').value =
-          originalProfile.medicalCheckupsReminder || '';
-        document.getElementById('groomingReminder').value = originalProfile
-          .groomingReminder || '';
+        // Fixed: Added null checks for DOM elements
+        const safeSetValue = (id, value) => {
+          const el = document.getElementById(id);
+          if (el) el.value = value || '';
+        };
 
-        // Pet photo
+        safeSetValue('petName', originalProfile.petName);
+        safeSetValue('breed', originalProfile.breed);
+        safeSetValue('age', originalProfile.age);
+        safeSetValue('weight', originalProfile.weight);
+        safeSetValue('microchipId', originalProfile.microchip?.id);
+        safeSetValue('microchipDate', originalProfile.microchip?.date);
+        safeSetValue('microchipVendor', originalProfile.microchip?.vendor);
+        safeSetValue('allergies', originalProfile.allergies);
+        safeSetValue('medicalHistory', originalProfile.medicalHistory);
+        safeSetValue('dietPlan', originalProfile.dietPlan);
+        safeSetValue('moodSelector', originalProfile.mood);
+        safeSetValue('emergencyContactName', originalProfile.emergencyContacts?.[0]?.name);
+        safeSetValue('emergencyContactPhone', originalProfile.emergencyContacts?.[0]?.phone);
+        safeSetValue('emergencyContactRelationship', originalProfile.emergencyContacts?.[0]?.relationship);
+        safeSetValue('vaccinationsAndDewormingReminder', originalProfile.vaccinationsAndDewormingReminder);
+        safeSetValue('medicalCheckupsReminder', originalProfile.medicalCheckupsReminder);
+        safeSetValue('groomingReminder', originalProfile.groomingReminder);
+
         if (originalProfile.petPhoto) {
-          document.getElementById('petPhotoPreview').src = originalProfile
-            .petPhoto;
-          document.getElementById('petPhotoPreview').style.display =
-            'block';
-        } else {
-          document.getElementById('petPhotoPreview').src = '';
-          document.getElementById('petPhotoPreview').style.display = 'none';
+          petPhotoPreview.src = originalProfile.petPhoto;
+          petPhotoPreview.style.display = 'block';
         }
-
-        document.getElementById('dietForm').scrollIntoView();
       }
-    }
-  }
+    });
 
-  if (loggedInUser) {
-    authSection.style.display = 'none';
-    mainContent.style.display = 'block';
-    logoutButton.style.display = 'block';
-    loadSavedPetProfile();
-  }
-});
-// ========B FORM SWITCHING HELPER ========
-function switchAuthForm(targetForm) {
-  // Hide all forms
+    // Fixed: Added proper user reference check
+    const user = firebase.auth().currentUser;
+    if (user) {
+      // Fixed: Optimized image preloading
+      const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+      savedProfiles.forEach((profile, index) => {
+        if (index < 5 && profile.petPhoto) { // Limit to first 5 images
+          const img = new Image();
+          img.src = profile.petPhoto;
+        }
+      });
+    }
+  });
+}
+
+// ======== B. FORM SWITCHING HELPER (UNCHANGED) ========
+export function switchAuthForm(targetForm) {
   document.getElementById('signUpForm').classList.remove('active');
   document.getElementById('loginForm').classList.remove('active');
-
-  // Show target form and reset it
   const formElement = document.getElementById(`${targetForm}Form`);
   formElement.classList.add('active');
   formElement.querySelector('form').reset();
 }
 
-// ========C FORM SWITCHING EVENT LISTENERS ========
-document.getElementById('showLogin').addEventListener('click', (e) => {
-  e.preventDefault();
-  switchAuthForm('login');
-});
+// ======== C. FORM SWITCHING EVENT LISTENERS (FIXED) ========
+export function setupAuthFormSwitchers() {
+  // Fixed: Added event listener checks
+  const addSafeListener = (id, handler) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.removeEventListener('click', handler);
+      element.addEventListener('click', handler);
+    }
+  };
 
-document.getElementById('showSignUp').addEventListener('click', (e) => {
-  e.preventDefault();
-  switchAuthForm('signUp');
-});
+  addSafeListener('showLogin', (e) => {
+    e.preventDefault();
+    switchAuthForm('login');
+  });
 
-// ========D UPDATED SIGN-UP HANDLER ========
-document.getElementById('signUp').addEventListener('submit', function(event) {
-  event.preventDefault();
+  addSafeListener('showSignUp', (e) => {
+    e.preventDefault();
+    switchAuthForm('signUp');
+  });
+}
 
-  const email = document.getElementById('signUpEmail').value.trim();
-  const password = document.getElementById('signUpPassword').value.trim();
+// ======== D. SIGN-UP HANDLER (FIXED) ========
+export function setupSignUpHandler() {
+  const form = document.getElementById('signUp');
+  if (form) {
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const email = document.getElementById('signUpEmail')?.value?.trim();
+      const password = document.getElementById('signUpPassword')?.value?.trim();
 
-  firebase.auth().createUserWithEmailAndPassword(email, password)
-    .then(() => {
-      alert('Sign-up successful! Please login.');
-      switchAuthForm('login');
-      this.reset(); // Reset sign-up form
-    })
-    .catch((error) => {
-      console.error("Sign-up error:", error);
-      alert(`Sign-up failed: ${error.message}`);
-      this.reset(); // Reset form on error
+      if (!email || !password) {
+        alert('Please fill in all required fields');
+        return;
+      }
+
+      firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then(() => {
+          alert('Sign-up successful! Please login.');
+          switchAuthForm('login');
+          this.reset();
+        })
+        .catch((error) => {
+          console.error("Sign-up error:", error);
+          alert(`Sign-up failed: ${error.message}`);
+          this.reset();
+        });
     });
-});
+  }
+}
 
-// ========E UPDATED LOGIN HANDLER ========
-document.getElementById('login').addEventListener('submit', function(event) {
-  event.preventDefault();
+// ======== E. LOGIN HANDLER (FIXED) ========
+export function setupLoginHandler() {
+  const form = document.getElementById('login');
+  if (form) {
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const email = document.getElementById('loginEmail')?.value?.trim();
+      const password = document.getElementById('loginPassword')?.value?.trim();
 
-  const email = document.getElementById('loginEmail').value.trim();
-  const password = document.getElementById('loginPassword').value.trim();
+      if (!email || !password) {
+        alert('Please fill in all required fields');
+        return;
+      }
 
-  firebase.auth().signInWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-      // Successful login handled by auth state observer
-      this.reset(); // Reset login form
-    })
-    .catch((error) => {
-      console.error("Login error:", error);
-      alert(`Login failed: ${error.message}`);
-      this.reset(); // Reset form on error
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then(() => this.reset())
+        .catch((error) => {
+          console.error("Login error:", error);
+          alert(`Login failed: ${error.message}`);
+          this.reset();
+        });
     });
-});
+  }
+}
 
-// ======== F. LOGOUT HANDLER (FIREBASE INTEGRATION) ========
-document.getElementById('logoutButton').addEventListener('click', function() {
-  firebase.auth().signOut()
-    .then(() => {
-      console.log("Firebase Logout successful");
-      // Trigger form switching instead of direct DOM manipulation
-      switchAuthForm('login');
-      alert('Logged out successfully!');
-    })
-    .catch((error) => {
-      console.error("Logout error:", error);
-      alert(`Logout failed: ${error.message}`);
+// ======== F. LOGOUT HANDLER (FIXED) ========
+export function setupLogoutHandler() {
+  const button = document.getElementById('logoutButton');
+  if (button) {
+    button.addEventListener('click', function() {
+      firebase.auth().signOut()
+        .then(() => {
+          switchAuthForm('login');
+          alert('Logged out successfully!');
+        })
+        .catch((error) => {
+          console.error("Logout error:", error);
+          alert(`Logout failed: ${error.message}`);
+        });
     });
-});
+  }
+}
 
 // ======== 5. SAVE PET PROFILE (WITH NEW FIELDS) ========
 document.getElementById('dietForm').addEventListener('submit', function(event) {
