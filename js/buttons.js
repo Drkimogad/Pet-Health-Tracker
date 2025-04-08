@@ -1,3 +1,7 @@
+import { editPetProfile, deletePetProfile } from './js/profiles.js';
+import { deleteOverdueReminder } from './js/reminders-validation.js';
+
+
 //* FUNCTION TO ATTACHED BUTTONS TO SAVED PROFILES *//
 const savedProfilesList = document.getElementById('savedProfilesList');
 
