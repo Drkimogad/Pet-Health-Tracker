@@ -2,33 +2,6 @@ const auth = firebase.auth();
 const firestore = firebase.firestore();
 
 // Initialize Firebase services using global `firebase` object
-const pushMessaging = firebase.messaging();
-const vapidKey = 'BCGyRZVIxHmasEQWfF5iCzxe1gLyIppQynZlyPm_BXPHWnv4xzxZwEjo9PuJbbk5Gi8ywLVXSxAYxcgt2QsmHVE'; // ⚠️ Add your key here
-
-async function requestAndSaveFCMToken() {
-  try {
-    const permission = await Notification.requestPermission();
-    if (permission === 'granted') {
-      console.log('Notification permission granted.');
-      const token = await messaging.getToken({ vapidKey: vapidKey });
-      if (token) {
-        console.log('FCM token:', token);
-        await saveFCMTokenToFirestore(token);
-      } else {
-        console.log('No FCM token received.');
-      }
-    } else {
-      console.log('Notification permission denied.');
-    }
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
-
-async function saveFCMTokenToFirestore(fcmToken) {
-  const user = firebase.auth().currentUser; // Use global auth
-  const db = firebase.firestore(); // Use global firestore
-
   if (user) {
     try {
       await db.collection('users').doc(user.uid).update({
