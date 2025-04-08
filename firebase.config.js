@@ -17,15 +17,3 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 const messaging = firebase.messaging();
 
-// ====== FCM TOKEN HANDLING ======
-// Move this to pushNotifications.js if needed!
-messaging.getToken({ vapidKey: "BCGyRZVIxHmasEQWfF5iCzxe1gLyIppQynZlyPm_BXPHWnv4xzxZwEjo9PuJbbk5Gi8ywLVXSxAYxcgt2QsmHVE" })
-  .then((currentToken) => {
-    if (currentToken) console.log('FCM token:', currentToken);
-    else console.log('No token available');
-  })
-  .catch((err) => {
-    console.error('Token error:', err);
-  });
-
-console.log("Firebase services initialized");
