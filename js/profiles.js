@@ -1,8 +1,8 @@
 // Add these imports at the top:
-import { auth, firestore } from './initialization.js';
-import { reminders, formatReminder } from './reminders-validation.js';
-import { setupAuthListeners } from './auth.js';
-import { initializeButtons } from './buttons.js';
+import { auth, firestore } from './js/initialization.js';
+import { reminders, formatReminder } from './js/reminders-validation.js';
+import { setupAuthListeners } from './js/auth.js';
+import { initializeButtons } from './js/buttons.js';
 
 // Save Pet profiles //
 document.getElementById('dietForm').addEventListener('submit', function(event) {
