@@ -25,7 +25,6 @@ const REMINDER_TYPE_MAP = {
 };
 // ======== AUTHENTICATION ========//
 // ======== A. AUTH STATE CHECK (FIXED) ========
-export function initializeAuth() {
   document.addEventListener('DOMContentLoaded', () => {
     const authSection = document.getElementById('authSection');
     const mainContent = document.getElementById('mainContent');
@@ -140,7 +139,6 @@ export function initializeAuth() {
 }
 
 // ======== B. FORM SWITCHING HELPER (UNCHANGED) ========
-export function switchAuthForm(targetForm) {
   document.getElementById('signUpForm').classList.remove('active');
   document.getElementById('loginForm').classList.remove('active');
   const formElement = document.getElementById(`${targetForm}Form`);
@@ -149,7 +147,6 @@ export function switchAuthForm(targetForm) {
 }
 
 // ======== C. FORM SWITCHING EVENT LISTENERS (FIXED) ========
-export function setupAuthFormSwitchers() {
   // Fixed: Added event listener checks
   const addSafeListener = (id, handler) => {
     const element = document.getElementById(id);
@@ -171,7 +168,6 @@ export function setupAuthFormSwitchers() {
 }
 
 // ======== D. SIGN-UP HANDLER (FIXED) ========
-export function setupSignUpHandler() {
   const form = document.getElementById('signUp');
   if (form) {
     form.addEventListener('submit', function(event) {
@@ -200,7 +196,6 @@ export function setupSignUpHandler() {
 }
 
 // ======== E. LOGIN HANDLER (FIXED) ========
-export function setupLoginHandler() {
   const form = document.getElementById('login');
   if (form) {
     form.addEventListener('submit', function(event) {
@@ -225,7 +220,6 @@ export function setupLoginHandler() {
 }
 
 // ======== F. LOGOUT HANDLER (FIXED) ========
-export function setupLogoutHandler() {
   const button = document.getElementById('logoutButton');
   if (button) {
     button.addEventListener('click', function() {
@@ -887,7 +881,7 @@ Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relatio
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register(
-      './service-worker.js', {
+      '/Pet-Health-Tracker/service-worker.js', {
         scope: '/Pet-Health-Tracker/'
       }
     ).then((registration) => {
