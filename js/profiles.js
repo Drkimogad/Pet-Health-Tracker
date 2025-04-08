@@ -100,8 +100,14 @@ function loadSavedPetProfile() {
                 </div>
             `;
       savedProfilesList.appendChild(petCard);
-// Add this initialization call (bottom of file):
-setupAuthListeners();
-initializeButtons();
       
-export { editingProfileIndex, loadSavedPetProfile, deletePetProfile, sharePetProfile, printPetProfile, editPetProfile, generateQRCode };
+  // Reinitialize auth listeners and buttons after rendering
+  setupAuthListeners();
+  initializeButtons();
+}
+
+// Initialize variable at top scope so it's accessible
+let editingProfileIndex = null;
+
+// Export only what's needed externally
+export { editingProfileIndex, loadSavedPetProfile };
