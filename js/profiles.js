@@ -102,4 +102,4 @@ function loadSavedPetProfile() {
 setupAuthListeners();
 initializeButtons();
       
-export { editingProfileIndex, loadSavedPetProfile, deletePetProfile, sharePetProfile, editPetProfile, generateQRCode };
+export { editingProfileIndex, loadSavedPetProfile, deletePetProfile, sharePetProfile, printPetProfile, editPetProfile, generateQRCode };
