@@ -123,22 +123,22 @@ const REMINDER_TYPE_MAP = {
       }
     });
 
-    // Fixed: Added proper user reference check
-    const user = firebase.auth().currentUser;
-    if (user) {
-      // Fixed: Optimized image preloading
-      const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-      savedProfiles.forEach((profile, index) => {
-        if (index < 5 && profile.petPhoto) { // Limit to first 5 images
-          const img = new Image();
-          img.src = profile.petPhoto;
-        }
-      });
+// ======== A. USER CHECK & IMAGE PRELOADING ========
+// Fixed: Added proper user reference check
+const user = firebase.auth().currentUser;
+if (user) {
+  // Fixed: Optimized image preloading
+  const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+  savedProfiles.forEach((profile, index) => {
+    if (index < 5 && profile.petPhoto) { // Limit to first 5 images
+      const img = new Image();
+      img.src = profile.petPhoto;
     }
   });
 }
 
-// ======== B. FORM SWITCHING HELPER (UNCHANGED) ========
+// ======== B. FORM SWITCHING HELPER ========
+function switchAuthForm(targetForm) { // Added missing function declaration
   document.getElementById('signUpForm').classList.remove('active');
   document.getElementById('loginForm').classList.remove('active');
   const formElement = document.getElementById(`${targetForm}Form`);
@@ -146,27 +146,26 @@ const REMINDER_TYPE_MAP = {
   formElement.querySelector('form').reset();
 }
 
-// ======== C. FORM SWITCHING EVENT LISTENERS (FIXED) ========
-  // Fixed: Added event listener checks
-  const addSafeListener = (id, handler) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.removeEventListener('click', handler);
-      element.addEventListener('click', handler);
-    }
-  };
+// ======== C. FORM SWITCHING EVENT LISTENERS ========
+// Fixed: Added event listener checks
+const addSafeListener = (id, handler) => {
+  const element = document.getElementById(id);
+  if (element) {
+    element.removeEventListener('click', handler);
+    element.addEventListener('click', handler);
+  }
+};
 
-  addSafeListener('showLogin', (e) => {
-    e.preventDefault();
-    switchAuthForm('login');
-  });
+addSafeListener('showLogin', (e) => {
+  e.preventDefault();
+  switchAuthForm('login');
+});
 
-  addSafeListener('showSignUp', (e) => {
-    e.preventDefault();
-    switchAuthForm('signUp');
-  });
-}
-
+addSafeListener('showSignUp', (e) => {
+  e.preventDefault();
+  switchAuthForm('signUp');
+});
+    
 // ======== D. SIGN-UP HANDLER (FIXED) ========
   const form = document.getElementById('signUp');
   if (form) {
