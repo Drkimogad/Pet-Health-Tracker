@@ -83,6 +83,13 @@ function setupNotifications() {
     console.warn('Service workers not supported');
   }
 }
+// Add this to your setupNotifications()
+async function setupNotifications() {
+  const permission = await Notification.requestPermission();
+  if (permission === 'granted') {
+    // Now you can call sendPushNotification()
+  }
+}
 
 // Start immediately
 setupNotifications();
