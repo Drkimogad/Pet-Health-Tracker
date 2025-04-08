@@ -121,6 +121,26 @@ const REMINDER_TYPE_MAP = {
   groomingDue: 'grooming'
 };
 
+  try {
+    const reminders = {
+      vaccinationsAndDewormingReminder: validateReminder({
+        type: 'vaccinationsAndDewormingReminder',
+        dueDate: document.getElementById('vaccinationsAndDewormingReminder').value
+      }),
+      medicalCheckupsReminder: validateReminder({
+        type: 'medicalCheckupsReminder',
+        dueDate: document.getElementById('medicalCheckupsReminder').value
+      }),
+      groomingReminder: validateReminder({
+        type: 'groomingReminder',
+        dueDate: document.getElementById('groomingReminder').value
+      })
+    };
+  } catch (error) {
+    alert(`Validation Error: ${error.message}`);
+    return;
+  }
+
 // ======== A AUTH STATE CHECK ======== (MODIFIED)
 document.addEventListener('DOMContentLoaded', () => {
   const authSection = document.getElementById('authSection');
