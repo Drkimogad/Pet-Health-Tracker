@@ -435,3 +435,4 @@ Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relatio
   });
 }
 
+export { editPetProfile, deletePetProfile, printPetProfile, sharePetProfile, generateQRCode, handleCancelEdit, resetForm };
