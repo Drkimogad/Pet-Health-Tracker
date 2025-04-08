@@ -1,4 +1,4 @@
-import { loadSavedPetProfile } from '.js/profiles.js';
+import { loadSavedPetProfile } from './profiles.js';
 
 
 // ======== VALIDATION CONFIGURATION ========
