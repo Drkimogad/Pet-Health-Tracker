@@ -1,5 +1,7 @@
-// Add these imports at the top:
-import { auth, firestore } from './js/initialization.js';
+// importing firebase from CDN 
+const auth = firebase.auth();
+const firestore = firebase.firestore();
+
 import { reminders, formatReminder } from './js/reminders-validation.js';
 import { setupAuthListeners } from './js/auth.js';
 import { initializeButtons } from './js/buttons.js';
