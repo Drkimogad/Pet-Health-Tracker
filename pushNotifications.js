@@ -2,10 +2,10 @@
 
 // ======== FIREBASE CONFIGURATION ========
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
+  apiKey: "AIzaSyBIej7yNj0LkkLd6VtQxBL4mEDSsHLJvig",
   projectId: "pet-health-tracker-7164d",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  messagingSenderId: "251170885789",
+  appId: "pet-health-tracker-7164d"
 };
 
 // Initialize Firebase
@@ -17,7 +17,7 @@ if (!firebase.apps.length) {
 const auth = firebase.auth();
 const firestore = firebase.firestore();
 const messaging = firebase.messaging();
-const vapidKey = "YOUR_VAPID_KEY_HERE";
+const vapidKey = "BCGyRZVIxHmasEQWfF5iCzxe1gLyIppQynZlyPm_BXPHWnv4xzxZwEjo9PuJbbk5Gi8ywLVXSxAYxcgt2QsmHVE";
 
 // ======== FCM TOKEN MANAGEMENT ========
 async function saveFCMTokenToFirestore(fcmToken) {
