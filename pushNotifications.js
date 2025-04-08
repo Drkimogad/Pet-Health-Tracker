@@ -45,21 +45,25 @@ async function requestAndSaveFCMToken() {
 
 // Send a push notification manually
 async function sendPushNotification(token, { title, body }) {
-  const response = await fetch('https://fcm.googleapis.com/fcm/send', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `key=${process.env.FCM_SERVER_KEY}`
-    },
-    body: JSON.stringify({
-      to: token,
-      notification: { title, body }
-    })
-  });
+  const authToken = await getAccessToken(); // Use Firebase Admin SDK or OAuth2
+  const projectId = "pet-health-tracker-7164d";
 
-  if (!response.ok) {
-    throw new Error(`FCM error: ${response.statusText}`);
-  }
+  const response = await fetch(
+    `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}` // OAuth2 token
+      },
+      body: JSON.stringify({
+        message: {
+          token: token,
+          notification: { title, body }
+        }
+      })
+    }
+  );
 }
 
 // Get and log current token
