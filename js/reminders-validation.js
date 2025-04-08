@@ -1,4 +1,4 @@
-import { loadSavedPetProfile } from './js/profiles.js';
+import { loadSavedPetProfile } from 'https://drkimogad.github.io/Pet-Health-Tracker/js/profiles.js';
 
 
 // ======== VALIDATION CONFIGURATION ========
