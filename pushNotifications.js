@@ -1,55 +1,23 @@
 /* eslint-disable no-undef, no-console */
 
-// ======== FIREBASE CONFIGURATION ========
+// ======== FIREBASE CORE SERVICES ========
 const firebaseConfig = {
   apiKey: "AIzaSyBIej7yNj0LkkLd6VtQxBL4mEDSsHLJvig",
   projectId: "pet-health-tracker-7164d",
-  messagingSenderId: "251170885789",
   appId: "pet-health-tracker-7164d"
 };
 
-// Initialize Firebase
+// Initialize Firebase only once
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 
-// ======== SERVICE REFERENCES ========
+// Service references
 const auth = firebase.auth();
 const firestore = firebase.firestore();
-const messaging = firebase.messaging();
-const vapidKey = "BCGyRZVIxHmasEQWfF5iCzxe1gLyIppQynZlyPm_BXPHWnv4xzxZwEjo9PuJbbk5Gi8ywLVXSxAYxcgt2QsmHVE";
 
-// ======== FCM TOKEN MANAGEMENT ========
-async function saveFCMTokenToFirestore(fcmToken) {
-  const user = auth.currentUser;
-  if (!user) {
-    console.log('User not authenticated');
-    return;
-  }
-
-  try {
-    await firestore.collection('users').doc(user.uid).update({ fcmToken });
-    console.log('FCM token saved for user:', user.uid);
-  } catch (error) {
-    console.error('Error saving token:', error);
-  }
-}
-
-// ======== NOTIFICATION PERMISSION & TOKEN ========
-async function requestAndSaveFCMToken() {
-  try {
-    const token = await messaging.getToken({ vapidKey });
-    if (token) {
-      console.log('FCM Token:', token);
-      await saveFCMTokenToFirestore(token);
-    }
-  } catch (error) {
-    console.error('Token error:', error);
-  }
-}
-
-// ======== SEND NOTIFICATIONS ========
-async function sendPushNotification(title, body) {
+// ======== NOTIFICATION SERVICE ========
+async function showAppNotification(title, body) {
   try {
     const registration = await navigator.serviceWorker.ready;
     await registration.showNotification(title, {
@@ -60,41 +28,56 @@ async function sendPushNotification(title, body) {
     });
   } catch (error) {
     console.error('Notification failed:', error);
+    throw error;
   }
 }
 
-// ======== NOTIFICATION SETUP & INITIALIZATION ========
-async function setupNotifications() {
+// ======== SERVICE WORKER SETUP ========
+async function setupServiceWorker() {
   if (!('serviceWorker' in navigator)) {
     console.warn('Service workers not supported');
-    return;
-  }
-
-  if (!('Notification' in window)) {
-    console.warn('Notifications not supported');
-    return;
+    return false;
   }
 
   try {
-    // Register service worker
-    const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-    console.log('Service Worker registered');
-
-    // Request notification permission
-    const permission = await Notification.requestPermission();
-    if (permission === 'granted') {
-      console.log('Notification permission granted');
-      await requestAndSaveFCMToken();
-    } else {
-      console.log('Notification permission denied');
-    }
+    const registration = await navigator.serviceWorker.register('/service-worker.js');
+    console.log('Service Worker registered:', registration);
+    return true;
   } catch (error) {
-    console.error('Setup failed:', error);
+    console.error('Service Worker registration failed:', error);
+    return false;
   }
 }
 
-// Initialize on app load
-setupNotifications();
+// ======== NOTIFICATION PERMISSION ========
+async function requestNotificationPermission() {
+  if (!('Notification' in window)) {
+    console.warn('Notifications not supported');
+    return false;
+  }
+
+  try {
+    const permission = await Notification.requestPermission();
+    return permission === 'granted';
+  } catch (error) {
+    console.error('Permission request failed:', error);
+    return false;
+  }
+}
+
+// ======== MAIN INITIALIZATION ========
+async function initializeNotifications() {
+  const swRegistered = await setupServiceWorker();
+  if (!swRegistered) return;
+
+  const hasPermission = await requestNotificationPermission();
+  if (hasPermission) {
+    console.log('Ready to send notifications');
+  }
+}
+
+// Initialize when app loads
+initializeNotifications();
 
 // ======== EXPORTS ========
-export { setupNotifications, sendPushNotification };
+export { initializeNotifications, showAppNotification };
