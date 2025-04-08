@@ -56,25 +56,18 @@ async function requestAndSaveFCMToken() {
   }
 }
 
-// ======== SEND NOTIFICATIONS (BASIC) ========
+// ======== SEND NOTIFICATIONS (browser's native Web Push API) ========
 async function sendPushNotification(token, { title, body }) {
-  try {
-    const response = await fetch('https://fcm.googleapis.com/fcm/send', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `key=${vapidKey}`
-      },
-      body: JSON.stringify({
-        to: token,
-        notification: { title, body }
-      })
-    });
-    
-    console.log('Notification sent:', await response.json());
-  } catch (error) {
-    console.error('Notification failed:', error);
-  }
+  // Get service worker registration
+  const registration = await navigator.serviceWorker.ready;
+
+  // Send notification using Web Push Protocol
+  await registration.showNotification(title, {
+    body,
+    icon: './icons/icon-192x192.png',
+    vibrate: [200, 100, 200], // Optional vibration pattern
+    data: { url: '/' } // Add any custom data
+  });
 }
 
 // ======== INITIALIZE ON LOAD ========
