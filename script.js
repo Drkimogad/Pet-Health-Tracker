@@ -877,31 +877,15 @@ Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relatio
   });
 }
 
-// ======== UPDATED SERVICE WORKER REGISTRATION ========
+// ======== UPDATED COMBINED SERVICE WORKERS REGISTRATION ========//
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register(
-      '/Pet-Health-Tracker/service-worker.js', {
-        scope: '/Pet-Health-Tracker/'
-      }
-    ).then((registration) => {
-      console.log('SW registered:', registration);
-      setInterval(() => registration.update(), 60 * 60 * 1000);
+  // 1. Register Caching SW (Workbox or custom)
+  navigator.serviceWorker.register('/service-worker.js', {
+    scope: '/' // Controls caching for the whole app
+  }).then(() => console.log('Caching SW registered'));
 
-      // Enhanced update handling
-      registration.addEventListener('updatefound', () => {
-        const newWorker = registration.installing;
-        newWorker.addEventListener('statechange', () => {
-          if (newWorker.state === 'activated') {
-            window.location.reload();
-          }
-        });
-      });
-
-      navigator.serviceWorker.addEventListener('controllerchange',
-        () => {
-          window.location.reload();
-        });
-    }).catch(console.error);
-  });
+  // 2. Register Firebase Messaging SW (push only)
+  navigator.serviceWorker.register('/firebase-messaging-sw.js', {
+    scope: '/firebase-cloud-messaging-push-scope/' // Firebase's special scope
+  }).then(() => console.log('Firebase SW registered'));
 }
