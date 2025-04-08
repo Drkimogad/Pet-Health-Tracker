@@ -14,23 +14,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging-compat.js"></script>
+    <script src="./firebase.config.js"></script>
     <script type="module" src="./pushNotifications.js"></script>
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyBIej7yNj0LkkLd6VtQxBL4mEDSsHLJvig",
-            authDomain: "pet-health-tracker-7164d.firebaseapp.com",
-            projectId: "pet-health-tracker-7164d",
-            storageBucket: "pet-health-tracker-7164d.firebasestorage.app",
-            messagingSenderId: "251170885789",
-            appId: "1:251170885789:web:2c16a20f96da9f6a960474",
-            measurementId: "G-GKD3RVNVLV"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const firestore = firebase.firestore();
-        const messaging = firebase.messaging();
-    </script>
 </head>
 <body>
     <noscript>
