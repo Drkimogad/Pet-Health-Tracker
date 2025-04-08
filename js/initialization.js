@@ -21,7 +21,7 @@ let editingProfileIndex = null;
 // ======== ENHANCED SERVICE WORKER REGISTRATION ========
 if ('serviceWorker' in navigator) {
   const SW_VERSION = 'v2.1'; // Update this when making SW changes
-  const SW_PATH = `${window.location.pathname.replace(/\/[^/]+$/, '')} https://drkimogad.github.io/Pet-Health-Tracker/service-worker.js`;
+  const SW_PATH = `${window.location.pathname.replace(/\/[^/]+$/, '')} '/service-worker.js`;
   const SW_SCOPE = `${window.location.pathname.replace(/\/[^/]+$/, '')}/`;
 
   window.addEventListener('load', async () => {
