@@ -33,15 +33,30 @@ function formatReminder(dateTimeString) {
 }
 try {
   const reminders = {
-    vaccinationDue: profile.vaccinationDue,  // CHANGED FROM vaccinationsAndDewormingReminder
-    checkupDue: profile.checkupDue,          // CHANGED FROM medicalCheckupsReminder
-    groomingDue: profile.groomingDue         // CHANGED FROM groomingReminder
+    vaccinationDue: profile.vaccinationDue,  // Ensure this is defined
+    checkupDue: profile.checkupDue,          // Ensure this is defined
+    groomingDue: profile.groomingDue         // Ensure this is defined
   };
+
+  // Log reminders to the console for debugging
+  console.log('Reminders:', reminders);
+
+  // Check if any of the reminders are undefined or invalid
+  if (!reminders.vaccinationDue || !reminders.checkupDue || !reminders.groomingDue) {
+    throw new Error('One or more reminder dates are missing or invalid.');
+  }
+
+  // Call the highlightReminders function
   highlightReminders(reminders, index);
 } catch (error) {
+  // Log the error to the console for better debugging
+  console.error('Validation Error:', error);
+
+  // Alert the user
   alert(`Validation Error: ${error.message}`);
   return;
 }
+
 
 // ======== UPDATED REMINDERS BLOCK ======== //
     const reminders = {
