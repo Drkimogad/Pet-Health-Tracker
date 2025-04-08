@@ -8,6 +8,13 @@ const auth = firebase.auth();
 const firestore = firebase.firestore();
 const messaging = firebase.messaging();
 
+// Initialize push notifications
+initializePushNotifications(); // <-- Add this line
+
+
+// * Global declaration *//
+let editingProfileIndex = null;
+
 // ======== REMINDERS VALIDATION CONFIGURATION ========
 const REMINDER_THRESHOLD_DAYS = 5; // Or any other number of days you prefer
 
@@ -387,10 +394,7 @@ document.getElementById('dietForm').addEventListener('submit', function(event) {
     medicalCheckupsReminder: document.getElementById(
       'medicalCheckupsReminder').value,
     groomingReminder: document.getElementById('groomingReminder').value,
-    petPhoto: document.getElementById('petPhoto').files[0] ?
-      URL.createObjectURL(document.getElementById('petPhoto').files[0]) : document.getElementById(
-        'petPhotoPreview')
-      .src, // Use preview src if no new file
+    petPhoto: document.getElementById('petPhotoPreview').src || '', // Always use data URL
   };
 
   let savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
@@ -462,7 +466,8 @@ function loadSavedPetProfile() {
             `; // Removed the hardcoded reminder block
       savedProfilesList.appendChild(petCard);
 
-//* 7 function to attached buttons to pet profiles*//
+// ======== 8. HELPER FUNCTIONS ========     
+//function to attached buttons to pet profiles//
 const savedProfilesList = document.getElementById('savedProfilesList');
 
 savedProfilesList.addEventListener('click', function(event) {
@@ -488,63 +493,7 @@ savedProfilesList.addEventListener('click', function(event) {
   }
 });
 
-// highlighting upcoming and overdue ALERT reminders//
-function highlightReminders(reminders, index) {
-  const today = new Date();
-  const overdueContainer = document.getElementById(`overdueReminders-${index}`);
-  const upcomingContainer = document.getElementById(
-    `upcomingReminders-${index}`);
-
-  // Clear existing reminders
-  overdueContainer.innerHTML = '';
-  upcomingContainer.innerHTML = '';
-
-  Object.entries(reminders).forEach(([reminderKey, reminderValue]) => {
-    if (!reminderValue) return;
-
-    const reminderDateTime = new Date(reminderValue);
-    const timeDiff = reminderDateTime.getTime() - today.getTime();
-    const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-    const reminderLabel = reminderFields[reminderKey];
-
-    // Overdue reminders
-    if (timeDiff < 0) {
-      const div = document.createElement('div');
-      div.className = 'reminder overdue';
-      div.innerHTML = `
-                <span class="exclamation">❗</span> 
-                ${reminderLabel} was due on ${reminderDateTime.toLocaleString()}
-                <button class="deleteReminderButton" 
-                        data-profile-index="${index}" 
-                        data-reminder="${reminderKey}">
-                    Delete
-                </button>
-            `;
-      overdueContainer.appendChild(div);
-    }
-    // Upcoming reminders
-    else if (daysDiff <= REMINDER_THRESHOLD_DAYS) {
-      const div = document.createElement('div');
-      div.className = 'reminder upcoming';
-      div.textContent =
-        `${reminderLabel} is on ${reminderDateTime.toLocaleString()}`;
-      upcomingContainer.appendChild(div);
-    }
-  });
-}
-
-// Delete Overdue Reminder
-function deleteOverdueReminder(profileIndex, reminderKey) {
-  const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
-  const profile = savedProfiles[profileIndex];
-  profile[reminderKey] = '';
-
-  localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
-  loadSavedPetProfile();
-}
-
-// ======== 8. HELPER FUNCTIONS ========
-// Modified edit function
+// Modified edit function//
 function editPetProfile(index) {
   const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
   const profile = savedProfiles[index];
