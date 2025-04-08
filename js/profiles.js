@@ -59,20 +59,22 @@ document.getElementById('dietForm').addEventListener('submit', function(event) {
   document.getElementById('cancelEdit').style.display = 'none';
 });
 
+// Load saved pet profiles//
 // Load saved pet profiles
 function loadSavedPetProfile() {
-  const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
-  const savedProfilesList = document.getElementById('savedProfilesList');
-  savedProfilesList.innerHTML = '';
+  try {
+    const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
+    const savedProfilesList = document.getElementById('savedProfilesList');
+    savedProfilesList.innerHTML = '';
 
-  if (savedProfiles) {
-    savedProfiles.forEach((profile, index) => {
-      const emergencyContact = profile.emergencyContacts[0] || {};
+    if (savedProfiles && savedProfiles.length > 0) {
+      savedProfiles.forEach((profile, index) => {
+        const emergencyContact = profile.emergencyContacts[0] || {};
 
-      const petCard = document.createElement('li');
-      petCard.classList.add('pet-card');
-      petCard.innerHTML = `
-        <div class="pet-card-content">
+        const petCard = document.createElement('li');
+        petCard.classList.add('pet-card');
+        petCard.innerHTML = `
+          <div class="pet-card-content">
             <h4>${profile.petName}</h4>
             ${profile.petPhoto ? `<img src="${profile.petPhoto}" onload="this.style.display='block'" onerror="this.style.display='none'" class="pet-photo">` : ''}
             <p>Breed: ${profile.breed}</p>
@@ -92,21 +94,42 @@ function loadSavedPetProfile() {
             <div id="overdueReminders-${index}" class="overdueReminders"></div>
             <div id="upcomingReminders-${index}" class="upcomingReminders"></div>
             <div class="pet-card-buttons">
-                <button class="editProfileButton" data-index="${index}">Edit</button>
-                <button class="deleteProfileButton" data-index="${index}">Delete</button>
-                <button class="printProfileButton" data-index="${index}">Print</button>
-                <button class="shareProfileButton" data-index="${index}">Share</button>
-                <button class="generateQRButton" data-index="${index}">QR Code</button>
+              <button class="editProfileButton" data-index="${index}">Edit</button>
+              <button class="deleteProfileButton" data-index="${index}">Delete</button>
+              <button class="printProfileButton" data-index="${index}">Print</button>
+              <button class="shareProfileButton" data-index="${index}">Share</button>
+              <button class="generateQRButton" data-index="${index}">QR Code</button>
             </div>
-        </div>
-      `;
-      savedProfilesList.appendChild(petCard);
-    });
+          </div>
+        `;
+        savedProfilesList.appendChild(petCard);
 
-    // Reinitialize auth listeners and buttons after rendering
-    setupAuthListeners();
-    initializeButtons();
+        // Call to highlight reminders
+        try {
+          const reminders = {
+            vaccinationDue: profile.vaccinationDue,  // CHANGED FROM vaccinationsAndDewormingReminder
+            checkupDue: profile.checkupDue,          // CHANGED FROM medicalCheckupsReminder
+            groomingDue: profile.groomingDue         // CHANGED FROM groomingReminder
+          };
+          highlightReminders(reminders, index);
+        } catch (error) {
+          console.error(`Error highlighting reminders for ${profile.petName}:`, error);
+          alert(`Validation Error: ${error.message}`);
+        }
+
+      });
+    } else {
+      alert("No saved profiles found.");
+    }
+  } catch (error) {
+    console.error('Error loading saved pet profiles:', error);
+    alert(`Error loading saved pet profiles: ${error.message}`);
   }
+
+  // Reinitialize auth listeners and buttons after rendering
+  setupAuthListeners();
+  initializeButtons();
+}
 }
 
 // Export only what's needed externally
