@@ -1,4 +1,5 @@
-import { auth, firestore, messaging } from './js/initialization.js';
+const auth = firebase.auth();
+const firestore = firebase.firestore();
 
 // Initialize Firebase services using global `firebase` object
 const pushMessaging = firebase.messaging();
