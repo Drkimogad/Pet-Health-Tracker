@@ -2,7 +2,7 @@
 const auth = firebase.auth();
 const firestore = firebase.firestore();
 
-import { reminders, formatReminder } from 'https://drkimogad.github.io/Pet-Health-Tracker/js/reminders-validation.js';
+import { REMINDER_THRESHOLD_DAYS, validateReminder, formatReminder, highlightReminders, deleteOverdueReminder, reminderFields } from 'https://drkimogad.github.io/Pet-Health-Tracker/js/reminders-validation.js';
 import { setupAuthListeners } from 'https://drkimogad.github.io/Pet-Health-Tracker/js/auth.js';
 import { initializeButtons } from 'https://drkimogad.github.io/Pet-Health-Tracker/js/buttons.js';
 
