@@ -1,4 +1,5 @@
-import { auth, firestore, messaging } from './firebase-init.js';
+const auth = firebase.auth();
+const firestore = firebase.firestore();
 import { setupNotifications } from './js/pushNotifications.js';
 import { loadSavedPetProfile } from './js/profiles.js';
 
