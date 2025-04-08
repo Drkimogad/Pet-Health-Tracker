@@ -2,9 +2,9 @@
 const auth = firebase.auth();
 const firestore = firebase.firestore();
 
-import { REMINDER_THRESHOLD_DAYS, validateReminder, formatReminder, highlightReminders, deleteOverdueReminder, reminderFields } from 'https://drkimogad.github.io/Pet-Health-Tracker/js/reminders-validation.js';
-import { setupAuthListeners } from 'https://drkimogad.github.io/Pet-Health-Tracker/js/auth.js';
-import { initializeButtons } from 'https://drkimogad.github.io/Pet-Health-Tracker/js/buttons.js';
+import { REMINDER_THRESHOLD_DAYS, validateReminder, formatReminder, highlightReminders, deleteOverdueReminder, reminderFields } from './js/reminders-validation.js';
+import { setupAuthListeners } from './js/auth.js';
+import { initializeButtons } from './js/buttons.js';
 
 // Initialize variable at top scope so it's accessible
 let editingProfileIndex = null;
