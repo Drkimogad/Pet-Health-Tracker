@@ -1,3 +1,6 @@
+import { loadSavedPetProfile } from './js/profiles.js';
+
+
 // ======== VALIDATION CONFIGURATION ========
 const REMINDER_THRESHOLD_DAYS = 5; // Or any other number of days you prefer
 
