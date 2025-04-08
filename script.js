@@ -879,13 +879,15 @@ Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relatio
 
 // ======== UPDATED COMBINED SERVICE WORKERS REGISTRATION ========//
 if ('serviceWorker' in navigator) {
-  // 1. Register Caching SW (Workbox or custom)
-  navigator.serviceWorker.register('/service-worker.js', {
-    scope: '/' // Controls caching for the whole app
-  }).then(() => console.log('Caching SW registered'));
+  // Register Caching SW (your custom sw.js)
+  navigator.serviceWorker.register('/sw.js', { scope: '/' })
+    .then(reg => console.log('Caching SW registered (scope: /)', reg))
+    .catch(err => console.error('Caching SW failed:', err));
 
-  // 2. Register Firebase Messaging SW (push only)
-  navigator.serviceWorker.register('/firebase-messaging-sw.js', {
-    scope: '/firebase-cloud-messaging-push-scope/' // Firebase's special scope
-  }).then(() => console.log('Firebase SW registered'));
+  // Register Firebase Messaging SW
+  navigator.serviceWorker.register('/firebase-messaging-sw.js', { 
+    scope: '/firebase-cloud-messaging-push-scope/' 
+  })
+    .then(reg => console.log('Firebase SW registered (Firebase scope)', reg))
+    .catch(err => console.error('Firebase SW failed:', err));
 }
