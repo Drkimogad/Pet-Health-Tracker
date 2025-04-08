@@ -122,3 +122,4 @@ function deleteOverdueReminder(profileIndex, reminderKey) {
   localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
   loadSavedPetProfile();
 }
+export { REMINDER_THRESHOLD_DAYS, validateReminder, formatReminder, highlightReminders, deleteOverdueReminder, reminders, reminderFields };
