@@ -1,4 +1,4 @@
-import { editPetProfile, deletePetProfile } from './js/profiles.js';
+import { editingProfileIndex, loadSavedPetProfile, deletePetProfile, sharePetProfile, printPetProfile, editPetProfile, generateQRCode } from './js/profiles.js';
 import { deleteOverdueReminder } from './js/reminders-validation.js';
 
 
