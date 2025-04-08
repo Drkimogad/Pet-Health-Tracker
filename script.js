@@ -1,6 +1,5 @@
 // initialization.js - Fixed Version
 // ======== FIREBASE INITIALIZATION ========
-import { firebaseConfig } from './firebase.config.js';
 firebase.initializeApp(firebaseConfig);
 
 // Remove duplicate declarations
