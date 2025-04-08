@@ -1,3 +1,7 @@
+import { auth } from './firebase-init.js';
+import { loadSavedPetProfile } from './js/profiles.js';
+import { setupNotifications } from './js/pushNotifications.js';
+
 // ======== A AUTH STATE CHECK ======== (MODIFIED)
 export function initializeAuth() {
   document.addEventListener('DOMContentLoaded', () => {
