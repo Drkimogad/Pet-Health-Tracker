@@ -1,6 +1,5 @@
-import { editingProfileIndex, loadSavedPetProfile, deletePetProfile, sharePetProfile, printPetProfile, editPetProfile, generateQRCode } from './js/profiles.js';
+import { editingProfileIndex, loadSavedPetProfile } from 'https://drkimogad.github.io/Pet-Health-Tracker/js/profiles.js';
 import { deleteOverdueReminder } from 'https://drkimogad.github.io/Pet-Health-Tracker/js/reminders-validation.js';
-
 
 //* FUNCTION TO ATTACHED BUTTONS TO SAVED PROFILES *//
 const savedProfilesList = document.getElementById('savedProfilesList');
