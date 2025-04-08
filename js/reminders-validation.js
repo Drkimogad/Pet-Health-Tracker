@@ -31,26 +31,17 @@ function formatReminder(dateTimeString) {
   const date = new Date(dateTimeString);
   return date.toLocaleString();
 }
-
-  try {
-    const reminders = {
-      vaccinationsAndDewormingReminder: validateReminder({
-        type: 'vaccinationsAndDewormingReminder',
-        dueDate: document.getElementById('vaccinationsAndDewormingReminder').value
-      }),
-      medicalCheckupsReminder: validateReminder({
-        type: 'medicalCheckupsReminder',
-        dueDate: document.getElementById('medicalCheckupsReminder').value
-      }),
-      groomingReminder: validateReminder({
-        type: 'groomingReminder',
-        dueDate: document.getElementById('groomingReminder').value
-      })
-    };
-  } catch (error) {
-    alert(`Validation Error: ${error.message}`);
-    return;
-  }
+try {
+  const reminders = {
+    vaccinationDue: profile.vaccinationDue,  // CHANGED FROM vaccinationsAndDewormingReminder
+    checkupDue: profile.checkupDue,          // CHANGED FROM medicalCheckupsReminder
+    groomingDue: profile.groomingDue         // CHANGED FROM groomingReminder
+  };
+  highlightReminders(reminders, index);
+} catch (error) {
+  alert(`Validation Error: ${error.message}`);
+  return;
+}
 
 // ======== UPDATED REMINDERS BLOCK ======== //
     const reminders = {
