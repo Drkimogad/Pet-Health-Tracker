@@ -1,14 +1,19 @@
-// firebase-messaging-sw.js (Revised)
+// firebase-messaging-sw.js
+importScripts('firebase-config.js');
 importScripts('https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging-compat.js');
 
-// Initialize using global config from firebase.config.js
-firebase.initializeApp({    // Adjust this to self configure 
-  apiKey: self.firebaseConfig?.apiKey || "YOUR_API_KEY",
-  projectId: self.firebaseConfig?.projectId || "YOUR_PROJECT_ID",
-  messagingSenderId: self.firebaseConfig?.messagingSenderId || "YOUR_SENDER_ID",
-  appId: self.firebaseConfig?.appId || "YOUR_APP_ID"
-});
+// Validate configuration
+if (!self.firebaseConfig || 
+    !self.firebaseConfig.apiKey ||
+    !self.firebaseConfig.projectId ||
+    !self.firebaseConfig.messagingSenderId ||
+    !self.firebaseConfig.appId) {
+  throw new Error('Invalid Firebase configuration');
+}
+
+// Initialize Firebase
+firebase.initializeApp(self.firebaseConfig);
 
 const messaging = firebase.messaging();
 
