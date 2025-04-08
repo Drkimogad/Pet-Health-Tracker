@@ -1,4 +1,7 @@
-import { auth } from './firebase-init.js';
+// Importing firebase ftom CDN directly 
+const auth = firebase.auth();
+const firestore = firebase.firestore();
+
 import { loadSavedPetProfile } from './js/profiles.js';
 import { setupNotifications } from './js/pushNotifications.js';
 
