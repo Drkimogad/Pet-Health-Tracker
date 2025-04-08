@@ -1,7 +1,9 @@
+// global import of firebase CDN //
 const auth = firebase.auth();
 const firestore = firebase.firestore();
-import { setupNotifications } from './js/pushNotifications.js';
-import { loadSavedPetProfile } from './js/profiles.js';
+
+import { setupNotifications } from 'https://drkimogad.github.io/Pet-Health-Tracker/js/pushNotifications.js';
+import { loadSavedPetProfile } from 'https://drkimogad.github.io/Pet-Health-Tracker/js/profiles.js';
 
 //* FIREBASE IMPORT AND INITIALIZATION *//
 firebase.initializeApp(firebaseConfig);
@@ -19,7 +21,7 @@ let editingProfileIndex = null;
 // ======== ENHANCED SERVICE WORKER REGISTRATION ========
 if ('serviceWorker' in navigator) {
   const SW_VERSION = 'v2.1'; // Update this when making SW changes
-  const SW_PATH = `${window.location.pathname.replace(/\/[^/]+$/, '')}/Pet-Health-Tracker/service-worker.js`;
+  const SW_PATH = `${window.location.pathname.replace(/\/[^/]+$/, '')} https://drkimogad.github.io/Pet-Health-Tracker/service-worker.js`;
   const SW_SCOPE = `${window.location.pathname.replace(/\/[^/]+$/, '')}/`;
 
   window.addEventListener('load', async () => {
