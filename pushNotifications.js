@@ -79,6 +79,20 @@ export async function sendPushNotification(token, { title, body }) {
   }
 }
 
+// ====== FCM TOKEN HANDLING ======
+// Move this to pushNotifications.js if needed!
+messaging.getToken({ vapidKey: "BCGyRZVIxHmasEQWfF5iCzxe1gLyIppQynZlyPm_BXPHWnv4xzxZwEjo9PuJbbk5Gi8ywLVXSxAYxcgt2QsmHVE" })
+  .then((currentToken) => {
+    if (currentToken) console.log('FCM token:', currentToken);
+    else console.log('No token available');
+  })
+  .catch((err) => {
+    console.error('Token error:', err);
+  });
+
+console.log("Firebase services initialized");
+
+
 // Handle incoming messages (foreground)
 messaging.onMessage((payload) => {
   console.log('New notification:', payload);
