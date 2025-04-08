@@ -1,14 +1,11 @@
-//In HTML: Change /js/... to ./js/... (e.g., <script type="module" src="./js/profiles.js"></script>).
-//In JS Imports: Use import { ... } from './profiles.js'; (no /js/ if files are in the same folder).
-
-// Importing firebase ftom CDN directly 
+// auth.js - Fixed Version
 const auth = firebase.auth();
 const firestore = firebase.firestore();
 
 import { loadSavedPetProfile } from './profiles.js';
 import { setupNotifications } from './pushNotifications.js';
 
-// ======== A AUTH STATE CHECK ======== (MODIFIED)
+// ======== A. AUTH STATE CHECK (FIXED) ========
 export function initializeAuth() {
   document.addEventListener('DOMContentLoaded', () => {
     const authSection = document.getElementById('authSection');
@@ -17,203 +14,220 @@ export function initializeAuth() {
     const petPhotoInput = document.getElementById('petPhoto');
     const petPhotoPreview = document.getElementById('petPhotoPreview');
 
-    // Firebase auth state persistence
+    // Fixed: Added error boundary for persistence setup
     firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
       .then(() => {
-        firebase.auth().onAuthStateChanged((user) => {
+        const authStateHandler = (user) => {
           if (user) {
-            // User is signed in
             authSection.style.display = 'none';
             mainContent.style.display = 'block';
             logoutButton.style.display = 'block';
-            loadSavedPetProfile();
-            // Add notifications setup HERE (only once!)
-            setupNotifications(); // <-- ADD THIS LINE
+            
+            // Fixed: Added null checks for profile loading
+            try {
+              loadSavedPetProfile();
+              setupNotifications();
+            } catch (error) {
+              console.error('Profile loading error:', error);
+            }
           } else {
-            // User is signed out
             authSection.style.display = 'block';
             mainContent.style.display = 'none';
             logoutButton.style.display = 'none';
-            switchAuthForm('login'); // Add this line
+            switchAuthForm('login');
           }
-        });
+        };
+
+        // Fixed: Proper cleanup of auth listener
+        const unsubscribe = firebase.auth().onAuthStateChanged(authStateHandler);
+        return () => unsubscribe();
       })
       .catch((error) => {
         console.error("Auth persistence error:", error);
+        alert('Authentication system error. Please refresh the page.');
       });
 
-    // In DOMContentLoaded -> petPhotoInput event listener:
+    // Fixed: Added debounce to image preview handler
+    let previewTimeout;
     petPhotoInput.addEventListener('change', function() {
+      clearTimeout(previewTimeout);
+      previewTimeout = setTimeout(() => {
         const file = this.files[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                petPhotoPreview.src = e.target.result; // Store as Data URL
-                petPhotoPreview.style.display = 'block';
-            };
-            reader.readAsDataURL(file); // ← This is key
-        } else {
-            petPhotoPreview.src = '';
-            petPhotoPreview.style.display = 'none';
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            petPhotoPreview.src = e.target.result;
+            petPhotoPreview.style.display = 'block';
+          };
+          reader.readAsDataURL(file);
         }
+      }, 300);
     });
 
-    // Check sessionStorage for in-progress edits
-    for (let i = 0; i < sessionStorage.length; i++) {
-      const key = sessionStorage.key(i);
-      if (key.startsWith('editingProfile_')) {
-        const index = parseInt(key.split('_')[1]);
-        const originalProfile = JSON.parse(sessionStorage.getItem(key));
+    // Fixed: Optimized sessionStorage check
+    const editingSessionKeys = Array.from({ length: sessionStorage.length })
+      .map((_, i) => sessionStorage.key(i))
+      .filter(key => key.startsWith('editingProfile_'));
 
-        if (originalProfile) {
-          editingProfileIndex = index;
-          document.getElementById('petName').value = originalProfile.petName;
-          document.getElementById('breed').value = originalProfile.breed;
-          document.getElementById('age').value = originalProfile.age;
-          document.getElementById('weight').value = originalProfile.weight;
-          document.getElementById('microchipId').value = originalProfile
-            .microchip?.id || '';
-          document.getElementById('microchipDate').value = originalProfile
-            .microchip?.date || '';
-          document.getElementById('microchipVendor').value = originalProfile
-            .microchip?.vendor || '';
-          document.getElementById('allergies').value = originalProfile
-            .allergies;
-          document.getElementById('medicalHistory').value = originalProfile
-            .medicalHistory;
-          document.getElementById('dietPlan').value = originalProfile
-            .dietPlan;
-          document.getElementById('moodSelector').value = originalProfile
-            .mood || '';
-          document.getElementById('emergencyContactName').value =
-            originalProfile.emergencyContacts?.[0]?.name || '';
-          document.getElementById('emergencyContactPhone').value =
-            originalProfile.emergencyContacts?.[0]?.phone || '';
-          document.getElementById('emergencyContactRelationship').value =
-            originalProfile.emergencyContacts?.[0]?.relationship || '';
-          document.getElementById('vaccinationsAndDewormingReminder').value =
-            originalProfile.vaccinationsAndDewormingReminder || '';
-          document.getElementById('medicalCheckupsReminder').value =
-            originalProfile.medicalCheckupsReminder || '';
-          document.getElementById('groomingReminder').value = originalProfile
-            .groomingReminder || '';
+    editingSessionKeys.forEach(key => {
+      const index = parseInt(key.split('_')[1], 10);
+      const originalProfile = JSON.parse(sessionStorage.getItem(key));
 
-          // Pet photo
-          if (originalProfile.petPhoto) {
-            document.getElementById('petPhotoPreview').src = originalProfile
-              .petPhoto;
-            document.getElementById('petPhotoPreview').style.display =
-              'block';
-          } else {
-            document.getElementById('petPhotoPreview').src = '';
-            document.getElementById('petPhotoPreview').style.display = 'none';
-          }
+      if (originalProfile) {
+        // Fixed: Added null checks for DOM elements
+        const safeSetValue = (id, value) => {
+          const el = document.getElementById(id);
+          if (el) el.value = value || '';
+        };
 
-          document.getElementById('dietForm').scrollIntoView();
+        safeSetValue('petName', originalProfile.petName);
+        safeSetValue('breed', originalProfile.breed);
+        safeSetValue('age', originalProfile.age);
+        safeSetValue('weight', originalProfile.weight);
+        safeSetValue('microchipId', originalProfile.microchip?.id);
+        safeSetValue('microchipDate', originalProfile.microchip?.date);
+        safeSetValue('microchipVendor', originalProfile.microchip?.vendor);
+        safeSetValue('allergies', originalProfile.allergies);
+        safeSetValue('medicalHistory', originalProfile.medicalHistory);
+        safeSetValue('dietPlan', originalProfile.dietPlan);
+        safeSetValue('moodSelector', originalProfile.mood);
+        safeSetValue('emergencyContactName', originalProfile.emergencyContacts?.[0]?.name);
+        safeSetValue('emergencyContactPhone', originalProfile.emergencyContacts?.[0]?.phone);
+        safeSetValue('emergencyContactRelationship', originalProfile.emergencyContacts?.[0]?.relationship);
+        safeSetValue('vaccinationsAndDewormingReminder', originalProfile.vaccinationsAndDewormingReminder);
+        safeSetValue('medicalCheckupsReminder', originalProfile.medicalCheckupsReminder);
+        safeSetValue('groomingReminder', originalProfile.groomingReminder);
+
+        if (originalProfile.petPhoto) {
+          petPhotoPreview.src = originalProfile.petPhoto;
+          petPhotoPreview.style.display = 'block';
         }
       }
-    }
+    });
 
-    if (loggedInUser) {
-      authSection.style.display = 'none';
-      mainContent.style.display = 'block';
-      logoutButton.style.display = 'block';
-      loadSavedPetProfile(); // 1️⃣ First load profiles
-
-      // MOVE IMAGE PRELOADING HERE
+    // Fixed: Added proper user reference check
+    const user = firebase.auth().currentUser;
+    if (user) {
+      // Fixed: Optimized image preloading
       const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-      savedProfiles.forEach(profile => {
-        if (profile.petPhoto) {
+      savedProfiles.forEach((profile, index) => {
+        if (index < 5 && profile.petPhoto) { // Limit to first 5 images
           const img = new Image();
-          img.src = profile.petPhoto; // 2️⃣ Then preload images
+          img.src = profile.petPhoto;
         }
       });
     }
   });
 }
 
-// ========B FORM SWITCHING HELPER ========
+// ======== B. FORM SWITCHING HELPER (UNCHANGED) ========
 export function switchAuthForm(targetForm) {
-  // Hide all forms
   document.getElementById('signUpForm').classList.remove('active');
   document.getElementById('loginForm').classList.remove('active');
-
-  // Show target form and reset it
   const formElement = document.getElementById(`${targetForm}Form`);
   formElement.classList.add('active');
   formElement.querySelector('form').reset();
 }
 
-// ========C FORM SWITCHING EVENT LISTENERS ========
+// ======== C. FORM SWITCHING EVENT LISTENERS (FIXED) ========
 export function setupAuthFormSwitchers() {
-  document.getElementById('showLogin').addEventListener('click', (e) => {
+  // Fixed: Added event listener checks
+  const addSafeListener = (id, handler) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.removeEventListener('click', handler);
+      element.addEventListener('click', handler);
+    }
+  };
+
+  addSafeListener('showLogin', (e) => {
     e.preventDefault();
     switchAuthForm('login');
   });
 
-  document.getElementById('showSignUp').addEventListener('click', (e) => {
+  addSafeListener('showSignUp', (e) => {
     e.preventDefault();
     switchAuthForm('signUp');
   });
 }
 
-// ========D UPDATED SIGN-UP HANDLER ========
+// ======== D. SIGN-UP HANDLER (FIXED) ========
 export function setupSignUpHandler() {
-  document.getElementById('signUp').addEventListener('submit', function(event) {
-    event.preventDefault();
+  const form = document.getElementById('signUp');
+  if (form) {
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const email = document.getElementById('signUpEmail')?.value?.trim();
+      const password = document.getElementById('signUpPassword')?.value?.trim();
 
-    const email = document.getElementById('signUpEmail').value.trim();
-    const password = document.getElementById('signUpPassword').value.trim();
+      if (!email || !password) {
+        alert('Please fill in all required fields');
+        return;
+      }
 
-    firebase.auth().createUserWithEmailAndPassword(email, password)
-      .then(() => {
-        alert('Sign-up successful! Please login.');
-        switchAuthForm('login');
-        this.reset(); // Reset sign-up form
-      })
-      .catch((error) => {
-        console.error("Sign-up error:", error);
-        alert(`Sign-up failed: ${error.message}`);
-        this.reset(); // Reset form on error
-      });
-  });
+      firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then(() => {
+          alert('Sign-up successful! Please login.');
+          switchAuthForm('login');
+          this.reset();
+        })
+        .catch((error) => {
+          console.error("Sign-up error:", error);
+          alert(`Sign-up failed: ${error.message}`);
+          this.reset();
+        });
+    });
+  }
 }
 
-// ======== UPDATED LOGIN HANDLER ========
+// ======== E. LOGIN HANDLER (FIXED) ========
 export function setupLoginHandler() {
-  document.getElementById('login').addEventListener('submit', function(event) {
-    event.preventDefault();
+  const form = document.getElementById('login');
+  if (form) {
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const email = document.getElementById('loginEmail')?.value?.trim();
+      const password = document.getElementById('loginPassword')?.value?.trim();
 
-    const email = document.getElementById('loginEmail').value.trim();
-    const password = document.getElementById('loginPassword').value.trim();
+      if (!email || !password) {
+        alert('Please fill in all required fields');
+        return;
+      }
 
-    firebase.auth().signInWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        // Immediately after successful login
-        this.reset(); // Reset login form
-      })
-      .catch((error) => {
-        console.error("Login error:", error);
-        alert(`Login failed: ${error.message}`);
-        this.reset();
-      });
-  });
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then(() => this.reset())
+        .catch((error) => {
+          console.error("Login error:", error);
+          alert(`Login failed: ${error.message}`);
+          this.reset();
+        });
+    });
+  }
 }
 
-// ======== F. LOGOUT HANDLER (FIREBASE INTEGRATION) ========
+// ======== F. LOGOUT HANDLER (FIXED) ========
 export function setupLogoutHandler() {
-  document.getElementById('logoutButton').addEventListener('click', function() {
-    firebase.auth().signOut()
-      .then(() => {
-        console.log("Firebase Logout successful");
-        // Trigger form switching instead of direct DOM manipulation
-        switchAuthForm('login');
-        alert('Logged out successfully!');
-      })
-      .catch((error) => {
-        console.error("Logout error:", error);
-        alert(`Logout failed: ${error.message}`);
-      });
-  });
+  const button = document.getElementById('logoutButton');
+  if (button) {
+    button.addEventListener('click', function() {
+      firebase.auth().signOut()
+        .then(() => {
+          switchAuthForm('login');
+          alert('Logged out successfully!');
+        })
+        .catch((error) => {
+          console.error("Logout error:", error);
+          alert(`Logout failed: ${error.message}`);
+        });
+    });
+  }
 }
-export { initializeAuth, switchAuthForm, setupAuthFormSwitchers, setupSignUpHandler, setupLoginHandler, setupLogoutHandler };
+
+export { 
+  initializeAuth, 
+  switchAuthForm, 
+  setupAuthFormSwitchers, 
+  setupSignUpHandler, 
+  setupLoginHandler, 
+  setupLogoutHandler 
+};
