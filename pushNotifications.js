@@ -22,21 +22,26 @@ async function saveFCMTokenToFirestore(fcmToken) {
   }
 }
 
-// Request permission and save FCM token (with retry logic)
+//---------------- Request permission and save FCM token (with retry logic)
 async function requestAndSaveFCMToken() {
   try {
-    const token = await messaging.getToken({ vapidKey });
+    // Register ONLY Firebase messaging SW
+    const registration = await navigator.serviceWorker.register(
+      '/firebase-messaging-sw.js', 
+      { scope: '/firebase-cloud-messaging-push-scope' } // Firebase's required scope
+    );
+    
+    console.log('Firebase SW registered:', registration);
+
+    // Now get the token
+    const token = await messaging.getToken({ 
+      vapidKey,
+      serviceWorkerRegistration: registration // Explicitly use this SW
+    });
+    
     if (token) {
       console.log('FCM token:', token);
       await saveFCMTokenToFirestore(token);
-
-      // Refresh token every 7 days
-      setInterval(async () => {
-        const newToken = await messaging.getToken({ vapidKey });
-        if (newToken !== token) {
-          await saveFCMTokenToFirestore(newToken);
-        }
-      }, 604800000); // 7 days in ms
     }
   } catch (error) {
     console.error('Token refresh failed:', error);
