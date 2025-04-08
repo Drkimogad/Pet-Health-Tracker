@@ -108,3 +108,4 @@ messaging.onMessage((payload) => {
 function setupNotifications() {
   requestAndSaveFCMToken();
 }
+export { requestAndSaveFCMToken, saveFCMTokenToFirestore, sendPushNotification, setupNotifications };
