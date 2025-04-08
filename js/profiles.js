@@ -59,7 +59,6 @@ document.getElementById('dietForm').addEventListener('submit', function(event) {
   document.getElementById('cancelEdit').style.display = 'none';
 });
 
-// Load saved pet profiles//
 // Load saved pet profiles
 function loadSavedPetProfile() {
   try {
