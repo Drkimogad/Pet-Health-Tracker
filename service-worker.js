@@ -9,8 +9,12 @@ const CACHED_INDEX = './index.html';
 const urlsToCache = [
   CACHED_INDEX,
   './styles.css',
-  './main.js',
+  './profiles.js',
   './pushNotifications.js',
+  './auth.js',
+  './initialization.js',
+  './reminders-validation.js',
+  './buttons.js',
   './manifest.json',
   './icons/icon-192x192.png',
   './icons/icon-512x512.png',
@@ -110,7 +114,7 @@ messaging.onBackgroundMessage((payload) => {
   const notificationTitle = payload.notification?.title || 'New Reminder';
   const notificationOptions = {
     body: payload.notification?.body || 'Check your pet health tracker!',
-    icon: 'https://drkimogad.github.io/Pet-Health-Tracker/icons/icon-192x192.png'
+    icon: './icons/icon-192x192.png'
   };
   
   return self.registration.showNotification(notificationTitle, notificationOptions);
