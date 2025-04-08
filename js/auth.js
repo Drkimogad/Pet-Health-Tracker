@@ -5,8 +5,8 @@
 const auth = firebase.auth();
 const firestore = firebase.firestore();
 
-import { loadSavedPetProfile } from '.js/profiles.js';
-import { setupNotifications } from '.js/pushNotifications.js';
+import { loadSavedPetProfile } from './profiles.js';
+import { setupNotifications } from './pushNotifications.js';
 
 // ======== A AUTH STATE CHECK ======== (MODIFIED)
 export function initializeAuth() {
