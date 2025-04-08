@@ -1,3 +1,4 @@
+// service-worker.js (combined)
 const CACHE_NAME = 'Pet-Health-Tracker-cache-10';
 const OFFLINE_URL = './offline.html';
 const CACHED_INDEX = './index.html';
@@ -13,80 +14,84 @@ const urlsToCache = [
   OFFLINE_URL
 ];
 
-// Enhanced Install Event
+// ======== CACHING FUNCTIONALITY ========
 self.addEventListener('install', (event) => {
   console.log('Service Worker: Install event');
-  self.skipWaiting(); // Force the waiting service worker to become the active service worker
+  self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      console.log('Caching resources');
-      return cache.addAll(urlsToCache);
-    }).then(() => {
-      return caches.keys().then(keys => {
-        console.log('Current caches:', keys);
-      });
-    }).catch(err => {
-      console.error('Error while caching resources:', err);
-    })
+    caches.open(CACHE_NAME)
+      .then(cache => {
+        console.log('Caching core resources');
+        return cache.addAll(urlsToCache);
+      })
+      .catch(err => {
+        console.error('Cache installation failed:', err);
+      })
   );
 });
 
-// Optimized Fetch Handler
 self.addEventListener('fetch', (event) => {
   const request = event.request;
-  const url = new URL(request.url);
-
-  // Navigation requests
+  
+  // Network-first for navigation requests
   if (request.mode === 'navigate') {
     event.respondWith(
       (async () => {
         try {
-          console.log('Trying to fetch from network:', request.url);
-          // Try network first
           const networkResponse = await fetch(request);
-          console.log('Network fetch successful:', request.url);
           return networkResponse;
         } catch (err) {
-          console.error('Network fetch failed:', request.url, err);
-          // Fallback to cached index
-          const cachedIndex = await caches.match(CACHED_INDEX);
-          if (cachedIndex) {
-            console.log('Returning cached index.html');
-            return cachedIndex;
-          }
-          // Ultimate fallback
-          console.warn('Cached index.html not found, returning offline page');
-          return caches.match(OFFLINE_URL);
+          const cached = await caches.match(CACHED_INDEX) || 
+                        await caches.match(OFFLINE_URL);
+          return cached;
         }
       })()
     );
     return;
   }
 
-  // Static assets
+  // Cache-first for static assets
   event.respondWith(
-    caches.match(request).then(cached => {
-      if (cached) {
-        console.log('Returning cached asset:', request.url);
-        return cached;
-      }
-      console.log('Fetching from network:', request.url);
-      return fetch(request);
+    caches.match(request)
+      .then(cached => cached || fetch(request))
+  );
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then(keys => Promise.all(
+      keys.map(key => key !== CACHE_NAME ? caches.delete(key) : null)
+    ))
+  );
+  self.clients.claim();
+});
+
+// ======== PUSH NOTIFICATIONS ========
+self.addEventListener('push', (event) => {
+  const payload = event.data?.json() || {
+    title: 'Pet Health Reminder',
+    body: 'Check your pet health tracker!',
+    icon: '/icons/icon-192x192.png'
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(payload.title, {
+      body: payload.body,
+      icon: payload.icon,
+      badge: '/icons/badge-72x72.png',
+      vibrate: [200, 100, 200],
+      data: payload.data || {}
     })
   );
 });
 
-// Aggressive Activation
-self.addEventListener('activate', (event) => {
-  console.log('Service Worker: Activate event');
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
   event.waitUntil(
-    caches.keys().then(keys => Promise.all(
-      keys.map(key => key !== CACHE_NAME ? caches.delete(key) : null)
-    )).then(() => {
-      console.log('Service Worker: Activation complete');
-      self.clients.claim();
-    }).catch(err => {
-      console.error('Error during activation:', err);
-    })
+    clients.matchAll({ type: 'window' })
+      .then(clientList => {
+        if (clientList.length > 0) return clientList[0].focus();
+        return clients.openWindow(event.notification.data.url || '/');
+      })
   );
 });
