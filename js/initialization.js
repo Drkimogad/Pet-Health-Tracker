@@ -2,8 +2,8 @@
 const auth = firebase.auth();
 const firestore = firebase.firestore();
 
-import { setupNotifications } from '.js/pushNotifications.js';
-import { loadSavedPetProfile } from '.js/profiles.js';
+import { setupNotifications } from './pushNotifications.js';
+import { loadSavedPetProfile } from './profiles.js';
 
 //* FIREBASE IMPORT AND INITIALIZATION *//
 firebase.initializeApp(firebaseConfig);
