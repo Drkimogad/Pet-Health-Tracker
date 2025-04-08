@@ -435,4 +435,3 @@ Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relatio
   });
 }
 
-// ======== COMBINED SERVICE WORKER REGISTRATION ========
