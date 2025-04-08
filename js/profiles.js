@@ -93,3 +93,4 @@ function loadSavedPetProfile() {
             `;
       savedProfilesList.appendChild(petCard);
       
+export { editingProfileIndex, loadSavedPetProfile, deletePetProfile, editPetProfile, generateQRCode };
