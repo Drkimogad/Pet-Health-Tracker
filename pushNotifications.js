@@ -1,108 +1,98 @@
+/* eslint-disable no-undef, no-console */
+
+// ======== FIREBASE CONFIGURATION ========
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  projectId: "pet-health-tracker-7164d",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+// Initialize Firebase
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+
+// ======== SERVICE REFERENCES ========
 const auth = firebase.auth();
 const firestore = firebase.firestore();
 const messaging = firebase.messaging();
-const vapidKey = 'BCGyRZVIxHmasEQWfF5iCzxe1gLyIppQynZlyPm_BXPHWnv4xzxZwEjo9PuJbbk5Gi8ywLVXSxAYxcgt2QsmHVE';
+const vapidKey = "YOUR_VAPID_KEY_HERE";
 
-// Save FCM token to Firestore
+// ======== FCM TOKEN MANAGEMENT ========
 async function saveFCMTokenToFirestore(fcmToken) {
   const user = auth.currentUser;
-  const db = firestore;
+  if (!user) {
+    console.log('User not authenticated');
+    return;
+  }
 
-  if (user) {
-    try {
-      await db.collection('users').doc(user.uid).update({
-        fcmToken: fcmToken
-      });
-      console.log('FCM token saved to Firestore for user:', user.uid);
-    } catch (error) {
-      console.error('Error saving token:', error);
-    }
-  } else {
-    console.log('User not authenticated.');
+  try {
+    await firestore.collection('users').doc(user.uid).update({ fcmToken });
+    console.log('FCM token saved for user:', user.uid);
+  } catch (error) {
+    console.error('Error saving token:', error);
   }
 }
 
-//---------------- Request permission and save FCM token (with retry logic)
+// ======== NOTIFICATION PERMISSION & TOKEN ========
 async function requestAndSaveFCMToken() {
   try {
-    // Register ONLY Firebase messaging SW
-    const registration = await navigator.serviceWorker.register(
-      '/firebase-messaging-sw.js', 
-      { scope: '/firebase-cloud-messaging-push-scope' } // Firebase's required scope
-    );
-    
-    console.log('Firebase SW registered:', registration);
+    if (!('Notification' in window)) {
+      alert('This browser doesn't support notifications');
+      return;
+    }
 
-    // Now get the token
-    const token = await messaging.getToken({ 
-      vapidKey,
-      serviceWorkerRegistration: registration // Explicitly use this SW
-    });
-    
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') return;
+
+    const token = await messaging.getToken({ vapidKey });
     if (token) {
-      console.log('FCM token:', token);
+      console.log('FCM Token:', token);
       await saveFCMTokenToFirestore(token);
     }
   } catch (error) {
-    console.error('Token refresh failed:', error);
+    console.error('Token error:', error);
   }
 }
 
-// Send a push notification manually
+// ======== SEND NOTIFICATIONS (BASIC) ========
 async function sendPushNotification(token, { title, body }) {
-  const authToken = await getAccessToken(); // Use Firebase Admin SDK or OAuth2
-  const projectId = "pet-health-tracker-7164d";
-
-  const response = await fetch(
-    `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`,
-    {
+  try {
+    const response = await fetch('https://fcm.googleapis.com/fcm/send', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authToken}` // OAuth2 token
+        'Authorization': `key=${vapidKey}`
       },
       body: JSON.stringify({
-        message: {
-          token: token,
-          notification: { title, body }
-        }
+        to: token,
+        notification: { title, body }
       })
-    }
-  );
-}
-
-// Get and log current token
-messaging.getToken({ vapidKey })
-  .then((currentToken) => {
-    if (currentToken) console.log('FCM token:', currentToken);
-    else console.log('No token available');
-  })
-  .catch((err) => {
-    console.error('Token error:', err);
-  });
-
-console.log("Firebase services initialized");
-
-// Handle foreground messages
-messaging.onMessage((payload) => {
-  console.log('New notification:', payload);
-  if (payload.notification) {
-    new Notification(payload.notification.title, {
-      body: payload.notification.body,
-      icon: './icons/icon-192x192.png'
     });
+    
+    console.log('Notification sent:', await response.json());
+  } catch (error) {
+    console.error('Notification failed:', error);
   }
-});
-
-// Call notification setup on load
-function setupNotifications() {
-  requestAndSaveFCMToken();
 }
+
+// ======== INITIALIZE ON LOAD ========
+function setupNotifications() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/firebase-messaging-sw.js')
+      .then(() => {
+        console.log('Firebase SW registered');
+        requestAndSaveFCMToken();
+      })
+      .catch(err => console.error('SW registration failed:', err));
+  } else {
+    console.warn('Service workers not supported');
+  }
+}
+
+// Start immediately
 setupNotifications();
 
-export {
-  requestAndSaveFCMToken,
-  saveFCMTokenToFirestore,
-  sendPushNotification,
-  setupNotifications
-};
+// ======== EXPORTS (IF NEEDED) ========
+export { setupNotifications, sendPushNotification };
