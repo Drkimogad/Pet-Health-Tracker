@@ -2,8 +2,8 @@
 const auth = firebase.auth();
 const firestore = firebase.firestore();
 
-import { setupNotifications } from 'https://drkimogad.github.io/Pet-Health-Tracker/js/pushNotifications.js';
-import { loadSavedPetProfile } from 'https://drkimogad.github.io/Pet-Health-Tracker/js/profiles.js';
+import { setupNotifications } from './js/pushNotifications.js';
+import { loadSavedPetProfile } from './js/profiles.js';
 
 //* FIREBASE IMPORT AND INITIALIZATION *//
 firebase.initializeApp(firebaseConfig);
