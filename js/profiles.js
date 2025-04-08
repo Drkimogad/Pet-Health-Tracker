@@ -130,7 +130,6 @@ function loadSavedPetProfile() {
   setupAuthListeners();
   initializeButtons();
 }
-}
 
 // Export only what's needed externally
 export { editingProfileIndex, loadSavedPetProfile };
