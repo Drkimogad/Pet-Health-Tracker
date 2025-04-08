@@ -6,7 +6,10 @@ import { reminders, formatReminder } from 'https://drkimogad.github.io/Pet-Healt
 import { setupAuthListeners } from 'https://drkimogad.github.io/Pet-Health-Tracker/js/auth.js';
 import { initializeButtons } from 'https://drkimogad.github.io/Pet-Health-Tracker/js/buttons.js';
 
-// Save Pet profiles //
+// Initialize variable at top scope so it's accessible
+let editingProfileIndex = null;
+
+// Save Pet profiles
 document.getElementById('dietForm').addEventListener('submit', function(event) {
   event.preventDefault();
 
@@ -29,16 +32,15 @@ document.getElementById('dietForm').addEventListener('submit', function(event) {
       relationship: document.getElementById('emergencyContactRelationship').value,
     }],
     mood: document.getElementById('moodSelector').value,
-    // REPLACE THESE WITH VALIDATED FIELDS
     vaccinationDue: reminders.vaccinationsAndDewormingReminder.dueDate,
     checkupDue: reminders.medicalCheckupsReminder.dueDate,
     groomingDue: reminders.groomingReminder.dueDate,
     petPhoto: document.getElementById('petPhotoPreview').src || '',
   };
-  
-  // ======== REST OF YOUR ORIGINAL CODE  ========
+
+  // Rest of your original code
   let savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-  
+
   if (editingProfileIndex !== null) {
     savedProfiles[editingProfileIndex] = petProfile;
     sessionStorage.removeItem(`editingProfile_${editingProfileIndex}`);
@@ -57,8 +59,7 @@ document.getElementById('dietForm').addEventListener('submit', function(event) {
   document.getElementById('cancelEdit').style.display = 'none';
 });
 
-// ======== 6. LOAD SAVED PET PROFILES ========
-//* loadsavedpetprofile function*//
+// Load saved pet profiles
 function loadSavedPetProfile() {
   const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
   const savedProfilesList = document.getElementById('savedProfilesList');
@@ -71,42 +72,42 @@ function loadSavedPetProfile() {
       const petCard = document.createElement('li');
       petCard.classList.add('pet-card');
       petCard.innerHTML = `
-                <div class="pet-card-content">
-                    <h4>${profile.petName}</h4>
-                    ${profile.petPhoto ? `<img src="${profile.petPhoto}" onload="this.style.display='block'" onerror="this.style.display='none'" class="pet-photo">` : ''}
-                    <p>Breed: ${profile.breed}</p>
-                    <p>Age: ${profile.age}</p>
-                    <p>Weight: ${profile.weight}</p>
-                    <p>Microchip ID: ${profile.microchip?.id || 'N/A'}</p>
-                    <p>Implant Date: ${profile.microchip?.date || 'N/A'}</p>
-                    <p>Vendor: ${profile.microchip?.vendor || 'N/A'}</p>
-                    <p>Allergies: ${profile.allergies}</p>
-                    <p>Medical History: ${profile.medicalHistory}</p>
-                    <p>Diet Plan: ${profile.dietPlan}</p>
-                    <p>Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relationship || 'N/A'}) - ${emergencyContact.phone || 'N/A'}</p>
-                    <p>Mood: ${profile.mood || 'N/A'}</p>
-                    <p>Vaccinations/Deworming: ${formatReminder(profile.vaccinationDue)}</p> 
-                    <p>Medical Check-ups: ${formatReminder(profile.checkupDue)}</p>
-                    <p>Grooming: ${formatReminder(profile.groomingDue)}</p>
-                    <div id="overdueReminders-${index}" class="overdueReminders"></div>
-                    <div id="upcomingReminders-${index}" class="upcomingReminders"></div>
-                    <div class="pet-card-buttons">
-                        <button class="editProfileButton" data-index="${index}">Edit</button>
-                        <button class="deleteProfileButton" data-index="${index}">Delete</button>
-                        <button class="printProfileButton" data-index="${index}">Print</button>
-                        <button class="shareProfileButton" data-index="${index}">Share</button>
-                        <button class="generateQRButton" data-index="${index}">QR Code</button>
-                    </div>
-                </div>
-            `;
+        <div class="pet-card-content">
+            <h4>${profile.petName}</h4>
+            ${profile.petPhoto ? `<img src="${profile.petPhoto}" onload="this.style.display='block'" onerror="this.style.display='none'" class="pet-photo">` : ''}
+            <p>Breed: ${profile.breed}</p>
+            <p>Age: ${profile.age}</p>
+            <p>Weight: ${profile.weight}</p>
+            <p>Microchip ID: ${profile.microchip?.id || 'N/A'}</p>
+            <p>Implant Date: ${profile.microchip?.date || 'N/A'}</p>
+            <p>Vendor: ${profile.microchip?.vendor || 'N/A'}</p>
+            <p>Allergies: ${profile.allergies}</p>
+            <p>Medical History: ${profile.medicalHistory}</p>
+            <p>Diet Plan: ${profile.dietPlan}</p>
+            <p>Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relationship || 'N/A'}) - ${emergencyContact.phone || 'N/A'}</p>
+            <p>Mood: ${profile.mood || 'N/A'}</p>
+            <p>Vaccinations/Deworming: ${formatReminder(profile.vaccinationDue)}</p> 
+            <p>Medical Check-ups: ${formatReminder(profile.checkupDue)}</p>
+            <p>Grooming: ${formatReminder(profile.groomingDue)}</p>
+            <div id="overdueReminders-${index}" class="overdueReminders"></div>
+            <div id="upcomingReminders-${index}" class="upcomingReminders"></div>
+            <div class="pet-card-buttons">
+                <button class="editProfileButton" data-index="${index}">Edit</button>
+                <button class="deleteProfileButton" data-index="${index}">Delete</button>
+                <button class="printProfileButton" data-index="${index}">Print</button>
+                <button class="shareProfileButton" data-index="${index}">Share</button>
+                <button class="generateQRButton" data-index="${index}">QR Code</button>
+            </div>
+        </div>
+      `;
       savedProfilesList.appendChild(petCard);
-      
-  // Reinitialize auth listeners and buttons after rendering
-  setupAuthListeners();
-  initializeButtons();
+    });
 
-// Initialize variable at top scope so it's accessible
-let editingProfileIndex = null;
+    // Reinitialize auth listeners and buttons after rendering
+    setupAuthListeners();
+    initializeButtons();
+  }
+}
 
 // Export only what's needed externally
 export { editingProfileIndex, loadSavedPetProfile };
