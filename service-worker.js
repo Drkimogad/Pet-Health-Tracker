@@ -10,6 +10,7 @@ const urlsToCache = [
   './manifest.json',
   './icons/icon-192x192.png',
   './icons/icon-512x512.png',
+  './icons/badge-72x72.png',
   './favicon.ico',
   OFFLINE_URL,
   'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js'
