@@ -47,6 +47,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const petPhotoInput = document.getElementById('petPhoto'); // Assuming the ID of your file input is 'petPhoto'
   const petPhotoPreview = document.getElementById('petPhotoPreview'); // Assuming the ID of your image preview element is 'petPhotoPreview'
 
+  // Fixed: Added debounce to image preview handler (NOW INSIDE DOMContentLoaded)
+  let previewTimeout;
+  petPhotoInput.addEventListener('change', function() {
+    clearTimeout(previewTimeout);
+    previewTimeout = setTimeout(() => {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          petPhotoPreview.src = e.target.result;
+          petPhotoPreview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    }, 300);
+  });
 
   firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
     .then(async () => {
@@ -82,7 +98,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const unsubscribe = firebase.auth().onAuthStateChanged(authStateHandler);
       // If you need to return the unsubscribe function (e.g., for component unmounting in a framework), you would do it here.
       // However, in a simple DOMContentLoaded listener, this return doesn't have a direct effect.
-      // If you don't have a specific need to unsubscribe manually later, you can omit the return.
       // For now, let's keep it as it was:
       return () => unsubscribe();
     })
@@ -90,65 +105,47 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error("Auth persistence error:", error);
       alert('Authentication system error. Please refresh the page.');
     });
-});
 
-    // Fixed: Added debounce to image preview handler
-    let previewTimeout;
-    petPhotoInput.addEventListener('change', function() {
-      clearTimeout(previewTimeout);
-      previewTimeout = setTimeout(() => {
-        const file = this.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            petPhotoPreview.src = e.target.result;
-            petPhotoPreview.style.display = 'block';
-          };
-          reader.readAsDataURL(file);
-        }
-      }, 300);
-    });
+  // Fixed: Optimized sessionStorage check
+  const editingSessionKeys = Array.from({ length: sessionStorage.length })
+    .map((_, i) => sessionStorage.key(i))
+    .filter(key => key.startsWith('editingProfile_'));
 
-    // Fixed: Optimized sessionStorage check
-    const editingSessionKeys = Array.from({ length: sessionStorage.length })
-      .map((_, i) => sessionStorage.key(i))
-      .filter(key => key.startsWith('editingProfile_'));
+  editingSessionKeys.forEach(key => {
+    const index = parseInt(key.split('_')[1], 10);
+    const originalProfile = JSON.parse(sessionStorage.getItem(key));
 
-    editingSessionKeys.forEach(key => {
-      const index = parseInt(key.split('_')[1], 10);
-      const originalProfile = JSON.parse(sessionStorage.getItem(key));
+    if (originalProfile) {
+      // Fixed: Added null checks for DOM elements
+      const safeSetValue = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.value = value || '';
+      };
 
-      if (originalProfile) {
-        // Fixed: Added null checks for DOM elements
-        const safeSetValue = (id, value) => {
-          const el = document.getElementById(id);
-          if (el) el.value = value || '';
-        };
+      safeSetValue('petName', originalProfile.petName);
+      safeSetValue('breed', originalProfile.breed);
+      safeSetValue('age', originalProfile.age);
+      safeSetValue('weight', originalProfile.weight);
+      safeSetValue('microchipId', originalProfile.microchip?.id);
+      safeSetValue('microchipDate', originalProfile.microchip?.date);
+      safeSetValue('microchipVendor', originalProfile.microchip?.vendor);
+      safeSetValue('allergies', originalProfile.allergies);
+      safeSetValue('medicalHistory', originalProfile.medicalHistory);
+      safeSetValue('dietPlan', originalProfile.dietPlan);
+      safeSetValue('moodSelector', originalProfile.mood);
+      safeSetValue('emergencyContactName', originalProfile.emergencyContacts?.[0]?.name);
+      safeSetValue('emergencyContactPhone', originalProfile.emergencyContacts?.[0]?.phone);
+      safeSetValue('emergencyContactRelationship', originalProfile.emergencyContacts?.[0]?.relationship);
+      safeSetValue('vaccinationsAndDewormingReminder', originalProfile.vaccinationsAndDewormingReminder);
+      safeSetValue('medicalCheckupsReminder', originalProfile.medicalCheckupsReminder);
+      safeSetValue('groomingReminder', originalProfile.groomingReminder);
 
-        safeSetValue('petName', originalProfile.petName);
-        safeSetValue('breed', originalProfile.breed);
-        safeSetValue('age', originalProfile.age);
-        safeSetValue('weight', originalProfile.weight);
-        safeSetValue('microchipId', originalProfile.microchip?.id);
-        safeSetValue('microchipDate', originalProfile.microchip?.date);
-        safeSetValue('microchipVendor', originalProfile.microchip?.vendor);
-        safeSetValue('allergies', originalProfile.allergies);
-        safeSetValue('medicalHistory', originalProfile.medicalHistory);
-        safeSetValue('dietPlan', originalProfile.dietPlan);
-        safeSetValue('moodSelector', originalProfile.mood);
-        safeSetValue('emergencyContactName', originalProfile.emergencyContacts?.[0]?.name);
-        safeSetValue('emergencyContactPhone', originalProfile.emergencyContacts?.[0]?.phone);
-        safeSetValue('emergencyContactRelationship', originalProfile.emergencyContacts?.[0]?.relationship);
-        safeSetValue('vaccinationsAndDewormingReminder', originalProfile.vaccinationsAndDewormingReminder);
-        safeSetValue('medicalCheckupsReminder', originalProfile.medicalCheckupsReminder);
-        safeSetValue('groomingReminder', originalProfile.groomingReminder);
-
-        if (originalProfile.petPhoto) {
-          petPhotoPreview.src = originalProfile.petPhoto;
-          petPhotoPreview.style.display = 'block';
-        }
+      if (originalProfile.petPhoto) {
+        petPhotoPreview.src = originalProfile.petPhoto;
+        petPhotoPreview.style.display = 'block';
       }
-    });
+    }
+  });
 
 // ======== A. USER CHECK & IMAGE PRELOADING ========
 // Fixed: Added proper user reference check
