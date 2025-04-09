@@ -38,7 +38,7 @@ async function setupServiceWorker() {
   }
 
   try {
-    return await navigator.serviceWorker.register('/service-worker.js');
+    return await navigator.serviceWorker.register('https://drkimogad.github.io/Pet-Health-Tracker/service-worker.js');
   } catch (error) {
     console.error('Service Worker registration failed:', error);
     return null;
