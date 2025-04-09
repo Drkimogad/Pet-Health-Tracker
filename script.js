@@ -255,7 +255,6 @@ addSafeListener('showSignUp', (e) => {
         });
     });
   }
-}
 
 // ======== 5. SAVE PET PROFILE (WITH NEW FIELDS) ========
 document.getElementById('dietForm').addEventListener('submit', function(event) {
