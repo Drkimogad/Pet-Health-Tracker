@@ -9,7 +9,7 @@ export default async function handler(req, res) {
 
     // 2. Timezone verification
     const nairobiTime = new Date().toLocaleString("en-US", {
-      timeZone: process.env.TZ
+      timeZone: process.env.TIME_ZONE
     });
     console.log('Cron triggered at Nairobi time:', nairobiTime);
 
@@ -27,7 +27,7 @@ export default async function handler(req, res) {
     return res.status(500).json({
       success: false,
       error: error.message,
-      time: new Date().toLocaleString("en-US", { timeZone: process.env.TZ })
+      time: new Date().toLocaleString("en-US", { timeZone: process.env.TIME_ZONE })
     });
   }
 }
