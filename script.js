@@ -5,7 +5,7 @@
 // <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 // ======== NOTIFICATION SETUP ========
 // Import from pushNotifications.js (ensure proper module setup)
-// <script type="module" src="pushNotifications.js"></script> in html header 
+// <script type="module" src="pushNotifications.js"></script> in html header
 import { setupNotifications, sendPushNotification } from './pushNotifications.js';
 const firebaseConfig = {
   apiKey: "AIzaSyBIej7yNj0LkkLd6VtQxBL4mEDSsHLJvig",
@@ -37,15 +37,10 @@ const REMINDER_TYPE_MAP = {
 };
 // ======== AUTHENTICATION ========//
 // ======== A. AUTH STATE CHECK (FIXED) ========
-// ======== AUTHENTICATION ========//
-// ======== A. AUTH STATE CHECK (FIXED) ========
 document.addEventListener('DOMContentLoaded', () => {
   const authSection = document.getElementById('authSection');
   const mainContent = document.getElementById('mainContent');
   const logoutButton = document.getElementById('logoutButton');
-// Declare form variables here, at the top of the scope
-  const signUpForm = document.getElementById('signUp');
-  const loginForm = document.getElementById('login');
   const petPhotoInput = document.getElementById('petPhoto'); // Assuming the ID of your file input is 'petPhoto'
   const petPhotoPreview = document.getElementById('petPhotoPreview'); // Assuming the ID of your image preview element is 'petPhotoPreview'
 
@@ -149,6 +144,72 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // ======== D. SIGN-UP HANDLER (MOVED INSIDE) ========
+  const signUpFormElement = document.getElementById('signUpForm');
+  if (signUpFormElement) {
+    signUpFormElement.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const email = document.getElementById('signUpEmail')?.value?.trim();
+      const password = document.getElementById('signUpPassword')?.value?.trim();
+
+      if (!email || !password) {
+        alert('Please fill in all required fields');
+        return;
+      }
+
+      firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then(() => {
+          alert('Sign-up successful! Please login.');
+          switchAuthForm('login');
+          this.reset();
+        })
+        .catch((error) => {
+          console.error("Sign-up error:", error);
+          alert(`Sign-up failed: ${error.message}`);
+          this.reset();
+        });
+    });
+  }
+
+  // ======== E. LOGIN HANDLER (MOVED INSIDE) ========
+  const loginFormElement = document.getElementById('loginForm');
+  if (loginFormElement) {
+    loginFormElement.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const email = document.getElementById('loginEmail')?.value?.trim();
+      const password = document.getElementById('loginPassword')?.value?.trim();
+
+      if (!email || !password) {
+        alert('Please fill in all required fields');
+        return;
+      }
+
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then(() => this.reset())
+        .catch((error) => {
+          console.error("Login error:", error);
+          alert(`Login failed: ${error.message}`);
+          this.reset();
+        });
+    });
+  }
+
+  // ======== F. LOGOUT HANDLER (FIXED) ========
+  const logoutButtonElement = document.getElementById('logoutButton');
+  if (logoutButtonElement) {
+    logoutButtonElement.addEventListener('click', function() {
+      firebase.auth().signOut()
+        .then(() => {
+          switchAuthForm('login');
+          alert('Logged out successfully!');
+        })
+        .catch((error) => {
+          console.error("Logout error:", error);
+          alert(`Logout failed: ${error.message}`);
+        });
+    });
+  }
+
   // ======== UPDATED COMBINED SERVICE WORKERS REGISTRATION ========//
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/Pet-Health-Tracker/service-worker.js')
@@ -200,73 +261,6 @@ addSafeListener('showSignUp', (e) => {
   e.preventDefault();
   switchAuthForm('signUp');
 });
-    
-// ======== D. SIGN-UP HANDLER (FIXED) ========
-// ======== D. SIGN-UP HANDLER (FIXED) ========
-const signUpFormElement = document.getElementById('signUpForm'); // Get the form element by its ID
-
-if (signUpFormElement) {
-  signUpFormElement.addEventListener('submit', function(event) {
-    event.preventDefault();
-    const email = document.getElementById('signUpEmail')?.value?.trim();
-    const password = document.getElementById('signUpPassword')?.value?.trim();
-
-    if (!email || !password) {
-      alert('Please fill in all required fields');
-      return;
-    }
-
-    firebase.auth().createUserWithEmailAndPassword(email, password)
-      .then(() => {
-        alert('Sign-up successful! Please login.');
-        switchAuthForm('login');
-        this.reset();
-      })
-      .catch((error) => {
-        console.error("Sign-up error:", error);
-        alert(`Sign-up failed: ${error.message}`);
-        this.reset();
-      });
-  });
-}
-
-// ======== E. LOGIN HANDLER (FIXED) ========
-  if (loginForm) {
-    form.addEventListener('submit', function(event) {
-      event.preventDefault();
-      const email = document.getElementById('loginEmail')?.value?.trim();
-      const password = document.getElementById('loginPassword')?.value?.trim();
-
-      if (!email || !password) {
-        alert('Please fill in all required fields');
-        return;
-      }
-
-      firebase.auth().signInWithEmailAndPassword(email, password)
-        .then(() => this.reset())
-        .catch((error) => {
-          console.error("Login error:", error);
-          alert(`Login failed: ${error.message}`);
-          this.reset();
-        });
-    });
-  }
-
-// ======== F. LOGOUT HANDLER (FIXED) ========
-  const button = document.getElementById('logoutButton');
-  if (button) {
-    button.addEventListener('click', function() {
-      firebase.auth().signOut()
-        .then(() => {
-          switchAuthForm('login');
-          alert('Logged out successfully!');
-        })
-        .catch((error) => {
-          console.error("Logout error:", error);
-          alert(`Logout failed: ${error.message}`);
-        });
-    });
-  }
 
 // ======== 5. SAVE PET PROFILE (WITH NEW FIELDS) ========
 document.getElementById('dietForm').addEventListener('submit', function(event) {
