@@ -44,6 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
 // Declare form variables here, at the top of the scope
   const signUpForm = document.getElementById('signUp');
   const loginForm = document.getElementById('login');
+  const petPhotoInput = document.getElementById('petPhoto'); // Assuming the ID of your file input is 'petPhoto'
+  const petPhotoPreview = document.getElementById('petPhotoPreview'); // Assuming the ID of your image preview element is 'petPhotoPreview'
 
 
   firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
