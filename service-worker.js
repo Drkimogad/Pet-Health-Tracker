@@ -1,5 +1,5 @@
 // service-worker.js (combined)
-const CACHE_NAME = 'Pet-Health-Tracker-cache-10';
+const CACHE_NAME = 'Pet-Health-Tracker-cache-11';
 const OFFLINE_URL = './offline.html';
 const CACHED_INDEX = './index.html';
 
