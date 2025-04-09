@@ -1,18 +1,30 @@
-import { checkAndSendReminders } from '../lib/reminders'; // Your custom logic
+// api/cron.js
+import { checkAndSendReminders } from '../lib/reminders';
 
-export async function GET(request) {
-  const authHeader = request.headers.get('authorization');
-  
-  // Verify cron secret (security)
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    return new Response('Unauthorized', { status: 401 });
-  }
+const AUTH_TOKEN = process.env.CRON_SECRET;
 
+export default async function handler(req, res) {
   try {
-    await checkAndSendReminders(); // Your reminder logic
-    return new Response('Reminders processed', { status: 200 });
+    // Verify secret token
+    const authHeader = req.headers.authorization || '';
+    if (authHeader !== `Bearer ${AUTH_TOKEN}`) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    // Process reminders
+    const result = await checkAndSendReminders();
+    res.status(200).json({
+      success: true,
+      message: 'Reminders processed successfully',
+      stats: result
+    });
+    
   } catch (error) {
     console.error('Cron job failed:', error);
-    return new Response('Server error', { status: 500 });
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 }
