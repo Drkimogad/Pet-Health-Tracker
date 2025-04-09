@@ -238,7 +238,6 @@ addSafeListener('showSignUp', (e) => {
         });
     });
   }
-}
 
 // ======== F. LOGOUT HANDLER (FIXED) ========
   const button = document.getElementById('logoutButton');
