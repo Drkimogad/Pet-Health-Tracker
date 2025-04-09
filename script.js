@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ======== UPDATED COMBINED SERVICE WORKERS REGISTRATION ========//
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js')
+    navigator.serviceWorker.register('/Pet-Health-Tracker/service-worker.js')
       .then(reg => console.log('SW registered:', reg))
       .catch(err => console.error('SW registration failed:', err));
   }
