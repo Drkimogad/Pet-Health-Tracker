@@ -1,4 +1,4 @@
-import { checkAndSendReminders } from 'https://drkimogad.github.io/Pet-Health-Tracker/lib/reminders'; // Your custom logic
+import { checkAndSendReminders } from '../lib/reminders'; // Your custom logic
 
 export async function GET(request) {
   const authHeader = request.headers.get('authorization');
