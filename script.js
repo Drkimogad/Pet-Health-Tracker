@@ -41,6 +41,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const authSection = document.getElementById('authSection');
   const mainContent = document.getElementById('mainContent');
   const logoutButton = document.getElementById('logoutButton');
+// Declare form variables here, at the top of the scope
+  const signUpForm = document.getElementById('signUp');
+  const loginForm = document.getElementById('login');
+
 
   firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
     .then(async () => {
@@ -188,7 +192,6 @@ addSafeListener('showSignUp', (e) => {
 });
     
 // ======== D. SIGN-UP HANDLER (FIXED) ========
-  const form = document.getElementById('signUp');
   if (form) {
     form.addEventListener('submit', function(event) {
       event.preventDefault();
@@ -215,7 +218,6 @@ addSafeListener('showSignUp', (e) => {
   }
 
 // ======== E. LOGIN HANDLER (FIXED) ========
-  const form = document.getElementById('login');
   if (form) {
     form.addEventListener('submit', function(event) {
       event.preventDefault();
