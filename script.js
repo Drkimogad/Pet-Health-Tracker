@@ -3,7 +3,10 @@
 // <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 // <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 // <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-
+// ======== NOTIFICATION SETUP ========
+// Import from pushNotifications.js (ensure proper module setup)
+// <script type="module" src="pushNotifications.js"></script> in html header 
+import { setupNotifications, sendPushNotification } from './pushNotifications.js';
 const firebaseConfig = {
   apiKey: "AIzaSyBIej7yNj0LkkLd6VtQxBL4mEDSsHLJvig",
   projectId: "pet-health-tracker-7164d",
@@ -18,10 +21,6 @@ if (!firebase.apps.length) {
 // ======== SERVICE REFERENCES ========
 const auth = firebase.auth();
 const firestore = firebase.firestore()
-
-// ======== NOTIFICATION SETUP ========
-// Import from pushNotifications.js (ensure proper module setup)
-// <script type="module" src="pushNotifications.js"></script>
 
 
 // * Global declaration *//
@@ -38,36 +37,51 @@ const REMINDER_TYPE_MAP = {
 };
 // ======== AUTHENTICATION ========//
 // ======== A. AUTH STATE CHECK (FIXED) ========
-  document.addEventListener('DOMContentLoaded', () => {
-    const authSection = document.getElementById('authSection');
-    const mainContent = document.getElementById('mainContent');
-    const logoutButton = document.getElementById('logoutButton');
-    const petPhotoInput = document.getElementById('petPhoto');
-    const petPhotoPreview = document.getElementById('petPhotoPreview');
+document.addEventListener('DOMContentLoaded', () => {
+  const authSection = document.getElementById('authSection');
+  const mainContent = document.getElementById('mainContent');
+  const logoutButton = document.getElementById('logoutButton');
 
-    // Fixed: Added error boundary for persistence setup
-    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-      .then(() => {
-        const authStateHandler = (user) => {
-          if (user) {
-            authSection.style.display = 'none';
-            mainContent.style.display = 'block';
-            logoutButton.style.display = 'block';
-            
-            // Fixed: Added null checks for profile loading
-            try {
-              loadSavedPetProfile();
-              setupNotifications();
-            } catch (error) {
-              console.error('Profile loading error:', error);
+  // Fixed async/await pattern
+  firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+    .then(async () => {
+      const authStateHandler = async (user) => {
+        if (user) {
+          authSection.style.display = 'none';
+          mainContent.style.display = 'block';
+          logoutButton.style.display = 'block';
+
+          try {
+            // Initialize notifications first
+            const notificationsReady = await setupNotifications();
+            if (notificationsReady) {
+              await sendPushNotification('Welcome Back!', 'Your pet profiles are ready');
             }
-          } else {
-            authSection.style.display = 'block';
-            mainContent.style.display = 'none';
-            logoutButton.style.display = 'none';
-            switchAuthForm('login');
+
+            // Then load profile
+            await loadSavedPetProfile();
+            
+          } catch (error) {
+            console.error('Initialization error:', error);
+            alert('Failed to initialize app features');
           }
-        };
+        } else {
+          authSection.style.display = 'block';
+          mainContent.style.display = 'none';
+          logoutButton.style.display = 'none';
+          switchAuthForm('login');
+        }
+      };
+
+      // Proper async listener management
+      const unsubscribe = firebase.auth().onAuthStateChanged(authStateHandler);
+      return () => unsubscribe();
+    })
+    .catch((error) => {
+      console.error("Auth persistence error:", error);
+      alert('Authentication system error. Please refresh the page.');
+    });
+});
 
         // Fixed: Proper cleanup of auth listener
         const unsubscribe = firebase.auth().onAuthStateChanged(authStateHandler);
