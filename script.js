@@ -202,7 +202,7 @@ addSafeListener('showSignUp', (e) => {
 });
     
 // ======== D. SIGN-UP HANDLER (FIXED) ========
-  if (form) {
+  if (signUpForm) {
     form.addEventListener('submit', function(event) {
       event.preventDefault();
       const email = document.getElementById('signUpEmail')?.value?.trim();
@@ -228,7 +228,7 @@ addSafeListener('showSignUp', (e) => {
   }
 
 // ======== E. LOGIN HANDLER (FIXED) ========
-  if (form) {
+  iif (loginForm) {
     form.addEventListener('submit', function(event) {
       event.preventDefault();
       const email = document.getElementById('loginEmail')?.value?.trim();
