@@ -42,7 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const mainContent = document.getElementById('mainContent');
   const logoutButton = document.getElementById('logoutButton');
 
-  // Fixed async/await pattern
   firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
     .then(async () => {
       const authStateHandler = async (user) => {
@@ -60,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Then load profile
             await loadSavedPetProfile();
-            
+
           } catch (error) {
             console.error('Initialization error:', error);
             alert('Failed to initialize app features');
@@ -75,6 +74,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Proper async listener management
       const unsubscribe = firebase.auth().onAuthStateChanged(authStateHandler);
+      // If you need to return the unsubscribe function (e.g., for component unmounting in a framework), you would do it here.
+      // However, in a simple DOMContentLoaded listener, this return doesn't have a direct effect.
+      // If you don't have a specific need to unsubscribe manually later, you can omit the return.
+      // For now, let's keep it as it was:
       return () => unsubscribe();
     })
     .catch((error) => {
@@ -82,15 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Authentication system error. Please refresh the page.');
     });
 });
-
-        // Fixed: Proper cleanup of auth listener
-        const unsubscribe = firebase.auth().onAuthStateChanged(authStateHandler);
-        return () => unsubscribe();
-      })
-      .catch((error) => {
-        console.error("Auth persistence error:", error);
-        alert('Authentication system error. Please refresh the page.');
-      });
 
     // Fixed: Added debounce to image preview handler
     let previewTimeout;
