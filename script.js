@@ -228,7 +228,7 @@ addSafeListener('showSignUp', (e) => {
   }
 
 // ======== E. LOGIN HANDLER (FIXED) ========
-  iif (loginForm) {
+  if (loginForm) {
     form.addEventListener('submit', function(event) {
       event.preventDefault();
       const email = document.getElementById('loginEmail')?.value?.trim();
