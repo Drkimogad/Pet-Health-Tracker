@@ -7,77 +7,74 @@ const firebaseConfig = {
   appId: "pet-health-tracker-7164d"
 };
 
-// Initialize Firebase only once
+// Initialize Firebase singleton
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 
-// Service references
-const auth = firebase.auth();
-const firestore = firebase.firestore();
-
 // ======== NOTIFICATION SERVICE ========
-async function showAppNotification(title, body) {
+export async function sendPushNotification(title, body) {
   try {
     const registration = await navigator.serviceWorker.ready;
     await registration.showNotification(title, {
       body,
       icon: './icons/icon-192x192.png',
       vibrate: [200, 100, 200],
-      data: { url: '/' }
+      data: { url: '/' },
+      badge: './icons/badge-72x72.png'
     });
+    return true;
   } catch (error) {
-    console.error('Notification failed:', error);
-    throw error;
+    console.error('Notification delivery failed:', error);
+    return false;
   }
 }
 
-// ======== SERVICE WORKER SETUP ========
+// ======== SERVICE WORKER MANAGEMENT ========
 async function setupServiceWorker() {
   if (!('serviceWorker' in navigator)) {
     console.warn('Service workers not supported');
-    return false;
+    return null;
   }
 
   try {
-    const registration = await navigator.serviceWorker.register('/service-worker.js');
-    console.log('Service Worker registered:', registration);
-    return true;
+    return await navigator.serviceWorker.register('/service-worker.js');
   } catch (error) {
     console.error('Service Worker registration failed:', error);
-    return false;
+    return null;
   }
 }
 
-// ======== NOTIFICATION PERMISSION ========
+// ======== NOTIFICATION PERMISSION HANDLER ========
 async function requestNotificationPermission() {
-  if (!('Notification' in window)) {
-    console.warn('Notifications not supported');
-    return false;
-  }
-
+  if (!('Notification' in window)) return 'unsupported';
+  
   try {
-    const permission = await Notification.requestPermission();
-    return permission === 'granted';
+    return await Notification.requestPermission();
   } catch (error) {
     console.error('Permission request failed:', error);
+    return 'denied';
+  }
+}
+
+// ======== MAIN NOTIFICATION SETUP ========
+export async function setupNotifications() {
+  try {
+    const registration = await setupServiceWorker();
+    if (!registration) return false;
+
+    const permission = await requestNotificationPermission();
+    if (permission !== 'granted') return false;
+
+    console.log('Notification system ready');
+    return true;
+  } catch (error) {
+    console.error('Notification setup failed:', error);
     return false;
   }
 }
 
-// ======== MAIN INITIALIZATION ========
-async function initializeNotifications() {
-  const swRegistered = await setupServiceWorker();
-  if (!swRegistered) return;
-
-  const hasPermission = await requestNotificationPermission();
-  if (hasPermission) {
-    console.log('Ready to send notifications');
-  }
+// ======== INITIALIZATION HELPER ========
+export async function initializeNotifications() {
+  return setupNotifications();
 }
-
-// Initialize when app loads
-initializeNotifications();
-
-// ======== EXPORTS ========
-export { initializeNotifications, showAppNotification };
