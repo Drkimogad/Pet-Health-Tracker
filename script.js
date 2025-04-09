@@ -202,30 +202,33 @@ addSafeListener('showSignUp', (e) => {
 });
     
 // ======== D. SIGN-UP HANDLER (FIXED) ========
-  if (signUpForm) {
-    form.addEventListener('submit', function(event) {
-      event.preventDefault();
-      const email = document.getElementById('signUpEmail')?.value?.trim();
-      const password = document.getElementById('signUpPassword')?.value?.trim();
+// ======== D. SIGN-UP HANDLER (FIXED) ========
+const signUpFormElement = document.getElementById('signUpForm'); // Get the form element by its ID
 
-      if (!email || !password) {
-        alert('Please fill in all required fields');
-        return;
-      }
+if (signUpFormElement) {
+  signUpFormElement.addEventListener('submit', function(event) {
+    event.preventDefault();
+    const email = document.getElementById('signUpEmail')?.value?.trim();
+    const password = document.getElementById('signUpPassword')?.value?.trim();
 
-      firebase.auth().createUserWithEmailAndPassword(email, password)
-        .then(() => {
-          alert('Sign-up successful! Please login.');
-          switchAuthForm('login');
-          this.reset();
-        })
-        .catch((error) => {
-          console.error("Sign-up error:", error);
-          alert(`Sign-up failed: ${error.message}`);
-          this.reset();
-        });
-    });
-  }
+    if (!email || !password) {
+      alert('Please fill in all required fields');
+      return;
+    }
+
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        alert('Sign-up successful! Please login.');
+        switchAuthForm('login');
+        this.reset();
+      })
+      .catch((error) => {
+        console.error("Sign-up error:", error);
+        alert(`Sign-up failed: ${error.message}`);
+        this.reset();
+      });
+  });
+}
 
 // ======== E. LOGIN HANDLER (FIXED) ========
   if (loginForm) {
