@@ -1,18 +1,4 @@
-import { checkAndSendReminders } from '../lib/reminders';
-// cron secret//
-export default function handler(req, res) {
-  const authHeader = req.headers.authorization || '';
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-// Add a secret key check to prevent unauthorized access to your endpoint.//
-const AUTH_TOKEN = process.env.CRON_SECRET;
-export default async function handler(req, res) {
-  // Verify secret token
-  if (req.headers.authorization !== `Bearer ${AUTH_TOKEN}`) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-    
+   
 import admin from "firebase-admin";
 import { getFirestore } from "firebase-admin/firestore";
 console.log("🔥 Firebase Debugging: ");
