@@ -37,6 +37,8 @@ const REMINDER_TYPE_MAP = {
 };
 // ======== AUTHENTICATION ========//
 // ======== A. AUTH STATE CHECK (FIXED) ========
+// ======== AUTHENTICATION ========//
+// ======== A. AUTH STATE CHECK (FIXED) ========
 document.addEventListener('DOMContentLoaded', () => {
   const authSection = document.getElementById('authSection');
   const mainContent = document.getElementById('mainContent');
@@ -147,6 +149,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // ======== UPDATED COMBINED SERVICE WORKERS REGISTRATION ========//
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(reg => console.log('SW registered:', reg))
+      .catch(err => console.error('SW registration failed:', err));
+  }
+});
+
 // ======== A. USER CHECK & IMAGE PRELOADING ========
 // Fixed: Added proper user reference check
 const user = firebase.auth().currentUser;
@@ -159,6 +169,7 @@ if (user) {
       img.src = profile.petPhoto;
     }
   });
+
 }
 
 // ======== B. FORM SWITCHING HELPER ========
