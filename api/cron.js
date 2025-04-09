@@ -1,22 +1,33 @@
-// api/cron.js
 import { checkAndSendReminders } from '../lib/reminders';
 
-const AUTH_TOKEN = process.env.CRON_SECRET;
-
 export default async function handler(req, res) {
-  // Verify cron secret
-  if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-
-  // Your reminder logic here
   try {
-    const results = await checkAndSendReminders();
-    res.status(200).json(results);
+    // 1. Verify cron secret
+    if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    // 2. Timezone verification
+    const nairobiTime = new Date().toLocaleString("en-US", {
+      timeZone: process.env.TZ
+    });
+    console.log('Cron triggered at Nairobi time:', nairobiTime);
+
+    // 3. Process reminders
+    const result = await checkAndSendReminders();
+    
+    return res.status(200).json({
+      success: true,
+      processedAt: nairobiTime,
+      ...result
+    });
+
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Cron job failed:', error);
+    return res.status(500).json({
+      success: false,
+      error: error.message,
+      time: new Date().toLocaleString("en-US", { timeZone: process.env.TZ })
+    });
   }
 }
-// In your cron handler
-console.log('Current server time:', new Date().toString());
-// Should show Nairobi time if TZ is set
