@@ -1,3 +1,4 @@
+import { checkAndSendReminders } from '../lib/reminders';
 // cron secret//
 export default function handler(req, res) {
   const authHeader = req.headers.authorization || '';
