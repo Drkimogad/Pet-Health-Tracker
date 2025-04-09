@@ -17,3 +17,6 @@ export default async function handler(req, res) {
     res.status(500).json({ error: error.message });
   }
 }
+// In your cron handler
+console.log('Current server time:', new Date().toString());
+// Should show Nairobi time if TZ is set
