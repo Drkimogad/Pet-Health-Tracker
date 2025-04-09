@@ -213,7 +213,6 @@ addSafeListener('showSignUp', (e) => {
         });
     });
   }
-}
 
 // ======== E. LOGIN HANDLER (FIXED) ========
   const form = document.getElementById('login');
