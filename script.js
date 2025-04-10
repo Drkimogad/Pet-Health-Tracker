@@ -526,27 +526,89 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Auth State Handler
-  auth.onAuthStateChanged(async (user) => {
-    if (user) {
-      if (authSection) authSection.style.display = 'none';
-      if (mainContent) mainContent.style.display = 'block';
-      if (logoutButton) logoutButton.style.display = 'block';
+// Firebase auth srat handler/
+  firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+    .then(async () => {
+      const authStateHandler = async (user) => {
+        if (user) {
+          authSection.style.display = 'none';
+          mainContent.style.display = 'block';
+          logoutButton.style.display = 'block';
 
-      try {
-        await setupNotifications();
-        await loadSavedPetProfile();
-      } catch (error) {
-        console.error('Initialization error:', error);
-        alert('Failed to initialize app features');
+          try {
+            // Initialize notifications first
+            const notificationsReady = await setupNotifications();
+            if (notificationsReady) {
+              await sendPushNotification('Welcome Back!', 'Your pet profiles are ready');
+            }
+
+            // Then load profile
+            await loadSavedPetProfile();
+
+          } catch (error) {
+            console.error('Initialization error:', error);
+            alert('Failed to initialize app features');
+          }
+        } else {
+          authSection.style.display = 'block';
+          mainContent.style.display = 'none';
+          logoutButton.style.display = 'none';
+          switchAuthForm('login');
+        }
+      };
+
+      // Proper async listener management
+      const unsubscribe = firebase.auth().onAuthStateChanged(authStateHandler);
+      // If you need to return the unsubscribe function (e.g., for component unmounting in a framework), you would do it here.
+      // However, in a simple DOMContentLoaded listener, this return doesn't have a direct effect.
+      // For now, let's keep it as it was:
+      return () => unsubscribe();
+    })
+    .catch((error) => {
+      console.error("Auth persistence error:", error);
+      alert('Authentication system error. Please refresh the page.');
+    });
+
+  // Fixed: Optimized sessionStorage check
+  const editingSessionKeys = Array.from({ length: sessionStorage.length })
+    .map((_, i) => sessionStorage.key(i))
+    .filter(key => key.startsWith('editingProfile_'));
+
+  editingSessionKeys.forEach(key => {
+    const index = parseInt(key.split('_')[1], 10);
+    const originalProfile = JSON.parse(sessionStorage.getItem(key));
+
+    if (originalProfile) {
+      // Fixed: Added null checks for DOM elements
+      const safeSetValue = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.value = value || '';
+      };
+
+      safeSetValue('petName', originalProfile.petName);
+      safeSetValue('breed', originalProfile.breed);
+      safeSetValue('age', originalProfile.age);
+      safeSetValue('weight', originalProfile.weight);
+      safeSetValue('microchipId', originalProfile.microchip?.id);
+      safeSetValue('microchipDate', originalProfile.microchip?.date);
+      safeSetValue('microchipVendor', originalProfile.microchip?.vendor);
+      safeSetValue('allergies', originalProfile.allergies);
+      safeSetValue('medicalHistory', originalProfile.medicalHistory);
+      safeSetValue('dietPlan', originalProfile.dietPlan);
+      safeSetValue('moodSelector', originalProfile.mood);
+      safeSetValue('emergencyContactName', originalProfile.emergencyContacts?.[0]?.name);
+      safeSetValue('emergencyContactPhone', originalProfile.emergencyContacts?.[0]?.phone);
+      safeSetValue('emergencyContactRelationship', originalProfile.emergencyContacts?.[0]?.relationship);
+      safeSetValue('vaccinationsAndDewormingReminder', originalProfile.vaccinationsAndDewormingReminder);
+      safeSetValue('medicalCheckupsReminder', originalProfile.medicalCheckupsReminder);
+      safeSetValue('groomingReminder', originalProfile.groomingReminder);
+
+      if (originalProfile.petPhoto) {
+        petPhotoPreview.src = originalProfile.petPhoto;
+        petPhotoPreview.style.display = 'block';
       }
-    } else {
-      if (authSection) authSection.style.display = 'block';
-      if (mainContent) mainContent.style.display = 'none';
-      if (logoutButton) logoutButton.style.display = 'none';
-      switchAuthForm('login');
     }
-  });
+  })
 
   // Form Submissions
   document.getElementById('dietForm')?.addEventListener('submit', function(e) {
@@ -603,26 +665,71 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Auth Handlers
-  document.getElementById('signUpForm')?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = document.getElementById('signUpEmail')?.value;
-    const password = document.getElementById('signUpPassword')?.value;
-    auth.createUserWithEmailAndPassword(email, password)
-      .then(() => alert('Account created! Please login.'))
-      .catch(error => alert(`Signup failed: ${error.message}`));
-  });
+   // ======== SIGN-UP HANDLER  ========
+  const signUpFormElement = document.getElementById('signUpForm');
+  if (signUpFormElement) {
+    signUpFormElement.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const email = document.getElementById('signUpEmail')?.value?.trim();
+      const password = document.getElementById('signUpPassword')?.value?.trim();
 
-  document.getElementById('loginForm')?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = document.getElementById('loginEmail')?.value;
-    const password = document.getElementById('loginPassword')?.value;
-    auth.signInWithEmailAndPassword(email, password)
-      .catch(error => alert(`Login failed: ${error.message}`));
-  });
+      if (!email || !password) {
+        alert('Please fill in all required fields');
+        return;
+      }
 
-  document.getElementById('logoutButton')?.addEventListener('click', () => {
-    auth.signOut().then(() => alert('Logged out successfully!'));
-  });
+      firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then(() => {
+          alert('Sign-up successful! Please login.');
+          switchAuthForm('login');
+          this.reset();
+        })
+        .catch((error) => {
+          console.error("Sign-up error:", error);
+          alert(`Sign-up failed: ${error.message}`);
+          this.reset();
+        });
+    });
+  }
+
+  // ======== LOGIN HANDLER  ========
+  const loginFormElement = document.getElementById('loginForm');
+  if (loginFormElement) {
+    loginFormElement.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const email = document.getElementById('loginEmail')?.value?.trim();
+      const password = document.getElementById('loginPassword')?.value?.trim();
+
+      if (!email || !password) {
+        alert('Please fill in all required fields');
+        return;
+      }
+
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then(() => this.reset())
+        .catch((error) => {
+          console.error("Login error:", error);
+          alert(`Login failed: ${error.message}`);
+          this.reset();
+        });
+    });
+  }
+
+  // ======== LOGOUT HANDLER ========
+  const logoutButtonElement = document.getElementById('logoutButton');
+  if (logoutButtonElement) {
+    logoutButtonElement.addEventListener('click', function() {
+      firebase.auth().signOut()
+        .then(() => {
+          switchAuthForm('login');
+          alert('Logged out successfully!');
+        })
+        .catch((error) => {
+          console.error("Logout error:", error);
+          alert(`Logout failed: ${error.message}`);
+        });
+    });
+  }
 
   // Service Worker
   if ('serviceWorker' in navigator) {
