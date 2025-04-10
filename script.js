@@ -665,7 +665,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Auth Handlers
-// Auth Handlers
   // ======== SIGN-UP HANDLER  ========
   const signUpFormElement = document.getElementById('signUpForm');
   if (signUpFormElement) {
@@ -740,6 +739,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch((error) => {
           console.error("Logout error:", error);
           alert(`Logout failed: ${error.message}`);
+          }
         });
     });
   }
