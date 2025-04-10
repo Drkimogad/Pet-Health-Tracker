@@ -739,7 +739,6 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch((error) => {
           console.error("Logout error:", error);
           alert(`Logout failed: ${error.message}`);
-          }
         });
     });
   }
