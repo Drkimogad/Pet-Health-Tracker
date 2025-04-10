@@ -508,9 +508,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const authSection = document.getElementById('authSection');
   const mainContent = document.getElementById('mainContent');
   const logoutButton = document.getElementById('logoutButton');
+  
   const petPhotoInput = document.getElementById('petPhoto');
   const petPhotoPreview = document.getElementById('petPhotoPreview');
-
   // Image Preview Handler
   if (petPhotoInput && petPhotoPreview) {
     petPhotoInput.addEventListener('change', function() {
@@ -525,51 +525,57 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+// ======== FIREBASE AUTH HANDLER ========
+// Auth State Handler (defined FIRST)
+  const authStateHandler = async (user) => {
+    try {
+      if (user) {
+        // UI Update
+        authSection.style.display = 'none';
+        mainContent.style.display = 'block';
+        logoutButton.style.display = 'block';
 
-// Firebase auth srat handler/
-  firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-    .then(async () => {
-      const authStateHandler = async (user) => {
-        if (user) {
-          authSection.style.display = 'none';
-          mainContent.style.display = 'block';
-          logoutButton.style.display = 'block';
-
-          try {
-            // Initialize notifications first
-            const notificationsReady = await setupNotifications();
-            if (notificationsReady) {
-              await sendPushNotification('Welcome Back!', 'Your pet profiles are ready');
-            }
-
-            // Then load profile
-            await loadSavedPetProfile();
-
-          } catch (error) {
-            console.error('Initialization error:', error);
-            alert('Failed to initialize app features');
-          }
-        } else {
-          authSection.style.display = 'block';
-          mainContent.style.display = 'none';
-          logoutButton.style.display = 'none';
-          switchAuthForm('login');
+        // Initialize Features
+        const notificationsReady = await setupNotifications();
+        if (notificationsReady) {
+          await sendPushNotification('Welcome Back!', 'Your pet profiles are ready');
         }
-      };
 
-      // Proper async listener management
+        // Load Data
+        await loadSavedPetProfile();
+      } else {
+        // UI Update
+        authSection.style.display = 'block';
+        mainContent.style.display = 'none';
+        logoutButton.style.display = 'none';
+        switchAuthForm('login');
+      }
+    } catch (error) {
+      console.error('Auth state error:', error);
+      alert(error.message || 'Failed to initialize application');
+    }
+  };
+
+  // Firebase Initialization (SECOND)
+  firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+    .then(() => {
+      // Attach listener AFTER setting persistence
       const unsubscribe = firebase.auth().onAuthStateChanged(authStateHandler);
-      // If you need to return the unsubscribe function (e.g., for component unmounting in a framework), you would do it here.
-      // However, in a simple DOMContentLoaded listener, this return doesn't have a direct effect.
-      // For now, let's keep it as it was:
-      return () => unsubscribe();
+      
+      // Optional: Cleanup listener on unmount
+      return () => {
+        console.log('Cleaning up auth listener');
+        unsubscribe();
+      };
     })
     .catch((error) => {
       console.error("Auth persistence error:", error);
+      authSection.style.display = 'block';
       alert('Authentication system error. Please refresh the page.');
     });
+});
 
-  // Fixed: Optimized sessionStorage check
+  // Fixed: Optimized sessionStorage check//
   const editingSessionKeys = Array.from({ length: sessionStorage.length })
     .map((_, i) => sessionStorage.key(i))
     .filter(key => key.startsWith('editingProfile_'));
