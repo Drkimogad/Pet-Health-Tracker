@@ -665,13 +665,15 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Auth Handlers
-   // ======== SIGN-UP HANDLER  ========
+// Auth Handlers
+  // ======== SIGN-UP HANDLER  ========
   const signUpFormElement = document.getElementById('signUpForm');
   if (signUpFormElement) {
     signUpFormElement.addEventListener('submit', function(event) {
       event.preventDefault();
       const email = document.getElementById('signUpEmail')?.value?.trim();
       const password = document.getElementById('signUpPassword')?.value?.trim();
+      const form = this.querySelector('form'); // Get the <form> element
 
       if (!email || !password) {
         alert('Please fill in all required fields');
@@ -682,12 +684,16 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(() => {
           alert('Sign-up successful! Please login.');
           switchAuthForm('login');
-          this.reset();
+          if (form) {
+            form.reset(); // Reset the actual <form> element
+          }
         })
         .catch((error) => {
           console.error("Sign-up error:", error);
           alert(`Sign-up failed: ${error.message}`);
-          this.reset();
+          if (form) {
+            form.reset(); // Reset the actual <form> element
+          }
         });
     });
   }
@@ -699,6 +705,7 @@ document.addEventListener('DOMContentLoaded', () => {
       event.preventDefault();
       const email = document.getElementById('loginEmail')?.value?.trim();
       const password = document.getElementById('loginPassword')?.value?.trim();
+      const form = this.querySelector('form'); // Get the <form> element
 
       if (!email || !password) {
         alert('Please fill in all required fields');
@@ -706,11 +713,17 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       firebase.auth().signInWithEmailAndPassword(email, password)
-        .then(() => this.reset())
+        .then(() => {
+          if (form) {
+            form.reset(); // Reset the actual <form> element
+          }
+        })
         .catch((error) => {
           console.error("Login error:", error);
           alert(`Login failed: ${error.message}`);
-          this.reset();
+          if (form) {
+            form.reset(); // Reset the actual <form> element
+          }
         });
     });
   }
