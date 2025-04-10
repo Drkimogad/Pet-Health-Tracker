@@ -682,14 +682,14 @@ document.addEventListener('DOMContentLoaded', () => {
           alert('Sign-up successful! Please login.');
           switchAuthForm('login');
           if (form) {
-            form.reset(); // Reset the actual <form> element
+            this.reset(); // Reset the actual <form> element
           }
         })
         .catch((error) => {
           console.error("Sign-up error:", error);
           alert(`Sign-up failed: ${error.message}`);
           if (form) {
-            form.reset(); // Reset the actual <form> element
+            this.reset(); // Reset the actual <form> element
           }
         });
     });
@@ -710,14 +710,14 @@ document.addEventListener('DOMContentLoaded', () => {
       firebase.auth().signInWithEmailAndPassword(email, password)
         .then(() => {
           if (form) {
-            form.reset(); // Reset the actual <form> element
+            this.reset(); // Reset the actual <form> element
           }
         })
         .catch((error) => {
           console.error("Login error:", error);
           alert(`Login failed: ${error.message}`);
           if (form) {
-            form.reset(); // Reset the actual <form> element
+            this.reset(); // Reset the actual <form> element
           }
         });
     });
