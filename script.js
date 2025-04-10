@@ -664,17 +664,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Auth Handlers
 // Auth Handlers
-  // ======== SIGN-UP HANDLER  ========
+// ======== SIGN-UP HANDLER  ========
   const signUpFormElement = document.getElementById('signUpForm');
   if (signUpFormElement) {
     signUpFormElement.addEventListener('submit', function(event) {
       event.preventDefault();
       const email = document.getElementById('signUpEmail')?.value?.trim();
       const password = document.getElementById('signUpPassword')?.value?.trim();
-      const form = this.querySelector('form'); // Get the <form> element
-
       if (!email || !password) {
         alert('Please fill in all required fields');
         return;
@@ -705,8 +702,6 @@ document.addEventListener('DOMContentLoaded', () => {
       event.preventDefault();
       const email = document.getElementById('loginEmail')?.value?.trim();
       const password = document.getElementById('loginPassword')?.value?.trim();
-      const form = this.querySelector('form'); // Get the <form> element
-
       if (!email || !password) {
         alert('Please fill in all required fields');
         return;
