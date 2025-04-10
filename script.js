@@ -665,6 +665,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Auth Handlers
+// Auth Handlers
   // ======== SIGN-UP HANDLER  ========
   const signUpFormElement = document.getElementById('signUpForm');
   if (signUpFormElement) {
