@@ -59,7 +59,7 @@ function switchAuthForm(targetForm) {
     formElement.querySelector('form').reset();
   }
 }
-
+// Helper function//
 function addSafeListener(id, handler) {
   const element = document.getElementById(id);
   if (element) {
@@ -719,21 +719,22 @@ document.getElementById('loginForm')?.addEventListener('submit', function(event)
     });
   }
 
-  // Service Worker
+  // Service Worker (corrected)
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/Pet-Health-Tracker/service-worker.js')
       .then(reg => console.log('Service Worker registered'))
       .catch(err => console.error('SW registration failed:', err));
   }
-});
 
-// Initial UI Setup
-addSafeListener('showLogin', (e) => {
-  e.preventDefault();
-  switchAuthForm('login');
-});
+  // ======== INITIAL UI SETUP ========
+  addSafeListener('showLogin', (e) => {
+    e.preventDefault();
+    switchAuthForm('login');
+  });
 
-addSafeListener('showSignUp', (e) => {
-  e.preventDefault();
-  switchAuthForm('signUp');
-});
+  addSafeListener('showSignUp', (e) => {
+    e.preventDefault();
+    switchAuthForm('signUp');
+  });
+
+}); 
