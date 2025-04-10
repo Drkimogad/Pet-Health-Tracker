@@ -727,7 +727,7 @@ document.getElementById('loginForm')?.addEventListener('submit', function(event)
 
   // Service Worker (corrected)
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/Pet-Health-Tracker/service-worker.js')
+    navigator.serviceWorker.register('./service-worker.js')
       .then(reg => console.log('Service Worker registered'))
       .catch(err => console.error('SW registration failed:', err));
   }
