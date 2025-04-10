@@ -736,5 +736,4 @@ document.getElementById('loginForm')?.addEventListener('submit', function(event)
     e.preventDefault();
     switchAuthForm('signUp');
   });
-
 }); 
