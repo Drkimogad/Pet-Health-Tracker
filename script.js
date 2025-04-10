@@ -665,63 +665,43 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 // Auth Handlers
-// ======== SIGN-UP HANDLER  ========
-  const signUpFormElement = document.getElementById('signUpForm');
-  if (signUpFormElement) {
-    signUpFormElement.addEventListener('submit', function(event) {
-      event.preventDefault();
-      const email = document.getElementById('signUpEmail')?.value?.trim();
-      const password = document.getElementById('signUpPassword')?.value?.trim();
-      if (!email || !password) {
-        alert('Please fill in all required fields');
-        return;
-      }
+// ======== SIGN-UP HANDLER ========
+document.getElementById('signUpForm')?.addEventListener('submit', function(event) {
+  event.preventDefault();
+  const email = this.querySelector('#signUpEmail').value.trim();
+  const password = this.querySelector('#signUpPassword').value.trim();
 
-      firebase.auth().createUserWithEmailAndPassword(email, password)
-        .then(() => {
-          alert('Sign-up successful! Please login.');
-          switchAuthForm('login');
-          if (form) {
-            this.reset(); // Reset the actual <form> element
-          }
-        })
-        .catch((error) => {
-          console.error("Sign-up error:", error);
-          alert(`Sign-up failed: ${error.message}`);
-          if (form) {
-            this.reset(); // Reset the actual <form> element
-          }
-        });
+  firebase.auth().createUserWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      console.log('User created:', userCredential.user);
+      alert('Sign-up successful! Please login.');
+      this.reset();
+      switchAuthForm('login');
+    })
+    .catch((error) => {
+      console.error('Sign-up error:', error);
+      alert(`Sign-up failed: ${error.message}`);
+      this.reset();
     });
-  }
+});
 
-  // ======== LOGIN HANDLER  ========
-  const loginFormElement = document.getElementById('loginForm');
-  if (loginFormElement) {
-    loginFormElement.addEventListener('submit', function(event) {
-      event.preventDefault();
-      const email = document.getElementById('loginEmail')?.value?.trim();
-      const password = document.getElementById('loginPassword')?.value?.trim();
-      if (!email || !password) {
-        alert('Please fill in all required fields');
-        return;
-      }
+// ======== LOGIN HANDLER ========
+document.getElementById('loginForm')?.addEventListener('submit', function(event) {
+  event.preventDefault();
+  const email = this.querySelector('#loginEmail').value.trim();
+  const password = this.querySelector('#loginPassword').value.trim();
 
-      firebase.auth().signInWithEmailAndPassword(email, password)
-        .then(() => {
-          if (form) {
-            this.reset(); // Reset the actual <form> element
-          }
-        })
-        .catch((error) => {
-          console.error("Login error:", error);
-          alert(`Login failed: ${error.message}`);
-          if (form) {
-            this.reset(); // Reset the actual <form> element
-          }
-        });
+  firebase.auth().signInWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      console.log('User logged in:', userCredential.user);
+      this.reset();
+    })
+    .catch((error) => {
+      console.error('Login error:', error);
+      alert(`Login failed: ${error.message}`);
+      this.reset();
     });
-  }
+});
 
   // ======== LOGOUT HANDLER ========
   const logoutButtonElement = document.getElementById('logoutButton');
