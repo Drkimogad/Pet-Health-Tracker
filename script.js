@@ -1,3 +1,4 @@
+document.addEventListener('DOMContentLoaded', function() {
 import { setupNotifications, sendPushNotification } from './pushNotifications.js';
 // ======== FIREBASE INITIALIZATION ========
 const firebaseConfig = {
@@ -741,4 +742,8 @@ document.getElementById('loginForm')?.addEventListener('submit', function(event)
   addSafeListener('showSignUp', (e) => {
     e.preventDefault();
     switchAuthForm('signUp');
-  });
+}); // <-- This is the ONLY closing line needed
+
+
+
+
