@@ -363,12 +363,8 @@ function sharePetProfile(index) {
             'Medical Check-ups': profile.medicalCheckupsReminder,
             Grooming: profile.groomingReminder,
             'Emergency Contact': `${emergencyContact.name} (${emergencyContact.relationship}) - ${emergencyContact.phone}`
-        }).map(([key, val]) => `
-    $ {
-      key
-    }: $ {
-      val || 'N/A'
-    }
+        }).map(([key, val]) =>
+    `${key}: ${val || 'N/A'}`  // Remove line breaks inside template placeholders
     `).join('\n')}`,
     url: window.location.href
   };
@@ -401,7 +397,8 @@ function generateQRCode(profileIndex) {
     return;
   }
 
-  const qrWindow = window.open('', 'QR Code', 'width=400,height=500');
+  const qrWindow = window.open('', 'QR Code', '`width=400,height=500,petName=${encodeURIComponent(profile.petName)}`);
+}  // Added recently this closing brace
 
   // Load QR library FIRST in the new window
   qrWindow.document.write(`
@@ -440,7 +437,7 @@ function generateQRCode(profileIndex) {
                         const canvas = qrcodeContainer.querySelector('canvas');
                         if (canvas) {
                             const link = document.createElement('a');
-                            link.download = '${profile.petName}_QR.png';
+                            link.download = `${window.name.petName}_QR.png`;  // Use window.name
                             link.href = canvas.toDataURL();
                             link.click();
                         } else {
@@ -450,7 +447,7 @@ function generateQRCode(profileIndex) {
                 </script>
             </body>
         </html>
-    `);
+    `);  // Escape closing tag 
   qrWindow.document.close();
 
   // Wait for library to load
@@ -475,7 +472,7 @@ Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relatio
         `.trim();
 
     try {
-      // Use the library from the NEW WINDOW's context
+    // Use the library from the NEW WINDOW's context
       const qrcodeContainer = qrWindow.document.getElementById(
         'qrcode-container');
       qrcodeContainer.style.display = 'block';
@@ -501,8 +498,7 @@ Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relatio
       }
     }
   });
-
-
+}  // Added recently missing closing brace
 // ======== MAIN INITIALIZATION ========
 document.addEventListener('DOMContentLoaded', () => {
   // Authentication Section
