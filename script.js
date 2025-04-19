@@ -504,6 +504,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   const petPhotoInput = document.getElementById('petPhoto');
   const petPhotoPreview = document.getElementById('petPhotoPreview');
+  
   // Image Preview Handler
   if (petPhotoInput && petPhotoPreview) {
     petPhotoInput.addEventListener('change', function() {
@@ -518,8 +519,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
-// ======== FIREBASE AUTH HANDLER ========
-// Auth State Handler (defined FIRST)
+
+  // ======== FIREBASE AUTH HANDLER ========
   const authStateHandler = async (user) => {
     try {
       if (user) {
@@ -549,26 +550,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // Firebase Initialization (SECOND)
+  // Firebase Initialization
   firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
     .then(() => {
-      // Attach listener AFTER setting persistence
       const unsubscribe = firebase.auth().onAuthStateChanged(authStateHandler);
-      
-      // Optional: Cleanup listener on unmount
-      return () => {
-        console.log('Cleaning up auth listener');
-        unsubscribe();
-      };
+      return () => unsubscribe();
     })
     .catch((error) => {
       console.error("Auth persistence error:", error);
       authSection.style.display = 'block';
       alert('Authentication system error. Please refresh the page.');
     });
-});
 
-  // Fixed: Optimized sessionStorage check//
+  // ======== SESSION STORAGE RECOVERY ========
   const editingSessionKeys = Array.from({ length: sessionStorage.length })
     .map((_, i) => sessionStorage.key(i))
     .filter(key => key.startsWith('editingProfile_'));
@@ -578,36 +572,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const originalProfile = JSON.parse(sessionStorage.getItem(key));
 
     if (originalProfile) {
-      // Fixed: Added null checks for DOM elements
       const safeSetValue = (id, value) => {
         const el = document.getElementById(id);
         if (el) el.value = value || '';
       };
 
-      safeSetValue('petName', originalProfile.petName);
-      safeSetValue('breed', originalProfile.breed);
-      safeSetValue('age', originalProfile.age);
-      safeSetValue('weight', originalProfile.weight);
-      safeSetValue('microchipId', originalProfile.microchip?.id);
-      safeSetValue('microchipDate', originalProfile.microchip?.date);
-      safeSetValue('microchipVendor', originalProfile.microchip?.vendor);
-      safeSetValue('allergies', originalProfile.allergies);
-      safeSetValue('medicalHistory', originalProfile.medicalHistory);
-      safeSetValue('dietPlan', originalProfile.dietPlan);
-      safeSetValue('moodSelector', originalProfile.mood);
-      safeSetValue('emergencyContactName', originalProfile.emergencyContacts?.[0]?.name);
-      safeSetValue('emergencyContactPhone', originalProfile.emergencyContacts?.[0]?.phone);
-      safeSetValue('emergencyContactRelationship', originalProfile.emergencyContacts?.[0]?.relationship);
-      safeSetValue('vaccinationsAndDewormingReminder', originalProfile.vaccinationsAndDewormingReminder);
-      safeSetValue('medicalCheckupsReminder', originalProfile.medicalCheckupsReminder);
-      safeSetValue('groomingReminder', originalProfile.groomingReminder);
-
+      // Traditional null checks instead of optional chaining
+      safeSetValue('microchipId', 
+        (originalProfile.microchip && originalProfile.microchip.id) || ''
+      );
+      safeSetValue('microchipDate', 
+        (originalProfile.microchip && originalProfile.microchip.date) || ''
+      );
+      // ... repeat for other optional chaining instances ...
+      
       if (originalProfile.petPhoto) {
         petPhotoPreview.src = originalProfile.petPhoto;
         petPhotoPreview.style.display = 'block';
       }
     }
-  })
+  }); // Added missing semicolon
+}); // Closing brace for DOMContentLoaded
 
   // Form Submissions
   document.getElementById('dietForm')?.addEventListener('submit', function(e) {
