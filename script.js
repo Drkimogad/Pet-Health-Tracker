@@ -1,10 +1,11 @@
-document.addEventListener('DOMContentLoaded', function() {
 import { setupNotifications, sendPushNotification } from './pushNotifications.js';
 // ======== FIREBASE INITIALIZATION ========
 const firebaseConfig = {
   apiKey: "AIzaSyBIej7yNj0LkkLd6VtQxBL4mEDSsHLJvig",
   projectId: "pet-health-tracker-7164d",
-  appId: "pet-health-tracker-7164d"
+  appId: "pet-health-tracker-7164d",
+  authDomain: "pet-health-tracker-7164d.firebaseapp.com", // Add this
+  storageBucket: "pet-health-tracker-7164d.appspot.com" // Add this
 };
 
 if (!firebase.apps.length) {
@@ -60,7 +61,7 @@ function switchAuthForm(targetForm) {
     formElement.querySelector('form').reset();
   }
 }
-// Helper function//
+// Helper function
 function addSafeListener(id, handler) {
   const element = document.getElementById(id);
   if (element) {
@@ -742,7 +743,6 @@ document.getElementById('loginForm')?.addEventListener('submit', function(event)
   addSafeListener('showSignUp', (e) => {
     e.preventDefault();
     switchAuthForm('signUp');
-}); // <-- This is the ONLY closing line needed
 
 
 
