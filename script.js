@@ -705,21 +705,22 @@ document.getElementById('loginForm')?.addEventListener('submit', function(event)
 
   // Service Worker (corrected)
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./service-worker.js')
-      .then(reg => console.log('Service Worker registered'))
+navigator.serviceWorker.register('/service-worker.js')
+  .then(reg => console.log('Service Worker registered'))
       .catch(err => console.error('SW registration failed:', err));
   }
 
-  // ======== INITIAL UI SETUP ========
-  addSafeListener('showLogin', (e) => {
-    e.preventDefault();
-    switchAuthForm('login');
-  });
+// ======== INITIAL UI SETUP ========
+addSafeListener('showLogin', (e) => {
+  e.preventDefault();
+  switchAuthForm('login');
+});
 
-  addSafeListener('showSignUp', (e) => {
-    e.preventDefault();
-    switchAuthForm('signUp');
+addSafeListener('showSignUp', (e) => {
+  e.preventDefault();
+  switchAuthForm('signUp');
+});
 
-
+}); // Close DOMContentLoaded
 
 
