@@ -398,9 +398,7 @@ function generateQRCode(profileIndex) {
   }
 
   const qrWindow = window.open('', 'QR Code', '`width=400,height=500,petName=${encodeURIComponent(profile.petName)}`);
-}  // Added recently this closing brace
 
-  // Load QR library FIRST in the new window
   qrWindow.document.write(`
         <html>
             <head>
@@ -447,10 +445,9 @@ function generateQRCode(profileIndex) {
                 </script>
             </body>
         </html>
-    `);  // Escape closing tag 
+    `); 
   qrWindow.document.close();
 
-  // Wait for library to load
   qrWindow.addEventListener('load', () => {
     const emergencyContact = profile.emergencyContacts?.[0] || {};
     const microchip = profile.microchip || {};
@@ -472,7 +469,6 @@ Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relatio
         `.trim();
 
     try {
-    // Use the library from the NEW WINDOW's context
       const qrcodeContainer = qrWindow.document.getElementById(
         'qrcode-container');
       qrcodeContainer.style.display = 'block';
@@ -485,7 +481,6 @@ Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relatio
         correctLevel: qrWindow.QRCode.CorrectLevel.H
       });
 
-      // Show the controls
       const qrControls = qrWindow.document.getElementById('qr-controls');
       qrControls.style.display = 'block';
 
@@ -499,6 +494,7 @@ Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relatio
     }
   });
 }  // Added recently missing closing brace
+
 // ======== MAIN INITIALIZATION ========
 document.addEventListener('DOMContentLoaded', () => {
   // Authentication Section
