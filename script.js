@@ -1,3 +1,4 @@
+'use strict'; // Add if not already present
 import { setupNotifications, sendPushNotification } from './pushNotifications.js';
 // ======== FIREBASE INITIALIZATION ========
 const firebaseConfig = {
@@ -106,10 +107,9 @@ function highlightReminders(reminders, index) {
         ${reminderLabel} was due on ${reminderDateTime.toLocaleString()}
         <button class="deleteReminderButton" 
                 data-profile-index="${index}" 
-                data-reminder="${reminderKey}">
-            Delete
-        </button>
+                data-reminder="${reminderKey}">Delete</button>
       `;
+      
       overdueContainer.appendChild(div);
     } else if (daysDiff <= REMINDER_THRESHOLD_DAYS) {
       const div = document.createElement('div');
@@ -336,8 +336,8 @@ function printPetProfile(index) {
       });
     })
     .catch(error => {
-      printWindow.document.body.innerHTML =
-        `<h1>Error: ${error.message}</h1>`;
+      console.error('Print failed:', error);
+      printWindow.document.body.innerHTML =`<h1>Error: ${error.message}</h1>`;
       printWindow.print();
     });
 }
