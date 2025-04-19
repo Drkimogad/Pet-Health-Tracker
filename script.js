@@ -562,41 +562,78 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Authentication system error. Please refresh the page.');
     });
 
-  // ======== SESSION STORAGE RECOVERY ========
-  const editingSessionKeys = Array.from({ length: sessionStorage.length })
-    .map((_, i) => sessionStorage.key(i))
-    .filter(key => key.startsWith('editingProfile_'));
+// ======== SESSION STORAGE RECOVERY ========
+const editingSessionKeys = Array.from({ length: sessionStorage.length })
+  .map((_, i) => sessionStorage.key(i))
+  .filter(key => key.startsWith('editingProfile_'));
 
-  editingSessionKeys.forEach(key => {
-    const index = parseInt(key.split('_')[1], 10);
-    const originalProfile = JSON.parse(sessionStorage.getItem(key));
+editingSessionKeys.forEach(key => {
+  const index = parseInt(key.split('_')[1], 10);
+  const originalProfile = JSON.parse(sessionStorage.getItem(key));
 
-    if (originalProfile) {
-      const safeSetValue = (id, value) => {
-        const el = document.getElementById(id);
-        if (el) el.value = value || '';
-      };
+  if (originalProfile) {
+    const safeSetValue = (id, value) => {
+      const el = document.getElementById(id);
+      if (el) el.value = value || '';
+    };
 
-      // Traditional null checks instead of optional chaining
-      safeSetValue('microchipId', 
-        (originalProfile.microchip && originalProfile.microchip.id) || ''
-      );
-      safeSetValue('microchipDate', 
-        (originalProfile.microchip && originalProfile.microchip.date) || ''
-      );
-      // ... repeat for other optional chaining instances ...
-      
-      if (originalProfile.petPhoto) {
+    // Basic Info
+    safeSetValue('petName', originalProfile.petName || '');
+    safeSetValue('breed', originalProfile.breed || '');
+    safeSetValue('age', originalProfile.age || '');
+    safeSetValue('weight', originalProfile.weight || '');
+
+    // Microchip Details
+    safeSetValue('microchipId', 
+      (originalProfile.microchip && originalProfile.microchip.id) || ''
+    );
+    safeSetValue('microchipDate', 
+      (originalProfile.microchip && originalProfile.microchip.date) || ''
+    );
+    safeSetValue('microchipVendor', 
+      (originalProfile.microchip && originalProfile.microchip.vendor) || ''
+    );
+
+    // Health Info
+    safeSetValue('allergies', originalProfile.allergies || '');
+    safeSetValue('medicalHistory', originalProfile.medicalHistory || '');
+    safeSetValue('dietPlan', originalProfile.dietPlan || '');
+
+    // Emergency Contact
+    const emergencyContact = (originalProfile.emergencyContacts && 
+                            originalProfile.emergencyContacts[0]) || {};
+    safeSetValue('emergencyContactName', emergencyContact.name || '');
+    safeSetValue('emergencyContactPhone', emergencyContact.phone || '');
+    safeSetValue('emergencyContactRelationship', emergencyContact.relationship || '');
+
+    // Mood Selector
+    safeSetValue('moodSelector', originalProfile.mood || 'default');
+
+    // Reminders
+    safeSetValue('vaccinationsAndDewormingReminder', 
+      originalProfile.vaccinationsAndDewormingReminder || ''
+    );
+    safeSetValue('medicalCheckupsReminder', 
+      originalProfile.medicalCheckupsReminder || ''
+    );
+    safeSetValue('groomingReminder', originalProfile.groomingReminder || '');
+
+    // Pet Photo
+    if (originalProfile.petPhoto) {
+      const petPhotoPreview = document.getElementById('petPhotoPreview');
+      if (petPhotoPreview) {
         petPhotoPreview.src = originalProfile.petPhoto;
         petPhotoPreview.style.display = 'block';
       }
     }
-  }); // Added missing semicolon
-}); // Closing brace for DOMContentLoaded
+  }
+});
 
   // Form Submissions
-  document.getElementById('dietForm')?.addEventListener('submit', function(e) {
-    e.preventDefault();
+const dietForm = document.getElementById('dietForm');
+if (dietForm) {
+  dietForm.addEventListener('submit', function(e) {
+    e.preventDefault(); // <-- Add semicolon here
     const formData = {
       petName: document.getElementById('petName')?.value,
       breed: document.getElementById('breed')?.value,
@@ -633,6 +670,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadSavedPetProfile();
     resetForm();
   });
+  } // <-- Closing brace for if-statement
 
   // Event Delegation
   document.getElementById('savedProfilesList')?.addEventListener('click', (e) => {
@@ -709,7 +747,13 @@ navigator.serviceWorker.register('/service-worker.js')
   .then(reg => console.log('Service Worker registered'))
       .catch(err => console.error('SW registration failed:', err));
   }
-
+  
+// Add this to catch handled errors 
+window.onerror = (msg, url, line) => {
+  alert(`Error: ${msg}\nLine: ${line}`);
+  return true; // Prevent default error logging
+};
+  
 // ======== INITIAL UI SETUP ========
 addSafeListener('showLogin', (e) => {
   e.preventDefault();
