@@ -248,7 +248,7 @@ function deletePetProfile(index) {
   }
 }
 
-// Print Pet Profile button functionality//
+// Print Pet Profile button functionality
 function printPetProfile(index) {
   const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
   const profile = savedProfiles[index];
@@ -328,8 +328,7 @@ function printPetProfile(index) {
           setTimeout(() => {
             printWindow.print();
             printWindow.onafterprint = () => {
-              if (photoDataURL) URL.revokeObjectURL(
-                photoDataURL);
+              if (photoDataURL) URL.revokeObjectURL(photoDataURL);
               printWindow.close();
             };
           }, 500);
@@ -343,7 +342,7 @@ function printPetProfile(index) {
     });
 }
 
-// Share Pet Profile button functionality//
+// Share Pet Profile button functionality
 function sharePetProfile(index) {
   const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
   const profile = savedProfiles[index];
