@@ -203,15 +203,16 @@ function loadSavedPetProfile() {
   });
 }
 
-    const reminders = {
-      vaccinationDue: profile.vaccinationsAndDewormingReminder,
-      checkupDue: profile.medicalCheckupsReminder,
-      groomingDue: profile.groomingReminder
-    };
-    highlightReminders(reminders, index);
-  });
-}
-// FUNCTION EDIT PROFILE+HELPER FUNCTION FOR USER'S NOTIFICATION
+// ====== PRETTIER-FRIENDLY VERSION ======
+// (Alternative if you prefer more compact syntax)
+const reminders = {
+  vaccinationDue: profile.vaccinationsAndDewormingReminder,
+  checkupDue: profile.medicalCheckupsReminder,
+  groomingDue: profile.groomingReminder
+};
+highlightReminders(reminders, index);
+
+// FUNCTION EDIT PROFILE/HELPER FUNCTION FOR USER'S NOTIFICATION
 // ===== HELPER FUNCTION =====
 function showSuccessNotification(action, petName) {
   const message = `${petName}'s profile was ${action} successfully!`;
