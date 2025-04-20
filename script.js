@@ -400,10 +400,10 @@ function generateQRCode(profileIndex) {
   }
 
   const qrWindow = window.open(
-    '', 
+    '',
     'QR Code',
-    '`width=400,height=500,petName=${encodeURIComponent(profile.petName)}`
-     );
+    `width=400,height=500,petName=${encodeURIComponent(profile.petName || 'PetProfile')}`
+  );
     if (!qrWindow) {
     alert("Popup blocked! Please allow popups for this site.");
     return;
