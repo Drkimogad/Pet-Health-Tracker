@@ -1,53 +1,45 @@
-// service-worker.js (combined)
-const CACHE_NAME = 'Pet-Health-Tracker-cache-11';
-const OFFLINE_URL = './offline.html';
-const CACHED_INDEX = './index.html';
+// service-worker.js
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v3'; // Changed version
+const OFFLINE_URL = '/offline.html';
+const CACHED_INDEX = '/index.html';
 
 const urlsToCache = [
+  '/',
   CACHED_INDEX,
-  './styles.css',
-  './script.js',
-  './manifest.json',
-  './icons/icon-192x192.png',
-  './icons/icon-512x512.png',
-  './icons/badge-72x72.png',
-  './favicon.ico',
+  '/styles.css',
+  '/script.js',
+  '/manifest.json',
+  '/icons/icon-192x192.png',
+  '/icons/icon-512x512.png',
+  '/icons/badge-72x72.png',
+  '/favicon.ico',
   OFFLINE_URL,
   'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js'
 ];
 
-// ======== CACHING FUNCTIONALITY ========
+// ======== Improved Install Handler ========
 self.addEventListener('install', (event) => {
-  console.log('Service Worker: Install event');
   self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('Caching core resources');
-        return cache.addAll(urlsToCache);
-      })
-      .catch(err => {
-        console.error('Cache installation failed:', err);
-      })
+      .then(cache => cache.addAll(urlsToCache))
+      .then(() => console.log('Cached core assets'))
+      .catch(err => console.error('Cache addAll error:', err))
   );
 });
 
+// ======== Smarter Fetch Handler ========
 self.addEventListener('fetch', (event) => {
   const request = event.request;
   
-  // Network-first for navigation requests
+  // Skip non-GET requests
+  if (request.method !== 'GET') return;
+
+  // Handle navigation requests
   if (request.mode === 'navigate') {
     event.respondWith(
-      (async () => {
-        try {
-          const networkResponse = await fetch(request);
-          return networkResponse;
-        } catch (err) {
-          const cached = await caches.match(CACHED_INDEX) || 
-                        await caches.match(OFFLINE_URL);
-          return cached;
-        }
-      })()
+      fetch(request)
+        .catch(() => caches.match(CACHED_INDEX) || caches.match(OFFLINE_URL))
     );
     return;
   }
@@ -55,22 +47,38 @@ self.addEventListener('fetch', (event) => {
   // Cache-first for static assets
   event.respondWith(
     caches.match(request)
-      .then(cached => cached || fetch(request))
+      .then(cached => cached || 
+        fetch(request).then(response => {
+          // Cache new responses
+          if (response.ok && !request.url.includes('chrome-extension')) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put(request, clone));
+          }
+          return response;
+        })
+      )
   );
 });
 
+// ======== Cleanup Old Caches ========
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then(keys => Promise.all(
-      keys.map(key => key !== CACHE_NAME ? caches.delete(key) : null)
-    ))
+    caches.keys().then(keys => 
+      Promise.all(
+        keys.map(key => 
+          key !== CACHE_NAME ? caches.delete(key) : Promise.resolve()
+        )
+      )
+    ).then(() => {
+      console.log('Activated new SW');
+      self.clients.claim();
+    })
   );
-  self.clients.claim();
 });
 
-// ======== PUSH NOTIFICATIONS ========
+// ======== Push Notifications ========
 self.addEventListener('push', (event) => {
-  const payload = event.data?.json() || {
+  const payload = event.data ? event.data.json() : {
     title: 'Pet Health Reminder',
     body: 'Check your pet health tracker!',
     icon: '/icons/icon-192x192.png'
@@ -81,8 +89,7 @@ self.addEventListener('push', (event) => {
       body: payload.body,
       icon: payload.icon,
       badge: '/icons/badge-72x72.png',
-      vibrate: [200, 100, 200],
-      data: payload.data || {}
+      data: { url: payload.url || '/' }
     })
   );
 });
@@ -90,10 +97,14 @@ self.addEventListener('push', (event) => {
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   event.waitUntil(
-    clients.matchAll({ type: 'window' })
+    clients.matchAll({type: 'window'})
       .then(clientList => {
-        if (clientList.length > 0) return clientList[0].focus();
-        return clients.openWindow(event.notification.data.url || '/');
+        for (const client of clientList) {
+          if (client.url === event.notification.data.url) {
+            return client.focus();
+          }
+        }
+        return clients.openWindow(event.notification.data.url);
       })
   );
 });
