@@ -120,11 +120,25 @@ function highlightReminders(reminders, index) {
   });
 }
 
+// FIXED deleteOverdueReminder FUNCTION
 function deleteOverdueReminder(profileIndex, reminderKey) {
   const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-  if (savedProfiles[profileIndex]) {
+  
+  if (savedProfiles[profileIndex] && savedProfiles[profileIndex][reminderKey]) {
+    // Create a copy of the reminder before deletion (optional)
+    const deletedReminder = savedProfiles[profileIndex][reminderKey];
+    
+    // Nullify the reminder
     savedProfiles[profileIndex][reminderKey] = null;
+    
+    // Update storage
     localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+    
+    // Show confirmation
+    const reminderLabel = reminderFields[reminderKey];
+    alert(`${reminderLabel} reminder deleted!`);
+    
+    // Refresh UI
     loadSavedPetProfile();
   }
 }
@@ -741,18 +755,41 @@ if (dietForm) {
   });
 }
   // Event Delegation
-  document.getElementById('savedProfilesList')?.addEventListener('click', (e) => {
-    const index = parseInt(e.target?.dataset?.index, 10);
-    if (e.target?.classList?.contains('editProfileButton')) {
-      editPetProfile(index);
-    } else if (e.target?.classList?.contains('deleteProfileButton')) {
-      deletePetProfile(index);
-    } else if (e.target?.classList?.contains('deleteReminderButton')) {
-      const profileIndex = parseInt(e.target.dataset.profileIndex, 10);
-      const reminderKey = e.target.dataset.reminder;
+// Event Delegation (Improved with null checks)
+document.getElementById('savedProfilesList')?.addEventListener('click', (e) => {
+  // 1. Null check for target element
+  if (!e.target || !e.target.classList) return;
+
+  // 2. Edit Profile Button
+  if (e.target.classList.contains('editProfileButton')) {
+    const index = parseInt(e.target.dataset?.index || '', 10);
+    if (!isNaN(index)) editPetProfile(index);
+    else console.error('Invalid edit index:', e.target.dataset.index);
+  }
+
+  // 3. Delete Profile Button
+  else if (e.target.classList.contains('deleteProfileButton')) {
+    const index = parseInt(e.target.dataset?.index || '', 10);
+    if (!isNaN(index)) deletePetProfile(index);
+    else console.error('Invalid delete index:', e.target.dataset.index);
+  }
+
+  // 4. Delete Reminder Button (Your specific case)
+  else if (e.target.classList.contains('deleteReminderButton')) {
+    const profileIndex = parseInt(e.target.dataset?.profileIndex || '', 10);
+    const reminderKey = e.target.dataset?.reminder;
+    
+    if (!isNaN(profileIndex) && reminderKey && reminderFields[reminderKey]) {
       deleteOverdueReminder(profileIndex, reminderKey);
+    } else {
+      console.error('Invalid reminder deletion:', {
+        profileIndex,
+        reminderKey,
+        validKeys: Object.keys(reminderFields)
+      });
     }
-  });
+  }
+});
 
 // ======== AUTHENTICATION HANDLERS ========
 // ======== SIGN-UP HANDLER ========
