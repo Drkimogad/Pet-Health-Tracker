@@ -169,7 +169,23 @@ function loadSavedPetProfile() {
         </div>
       </div>
     `;
-    savedProfilesList.appendChild(petCard);
+// Helper to safely add listeners
+const addButtonListener = (buttonClass, handler) => {
+  const btn = petCard.querySelector(buttonClass);
+  if (btn) {
+    btn.removeEventListener('click', handler); // Prevent duplicates
+    btn.addEventListener('click', handler);
+  }
+};
+// ====== INSERT EVENT LISTENERS RIGHT HERE ======
+// Add these 3 lines immediately after petCard.innerHTML:
+    addButtonListener('.editProfileButton', () => editPetProfile(index));
+    addButtonListener('.deleteProfileButton', () => deletePetProfile(index));
+    petCard.querySelector('.printProfileButton').addEventListener('click', () => printPetProfile(index));
+    petCard.querySelector('.shareProfileButton').addEventListener('click', () => sharePetProfile(index));
+    petCard.querySelector('.generateQRButton').addEventListener('click', () => generateQRCode(index));
+    // ====== END OF INSERTION ======
+  savedProfilesList.appendChild(petCard);
 
     const reminders = {
       vaccinationDue: profile.vaccinationsAndDewormingReminder,
