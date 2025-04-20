@@ -346,26 +346,28 @@ function printPetProfile(index) {
 function sharePetProfile(index) {
   const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
   const profile = savedProfiles[index];
-  const emergencyContact = profile.emergencyContacts?.[0] || {};
+  const emergencyContact = (profile.emergencyContacts && profile.emergencyContacts[0]) || {};
 
   const shareData = {
     title: `${profile.petName}'s Health Profile`,
-    text: `Pet Details:\n${Object.entries({
-            Name: profile.petName,
-            Breed: profile.breed,
-            Age: profile.age,
-            Weight: profile.weight,
-            'Microchip ID': profile.microchip?.id,
-            Allergies: profile.allergies,
-            'Medical History': profile.medicalHistory,
-            'Diet Plan': profile.dietPlan,
-            'Vaccinations/Deworming': profile.vaccinationsAndDewormingReminder,
-            'Medical Check-ups': profile.medicalCheckupsReminder,
-            Grooming: profile.groomingReminder,
-            'Emergency Contact': `${emergencyContact.name} (${emergencyContact.relationship}) - ${emergencyContact.phone}`
-        }).map(([key, val]) =>
-    `${key}: ${val || 'N/A'}`  // Remove line breaks inside template placeholders
-    `).join('\n')}`,
+    text: `Pet Details:\n${
+      Object.entries({
+        Name: profile.petName,
+        Breed: profile.breed,
+        Age: profile.age,
+        Weight: profile.weight,
+        'Microchip ID': (profile.microchip && profile.microchip.id) || 'N/A',
+        Allergies: profile.allergies || 'N/A',
+        'Medical History': profile.medicalHistory || 'N/A',
+        'Diet Plan': profile.dietPlan || 'N/A',
+        'Vaccinations/Deworming': profile.vaccinationsAndDewormingReminder || 'N/A',
+        'Medical Check-ups': profile.medicalCheckupsReminder || 'N/A',
+        Grooming: profile.groomingReminder || 'N/A',
+        'Emergency Contact': `${emergencyContact.name || 'N/A'} (${emergencyContact.relationship || 'N/A'}) - ${emergencyContact.phone || 'N/A'}`
+      })
+      .map(([key, val]) => `${key}: ${val}`)
+      .join('\n')
+    }`,
     url: window.location.href
   };
 
