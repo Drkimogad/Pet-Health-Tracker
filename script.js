@@ -691,11 +691,11 @@ editingSessionKeys.forEach(key => {
   }
 });
 
-  // Form Submissions
+// Form Submissions
 const dietForm = document.getElementById('dietForm');
 if (dietForm) {
   dietForm.addEventListener('submit', function(e) {
-    e.preventDefault(); // <-- Add semicolon here
+    e.preventDefault();
     const formData = {
       petName: document.getElementById('petName')?.value,
       breed: document.getElementById('breed')?.value,
@@ -723,29 +723,23 @@ if (dietForm) {
 
     const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
     if (editingProfileIndex !== null) {
+      // Editing existing profile
       const oldName = savedProfiles[editingProfileIndex].petName || 'Unnamed Pet';
       savedProfiles[editingProfileIndex] = formData;
       localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
-          // NEW: Show update notification
-      showSuccessNotification('Profile updated', oldName); // Uses original name for consistency
-
+      showSuccessNotification('Profile updated', oldName);
       editingProfileIndex = null;
     } else {
+      // Creating new profile
       savedProfiles.push(formData);
+      localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+      showSuccessNotification('Profile saved', formData.petName || 'Unnamed Pet');
     }
-    localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
-    
-     // 4. NEW: Show creation notification
-      showSuccessNotification(
-        'Profile is saved successfully',
-        formData.petName || 'Unnamed Pet' 
-      );
-    }
+
     loadSavedPetProfile();
     resetForm();
   });
-  } // <-- Closing brace for if-statement
-
+}
   // Event Delegation
   document.getElementById('savedProfilesList')?.addEventListener('click', (e) => {
     const index = parseInt(e.target?.dataset?.index, 10);
