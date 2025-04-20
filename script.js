@@ -753,31 +753,33 @@ if (dietForm) {
       deleteOverdueReminder(profileIndex, reminderKey);
     }
   });
-// Auth handlers
-// ======== SIGN-UP HANDLER ========
-const signUpForm = document.getElementById('signUpForm');
-if (signUpForm) {
-  signUpForm.addEventListener('submit', function(event) {
-    event.preventDefault();
-    const form = this; // Capture form reference
-    
-    const email = form.querySelector('#signUpEmail').value.trim();
-    const password = form.querySelector('#signUpPassword').value.trim();
 
-    firebase.auth().createUserWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        console.log('User created:', userCredential.user);
-        alert('Sign-up successful! Please login.');
-        form.reset(); // Use captured reference
-        switchAuthForm('login');
-      })
-      .catch((error) => {
-        console.error('Sign-up error:', error);
-        alert(`Sign-up failed: ${error.message}`);
-        // Removed reset to allow error correction
-      });
-  });
-}
+// ======== AUTHENTICATION HANDLERS ========
+// ======== SIGN-UP HANDLER ========
+document.getElementById('signUpForm')?.addEventListener('submit', function(event) {
+  event.preventDefault();
+  const email = this.querySelector('#signUpEmail').value.trim();
+  const password = this.querySelector('#signUpPassword').value.trim();
+
+  firebase.auth().createUserWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      console.log('User created:', userCredential.user);
+      alert('Sign-up successful! Please login.');
+      this.reset();
+      
+      // NEW: Automatically sign out after registration
+      return firebase.auth().signOut(); // <-- This ensures clean login flow
+    })
+    .then(() => {
+      // Force show login form
+      switchAuthForm('login'); // <-- This redirects to login
+    })
+    .catch((error) => {
+      console.error('Sign-up error:', error);
+      alert(`Sign-up failed: ${error.message}`);
+      // Don't reset form to allow error correction
+    });
+});
 
 // ======== LOGIN HANDLER ========
 const loginForm = document.getElementById('loginForm');
