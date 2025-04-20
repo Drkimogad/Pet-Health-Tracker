@@ -399,8 +399,15 @@ function generateQRCode(profileIndex) {
     return;
   }
 
-  const qrWindow = window.open('', 'QR Code', '`width=400,height=500,petName=${encodeURIComponent(profile.petName)}`);
-
+  const qrWindow = window.open(
+    '', 
+    'QR Code',
+    '`width=400,height=500,petName=${encodeURIComponent(profile.petName)}`
+     );
+    if (!qrWindow) {
+    alert("Popup blocked! Please allow popups for this site.");
+    return;
+  }
   qrWindow.document.write(`
         <html>
             <head>
