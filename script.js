@@ -762,13 +762,30 @@ document.getElementById('loginForm')?.addEventListener('submit', function(event)
         });
     });
   }
-
-  // Service Worker (corrected)
-  if ('serviceWorker' in navigator) {
-navigator.serviceWorker.register('/service-worker.js')
-  .then(reg => console.log('Service Worker registered'))
-      .catch(err => console.error('SW registration failed:', err));
-  }
+// Updated Service Worker Registration
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    const swUrl = '/service-worker.js';
+    
+    // First check if the SW file exists
+    fetch(swUrl)
+      .then(response => {
+        if (!response.ok) throw new Error('SW file not found');
+        
+        // Only register if file exists
+        navigator.serviceWorker.register(swUrl)
+          .then(registration => {
+            console.log('SW registered:', registration.scope);
+            registration.update(); // Check for updates immediately
+          })
+          .catch(err => console.error('SW registration failed:', err));
+      })
+      .catch(err => {
+        console.warn('Service worker not available:', err);
+        // Optional: Show "Offline mode" notification to user
+      });
+  });
+}
   
 // Add this to catch handled errors 
 window.onerror = (msg, url, line) => {
