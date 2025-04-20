@@ -195,7 +195,18 @@ const addButtonListener = (buttonClass, handler) => {
     highlightReminders(reminders, index);
   });
 }
-
+// Function edit petprofile
+// ===== ADD THIS HELPER FUNCTION =====
+function showSuccessNotification(action, petName) {
+  const message = `${petName}'s profile was ${action} successfully!`;
+  
+  // Browser notification (if permissions allowed)
+  if ('Notification' in window && Notification.permission === 'granted') {
+    new Notification('Success', { body: message });
+  }  
+  // Always show alert as fallback
+  alert(message);
+}
 function editPetProfile(index) {
   const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
   const profile = savedProfiles[index];
@@ -258,9 +269,14 @@ function handleCancelEdit() {
 function deletePetProfile(index) {
   const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
   if (index >= 0 && index < savedProfiles.length) {
+    // Store pet name before deletion for notification
+    const petName = savedProfiles[index].petName || 'Unnamed Pet';
+    
     savedProfiles.splice(index, 1);
     localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
     loadSavedPetProfile();
+    // Show deletion notification
+    showSuccessNotification('Profile deleted', petName);
   }
 }
 
@@ -710,6 +726,13 @@ if (dietForm) {
       savedProfiles.push(formData);
     }
     localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+    
+     // 4. NEW: Show creation notification
+      showSuccessNotification(
+        'Profile is saved successfully',
+        formData.petName || 'Unnamed Pet' 
+      );
+    }
     loadSavedPetProfile();
     resetForm();
   });
