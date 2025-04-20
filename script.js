@@ -195,8 +195,8 @@ const addButtonListener = (buttonClass, handler) => {
     highlightReminders(reminders, index);
   });
 }
-// Function edit petprofile
-// ===== ADD THIS HELPER FUNCTION =====
+// FUNCTION EDIT PROFILE+HELPER FUNCTION FOR USER'S NOTIFICATION
+// ===== HELPER FUNCTION =====
 function showSuccessNotification(action, petName) {
   const message = `${petName}'s profile was ${action} successfully!`;
   
@@ -207,6 +207,7 @@ function showSuccessNotification(action, petName) {
   // Always show alert as fallback
   alert(message);
 }
+// FUNCTION EDIT PROFILE
 function editPetProfile(index) {
   const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
   const profile = savedProfiles[index];
@@ -265,7 +266,7 @@ function handleCancelEdit() {
   }
   resetForm();
 }
-
+// FUNCTION DELETE PROFILE
 function deletePetProfile(index) {
   const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
   if (index >= 0 && index < savedProfiles.length) {
@@ -720,7 +721,12 @@ if (dietForm) {
 
     const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
     if (editingProfileIndex !== null) {
+      const oldName = savedProfiles[editingProfileIndex].petName || 'Unnamed Pet';
       savedProfiles[editingProfileIndex] = formData;
+      localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+          // NEW: Show update notification
+      showSuccessNotification('Profile updated', oldName); // Uses original name for consistency
+
       editingProfileIndex = null;
     } else {
       savedProfiles.push(formData);
