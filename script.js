@@ -765,7 +765,7 @@ document.getElementById('loginForm')?.addEventListener('submit', function(event)
 // Updated Service Worker Registration
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    const swUrl = '/service-worker.js';
+    const swUrl = 'https://drkimogad.github.io/Pet-Health-Tracker/service-worker.js';
     
     // First check if the SW file exists
     fetch(swUrl)
