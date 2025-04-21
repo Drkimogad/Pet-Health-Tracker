@@ -62,6 +62,22 @@ function initializeFirebaseServices() {
   }
 }
 // ======================
+// AUTH TRIGGERS (GOOGLE DRIVE SYNC)
+// ======================
+auth.onAuthStateChanged(async (user) => {
+  if (user) {
+    console.log("👤 User signed in, initializing Drive...");
+    try {
+      await initGoogleDriveAPI(); // Load Drive API
+      await processSyncQueue();   // Sync pending changes
+    } catch (error) {
+      console.error("Drive init failed:", error);
+    }
+  } else {
+    console.log("👤 User signed out");
+  }
+});
+// ======================
 // INDEXEDDB (OFFLINE-FIRST)
 // ======================
 let petDB; // Global reference to IndexedDB
@@ -102,7 +118,7 @@ async function initGoogleDriveAPI() {
     gapi.load('client:auth2', async () => {
       await gapi.client.init({
         apiKey: firebaseConfig.apiKey,
-        clientId: 'YOUR_GOOGLE_CLOUD_CLIENT_ID', // Replace!
+        clientId: '251170885789-m02ir3l60sn2pp6dveepdd7jk2ucb5hn.apps.googleusercontent.com', // Replace!
         discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
         scope: 'https://www.googleapis.com/auth/drive.file',
       });
@@ -228,8 +244,6 @@ async function processSyncQueue() {
 
 // Call this when network status changes
 window.addEventListener('online', processSyncQueue);
-
-
 
 // ========================
 // SAFE SERVICE ACCESSORS
