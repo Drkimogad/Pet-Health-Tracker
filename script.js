@@ -503,67 +503,206 @@ function deleteOverdueReminder(profileIndex, reminderKey) {
     loadSavedPetProfile();
   }
 }
-// Function Load savedpetProfiles 
-function loadSavedPetProfile() {
-  const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-  const savedProfilesList = document.getElementById('savedProfilesList');
-  if (!savedProfilesList) return;
+// ======================
+// MODAL UTILITIES
+// ======================
+function showModal(content) {
+  // Create or reuse modal elements
+  let modal = document.getElementById('pet-modal');
+  let overlay = document.getElementById('modal-overlay');
 
-  savedProfilesList.innerHTML = '';
+  if (!modal) {
+    // Create modal structure if it doesn't exist
+    overlay = document.createElement('div');
+    overlay.id = 'modal-overlay';
+    overlay.className = 'modal-overlay';
+    
+    modal = document.createElement('div');
+    modal.id = 'pet-modal';
+    modal.className = 'modal-content';
+    
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'close-modal';
+    closeBtn.innerHTML = '&times;';
+    closeBtn.addEventListener('click', hideModal);
+    
+    modal.appendChild(closeBtn);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+    
+    // Close modal when clicking outside content
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) hideModal();
+    });
+  }
 
-  savedProfiles.forEach((profile, index) => {
-    const emergencyContact = profile.emergencyContacts?.[0] || {};
-    const petCard = document.createElement('li');
-    petCard.className = 'pet-card';
-    petCard.innerHTML = `
-      <div class="pet-card-content">
-        <h4>${profile.petName || 'Unnamed Pet'}</h4>
-        ${profile.petPhoto ? `<img src="${profile.petPhoto}" alt="Pet Photo" class="pet-photo"/>` : ''}
-        <p>Breed: ${profile.breed || 'N/A'}</p>
-        <p>Age: ${profile.age || 'N/A'}</p>
-        <p>Weight: ${profile.weight || 'N/A'}</p>
-        <p>Microchip ID: ${profile.microchip?.id || 'N/A'}</p>
-        <p>Implant Date: ${profile.microchip?.date || 'N/A'}</p>
-        <p>Vendor: ${profile.microchip?.vendor || 'N/A'}</p>
-        <p>Allergies: ${profile.allergies || 'N/A'}</p>
-        <p>Medical History: ${profile.medicalHistory || 'N/A'}</p>
-        <p>Diet Plan: ${profile.dietPlan || 'N/A'}</p>
-        <p>Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relationship || 'N/A'}) - ${emergencyContact.phone || 'N/A'}</p>
-        <p>Mood: ${profile.mood || 'N/A'}</p>
-        <p>Vaccinations/Deworming: ${formatReminder(profile.vaccinationsAndDewormingReminder)}</p>
-        <p>Medical Check-ups: ${formatReminder(profile.medicalCheckupsReminder)}</p>
-        <p>Grooming: ${formatReminder(profile.groomingReminder)}</p>
-        <div id="overdueReminders-${index}" class="overdueReminders"></div>
-        <div id="upcomingReminders-${index}" class="upcomingReminders"></div>
-        <div class="pet-card-buttons">
-          <button class="editProfileButton" data-index="${index}">Edit</button>
-          <button class="deleteProfileButton" data-index="${index}">Delete</button>
-          <button class="printProfileButton" data-index="${index}">Print</button>
-          <button class="shareProfileButton" data-index="${index}">Share</button>
-          <button class="generateQRButton" data-index="${index}">QR Code</button>
-        </div>
-      </div>
-    `;
-    // SAFE LISTENER ATTACHMENT (REQUIRED)
-    const addListener = (selector, handler) => {
-      const btn = petCard.querySelector(selector);
-      if (btn) {
-        btn.removeEventListener('click', handler);
-        btn.addEventListener('click', handler);
-      }
-    };
-// ====== INSERT EVENT LISTENERS RIGHT HERE ======
-// Add these 3 lines immediately after petCard.innerHTML:
-    addButtonListener('.editProfileButton', () => editPetProfile(index));
-    addButtonListener('.deleteProfileButton', () => deletePetProfile(index));
-    petCard.querySelector('.printProfileButton').addEventListener('click', () => printPetProfile(index));
-    petCard.querySelector('.shareProfileButton').addEventListener('click', () => sharePetProfile(index));
-    petCard.querySelector('.generateQRButton').addEventListener('click', () => generateQRCode(index));
-    // ====== END OF INSERTION ======
-  savedProfilesList.appendChild(petCard);
-  });
+  // Insert content and show
+  modal.innerHTML = `
+    <button class="close-modal">&times;</button>
+    ${content}
+  `;
+  modal.querySelector('.close-modal').addEventListener('click', hideModal);
+  
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden'; // Prevent page scrolling
 }
 
+function hideModal() {
+  const overlay = document.getElementById('modal-overlay');
+  if (overlay) {
+    overlay.classList.remove('active');
+    document.body.style.overflow = ''; // Re-enable scrolling
+  }
+}
+// Add this to handle ESC key
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') hideModal();
+});
+
+// Add this to trap focus within modal
+function trapFocus(modal) {
+  const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+
+  modal.addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab') return;
+    
+    if (e.shiftKey) {
+      if (document.activeElement === first) {
+        last.focus();
+        e.preventDefault();
+      }
+    } else {
+      if (document.activeElement === last) {
+        first.focus();
+        e.preventDefault();
+      }
+    }
+  });
+}
+// ======================
+// LOAD SAVED PET PROFILES (UPDATED)
+// ======================
+async function loadSavedPetProfile() {
+  try {
+    // Get profiles from hybrid storage (Drive + IndexedDB fallback)
+    let savedProfiles = [];
+    
+    if (auth.currentUser && gapiInitialized) {
+      savedProfiles = await loadPets(); // From hybrid storage
+    } else {
+      // Fallback to localStorage
+      savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+    }
+
+    const savedProfilesList = document.getElementById('savedProfilesList');
+    if (!savedProfilesList) return;
+
+    savedProfilesList.innerHTML = '';
+
+    if (savedProfiles.length === 0) {
+      savedProfilesList.innerHTML = '<li class="no-profiles">No pet profiles found</li>';
+      return;
+    }
+
+    savedProfiles.forEach((profile, index) => {
+      const emergencyContact = profile.emergencyContacts?.[0] || {};
+      const petCard = document.createElement('li');
+      petCard.className = 'pet-card';
+      
+      petCard.innerHTML = `
+        <div class="pet-card-content">
+          <div class="pet-header">
+            ${profile.petPhoto ? 
+              `<img src="${profile.petPhoto}" alt="Pet Photo" class="pet-photo"/>` : 
+              '<div class="pet-photo placeholder">🐾</div>'}
+            <h4>${profile.petName || 'Unnamed Pet'}</h4>
+          </div>
+          
+          <div class="pet-details">
+            <p><strong>Type:</strong> ${profile.type || 'Unknown'}</p>
+            <p><strong>Breed:</strong> ${profile.breed || 'N/A'}</p>
+            <p><strong>Age:</strong> ${profile.age || 'N/A'}</p>
+            <p><strong>Weight:</strong> ${profile.weight || 'N/A'}</p>
+            <p><strong>Gender:</strong> ${profile.gender || 'Unknown'}</p>
+          </div>
+          
+          <div class="pet-actions">
+            <button class="editProfileButton" data-id="${profile.id}">Edit</button>
+            <button class="deleteProfileButton" data-id="${profile.id}">Delete</button>
+            <button class="viewDetailsButton">Details</button>
+          </div>
+        </div>
+      `;
+
+      // Safe event listener attachment
+      const addListener = (selector, handler) => {
+        const btn = petCard.querySelector(selector);
+        if (btn) btn.addEventListener('click', handler);
+      };
+
+      addListener('.editProfileButton', () => editPetProfile(profile.id));
+      addListener('.deleteProfileButton', () => deletePetProfile(profile.id));
+      addListener('.viewDetailsButton', () => showPetDetails(profile));
+
+      savedProfilesList.appendChild(petCard);
+    });
+
+  } catch (error) {
+    console.error('Load error:', error);
+    showAuthError('Failed to load pet profiles');
+  }
+}
+
+// Helper function to show detailed view
+function showPetDetails(profile) {
+  const emergencyContact = profile.emergencyContacts?.[0] || {};
+  
+  const detailsHtml = `
+    <h3>${profile.petName || 'Unnamed Pet'}</h3>
+    ${profile.petPhoto ? `<img src="${profile.petPhoto}" class="detail-photo">` : ''}
+      
+      <div class="details-grid">
+        <div><strong>Type:</strong> ${profile.type || 'Unknown'}</div>
+        <div><strong>Breed:</strong> ${profile.breed || 'N/A'}</div>
+        <div><strong>Age:</strong> ${profile.age || 'N/A'}</div>
+        <div><strong>Weight:</strong> ${profile.weight || 'N/A'}</div>
+        <div><strong>Gender:</strong> ${profile.gender || 'Unknown'}</div>
+        
+        <div class="section-break"><strong>Microchip:</strong></div>
+        <div>ID: ${profile.microchip?.id || 'N/A'}</div>
+        <div>Date: ${profile.microchip?.date || 'N/A'}</div>
+        <div>Vendor: ${profile.microchip?.vendor || 'N/A'}</div>
+        
+        <div class="section-break"><strong>Health:</strong></div>
+        <div>Allergies: ${profile.allergies || 'N/A'}</div>
+        <div>Medical History: ${profile.medicalHistory || 'N/A'}</div>
+        <div>Diet Plan: ${profile.dietPlan || 'N/A'}</div>
+        <div>Current Mood: ${profile.mood || 'N/A'}</div>
+        
+        <div class="section-break"><strong>Reminders:</strong></div>
+        <div>Vaccinations: ${formatReminder(profile.vaccinationsAndDewormingReminder)}</div>
+        <div>Checkups: ${formatReminder(profile.medicalCheckupsReminder)}</div>
+        <div>Grooming: ${formatReminder(profile.groomingReminder)}</div>
+        
+        <div class="section-break"><strong>Emergency Contact:</strong></div>
+        <div>Name: ${emergencyContact.name || 'N/A'}</div>
+        <div>Phone: ${emergencyContact.phone || 'N/A'}</div>
+        <div>Relationship: ${emergencyContact.relationship || 'N/A'}</div>
+       </div>
+       <div class="modal-actions">
+      <button class="print-btn" onclick="window.print()">Print</button>
+      <button class="close-btn" onclick="hideModal()">Close</button>
+      </div>
+      
+      <button class="close-details">Close</button>
+    </div>
+  `;
+  
+  // Implement your modal display logic here
+  showModal(detailsHtml);
+}
 // ====== PRETTIER-FRIENDLY VERSION ======
 // (Alternative if you prefer more compact syntax)
 const reminders = {
@@ -1065,12 +1204,16 @@ editingSessionKeys.forEach(key => {
   }
 });
 
-// Form Submissions
-const dietForm = document.getElementById('dietForm');
-if (dietForm) {
-  dietForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const formData = {
+// ======================
+// FORM SUBMISSION (UPDATED)
+// ======================
+document.getElementById('dietForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  try {
+    // Get all form data (preserving your existing structure)
+    const petData = {
+      // Your existing fields
       petName: document.getElementById('petName')?.value,
       breed: document.getElementById('breed')?.value,
       age: document.getElementById('age')?.value,
@@ -1092,28 +1235,59 @@ if (dietForm) {
       vaccinationsAndDewormingReminder: document.getElementById('vaccinationsAndDewormingReminder')?.value,
       medicalCheckupsReminder: document.getElementById('medicalCheckupsReminder')?.value,
       groomingReminder: document.getElementById('groomingReminder')?.value,
-      petPhoto: document.getElementById('petPhotoPreview')?.src || ''
+      
+      // New fields we're adding
+      id: generateUniqueId(),
+      ownerId: auth.currentUser?.uid || 'local-user',
+      lastUpdated: Date.now(),
+      createdAt: Date.now(),
+      type: 'Unknown', // Will add to form later
+      gender: 'Unknown' // Will add to form later
     };
 
-    const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-    if (editingProfileIndex !== null) {
-      // Editing existing profile
-      const oldName = savedProfiles[editingProfileIndex].petName || 'Unnamed Pet';
-      savedProfiles[editingProfileIndex] = formData;
-      localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
-      showSuccessNotification('Profile updated', oldName);
-      editingProfileIndex = null;
-    } else {
-      // Creating new profile
-      savedProfiles.push(formData);
-      localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
-      showSuccessNotification('Profile saved', formData.petName || 'Unnamed Pet');
+    // Handle image upload (keeping your preview logic)
+    const fileInput = document.getElementById('petPhoto');
+    if (fileInput.files[0]) {
+      petData.petPhoto = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          document.getElementById('petPhotoPreview').src = e.target.result;
+          resolve(e.target.result);
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      });
     }
 
-    loadSavedPetProfile();
+    // Save using hybrid approach
+    if (auth.currentUser && gapiInitialized) {
+      await savePet(petData); // Google Drive + IndexedDB
+    } else {
+      // LocalStorage fallback (your existing code)
+      const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+      if (editingProfileIndex !== null) {
+        savedProfiles[editingProfileIndex] = petData;
+        editingProfileIndex = null;
+      } else {
+        savedProfiles.push(petData);
+      }
+      localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+    }
+
+    // UI Feedback
+    showSuccessNotification(
+      editingProfileIndex !== null ? 'Profile updated' : 'Profile saved',
+      petData.petName || 'Unnamed Pet'
+    );
+
+    // Reset and reload
+    loadSavedProfiles();
     resetForm();
-  });
-}
+
+  } catch (error) {
+    console.error('Save error:', error);
+    showAuthError('Failed to save profile. Please try again.');
+  }
+});
   // Event Delegation
 // Event Delegation (Improved with null checks)
 document.getElementById('savedProfilesList')?.addEventListener('click', (e) => {
