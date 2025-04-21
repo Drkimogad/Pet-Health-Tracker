@@ -205,6 +205,30 @@ async function loadPets() {
   
   return mergedPets;
 }
+//  Implement loadPetsFromDrive
+async function loadPetsFromDrive() {
+  try {
+    const folderId = await getPetFolderId();
+    const response = await gapi.client.drive.files.list({
+      q: `'${folderId}' in parents and mimeType='application/json' and trashed=false`,
+      fields: 'files(id, name)'
+    });
+
+    const pets = [];
+    for (const file of response.result.files) {
+      const petFile = await gapi.client.drive.files.get({
+        fileId: file.id,
+        alt: 'media'
+      });
+      pets.push(petFile.result);
+    }
+
+    return pets;
+  } catch (error) {
+    console.error('Failed to load pets from Drive:', error);
+    return [];
+  }
+}
 
 // Drive Folder Management
 async function getPetFolderId() {
