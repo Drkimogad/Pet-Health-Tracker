@@ -309,26 +309,68 @@ const reminderFields = {
 function generateUniqueId() {
   return 'pet-' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
 }
-// B. Default petData Creator
-function createNewPet() {
+// B. Form-to-Data Mapping
+function getPetDataFromForm() {
   return {
-    id: generateUniqueId(),
-    ownerId: auth.currentUser?.uid || "",
+    // === Auto-generated Fields ===
+    id: document.getElementById('petName').value.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now().toString(36),
+    ownerId: auth.currentUser.uid,
     lastUpdated: Date.now(),
     createdAt: Date.now(),
-    name: "",
-    type: "",
-    breed: "",
-    age: 0,
-    weight: 0,
-    gender: "",
-    avatar: "",
-    vaccinations: [],
-    medications: [],
-    vetVisits: []
+
+    // === Basic Information ===
+    name: document.getElementById('petName').value,
+    type: 'Unknown', // Not in form - we'll add a dropdown later
+    breed: document.getElementById('breed').value,
+    age: parseFloat(document.getElementById('age').value) || 0,
+    weight: parseFloat(document.getElementById('weight').value) || 0,
+    gender: 'Unknown', // Not in form - we'll add this later
+    avatar: '', // Will handle image upload separately
+
+    // === Microchip Information ===
+    microchip: {
+      id: document.getElementById('microchipId').value,
+      date: document.getElementById('microchipDate').value,
+      vendor: document.getElementById('microchipVendor').value
+    },
+
+    // === Health Information ===
+    allergies: document.getElementById('allergies').value,
+    medicalHistory: document.getElementById('medicalHistory').value,
+    dietPlan: document.getElementById('dietPlan').value,
+    mood: document.getElementById('moodSelector').value,
+
+    // === Emergency Contact ===
+    emergencyContact: {
+      name: document.getElementById('emergencyContactName').value,
+      phone: document.getElementById('emergencyContactPhone').value,
+      relationship: document.getElementById('emergencyContactRelationship').value
+    },
+
+    // === Reminders ===
+    reminders: {
+      vaccinations: document.getElementById('vaccinationsAndDewormingReminder').value,
+      checkups: document.getElementById('medicalCheckupsReminder').value,
+      grooming: document.getElementById('groomingReminder').value
+    }
   };
 }
-
+//Handling Image Uploads
+async function handlePetPhotoUpload() {
+  const fileInput = document.getElementById('petPhoto');
+  if (!fileInput.files[0]) return '';
+  
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const preview = document.getElementById('petPhotoPreview');
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+      resolve(e.target.result); // Returns base64 encoded image
+    };
+    reader.readAsDataURL(fileInput.files[0]);
+  });
+}
 
 // FUNCTION FORMAT REMINDER
 function formatReminder(dateTimeString) {
