@@ -205,7 +205,8 @@ async function loadPets() {
   
   return mergedPets;
 }
-//  Implement loadPetsFromDrive
+// fetches all JSON pet files from the user’s Drive folder.
+// Returns an empty array if fails (fallback to IndexedDB).
 async function loadPetsFromDrive() {
   try {
     const folderId = await getPetFolderId();
@@ -304,12 +305,38 @@ const reminderFields = {
 };
 
 // ======== CORE FUNCTIONS ========
+// A. Generate Unique ID
+function generateUniqueId() {
+  return 'pet-' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+}
+// B. Default petData Creator
+function createNewPet() {
+  return {
+    id: generateUniqueId(),
+    ownerId: auth.currentUser?.uid || "",
+    lastUpdated: Date.now(),
+    createdAt: Date.now(),
+    name: "",
+    type: "",
+    breed: "",
+    age: 0,
+    weight: 0,
+    gender: "",
+    avatar: "",
+    vaccinations: [],
+    medications: [],
+    vetVisits: []
+  };
+}
+
+
+// FUNCTION FORMAT REMINDER
 function formatReminder(dateTimeString) {
   if (!dateTimeString) return 'N/A';
   const date = new Date(dateTimeString);
   return date.toLocaleString();
 }
-
+// FUNCTION REMINDER VALIDATION
 function validateReminder(reminderData) {
   const standardizedType = REMINDER_TYPE_MAP[reminderData.type];
   if (!ALLOWED_REMINDER_TYPES.includes(standardizedType)) {
