@@ -133,7 +133,8 @@ async function initGoogleDriveAPI() {
 // A. SAVE PET, HYBRID
 async function savePet(petData) {
   // Add metadata
-  petData.lastUpdated = Date.now();
+  petData.lastUpdated = Date.now();  // Timestamp for conflict resolution
+  petData.ownerId = auth.currentUser.uid; // Link to user
   // 1. Save to IndexedDB
   const tx = petDB.transaction('pets', 'readwrite');
   const store = tx.objectStore('pets');
@@ -179,27 +180,32 @@ async function syncPetToDrive(petData) {
 }
 // C. Load Pets (Hybrid)
 async function loadPets() {
+    let pets = [];
   // 1. Try Google Drive first (if online)
   if (navigator.onLine && gapiInitialized) {
     try {
-      const pets = await loadPetsFromDrive();
-      if (pets.length > 0) {
-        await savePetsToIndexedDB(pets); // Update local cache
-        return pets;
-      }
+       pets = await loadPetsFromDrive();
     } catch (error) {
-      console.warn('Drive load failed, falling back to IndexedDB');
+      console.warn("Drive load failed:", error);
     }
   }
-
-  // 2. Fallback to IndexedDB
-  return new Promise((resolve) => {
+  // 2. Merge with IndexedDB (keep newest version)
+  const localPets = await new Promise((resolve) => {
     const tx = petDB.transaction('pets', 'readonly');
-    tx.objectStore('pets').getAll().onsuccess = (event) => {
-      resolve(event.target.result || []);
-    };
+    tx.objectStore('pets').getAll().onsuccess = (e) => resolve(e.target.result || []);
   });
+  // Conflict resolution: Keep the newest version
+  const mergedPets = [...pets, ...localPets].reduce((acc, pet) => {
+    const existing = acc.find(p => p.id === pet.id);
+    if (!existing || pet.lastUpdated > existing.lastUpdated) {
+      return [...acc.filter(p => p.id !== pet.id), pet];
+    }
+    return acc;
+  }, []);
+  
+  return mergedPets;
 }
+
 // Drive Folder Management
 async function getPetFolderId() {
   // Check if folder exists
