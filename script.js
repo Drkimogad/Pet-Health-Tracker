@@ -8,24 +8,83 @@ window.onerror = (msg, url, line) => {
 'use strict'; // Add if not already present
 import { setupNotifications, sendPushNotification } from './pushNotifications.js';
 // ======== FIREBASE INITIALIZATION ========
+// ======================
+// ENHANCED FIREBASE INIT
+// ======================
 const firebaseConfig = {
   apiKey: "AIzaSyBIej7yNj0LkkLd6VtQxBL4mEDSsHLJvig",
   projectId: "pet-health-tracker-7164d",
-  appId: "pet-health-tracker-7164d",
-  authDomain: "pet-health-tracker-7164d.firebaseapp.com", // Add this
-  storageBucket: "pet-health-tracker-7164d.appspot.com" // Add this
+  appId: "1:540185558422:web:d560ac90eb1dff3e5071b7", // Added full appId format
+  authDomain: "pet-health-tracker-7164d.firebaseapp.com",
+  storageBucket: "pet-health-tracker-7164d.appspot.com",
+  messagingSenderId: "540185558422", // Added missing field
+  measurementId: "G-XXXXXXXXXX" // Recommended for Firebase Analytics
 };
 
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
+// Global service references
+
+function initializeFirebaseServices() {
+  try {
+    // Safety check for multiple initializations
+    if (!firebase.apps.length) {
+      const app = firebase.initializeApp(firebaseConfig);
+      
+      // Initialize services with error handling
+      auth = firebase.auth(app);
+      firestore = firebase.firestore(app); // Future-proofing
+      storage = firebase.storage(app); // For future pet images
+      
+      // Configure Google Auth Provider
+      googleAuthProvider = new firebase.auth.GoogleAuthProvider();
+      googleAuthProvider.addScope('https://www.googleapis.com/auth/userinfo.email');
+      googleAuthProvider.addScope('https://www.googleapis.com/auth/drive.file');
+      googleAuthProvider.setCustomParameters({
+        prompt: 'select_account' // Forces account selection
+      });
+      
+      console.log("✅ Firebase services initialized");
+      return true;
+    }
+    
+    // Reuse existing services if already initialized
+    auth = firebase.auth();
+    firestore = firebase.firestore();
+    storage = firebase.storage();
+    return true;
+    
+  } catch (error) {
+    console.error("🔥 Firebase initialization failed:", error);
+    
+    // User-friendly error display
+    const errorContainer = document.getElementById('firebase-error') || document.body;
+    errorContainer.insertAdjacentHTML('afterbegin', `
+      <div class="firebase-error-alert">
+        <p>System initialization failed. Please refresh or try again later.</p>
+        <small>Technical details: ${error.message}</small>
+      </div>
+    `);
+    
+    return false;
+  }
 }
 
-// ======== SERVICE REFERENCES ========
-const auth = firebase.auth();
-const firestore = firebase.firestore();
+// ========================
+// SAFE SERVICE ACCESSORS
+// ========================
+function getAuth() {
+  if (!auth) throw new Error("Authentication service not initialized");
+  return auth;
+}
+
+function getFirestore() {
+  if (!firestore) console.warn("Firestore not initialized - using localStorage fallback");
+  return firestore;
+}
 
 // ======== GLOBAL VARIABLES ========
 let editingProfileIndex = null;
+let auth, firestore, storage, googleAuthProvider;
+// REMINDERS
 const REMINDER_THRESHOLD_DAYS = 5;
 const ALLOWED_REMINDER_TYPES = ['vaccination', 'checkup', 'grooming'];
 const REMINDER_TYPE_MAP = {
@@ -59,7 +118,9 @@ function validateReminder(reminderData) {
   
   return { type: standardizedType, dueDate: dateValue };
 }
-
+// ======================
+// AUTH FORM MANAGEMENT
+// ======================
 function switchAuthForm(targetForm) {
   document.getElementById('signUpForm').classList.remove('active');
   document.getElementById('loginForm').classList.remove('active');
@@ -68,6 +129,25 @@ function switchAuthForm(targetForm) {
     formElement.classList.add('active');
     formElement.querySelector('form').reset();
   }
+}
+// ======================
+// UTILITY FUNCTIONS
+// ======================
+function showAuthError(message) {
+  const errorElement = document.getElementById('authError');
+  if (errorElement) {
+    errorElement.textContent = message;
+    errorElement.classList.remove('hidden');
+    setTimeout(() => errorElement.classList.add('hidden'), 5000);
+  }
+}
+
+function showSystemMessage(message) {
+  const messageElement = document.createElement('div');
+  messageElement.className = 'system-message';
+  messageElement.textContent = message;
+  document.body.prepend(messageElement);
+  setTimeout(() => messageElement.remove(), 5000);
 }
 // Helper function
 function addSafeListener(id, handler) {
@@ -576,11 +656,16 @@ Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relatio
 }
 // ======== MAIN INITIALIZATION UPDATED ========
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. Initialize Firebase
+  if (!await initializeFirebaseAuth()) return;
+  // 2. Set up auth state listener
+  const unsubscribe = auth.onAuthStateChanged(handleAuthState);
+  // 3. Set up event listeners
+  setupAuthEventListeners();
   // Authentication Section
   const authSection = document.getElementById('authSection');
   const mainContent = document.getElementById('mainContent');
   const logoutButton = document.getElementById('logoutButton');
-  
   const petPhotoInput = document.getElementById('petPhoto');
   const petPhotoPreview = document.getElementById('petPhotoPreview');
   
