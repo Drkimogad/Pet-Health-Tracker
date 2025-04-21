@@ -725,64 +725,124 @@ function showSuccessNotification(action, petName) {
   alert(message);
 }
 // FUNCTION EDIT PROFILE
-function editPetProfile(index) {
-  const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-  const profile = savedProfiles[index];
-  if (!profile) return;
+// FUNCTION EDIT PROFILE (UPDATED FOR HYBRID STORAGE)
+async function editPetProfile(petId) {
+  try {
+    let profile;
+    
+    // 1. Try to load from Google Drive if available
+    if (auth.currentUser && gapiInitialized) {
+      const pets = await loadPets();
+      profile = pets.find(p => p.id === petId);
+    }
+    
+    // 2. Fallback to localStorage
+    if (!profile) {
+      const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+      profile = savedProfiles.find(p => p.id === petId);
+    }
 
-  editingProfileIndex = index;
-  sessionStorage.setItem(`editingProfile_${index}`, JSON.stringify(profile));
+    if (!profile) {
+      showAuthError("Profile not found");
+      return;
+    }
 
-  // Populate form fields
-  const setValue = (id, value) => {
-    const el = document.getElementById(id);
-    if (el) el.value = value || '';
-  };
+    // Store original profile for cancel/recovery
+    editingProfileId = petId;
+    sessionStorage.setItem(`editingProfile_${petId}`, JSON.stringify(profile));
 
-  setValue('petName', profile.petName);
-  setValue('breed', profile.breed);
-  setValue('age', profile.age);
-  setValue('weight', profile.weight);
-  setValue('microchipId', profile.microchip?.id);
-  setValue('microchipDate', profile.microchip?.date);
-  setValue('microchipVendor', profile.microchip?.vendor);
-  setValue('allergies', profile.allergies);
-  setValue('medicalHistory', profile.medicalHistory);
-  setValue('dietPlan', profile.dietPlan);
-  setValue('moodSelector', profile.mood);
-  setValue('emergencyContactName', profile.emergencyContacts?.[0]?.name);
-  setValue('emergencyContactPhone', profile.emergencyContacts?.[0]?.phone);
-  setValue('emergencyContactRelationship', profile.emergencyContacts?.[0]?.relationship);
-  setValue('vaccinationsAndDewormingReminder', profile.vaccinationsAndDewormingReminder);
-  setValue('medicalCheckupsReminder', profile.medicalCheckupsReminder);
-  setValue('groomingReminder', profile.groomingReminder);
+    // Your existing field population logic (unchanged)
+    const setValue = (id, value) => {
+      const el = document.getElementById(id);
+      if (el) el.value = value || '';
+    };
 
-  const preview = document.getElementById('petPhotoPreview');
-  if (preview && profile.petPhoto) {
-    preview.src = profile.petPhoto;
-    preview.style.display = 'block';
-  }
+    setValue('petName', profile.petName);
+    setValue('breed', profile.breed);
+    setValue('age', profile.age);
+    setValue('weight', profile.weight);
+    setValue('microchipId', profile.microchip?.id);
+    setValue('microchipDate', profile.microchip?.date);
+    setValue('microchipVendor', profile.microchip?.vendor);
+    setValue('allergies', profile.allergies);
+    setValue('medicalHistory', profile.medicalHistory);
+    setValue('dietPlan', profile.dietPlan);
+    setValue('moodSelector', profile.mood);
+    setValue('emergencyContactName', profile.emergencyContacts?.[0]?.name);
+    setValue('emergencyContactPhone', profile.emergencyContacts?.[0]?.phone);
+    setValue('emergencyContactRelationship', profile.emergencyContacts?.[0]?.relationship);
+    setValue('vaccinationsAndDewormingReminder', profile.vaccinationsAndDewormingReminder);
+    setValue('medicalCheckupsReminder', profile.medicalCheckupsReminder);
+    setValue('groomingReminder', profile.groomingReminder);
+    
+    // Add these for new fields if they exist in the profile
+    if (profile.type) setValue('petType', profile.type);
+    if (profile.gender) setValue('petGender', profile.gender);
 
-  const cancelButton = document.getElementById('cancelEdit');
-  if (cancelButton) {
-    cancelButton.style.display = 'inline-block';
-    cancelButton.onclick = handleCancelEdit;
+    // Handle pet photo preview (unchanged)
+    const preview = document.getElementById('petPhotoPreview');
+    if (preview && profile.petPhoto) {
+      preview.src = profile.petPhoto;
+      preview.style.display = 'block';
+    }
+
+    // Show cancel button (unchanged)
+    const cancelButton = document.getElementById('cancelEdit');
+    if (cancelButton) {
+      cancelButton.style.display = 'inline-block';
+      cancelButton.onclick = handleCancelEdit;
+    }
+
+    // Scroll to form
+    document.getElementById('dietForm').scrollIntoView({ behavior: 'smooth' });
+
+  } catch (error) {
+    console.error('Edit error:', error);
+    showAuthError('Failed to load profile for editing');
   }
 }
 
+// UPDATED CANCEL FUNCTION
 function handleCancelEdit() {
-  if (editingProfileIndex !== null) {
-    const originalProfile = JSON.parse(sessionStorage.getItem(`editingProfile_${editingProfileIndex}`));
+  if (editingProfileId !== null) {
+    const originalProfile = JSON.parse(sessionStorage.getItem(`editingProfile_${editingProfileId}`));
     if (originalProfile) {
-      editPetProfile(editingProfileIndex); // Reset form with original values
+      // Temporarily use the old edit function to restore values
+      const tempEdit = (profile) => {
+        const setValue = (id, value) => {
+          const el = document.getElementById(id);
+          if (el) el.value = value || '';
+        };
+        //... (all your setValue calls from original edit function)
+            setValue('petName', profile.petName);
+    setValue('breed', profile.breed);
+    setValue('age', profile.age);
+    setValue('weight', profile.weight);
+    setValue('microchipId', profile.microchip?.id);
+    setValue('microchipDate', profile.microchip?.date);
+    setValue('microchipVendor', profile.microchip?.vendor);
+    setValue('allergies', profile.allergies);
+    setValue('medicalHistory', profile.medicalHistory);
+    setValue('dietPlan', profile.dietPlan);
+    setValue('moodSelector', profile.mood);
+    setValue('emergencyContactName', profile.emergencyContacts?.[0]?.name);
+    setValue('emergencyContactPhone', profile.emergencyContacts?.[0]?.phone);
+    setValue('emergencyContactRelationship', profile.emergencyContacts?.[0]?.relationship);
+    setValue('vaccinationsAndDewormingReminder', profile.vaccinationsAndDewormingReminder);
+    setValue('medicalCheckupsReminder', profile.medicalCheckupsReminder);
+    setValue('groomingReminder', profile.groomingReminder);
+    };
+        
+      tempEdit(originalProfile);
     }
-    sessionStorage.removeItem(`editingProfile_${editingProfileIndex}`);
-    editingProfileIndex = null;
+    sessionStorage.removeItem(`editingProfile_${editingProfileId}`);
+    editingProfileId = null;
     const cancelButton = document.getElementById('cancelEdit');
     if (cancelButton) cancelButton.style.display = 'none';
   }
   resetForm();
 }
+
 // FUNCTION DELETE PROFILE
 function deletePetProfile(index) {
   const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
@@ -1143,7 +1203,7 @@ const editingSessionKeys = Array.from({ length: sessionStorage.length })
   .filter(key => key.startsWith('editingProfile_'));
 
 editingSessionKeys.forEach(key => {
-  const index = parseInt(key.split('_')[1], 10);
+  const petId = key.split('_')[1]; // Changed from index to ID
   const originalProfile = JSON.parse(sessionStorage.getItem(key));
 
   if (originalProfile) {
@@ -1151,6 +1211,9 @@ editingSessionKeys.forEach(key => {
       const el = document.getElementById(id);
       if (el) el.value = value || '';
     };
+        // Add these new field handlers:
+    safeSetValue('petType', originalProfile.type || 'Unknown');
+    safeSetValue('petGender', originalProfile.gender || 'Unknown');
 
     // Basic Info
     safeSetValue('petName', originalProfile.petName || '');
