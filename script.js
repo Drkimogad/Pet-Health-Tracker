@@ -656,20 +656,13 @@ Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relatio
 }
 // ======== MAIN INITIALIZATION UPDATED ========
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Initialize Firebase
-  if (!await initializeFirebaseAuth()) return;
-  // 2. Set up auth state listener
-  const unsubscribe = auth.onAuthStateChanged(handleAuthState);
-  // 3. Set up event listeners
-  setupAuthEventListeners();
   // Authentication Section
   const authSection = document.getElementById('authSection');
   const mainContent = document.getElementById('mainContent');
   const logoutButton = document.getElementById('logoutButton');
+// Image Preview Handler (NO CHANGES NEEDED)
   const petPhotoInput = document.getElementById('petPhoto');
   const petPhotoPreview = document.getElementById('petPhotoPreview');
-  
-  // Image Preview Handler (NO CHANGES NEEDED)
   if (petPhotoInput && petPhotoPreview) {
     petPhotoInput.addEventListener('change', function() {
       const file = this.files[0];
