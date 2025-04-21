@@ -61,6 +61,176 @@ function initializeFirebaseServices() {
     return false;
   }
 }
+// ======================
+// INDEXEDDB (OFFLINE-FIRST)
+// ======================
+let petDB; // Global reference to IndexedDB
+
+function initIndexedDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open('PetHealthDB', 1);
+
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains('pets')) {
+        db.createObjectStore('pets', { keyPath: 'id' });
+      }
+      if (!db.objectStoreNames.contains('syncQueue')) {
+        db.createObjectStore('syncQueue', { keyPath: 'id' });
+      }
+    };
+
+    request.onsuccess = (event) => {
+      petDB = event.target.result;
+      console.log('✅ IndexedDB ready');
+      resolve();
+    };
+
+    request.onerror = (event) => {
+      console.error('IndexedDB error:', event.target.error);
+      reject(event.target.error);
+    };
+  });
+}
+// ======================
+// GOOGLE DRIVE API
+// ======================
+let gapiInitialized = false;
+
+async function initGoogleDriveAPI() {
+  return new Promise((resolve) => {
+    gapi.load('client:auth2', async () => {
+      await gapi.client.init({
+        apiKey: firebaseConfig.apiKey,
+        clientId: 'YOUR_GOOGLE_CLOUD_CLIENT_ID', // Replace!
+        discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
+        scope: 'https://www.googleapis.com/auth/drive.file',
+      });
+
+      gapiInitialized = true;
+      console.log('✅ Google Drive API ready');
+      resolve();
+    });
+  });
+}
+// Core Storage Operations
+// A. SAVE PET, HYBRID
+async function savePet(petData) {
+  // Add metadata
+  petData.lastUpdated = Date.now();
+  // 1. Save to IndexedDB
+  const tx = petDB.transaction('pets', 'readwrite');
+  const store = tx.objectStore('pets');
+  store.put(petData);
+  // 2. Queue for Google Drive sync
+  if (navigator.onLine && gapiInitialized) {
+    await syncPetToDrive(petData);
+  } else {
+    // Offline? Queue for later
+    const queueTx = petDB.transaction('syncQueue', 'readwrite');
+    queueTx.objectStore('syncQueue').put({
+      id: petData.id,
+      action: 'save',
+      data: petData
+    });
+  }
+}
+// B. Sync to Google Drive
+async function syncPetToDrive(petData) {
+  try {
+    const folderId = await getPetFolderId(); // Placeholder (see next snippet)
+    const fileName = `pets/${petData.id}.json`;
+
+    const file = await gapi.client.drive.files.create({
+      resource: {
+        name: fileName,
+        parents: [folderId],
+        mimeType: 'application/json'
+      },
+      media: {
+        mimeType: 'application/json',
+        body: JSON.stringify(petData)
+      },
+      fields: 'id'
+    });
+
+    console.log('📤 Synced to Drive:', file.result.id);
+    return true;
+  } catch (error) {
+    console.error('Drive sync failed:', error);
+    return false;
+  }
+}
+// C. Load Pets (Hybrid)
+async function loadPets() {
+  // 1. Try Google Drive first (if online)
+  if (navigator.onLine && gapiInitialized) {
+    try {
+      const pets = await loadPetsFromDrive();
+      if (pets.length > 0) {
+        await savePetsToIndexedDB(pets); // Update local cache
+        return pets;
+      }
+    } catch (error) {
+      console.warn('Drive load failed, falling back to IndexedDB');
+    }
+  }
+
+  // 2. Fallback to IndexedDB
+  return new Promise((resolve) => {
+    const tx = petDB.transaction('pets', 'readonly');
+    tx.objectStore('pets').getAll().onsuccess = (event) => {
+      resolve(event.target.result || []);
+    };
+  });
+}
+// Drive Folder Management
+async function getPetFolderId() {
+  // Check if folder exists
+  const response = await gapi.client.drive.files.list({
+    q: "name='Pet Health Tracker' and mimeType='application/vnd.google-apps.folder' and trashed=false",
+    spaces: 'drive',
+    fields: 'files(id)'
+  });
+
+  // Create if missing
+  if (response.result.files.length === 0) {
+    const folder = await gapi.client.drive.files.create({
+      resource: {
+        name: 'Pet Health Tracker',
+        mimeType: 'application/vnd.google-apps.folder'
+      },
+      fields: 'id'
+    });
+    return folder.result.id;
+  }
+
+  return response.result.files[0].id;
+}
+// Sync Queue Processor when app is online
+async function processSyncQueue() {
+  const queueTx = petDB.transaction('syncQueue', 'readwrite');
+  const queue = await new Promise((resolve) => {
+    queueTx.objectStore('syncQueue').getAll().onsuccess = (e) => resolve(e.target.result);
+  });
+
+  for (const item of queue) {
+    if (item.action === 'save') {
+      await syncPetToDrive(item.data);
+    }
+    // Add other actions (delete, etc.)
+  }
+
+  // Clear processed items
+  const clearTx = petDB.transaction('syncQueue', 'readwrite');
+  clearTx.objectStore('syncQueue').clear();
+}
+
+// Call this when network status changes
+window.addEventListener('online', processSyncQueue);
+
+
+
 // ========================
 // SAFE SERVICE ACCESSORS
 // ========================
@@ -974,5 +1144,21 @@ addSafeListener('showSignUp', (e) => {
   e.preventDefault();
   switchAuthForm('signUp');
 });
+
+// ======================
+// STARTUP
+// ======================
+async function initializeApp() {
+  await initializeFirebaseServices();
+  await initIndexedDB();
+  
+  // Only init Drive if user is logged in
+  if (auth.currentUser) {
+    await initGoogleDriveAPI();
+    await processSyncQueue(); // Sync any pending changes
+  }
+}
+// Run on load
+document.addEventListener('DOMContentLoaded', initializeApp);
 
 
