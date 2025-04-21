@@ -899,7 +899,6 @@ addSafeListener('showSignUp', (e) => {
   e.preventDefault();
   switchAuthForm('signUp');
 });
-
 }); // Close DOMContentLoaded
 
 
