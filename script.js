@@ -814,7 +814,7 @@ function handleCancelEdit() {
           if (el) el.value = value || '';
         };
         //... (all your setValue calls from original edit function)
-            setValue('petName', profile.petName);
+    setValue('petName', profile.petName);
     setValue('breed', profile.breed);
     setValue('age', profile.age);
     setValue('weight', profile.weight);
@@ -843,18 +843,47 @@ function handleCancelEdit() {
   resetForm();
 }
 
-// FUNCTION DELETE PROFILE
-function deletePetProfile(index) {
-  const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-  if (index >= 0 && index < savedProfiles.length) {
-    // Store pet name before deletion for notification
-    const petName = savedProfiles[index].petName || 'Unnamed Pet';
+// FUNCTION DELETE PROFILE (UPDATED FOR HYBRID STORAGE)
+async function deletePetProfile(petId) {
+  try {
+    let petName = '';
     
-    savedProfiles.splice(index, 1);
-    localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+    // 1. Try to delete from Google Drive if available
+    if (auth.currentUser && gapiInitialized) {
+      const pets = await loadPets();
+      const petToDelete = pets.find(p => p.id === petId);
+      
+      if (petToDelete) {
+        petName = petToDelete.petName || 'Unnamed Pet';
+        
+        // Delete from Drive
+        await gapi.client.drive.files.delete({
+          fileId: petToDelete.driveFileId // Need to store this when saving to Drive
+        });
+        
+        // Delete from IndexedDB
+        const tx = petDB.transaction('pets', 'readwrite');
+        tx.objectStore('pets').delete(petId);
+      }
+    }
+    
+    // 2. Fallback to localStorage
+    const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+    const localIndex = savedProfiles.findIndex(p => p.id === petId);
+    
+    if (localIndex !== -1) {
+      petName = savedProfiles[localIndex].petName || 'Unnamed Pet';
+      savedProfiles.splice(localIndex, 1);
+      localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+    }
+    
+    // Update UI and show notification
     loadSavedPetProfile();
-    // Show deletion notification
-    showSuccessNotification('Profile deleted', petName);
+    showSuccessNotification('deleted', petName);
+    
+  } catch (error) {
+    console.error('Delete error:', error);
+    showAuthError('Failed to delete profile');
   }
 }
 
@@ -952,51 +981,74 @@ function printPetProfile(index) {
     });
 }
 
-// Share Pet Profile button functionality
-function sharePetProfile(index) {
-  const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
-  const profile = savedProfiles[index];
-  const emergencyContact = (profile.emergencyContacts && profile.emergencyContacts[0]) || {};
-
-  const shareData = {
-    title: `${profile.petName}'s Health Profile`,
-    text: `Pet Details:\n${
-      Object.entries({
-        Name: profile.petName,
-        Breed: profile.breed,
-        Age: profile.age,
-        Weight: profile.weight,
-        'Microchip ID': (profile.microchip && profile.microchip.id) || 'N/A',
-        Allergies: profile.allergies || 'N/A',
-        'Medical History': profile.medicalHistory || 'N/A',
-        'Diet Plan': profile.dietPlan || 'N/A',
-        'Vaccinations/Deworming': profile.vaccinationsAndDewormingReminder || 'N/A',
-        'Medical Check-ups': profile.medicalCheckupsReminder || 'N/A',
-        Grooming: profile.groomingReminder || 'N/A',
-        'Emergency Contact': `${emergencyContact.name || 'N/A'} (${emergencyContact.relationship || 'N/A'}) - ${emergencyContact.phone || 'N/A'}`
-      })
-      .map(([key, val]) => `${key}: ${val}`)
-      .join('\n')
-    }`,
-    url: window.location.href
-  };
-
-  if (navigator.share) {
-    navigator.share(shareData)
-      .then(() => console.log('Shared successfully'))
-      .catch(console.error);
-  } else {
-    const textToCopy =
-      `${shareData.title}\n\n${shareData.text}\n\n${shareData.url}`;
-
-    // Modern clipboard API fallback
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(textToCopy)
-        .then(() => alert('Profile copied to clipboard!'))
-        .catch(() => prompt('Copy the following text:', textToCopy));
-    } else {
-      prompt('Copy the following text:', textToCopy);
+// SHARE PET PROFILE (UPDATED FOR HYBRID STORAGE)
+async function sharePetProfile(petId) {
+  try {
+    let profile;
+    
+    // 1. Try to load from Google Drive if available
+    if (auth.currentUser && gapiInitialized) {
+      const pets = await loadPets();
+      profile = pets.find(p => p.id === petId);
     }
+    
+    // 2. Fallback to localStorage
+    if (!profile) {
+      const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+      profile = savedProfiles.find(p => p.id === petId);
+    }
+
+    if (!profile) {
+      showAuthError("Profile not found");
+      return;
+    }
+
+    const emergencyContact = (profile.emergencyContacts && profile.emergencyContacts[0]) || {};
+    
+    // Your existing share data preparation (unchanged)
+    const shareData = {
+      title: `${profile.petName}'s Health Profile`,
+      text: `Pet Details:\n${
+        Object.entries({
+          Name: profile.petName,
+          Breed: profile.breed,
+          Age: profile.age,
+          Weight: profile.weight,
+          'Microchip ID': (profile.microchip && profile.microchip.id) || 'N/A',
+          Allergies: profile.allergies || 'N/A',
+          'Medical History': profile.medicalHistory || 'N/A',
+          'Diet Plan': profile.dietPlan || 'N/A',
+          'Vaccinations/Deworming': profile.vaccinationsAndDewormingReminder || 'N/A',
+          'Medical Check-ups': profile.medicalCheckupsReminder || 'N/A',
+          Grooming: profile.groomingReminder || 'N/A',
+          'Emergency Contact': `${emergencyContact.name || 'N/A'} (${emergencyContact.relationship || 'N/A'}) - ${emergencyContact.phone || 'N/A'}`
+        })
+        .map(([key, val]) => `${key}: ${val}`)
+        .join('\n')
+      }`,
+      url: window.location.href
+    };
+
+    // Your existing share logic (unchanged)
+    if (navigator.share) {
+      navigator.share(shareData)
+        .then(() => console.log('Shared successfully'))
+        .catch(console.error);
+    } else {
+      const textToCopy = `${shareData.title}\n\n${shareData.text}\n\n${shareData.url}`;
+      
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(textToCopy)
+          .then(() => alert('Profile copied to clipboard!'))
+          .catch(() => prompt('Copy the following text:', textToCopy));
+      } else {
+        prompt('Copy the following text:', textToCopy);
+      }
+    }
+
+  } catch (error) {
+    console.error('Share error:', error);
+    showAuthError('Failed to share profile');
   }
 }
 // ======== QR CODE GENERATION button functionality ========
