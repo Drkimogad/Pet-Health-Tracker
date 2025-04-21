@@ -1,10 +1,3 @@
-console.log('DOMContentLoaded callback started');
-// TEMPORARY ERROR CONTAINMENT
-window.onerror = (msg, url, line) => {
-  console.warn(`Suppressed ${msg} at ${line}`);
-  return true; // Prevents default error handling
-};
-
 'use strict'; // Add if not already present
 import { setupNotifications, sendPushNotification } from './pushNotifications.js';
 // ======== GLOBAL VARIABLES ========
@@ -326,8 +319,7 @@ function getPetDataFromForm() {
     age: parseFloat(document.getElementById('age').value) || 0,
     weight: parseFloat(document.getElementById('weight').value) || 0,
     gender: 'Unknown', // Not in form - we'll add this later
-    avatar: '', // Will handle image upload separately
-
+    
     // === Microchip Information ===
     microchip: {
       id: document.getElementById('microchipId').value,
@@ -1569,5 +1561,4 @@ async function initializeApp() {
 }
 // Run on load
 document.addEventListener('DOMContentLoaded', initializeApp);
-
-
+});
