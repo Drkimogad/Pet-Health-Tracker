@@ -1125,8 +1125,7 @@ function generateQRCode(profileIndex) {
   qrWindow.addEventListener('load', () => {
     const emergencyContact = (profile.emergencyContacts && profile.emergencyContacts[0]) || {};
     const microchip = profile.microchip || {};
-
-    const qrText = `
+const qrText = `
 PET PROFILE
 Name: ${profile.petName || 'N/A'}
 Breed: ${profile.breed || 'N/A'}
