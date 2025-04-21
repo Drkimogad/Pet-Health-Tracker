@@ -9,7 +9,7 @@ window.onerror = (msg, url, line) => {
 import { setupNotifications, sendPushNotification } from './pushNotifications.js';
 // ======== FIREBASE INITIALIZATION ========
 // ======================
-// ENHANCED FIREBASE INIT
+// ENHANCED FIREBASE INIT FOR GOOGLE DRIVE IMPLEMENTATION
 // ======================
 const firebaseConfig = {
   apiKey: "AIzaSyBIej7yNj0LkkLd6VtQxBL4mEDSsHLJvig",
@@ -22,31 +22,26 @@ const firebaseConfig = {
 };
 
 // Global service references
-
 function initializeFirebaseServices() {
   try {
     // Safety check for multiple initializations
     if (!firebase.apps.length) {
-      const app = firebase.initializeApp(firebaseConfig);
-      
-      // Initialize services with error handling
+      const app = firebase.initializeApp(firebaseConfig);     
+ // Initialize services with error handling
       auth = firebase.auth(app);
       firestore = firebase.firestore(app); // Future-proofing
-      storage = firebase.storage(app); // For future pet images
-      
-      // Configure Google Auth Provider
+      storage = firebase.storage(app); // For future pet images 
+// Configure Google Auth Provider
       googleAuthProvider = new firebase.auth.GoogleAuthProvider();
       googleAuthProvider.addScope('https://www.googleapis.com/auth/userinfo.email');
       googleAuthProvider.addScope('https://www.googleapis.com/auth/drive.file');
       googleAuthProvider.setCustomParameters({
         prompt: 'select_account' // Forces account selection
-      });
-      
+      });  
       console.log("✅ Firebase services initialized");
       return true;
-    }
-    
-    // Reuse existing services if already initialized
+    }   
+ // Reuse existing services if already initialized
     auth = firebase.auth();
     firestore = firebase.firestore();
     storage = firebase.storage();
@@ -54,8 +49,7 @@ function initializeFirebaseServices() {
     
   } catch (error) {
     console.error("🔥 Firebase initialization failed:", error);
-    
-    // User-friendly error display
+ // User-friendly error display
     const errorContainer = document.getElementById('firebase-error') || document.body;
     errorContainer.insertAdjacentHTML('afterbegin', `
       <div class="firebase-error-alert">
@@ -67,7 +61,6 @@ function initializeFirebaseServices() {
     return false;
   }
 }
-
 // ========================
 // SAFE SERVICE ACCESSORS
 // ========================
@@ -75,12 +68,10 @@ function getAuth() {
   if (!auth) throw new Error("Authentication service not initialized");
   return auth;
 }
-
 function getFirestore() {
   if (!firestore) console.warn("Firestore not initialized - using localStorage fallback");
   return firestore;
 }
-
 // ======== GLOBAL VARIABLES ========
 let editingProfileIndex = null;
 let auth, firestore, storage, googleAuthProvider;
