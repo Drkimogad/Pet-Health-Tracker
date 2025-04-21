@@ -7,6 +7,10 @@ window.onerror = (msg, url, line) => {
 
 'use strict'; // Add if not already present
 import { setupNotifications, sendPushNotification } from './pushNotifications.js';
+// ======== GLOBAL VARIABLES ========
+let editingProfileId = null;
+let auth, firestore, storage, googleAuthProvider;
+
 // ======== FIREBASE INITIALIZATION ========
 // ======================
 // ENHANCED FIREBASE INIT FOR GOOGLE DRIVE IMPLEMENTATION
@@ -287,10 +291,7 @@ function getFirestore() {
   if (!firestore) console.warn("Firestore not initialized - using localStorage fallback");
   return firestore;
 }
-// ======== GLOBAL VARIABLES ========
-let editingProfileIndex = null;
-let auth, firestore, storage, googleAuthProvider;
-// REMINDERS
+// =======REMINDERS
 const REMINDER_THRESHOLD_DAYS = 5;
 const ALLOWED_REMINDER_TYPES = ['vaccination', 'checkup', 'grooming'];
 const REMINDER_TYPE_MAP = {
@@ -629,23 +630,32 @@ async function loadSavedPetProfile() {
           </div>
           
           <div class="pet-actions">
-            <button class="editProfileButton" data-id="${profile.id}">Edit</button>
-            <button class="deleteProfileButton" data-id="${profile.id}">Delete</button>
-            <button class="viewDetailsButton">Details</button>
+             <button class="edit-btn" data-pet-id="${pet.id}">Edit</button>
+             <button class="delete-btn" data-pet-id="${pet.id}">Delete</button>
+             <button class="details-btn" data-pet-id="${pet.id}">Details</button>
           </div>
         </div>
       `;
+      // Replace old index-based listeners with:
+document.querySelectorAll('.edit-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    editPetProfile(e.currentTarget.dataset.petId);
+  });
+});
 
-      // Safe event listener attachment
-      const addListener = (selector, handler) => {
-        const btn = petCard.querySelector(selector);
-        if (btn) btn.addEventListener('click', handler);
-      };
+document.querySelectorAll('.delete-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    if (confirm('Are you sure you want to delete this profile?')) {
+      deletePetProfile(e.currentTarget.dataset.petId);
+    }
+  });
+});
 
-      addListener('.editProfileButton', () => editPetProfile(profile.id));
-      addListener('.deleteProfileButton', () => deletePetProfile(profile.id));
-      addListener('.viewDetailsButton', () => showPetDetails(profile));
-
+document.querySelectorAll('.details-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    showPetDetails(e.currentTarget.dataset.petId);
+  });
+});
       savedProfilesList.appendChild(petCard);
     });
 
@@ -805,7 +815,7 @@ async function editPetProfile(petId) {
 // UPDATED CANCEL FUNCTION
 function handleCancelEdit() {
   if (editingProfileId !== null) {
-    const originalProfile = JSON.parse(sessionStorage.getItem(`editingProfile_${editingProfileId}`));
+    const originalProfile = JSON.parse(sessionStorage.setItem(`editingProfile_${petId}`));
     if (originalProfile) {
       // Temporarily use the old edit function to restore values
       const tempEdit = (profile) => {
@@ -1378,13 +1388,11 @@ document.getElementById('dietForm').addEventListener('submit', async (e) => {
     } else {
       // LocalStorage fallback (your existing code)
       const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-      if (editingProfileIndex !== null) {
-        savedProfiles[editingProfileIndex] = petData;
-        editingProfileIndex = null;
-      } else {
-        savedProfiles.push(petData);
+      if (editingProfileId !== null) {
+      const index = savedProfiles.findIndex(p => p.id === editingProfileId);
+      if (index !== -1) {
+      savedProfiles[index] = petData;
       }
-      localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
     }
 
     // UI Feedback
