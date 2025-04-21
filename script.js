@@ -1,4 +1,10 @@
 console.log('DOMContentLoaded callback started');
+// TEMPORARY ERROR CONTAINMENT
+window.onerror = (msg, url, line) => {
+  console.warn(`Suppressed ${msg} at ${line}`);
+  return true; // Prevents default error handling
+};
+
 'use strict'; // Add if not already present
 import { setupNotifications, sendPushNotification } from './pushNotifications.js';
 // ======== FIREBASE INITIALIZATION ========
