@@ -1,372 +1,337 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-	<meta http-equiv="Pragma" content="no-cache">
-	<meta http-equiv="Expires" content="0">
-	<title>Pet Health Tracker</title>
-	<link rel="icon" href="./favicon.ico" type="image/x-icon">
-	<link rel="manifest" href="./manifest.json">
-	<link rel="stylesheet" href="./styles.css">
-	<script src="https://apis.google.com/js/api.js"></script>
-	<!-- Load QR Code CDN  -->
-	<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-	<!-- Load Firebase SDKs first -->
-	<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-	<!-- Load pushNotifications.js as a module -->
-	<script type="module" src="pushNotifications.js">
-		< /script < /
-		head > <
-			body >
-			<
-			noscript >
-			<
-			div class = "offline-warning" >
-			<
-			h2 > JavaScript Required < /h2> <
-		p > Please enable JavaScript to use this application. < /p> <
-		p > When offline, you can still view cached content. < /p> < /
-		div > <
-			/noscript>
-
-			<
-			div class = "background-container" >
-			<
-			header >
-			<
-			h1 > Pet Health Tracker < /h1> < /
-		header >
-
-			<
-			section id = "authSection" >
-			<
-			div id = "signUpForm"
-		class = "auth-form active" >
-		<
-		h2 > Sign Up < /h2> <
-		form id = "signUp" >
-			<
-			label
-		for = "signUpEmail" > Email: < /label> <
-		input type = "email"
-		id = "signUpEmail"
-		name = "email"
-		required autocomplete = "email" >
-			<
-			label
-		for = "signUpPassword" > Password: < /label> <
-		input type = "password"
-		id = "signUpPassword"
-		name = "password"
-		required autocomplete = "new-password" >
-			<
-			button type = "submit" > Sign Up < /button> < /
-		form > <
-			p class = "form-switch" > Already have an account ? < a href = "#"
-		id = "showLogin" > Sign In < /a></p >
-			<
-			/div>
-
-			<
-			div id = "loginForm"
-		class = "auth-form" >
-		<
-		h2 > Login < /h2> <
-		form id = "login" >
-			<
-			label
-		for = "loginEmail" > Email: < /label> <
-		input type = "email"
-		id = "loginEmail"
-		name = "email"
-		required autocomplete = "email" >
-			<
-			label
-		for = "loginPassword" > Password: < /label> <
-		input type = "password"
-		id = "loginPassword"
-		name = "password"
-		required autocomplete = "current-password" >
-			<
-			button type = "submit" > Login < /button> < /
-		form > <
-			p class = "form-switch" > Don 't have an account? <a href="#" id="showSignUp">Sign Up</a></p> < /
-		div > <
-			/section>
-
-			<
-			main id = "mainContent"
-		style = "display: none;" >
-			<
-			div class = "form-container" >
-			<
-			form id = "dietForm" >
-			<
-			fieldset >
-			<
-			legend > Basic Information < /legend>
-
-			<
-			label
-		for = "petName" > Pet Name: < /label> <
-		input type = "text"
-		id = "petName"
-		name = "petName"
-		required >
-
-			<
-			fieldset >
-			<
-			legend > Pet Photo < /legend> <
-		label
-		for = "petPhoto" > Upload Photo: < /label> <
-		input type = "file"
-		id = "petPhoto"
-		name = "petPhoto"
-		accept = "image/*" >
-			<
-			img id = "petPhotoPreview"
-		src = "#"
-		alt = "Pet Photo Preview"
-		style = "max-width: 100px; max-height: 100px; display: none;" >
-			<
-			/fieldset>
-
-			<
-			label
-		for = "breed" > Breed: < /label> <
-		input type = "text"
-		id = "breed"
-		name = "breed"
-		required >
-
-			<
-			label
-		for = "age" > Age: < /label> <
-		input type = "text"
-		id = "age"
-		name = "age"
-		required >
-
-			<
-			label
-		for = "weight" > Weight: < /label> <
-		input type = "text"
-		id = "weight"
-		name = "weight"
-		required >
-			<
-			/fieldset> <!--NEW FIELDS ADDED HERE-- > <
-		label
-		for = "petType" > Pet Type: < /label> <
-		select id = "petType"
-		name = "petType"
-		required >
-			<
-			option value = "" > Select type... < /option> <
-		option value = "Dog" > Dog < /option> <
-		option value = "Cat" > Cat < /option> <
-		option value = "Bird" > Bird < /option> <
-		option value = "Rabbit" > Rabbit < /option> <
-		option value = "Fish" > Fish < /option> <
-		option value = "Reptile" > Reptile < /option> <
-		option value = "Other" > Other < /option> < /
-		select >
-
-			<
-			label
-		for = "petGender" > Gender: < /label> <
-		select id = "petGender"
-		name = "petGender"
-		required >
-			<
-			option value = "" > Select gender... < /option> <
-		option value = "Male" > Male < /option> <
-		option value = "Female" > Female < /option> <
-		option value = "Unknown" > Unknown < /option> < /
-		select > <
-			/fieldset>
-
-			<
-			fieldset >
-			<
-			legend > Microchip Information < /legend>
-
-			<
-			label
-		for = "microchipId" > Microchip ID: < /label> <
-		input type = "text"
-		id = "microchipId"
-		name = "microchipId" >
-
-			<
-			label
-		for = "microchipDate" > Implant Date: < /label> <
-		input type = "date"
-		id = "microchipDate"
-		name = "microchipDate" >
-
-			<
-			label
-		for = "microchipVendor" > Vendor: < /label> <
-		input type = "text"
-		id = "microchipVendor"
-		name = "microchipVendor" >
-			<
-			/fieldset>
-
-			<
-			fieldset >
-			<
-			legend > Health Information < /legend>
-
-			<
-			label
-		for = "allergies" > Allergies: < /label> <
-		textarea id = "allergies"
-		name = "allergies" > < /textarea>
-
-			<
-			label
-		for = "medicalHistory" > Medical History: < /label> <
-		textarea id = "medicalHistory"
-		name = "medicalHistory" > < /textarea>
-
-			<
-			label
-		for = "dietPlan" > Diet Plan: < /label> <
-		textarea id = "dietPlan"
-		name = "dietPlan" > < /textarea>
-
-			<
-			label
-		for = "moodSelector" > Current Mood: < /label> <
-		select id = "moodSelector"
-		name = "mood" >
-			<
-			option value = "" > Select mood... < /option> <
-		option value = "😊 Happy" > Happy < /option> <
-		option value = "😢 Sad" > Sad < /option> <
-		option value = "😡 Angry" > Angry < /option> <
-		option value = "🥱 Tired" > Tired < /option> <
-		option value = "🤒 Sick" > Sick < /option> < /
-		select > <
-			/fieldset>
-
-			<
-			fieldset >
-			<
-			legend > Emergency Contact < /legend>
-
-			<
-			label
-		for = "emergencyContactName" > Name: < /label> <
-		input type = "text"
-		id = "emergencyContactName"
-		name = "emergencyContactName" >
-
-			<
-			label
-		for = "emergencyContactPhone" > Phone: < /label> <
-		input type = "tel"
-		id = "emergencyContactPhone"
-		name = "emergencyContactPhone" >
-
-			<
-			label
-		for = "emergencyContactRelationship" > Relationship: < /label> <
-		input type = "text"
-		id = "emergencyContactRelationship"
-		name = "emergencyContactRelationship"
-		placeholder = "Vet/Owner/etc." >
-			<
-			/fieldset>
-
-			<
-			fieldset >
-			<
-			legend > Reminders < /legend>
-
-			<
-			label
-		for = "vaccinationsAndDewormingReminder" > Vaccinations / Deworming: < /label> <
-		input type = "datetime-local"
-		id = "vaccinationsAndDewormingReminder"
-		name = "vaccinationsAndDewormingReminder" >
-
-			<
-			label
-		for = "medicalCheckupsReminder" > Medical Check - ups: < /label> <
-		input type = "datetime-local"
-		id = "medicalCheckupsReminder"
-		name = "medicalCheckupsReminder" >
-
-			<
-			label
-		for = "groomingReminder" > Grooming: < /label> <
-		input type = "datetime-local"
-		id = "groomingReminder"
-		name = "groomingReminder" >
-			<
-			/fieldset> <
-		button type = "submit" > Save Pet Profile < /button> <
-		button type = "button"
-		id = "cancelEdit"
-		style = "display: none;" > Cancel Edit < /button> < /
-		form > <
-			/div>
-
-			<
-			section class = "saved-profiles" >
-			<
-			h3 > Saved Pet Profiles < /h3> <
-		ul id = "savedProfilesList" >
-			<
-			/ul> < /
-		section > <
-			/main>
-
-			<
-			button id = "logoutButton"
-		style = "display: none;" > Logout < /button> < /
-		div >
-
-			<
-			footer >
-			<
-			p > & copy;
-		2024 Pet Health Tracker < /p> < /
-		footer >
-
-			<
-			script type = "module"
-		src = "script.js" >
-	</script>
-	<script>
-		document.addEventListener('DOMContentLoaded', () => {
-			const signUpForm = document.getElementById('signUpForm');
-			const loginForm = document.getElementById('loginForm');
-			const showLoginLink = document.getElementById('showLogin');
-			const showSignUpLink = document.getElementById('showSignUp');
-
-			showLoginLink.addEventListener('click', (e) => {
-				e.preventDefault();
-				signUpForm.classList.remove('active');
-				loginForm.classList.add('active');
-			});
-
-			showSignUpLink.addEventListener('click', (e) => {
-				e.preventDefault();
-				loginForm.classList.remove('active');
-				signUpForm.classList.add('active');
-			});
-		});
-	</script>
-	</body>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control"
+      content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Pet Health Tracker</title>
+    <link rel="icon" href="./favicon.ico" type="image/x-icon">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="stylesheet" href="./styles.css">
+    <script src="https://apis.google.com/js/api.js"></script>
+    <!-- Load QR Code CDN  -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js">
+    </script>
+    <!-- Load Firebase SDKs first -->
+    <script
+      src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+    </script>
+    <script
+      src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
+    </script>
+    <script
+      src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
+    </script>
+    <!-- Load pushNotifications.js as a module -->
+    <script type="module" src="pushNotifications.js">
+    < /script < /
+    head > <
+      body >
+      <
+      noscript >
+      <
+      div class = "offline-warning" >
+      <
+      h2 > JavaScript Required < /h2> <
+    p > Please enable JavaScript to use this application. < /p> <
+    p > When offline, you can still view cached content. < /p> < /
+    div > <
+      /noscript> <
+    div class = "background-container" >
+    <
+    header >
+      <
+      h1 > Pet Health Tracker < /h1> < /
+    header >
+      <
+      section id = "authSection" >
+      <
+      div id = "signUpForm"
+    class = "auth-form active" >
+    <
+    h2 > Sign Up < /h2> <
+    form id = "signUp" >
+      <
+      label
+    for = "signUpEmail" > Email: < /label> <
+    input type = "email"
+    id = "signUpEmail"
+    name = "email"
+    required autocomplete = "email" >
+      <
+      label
+    for = "signUpPassword" > Password: < /label> <
+    input type = "password"
+    id = "signUpPassword"
+    name = "password"
+    required autocomplete = "new-password" >
+      <
+      button type = "submit" > Sign Up < /button> < /
+    form > <
+      p class = "form-switch" > Already have an account ? < a href = "#"
+    id = "showLogin" > Sign In < /a></p >
+      <
+      /div> <
+    div id = "loginForm"
+    class = "auth-form" >
+    <
+    h2 > Login < /h2> <
+    form id = "login" >
+      <
+      label
+    for = "loginEmail" > Email: < /label> <
+    input type = "email"
+    id = "loginEmail"
+    name = "email"
+    required autocomplete = "email" >
+      <
+      label
+    for = "loginPassword" > Password: < /label> <
+    input type = "password"
+    id = "loginPassword"
+    name = "password"
+    required autocomplete = "current-password" >
+      <
+      button type = "submit" > Login < /button> < /
+    form > <
+      p class = "form-switch" >
+      Don 't have an account? <a href="#" id="showSignUp">Sign Up</a></p> < /
+    div > <
+      /section> <
+    main id = "mainContent"
+    style = "display: none;" >
+      <
+      div class = "form-container" >
+      <
+      form id = "dietForm" >
+      <
+      fieldset >
+      <
+      legend > Basic Information < /legend> <
+    label
+    for = "petName" > Pet Name: < /label> <
+    input type = "text"
+    id = "petName"
+    name = "petName"
+    required >
+      <
+      fieldset >
+      <
+      legend > Pet Photo < /legend> <
+    label
+    for = "petPhoto" > Upload Photo: < /label> <
+    input type = "file"
+    id = "petPhoto"
+    name = "petPhoto"
+    accept = "image/*" >
+      <
+      img id = "petPhotoPreview"
+    src = "#"
+    alt = "Pet Photo Preview"
+    style = "max-width: 100px; max-height: 100px; display: none;" >
+      <
+      /fieldset> <
+    label
+    for = "breed" > Breed: < /label> <
+    input type = "text"
+    id = "breed"
+    name = "breed"
+    required >
+      <
+      label
+    for = "age" > Age: < /label> <
+    input type = "text"
+    id = "age"
+    name = "age"
+    required >
+      <
+      label
+    for = "weight" > Weight: < /label> <
+    input type = "text"
+    id = "weight"
+    name = "weight"
+    required >
+      <
+      /fieldset> <!--NEW FIELDS ADDED HERE-- > <
+    label
+    for = "petType" > Pet Type: < /label> <
+    select id = "petType"
+    name = "petType"
+    required >
+      <
+      option value = "" > Select type... < /option> <
+    option value = "Dog" > Dog < /option> <
+    option value = "Cat" > Cat < /option> <
+    option value = "Bird" > Bird < /option> <
+    option value = "Rabbit" > Rabbit < /option> <
+    option value = "Fish" > Fish < /option> <
+    option value = "Reptile" > Reptile < /option> <
+    option value = "Other" > Other < /option> < /
+    select >
+      <
+      label
+    for = "petGender" > Gender: < /label> <
+    select id = "petGender"
+    name = "petGender"
+    required >
+      <
+      option value = "" > Select gender... < /option> <
+    option value = "Male" > Male < /option> <
+    option value = "Female" > Female < /option> <
+    option value = "Unknown" > Unknown < /option> < /
+    select > <
+      /fieldset> <
+    fieldset >
+      <
+      legend > Microchip Information < /legend> <
+    label
+    for = "microchipId" > Microchip ID: < /label> <
+    input type = "text"
+    id = "microchipId"
+    name = "microchipId" >
+      <
+      label
+    for = "microchipDate" > Implant Date: < /label> <
+    input type = "date"
+    id = "microchipDate"
+    name = "microchipDate" >
+      <
+      label
+    for = "microchipVendor" > Vendor: < /label> <
+    input type = "text"
+    id = "microchipVendor"
+    name = "microchipVendor" >
+      <
+      /fieldset> <
+    fieldset >
+      <
+      legend > Health Information < /legend> <
+    label
+    for = "allergies" > Allergies: < /label> <
+    textarea id = "allergies"
+    name = "allergies" > < /textarea> <
+    label
+    for = "medicalHistory" > Medical History: < /label> <
+    textarea id = "medicalHistory"
+    name = "medicalHistory" > < /textarea> <
+    label
+    for = "dietPlan" > Diet Plan: < /label> <
+    textarea id = "dietPlan"
+    name = "dietPlan" > < /textarea> <
+    label
+    for = "moodSelector" > Current Mood: < /label> <
+    select id = "moodSelector"
+    name = "mood" >
+      <
+      option value = "" > Select mood... < /option> <
+    option value = "😊 Happy" > Happy < /option> <
+    option value = "😢 Sad" > Sad < /option> <
+    option value = "😡 Angry" > Angry < /option> <
+    option value = "🥱 Tired" > Tired < /option> <
+    option value = "🤒 Sick" > Sick < /option> < /
+    select > <
+      /fieldset> <
+    fieldset >
+      <
+      legend > Emergency Contact < /legend> <
+    label
+    for = "emergencyContactName" > Name: < /label> <
+    input type = "text"
+    id = "emergencyContactName"
+    name = "emergencyContactName" >
+      <
+      label
+    for = "emergencyContactPhone" > Phone: < /label> <
+    input type = "tel"
+    id = "emergencyContactPhone"
+    name = "emergencyContactPhone" >
+      <
+      label
+    for = "emergencyContactRelationship" > Relationship: < /label> <
+    input type = "text"
+    id = "emergencyContactRelationship"
+    name = "emergencyContactRelationship"
+    placeholder = "Vet/Owner/etc." >
+      <
+      /fieldset> <
+    fieldset >
+      <
+      legend > Reminders < /legend> <
+    label
+    for = "vaccinationsAndDewormingReminder" > Vaccinations / Deworming: <
+      /label> <
+    input type = "datetime-local"
+    id = "vaccinationsAndDewormingReminder"
+    name = "vaccinationsAndDewormingReminder" >
+      <
+      label
+    for = "medicalCheckupsReminder" > Medical Check - ups: < /label> <
+    input type = "datetime-local"
+    id = "medicalCheckupsReminder"
+    name = "medicalCheckupsReminder" >
+      <
+      label
+    for = "groomingReminder" > Grooming: < /label> <
+    input type = "datetime-local"
+    id = "groomingReminder"
+    name = "groomingReminder" >
+      <
+      /fieldset> <
+    button type = "submit" > Save Pet Profile < /button> <
+    button type = "button"
+    id = "cancelEdit"
+    style = "display: none;" > Cancel Edit < /button> < /
+    form > <
+      /div> <
+    section class = "saved-profiles" >
+    <
+    h3 > Saved Pet Profiles < /h3> <
+    ul id = "savedProfilesList" >
+      <
+      /ul> < /
+    section > <
+      /main> <
+    button id = "logoutButton"
+    style = "display: none;" > Logout < /button> < /
+    div >
+      <
+      footer >
+      <
+      p > & copy;
+    2024 Pet Health Tracker < /p> < /
+    footer >
+      <
+      script type = "module"
+    src = "script.js" >
+    </script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const signUpForm = document.getElementById('signUpForm');
+      const loginForm = document.getElementById('loginForm');
+      const showLoginLink = document.getElementById('showLogin');
+      const showSignUpLink = document.getElementById('showSignUp');
+      // Safe event listener helper
+      const addSafeListener = (element, event, handler) => {
+        if (element) element.addEventListener(event, handler);
+        else console.error(`Element not found for ${event} listener`);
+      };
+      // Apply to both links
+      addSafeListener(showLoginLink, 'click', (e) => {
+        e.preventDefault();
+        signUpForm?.classList.remove('active');
+        loginForm?.classList.add('active');
+      });
+      addSafeListener(showSignUpLink, 'click', (e) => {
+        e.preventDefault();
+        loginForm?.classList.remove('active');
+        signUpForm?.classList.add('active');
+      });
+    });
+    </script>
+    </body>
 
 </html>
