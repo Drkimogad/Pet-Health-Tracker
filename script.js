@@ -1271,13 +1271,14 @@ editingSessionKeys.forEach(key => {
   const originalProfile = JSON.parse(sessionStorage.getItem(key));
 
   if (originalProfile) {
-    const safeSetValue = (id, value) => {
+    const setValue = (id, value) => {
       const el = document.getElementById(id);
       if (el) el.value = value || '';
     };
         // Add these new field handlers:
-    safeSetValue('petType', originalProfile.type || 'Unknown');
-    safeSetValue('petGender', originalProfile.gender || 'Unknown');
+    // Only set existing fields
+    if (document.getElementById('petType')) setValue('petType', originalProfile.type || 'Unknown');
+    if (document.getElementById('petGender')) setValue('petGender', originalProfile.gender || 'Unknown');
 
     // Basic Info
     safeSetValue('petName', originalProfile.petName || '');
@@ -1364,7 +1365,7 @@ document.getElementById('dietForm').addEventListener('submit', async (e) => {
       groomingReminder: document.getElementById('groomingReminder')?.value,
       
       // New fields we're adding
-      id: generateUniqueId(),
+      id: editingProfileId || generateUniqueId(), // Fixed ID generation
       ownerId: auth.currentUser?.uid || 'local-user',
       lastUpdated: Date.now(),
       createdAt: Date.now(),
@@ -1396,8 +1397,12 @@ document.getElementById('dietForm').addEventListener('submit', async (e) => {
       if (index !== -1) {
       savedProfiles[index] = petData;
       }
+     } else {
+        savedProfiles.push(petData); // Add new profile
+      }
+      
+      localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
     }
-
     // UI Feedback
     showSuccessNotification(
       editingProfileIndex !== null ? 'Profile updated' : 'Profile saved',
@@ -1405,48 +1410,28 @@ document.getElementById('dietForm').addEventListener('submit', async (e) => {
     );
 
     // Reset and reload
-    loadSavedProfiles();
+    loadSavedPetProfile(); // Fixed function name
     resetForm();
+    editingProfileId = null; // Clear edit mode
 
   } catch (error) {
     console.error('Save error:', error);
     showAuthError('Failed to save profile. Please try again.');
   }
 });
-  // Event Delegation
-// Event Delegation (Improved with null checks)
+
+// ======== EVENT DELEGATION (FIXED) ========
 document.getElementById('savedProfilesList')?.addEventListener('click', (e) => {
-  // 1. Null check for target element
-  if (!e.target || !e.target.classList) return;
+  if (!e.target?.closest('button')) return;
+  
+  const btn = e.target.closest('button');
+  const petId = btn.dataset?.petId;
 
-  // 2. Edit Profile Button
-  if (e.target.classList.contains('editProfileButton')) {
-    const index = parseInt(e.target.dataset?.index || '', 10);
-    if (!isNaN(index)) editPetProfile(index);
-    else console.error('Invalid edit index:', e.target.dataset.index);
+  if (btn.classList.contains('edit-btn')) {
+    if (petId) editPetProfile(petId);
   }
-
-  // 3. Delete Profile Button
-  else if (e.target.classList.contains('deleteProfileButton')) {
-    const index = parseInt(e.target.dataset?.index || '', 10);
-    if (!isNaN(index)) deletePetProfile(index);
-    else console.error('Invalid delete index:', e.target.dataset.index);
-  }
-
-  // 4. Delete Reminder Button (Your specific case)
-  else if (e.target.classList.contains('deleteReminderButton')) {
-    const profileIndex = parseInt(e.target.dataset?.profileIndex || '', 10);
-    const reminderKey = e.target.dataset?.reminder;
-    
-    if (!isNaN(profileIndex) && reminderKey && reminderFields[reminderKey]) {
-      deleteOverdueReminder(profileIndex, reminderKey);
-    } else {
-      console.error('Invalid reminder deletion:', {
-        profileIndex,
-        reminderKey,
-        validKeys: Object.keys(reminderFields)
-      });
-    }
+  else if (btn.classList.contains('delete-btn')) {
+    if (petId && confirm('Delete this profile?')) deletePetProfile(petId);
   }
 });
 
