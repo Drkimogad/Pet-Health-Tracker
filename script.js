@@ -3,6 +3,9 @@ import { setupNotifications, sendPushNotification } from './pushNotifications.js
 // ======== GLOBAL VARIABLES ========
 let editingProfileId = null;
 let auth, firestore, storage, googleAuthProvider;
+let petDB; // Global reference to IndexedDB
+let gapiInitialized = false;
+let profile; 
 
 // ======== FIREBASE INITIALIZATION ========
 // ======================
@@ -17,7 +20,6 @@ const firebaseConfig = {
   messagingSenderId: "540185558422", // Added missing field
   measurementId: "G-XXXXXXXXXX" // Recommended for Firebase Analytics
 };
-
 // Global service references
 function initializeFirebaseServices() {
   try {
@@ -88,8 +90,6 @@ async function initializeApp() {
 // ======================
 // INDEXEDDB (OFFLINE-FIRST)
 // ======================
-let petDB; // Global reference to IndexedDB
-
 function initIndexedDB() {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open('PetHealthDB', 1);
@@ -119,8 +119,6 @@ function initIndexedDB() {
 // ======================
 // GOOGLE DRIVE API
 // ======================
-let gapiInitialized = false;
-
 async function initGoogleDriveAPI() {
   return new Promise((resolve) => {
     gapi.load('client:auth2', async () => {
@@ -238,7 +236,6 @@ async function loadPetsFromDrive() {
     return [];
   }
 }
-
 // Drive Folder Management
 async function getPetFolderId() {
   // Check if folder exists
@@ -247,7 +244,6 @@ async function getPetFolderId() {
     spaces: 'drive',
     fields: 'files(id)'
   });
-
   // Create if missing
   if (response.result.files.length === 0) {
     const folder = await gapi.client.drive.files.create({
@@ -275,15 +271,12 @@ async function processSyncQueue() {
     }
     // Add other actions (delete, etc.)
   }
-
   // Clear processed items
   const clearTx = petDB.transaction('syncQueue', 'readwrite');
   clearTx.objectStore('syncQueue').clear();
 }
-
 // Call this when network status changes
 window.addEventListener('online', processSyncQueue);
-
 // ========================
 // SAFE SERVICE ACCESSORS
 // ========================
@@ -310,7 +303,7 @@ const reminderFields = {
 };
 
 // ======== CORE FUNCTIONS ========
-// A. Generate Unique ID
+// A. Generate Unique ID For Drives
 function generateUniqueId() {
   return 'pet-' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
 }
@@ -375,7 +368,6 @@ async function handlePetPhotoUpload() {
     reader.readAsDataURL(fileInput.files[0]);
   });
 }
-
 // FUNCTION FORMAT REMINDER
 function formatReminder(dateTimeString) {
   if (!dateTimeString) return 'N/A';
@@ -419,7 +411,7 @@ function showAuthError(message) {
     setTimeout(() => errorElement.classList.add('hidden'), 5000);
   }
 }
-
+// FUNCTION SHOW SYSTEM MESSAGE 
 function showSystemMessage(message) {
   const messageElement = document.createElement('div');
   messageElement.className = 'system-message';
@@ -435,7 +427,7 @@ function addSafeListener(id, handler) {
     element.addEventListener('click', handler);
   }
 }
-
+// FUNCTION RESET FORM
 function resetForm() {
   const form = document.getElementById('dietForm');
   if (form) form.reset();
@@ -445,7 +437,7 @@ function resetForm() {
     preview.style.display = 'none';
   }
 }
-
+//FUNCTION HIGHLIGHT REMINDERS 
 function highlightReminders(reminders, index) {
   const today = new Date();
   const overdueContainer = document.getElementById(`overdueReminders-${index}`);
@@ -484,25 +476,20 @@ function highlightReminders(reminders, index) {
     }
   });
 }
-
-// FIXED deleteOverdueReminder FUNCTION
+// FUNCTION DELETE OVERDUE REMINDERS 
 function deleteOverdueReminder(profileIndex, reminderKey) {
   const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
   
   if (savedProfiles[profileIndex] && savedProfiles[profileIndex][reminderKey]) {
     // Create a copy of the reminder before deletion (optional)
-    const deletedReminder = savedProfiles[profileIndex][reminderKey];
-    
+    const deletedReminder = savedProfiles[profileIndex][reminderKey]; 
     // Nullify the reminder
-    savedProfiles[profileIndex][reminderKey] = null;
-    
+    savedProfiles[profileIndex][reminderKey] = null;    
     // Update storage
-    localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
-    
+    localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));   
     // Show confirmation
     const reminderLabel = reminderFields[reminderKey];
     alert(`${reminderLabel} reminder deleted!`);
-    
     // Refresh UI
     loadSavedPetProfile();
   }
@@ -539,7 +526,6 @@ function showModal(content) {
       if (e.target === overlay) hideModal();
     });
   }
-
   // Insert content and show
   modal.innerHTML = `
     <button class="close-modal">&times;</button>
@@ -562,7 +548,6 @@ function hideModal() {
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') hideModal();
 });
-
 // Add this to trap focus within modal
 function trapFocus(modal) {
   const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
@@ -713,11 +698,9 @@ function showPetDetails(profile) {
     </div>
   `;
   
-  // Implement your modal display logic here
   showModal(detailsHtml);
 }
-// ====== PRETTIER-FRIENDLY VERSION ======
-// (Alternative if you prefer more compact syntax)
+
 const reminders = {
   vaccinationDue: profile.vaccinationsAndDewormingReminder,
   checkupDue: profile.medicalCheckupsReminder,
@@ -740,15 +723,12 @@ function showSuccessNotification(action, petName) {
 // FUNCTION EDIT PROFILE
 // FUNCTION EDIT PROFILE (UPDATED FOR HYBRID STORAGE)
 async function editPetProfile(petId) {
-  try {
-    let profile;
-    
+  try {    
     // 1. Try to load from Google Drive if available
     if (auth.currentUser && gapiInitialized) {
       const pets = await loadPets();
       profile = pets.find(p => p.id === petId);
-    }
-    
+    }    
     // 2. Fallback to localStorage
     if (!profile) {
       const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
@@ -759,11 +739,9 @@ async function editPetProfile(petId) {
       showAuthError("Profile not found");
       return;
     }
-
     // Store original profile for cancel/recovery
     editingProfileId = petId;
     sessionStorage.setItem(`editingProfile_${petId}`, JSON.stringify(profile));
-
     // Your existing field population logic (unchanged)
     const setValue = (id, value) => {
       const el = document.getElementById(id);
@@ -791,21 +769,18 @@ async function editPetProfile(petId) {
     // Add these for new fields if they exist in the profile
     if (profile.type) setValue('petType', profile.type);
     if (profile.gender) setValue('petGender', profile.gender);
-
     // Handle pet photo preview (unchanged)
     const preview = document.getElementById('petPhotoPreview');
     if (preview && profile.petPhoto) {
       preview.src = profile.petPhoto;
       preview.style.display = 'block';
     }
-
     // Show cancel button (unchanged)
     const cancelButton = document.getElementById('cancelEdit');
     if (cancelButton) {
       cancelButton.style.display = 'inline-block';
       cancelButton.onclick = handleCancelEdit;
     }
-
     // Scroll to form
     document.getElementById('dietForm').scrollIntoView({ behavior: 'smooth' });
 
@@ -814,7 +789,6 @@ async function editPetProfile(petId) {
     showAuthError('Failed to load profile for editing');
   }
 }
-
 // UPDATED CANCEL FUNCTION
 function handleCancelEdit() {
   if (editingProfileId !== null) {
@@ -1275,8 +1249,7 @@ editingSessionKeys.forEach(key => {
       const el = document.getElementById(id);
       if (el) el.value = value || '';
     };
-        // Add these new field handlers:
-    // Only set existing fields
+
     if (document.getElementById('petType')) setValue('petType', originalProfile.type || 'Unknown');
     if (document.getElementById('petGender')) setValue('petGender', originalProfile.gender || 'Unknown');
 
@@ -1503,13 +1476,11 @@ if (logoutButtonElement) {
 // Updated Service Worker Registration
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    const swUrl = 'https://drkimogad.github.io/Pet-Health-Tracker/service-worker.js';
-    
+    const swUrl = '/Pet-Health-Tracker/service-worker.js';    
     // First check if the SW file exists
     fetch(swUrl)
       .then(response => {
-        if (!response.ok) throw new Error('SW file not found');
-        
+        if (!response.ok) throw new Error('SW file not found');        
         // Only register if file exists
         navigator.serviceWorker.register(swUrl)
           .then(registration => {
@@ -1523,8 +1494,7 @@ if ('serviceWorker' in navigator) {
         // Optional: Show "Offline mode" notification to user
       });
   });
-}
-  
+}  
 // Add this to catch handled errors 
 window.onerror = (msg, url, line) => {
   alert(`Error: ${msg}\nLine: ${line}`);
