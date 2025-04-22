@@ -1525,33 +1525,19 @@ async function initializeApp() {
     await processSyncQueue(); // Sync any pending changes
   }
 }
+
 // Run on load
 document.addEventListener('DOMContentLoaded', initializeApp);
-// Add this to your existing script.js
-function setupAuthFormSwitchers() {
-    const signUpForm = document.getElementById('signUpForm');
-    const loginForm = document.getElementById('loginForm');
-    const showLoginLink = document.getElementById('showLogin');
-    const showSignUpLink = document.getElementById('showSignUp');
 
-    // Debug check
-    if (!signUpForm || !loginForm || !showLoginLink || !showSignUpLink) {
-        console.error('Missing auth elements:', {
-            signUpForm, loginForm, showLoginLink, showSignUpLink
-        });
-        return;
-    }
-
-    showLoginLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        signUpForm.classList.remove('active');
-        loginForm.classList.add('active');
-    });
-
-    showSignUpLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        loginForm.classList.remove('active');
-        signUpForm.classList.add('active');
-    });
+// ======================
+// AUTH FORM MANAGEMENT
+// ======================
+function switchAuthForm(targetForm) {
+  document.getElementById('signUpForm').classList.remove('active');
+  document.getElementById('loginForm').classList.remove('active');
+  const formElement = document.getElementById(`${targetForm}Form`);
+  if (formElement) {
+    formElement.classList.add('active');
+    formElement.querySelector('form').reset();
+  }
 }
-});
