@@ -124,7 +124,7 @@ async function initGoogleDriveAPI() {
     gapi.load('client:auth2', async () => {
       await gapi.client.init({
         apiKey: firebaseConfig.apiKey,
-        clientId: '251170885789-m02ir3l60sn2pp6dveepdd7jk2ucb5hn.apps.googleusercontent.com', // Replace!
+        clientId: '251170885789-m02ir3l60sn2pp6dveepdd7jk2ucb5hn.apps.googleusercontent.com',
         discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
         scope: 'https://www.googleapis.com/auth/drive.file',
       });
