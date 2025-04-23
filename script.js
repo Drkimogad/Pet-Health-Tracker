@@ -146,38 +146,46 @@ async function savePet(petData) {
   const store = tx.objectStore('pets');
   store.put(petData);
   // 2. Queue for Google Drive sync
-  if (navigator.onLine && gapiInitialized) {
+    if (navigator.onLine && gapiInitialized) {
     await syncPetToDrive(petData);
   } else {
-    // Offline? Queue for later
     const queueTx = petDB.transaction('syncQueue', 'readwrite');
-    queueTx.objectStore('syncQueue').put({
+    const queueStore = queueTx.objectStore('syncQueue');
+   // Check for existing entry
+    const existingItem = await new Promise((resolve) => 
+      queueStore.get(petData.id).onsuccess = (e) => resolve(e.target.result)
+    );
+    // Update or add new entry
+    queueStore.put({
       id: petData.id,
       action: 'save',
-      data: petData
+      data: petData,
+      timestamp: Date.now() // For conflict resolution
     });
   }
 }
 // B. Sync to Google Drive
 async function syncPetToDrive(petData) {
   try {
-    const folderId = await getPetFolderId(); // Placeholder (see next snippet)
+    const folderId = await getPetFolderId();
     const fileName = `pets/${petData.id}.json`;
 
+    // Create/update file in Drive
     const file = await gapi.client.drive.files.create({
-      resource: {
-        name: fileName,
-        parents: [folderId],
-        mimeType: 'application/json'
-      },
-      media: {
-        mimeType: 'application/json',
-        body: JSON.stringify(petData)
-      },
+      resource: { name: fileName, parents: [folderId], mimeType: 'application/json' },
+      media: { mimeType: 'application/json', body: JSON.stringify(petData) },
       fields: 'id'
     });
 
-    console.log('📤 Synced to Drive:', file.result.id);
+    // Store Drive file ID in petData
+    const driveFileId = file.result.id;
+    petData.driveFileId = driveFileId;
+
+    // Update IndexedDB with Drive ID
+    const tx = petDB.transaction('pets', 'readwrite');
+    await tx.objectStore('pets').put(petData);
+
+    console.log('📤 Synced to Drive:', driveFileId);
     return true;
   } catch (error) {
     console.error('Drive sync failed:', error);
@@ -259,21 +267,30 @@ async function getPetFolderId() {
   return response.result.files[0].id;
 }
 // Sync Queue Processor when app is online
+// ======== SYNC QUEUE PROCESSOR ========
 async function processSyncQueue() {
   const queueTx = petDB.transaction('syncQueue', 'readwrite');
-  const queue = await new Promise((resolve) => {
-    queueTx.objectStore('syncQueue').getAll().onsuccess = (e) => resolve(e.target.result);
-  });
+  const queueStore = queueTx.objectStore('syncQueue');
+  const queue = await new Promise((resolve) => queueStore.getAll().onsuccess = (e) => resolve(e.target.result));
+
+  const successfulIds = [];
 
   for (const item of queue) {
-    if (item.action === 'save') {
-      await syncPetToDrive(item.data);
+    try {
+      if (item.action === 'save') {
+        const success = await syncPetToDrive(item.data);
+        if (success) successfulIds.push(item.id);
+      }
+      // Add other actions (delete, etc.) here
+    } catch (error) {
+      console.error('Sync failed for item:', item, error);
     }
-    // Add other actions (delete, etc.)
   }
-  // Clear processed items
-  const clearTx = petDB.transaction('syncQueue', 'readwrite');
-  clearTx.objectStore('syncQueue').clear();
+
+  // Remove only successfully synced items
+  const removeTx = petDB.transaction('syncQueue', 'readwrite');
+  const removeStore = removeTx.objectStore('syncQueue');
+  successfulIds.forEach(id => removeStore.delete(id));
 }
 // Call this when network status changes
 window.addEventListener('online', processSyncQueue);
@@ -827,26 +844,17 @@ function handleCancelEdit() {
 // FUNCTION DELETE PROFILE (UPDATED FOR HYBRID STORAGE)
 async function deletePetProfile(petId) {
   try {
-    let petName = '';
-    
-    // 1. Try to delete from Google Drive if available
-    if (auth.currentUser && gapiInitialized) {
-      const pets = await loadPets();
-      const petToDelete = pets.find(p => p.id === petId);
-      
-      if (petToDelete) {
-        petName = petToDelete.petName || 'Unnamed Pet';
-        
-        // Delete from Drive
-        await gapi.client.drive.files.delete({
-          fileId: petToDelete.driveFileId // Need to store this when saving to Drive
-        });
-        
-        // Delete from IndexedDB
-        const tx = petDB.transaction('pets', 'readwrite');
-        tx.objectStore('pets').delete(petId);
-      }
+    const pets = await loadPets();
+    const petToDelete = pets.find(p => p.id === petId);
+
+    if (petToDelete?.driveFileId) {
+      // Delete from Drive
+      await gapi.client.drive.files.delete({ fileId: petToDelete.driveFileId });
     }
+
+    // Delete from IndexedDB
+    const tx = petDB.transaction('pets', 'readwrite');
+    tx.objectStore('pets').delete(petId);
     
     // 2. Fallback to localStorage
     const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
