@@ -391,6 +391,19 @@ function validateReminder(reminderData) {
 // ======================
 // AUTH FORM MANAGEMENT
 // ======================
+function setupAuthFormSwitchers() {
+  // Login/Signup Toggle Handlers
+  addSafeListener('showLogin', (e) => {
+    e.preventDefault();
+    switchAuthForm('login');
+  });
+
+  addSafeListener('showSignUp', (e) => {
+    e.preventDefault();
+    switchAuthForm('signUp');
+  });
+}
+// Keep the existing switchAuthForm function below
 function switchAuthForm(targetForm) {
   document.getElementById('signUpForm').classList.remove('active');
   document.getElementById('loginForm').classList.remove('active');
