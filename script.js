@@ -618,32 +618,13 @@ async function loadSavedPetProfile() {
           </div>
           
           <div class="pet-actions">
-             <button class="edit-btn" data-pet-id="${pet.id}">Edit</button>
-             <button class="delete-btn" data-pet-id="${pet.id}">Delete</button>
-             <button class="details-btn" data-pet-id="${pet.id}">Details</button>
+             <button class="edit-btn" data-pet-id="${profile.id}">Edit</button>
+             <button class="delete-btn" data-pet-id="${profile.id}">Delete</button>
+             <button class="details-btn" data-pet-id="${profile.id}">Details</button>
           </div>
         </div>
       `;
-      // Replace old index-based listeners with:
-document.querySelectorAll('.edit-btn').forEach(btn => {
-  btn.addEventListener('click', (e) => {
-    editPetProfile(e.currentTarget.dataset.petId);
-  });
-});
-
-document.querySelectorAll('.delete-btn').forEach(btn => {
-  btn.addEventListener('click', (e) => {
-    if (confirm('Are you sure you want to delete this profile?')) {
-      deletePetProfile(e.currentTarget.dataset.petId);
-    }
-  });
-});
-
-document.querySelectorAll('.details-btn').forEach(btn => {
-  btn.addEventListener('click', (e) => {
-    showPetDetails(e.currentTarget.dataset.petId);
-  });
-});
+ 
       savedProfilesList.appendChild(petCard);
     });
 
