@@ -1388,6 +1388,7 @@ document.getElementById('dietForm').addEventListener('submit', async (e) => {
 });
 
 // ======== EVENT DELEGATION (FIXED) ========
+// ✅ Keep this block ✅
 document.getElementById('savedProfilesList')?.addEventListener('click', (e) => {
   if (!e.target?.closest('button')) return;
   
@@ -1400,8 +1401,10 @@ document.getElementById('savedProfilesList')?.addEventListener('click', (e) => {
   else if (btn.classList.contains('delete-btn')) {
     if (petId && confirm('Delete this profile?')) deletePetProfile(petId);
   }
+  else if (btn.classList.contains('details-btn')) {
+    if (petId) showPetDetails(petId);
+  }
 });
-
 // ======== AUTHENTICATION HANDLERS ========
 // ======== SIGN-UP HANDLER ========
 document.getElementById('signUpForm')?.addEventListener('submit', function(event) {
