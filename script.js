@@ -888,9 +888,15 @@ async function deletePetProfile(petId) {
 }
 
 // Print Pet Profile button functionality
-function printPetProfile(index) {
-  const savedProfiles = JSON.parse(localStorage.getItem('petProfiles'));
-  const profile = savedProfiles[index];
+async function printPetProfile(petId) { // Use ID instead of index
+  try {
+    const profiles = await loadPets(); // Hybrid data source
+    const profile = profiles.find(p => p.id === petId); // ✅
+
+    if (!profile) {
+      alert("Profile not found!");
+      return;
+    }
 
   const printWindow = window.open('', '_blank', 'height=600,width=800');
 
@@ -974,11 +980,10 @@ function printPetProfile(index) {
         });
       });
     })
-    .catch(error => {
-      console.error('Print failed:', error);
-      printWindow.document.body.innerHTML =`<h1>Error: ${error.message}</h1>`;
-      printWindow.print();
-    });
+    } catch (error) {
+    console.error('Print error:', error);
+    alert('Failed to load profile for printing');
+  }
 }
 
 // SHARE PET PROFILE (UPDATED FOR HYBRID STORAGE)
@@ -1052,14 +1057,15 @@ async function sharePetProfile(petId) {
   }
 }
 // ======== QR CODE GENERATION button functionality ========
-function generateQRCode(profileIndex) {
-  const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-  const profile = savedProfiles[profileIndex];
+async function generateQRCode(petId) { // Use ID instead of index
+  try {
+    const profiles = await loadPets(); // Hybrid data source
+    const profile = profiles.find(p => p.id === petId); // ✅
 
-  if (!profile) {
-    alert("Profile not found!");
-    return;
-  }
+    if (!profile) {
+      alert("Profile not found!");
+      return;
+    }
 
   // FIX 1: Proper window features string
   const windowFeatures = `width=400,height=500,petName=${encodeURIComponent(profile.petName || 'PetProfile')}`;
