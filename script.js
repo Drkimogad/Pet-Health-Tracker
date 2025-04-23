@@ -1517,17 +1517,6 @@ window.onerror = (msg, url, line) => {
   return true; // Prevent default error logging
 };
   
-// ======== INITIAL UI SETUP ========
-addSafeListener('showLogin', (e) => {
-  e.preventDefault();
-  switchAuthForm('login');
-});
-
-addSafeListener('showSignUp', (e) => {
-  e.preventDefault();
-  switchAuthForm('signUp');
-});
-
 // ======================
 // STARTUP
 // ======================
@@ -1544,16 +1533,3 @@ async function initializeApp() {
 
 // Run on load
 document.addEventListener('DOMContentLoaded', initializeApp);
-
-// ======================
-// AUTH FORM MANAGEMENT
-// ======================
-function switchAuthForm(targetForm) {
-  document.getElementById('signUpForm').classList.remove('active');
-  document.getElementById('loginForm').classList.remove('active');
-  const formElement = document.getElementById(`${targetForm}Form`);
-  if (formElement) {
-    formElement.classList.add('active');
-    formElement.querySelector('form').reset();
-  }
-}
