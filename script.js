@@ -712,13 +712,6 @@ function showPetDetails(profile) {
   showModal(detailsHtml);
 }
 
-const reminders = {
-  vaccinationDue: profile.vaccinationsAndDewormingReminder,
-  checkupDue: profile.medicalCheckupsReminder,
-  groomingDue: profile.groomingReminder
-};
-highlightReminders(reminders, index);
-
 // FUNCTION EDIT PROFILE/HELPER FUNCTION FOR USER'S NOTIFICATION
 // ===== HELPER FUNCTION =====
 function showSuccessNotification(action, petName) {
@@ -803,40 +796,58 @@ async function editPetProfile(petId) {
 // UPDATED CANCEL FUNCTION
 function handleCancelEdit() {
   if (editingProfileId !== null) {
-    const originalProfile = JSON.parse(sessionStorage.setItem(`editingProfile_${petId}`));
+    // ✅ Retrieve original profile correctly
+    const originalProfile = JSON.parse(
+      sessionStorage.getItem(`editingProfile_${editingProfileId}`) // Use getItem
+    );
+
     if (originalProfile) {
-      // Temporarily use the old edit function to restore values
-      const tempEdit = (profile) => {
-        const setValue = (id, value) => {
-          const el = document.getElementById(id);
-          if (el) el.value = value || '';
-        };
-        //... (all your setValue calls from original edit function)
-    setValue('petName', profile.petName);
-    setValue('breed', profile.breed);
-    setValue('age', profile.age);
-    setValue('weight', profile.weight);
-    setValue('microchipId', profile.microchip?.id);
-    setValue('microchipDate', profile.microchip?.date);
-    setValue('microchipVendor', profile.microchip?.vendor);
-    setValue('allergies', profile.allergies);
-    setValue('medicalHistory', profile.medicalHistory);
-    setValue('dietPlan', profile.dietPlan);
-    setValue('moodSelector', profile.mood);
-    setValue('emergencyContactName', profile.emergencyContacts?.[0]?.name);
-    setValue('emergencyContactPhone', profile.emergencyContacts?.[0]?.phone);
-    setValue('emergencyContactRelationship', profile.emergencyContacts?.[0]?.relationship);
-    setValue('vaccinationsAndDewormingReminder', profile.vaccinationsAndDewormingReminder);
-    setValue('medicalCheckupsReminder', profile.medicalCheckupsReminder);
-    setValue('groomingReminder', profile.groomingReminder);
-    };
-        
-      tempEdit(originalProfile);
+      // ✅ Properly reset form fields
+      const setValue = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.value = value || '';
+      };
+
+      // Basic Info
+      setValue('petName', originalProfile.petName);
+      setValue('breed', originalProfile.breed);
+      setValue('age', originalProfile.age);
+      setValue('weight', originalProfile.weight);
+
+      // Microchip
+      setValue('microchipId', originalProfile.microchip?.id);
+      setValue('microchipDate', originalProfile.microchip?.date);
+      setValue('microchipVendor', originalProfile.microchip?.vendor);
+
+      // Health
+      setValue('allergies', originalProfile.allergies);
+      setValue('medicalHistory', originalProfile.medicalHistory);
+      setValue('dietPlan', originalProfile.dietPlan);
+      setValue('moodSelector', originalProfile.mood);
+
+      // Emergency Contact
+      const ec = originalProfile.emergencyContacts?.[0] || {};
+      setValue('emergencyContactName', ec.name);
+      setValue('emergencyContactPhone', ec.phone);
+      setValue('emergencyContactRelationship', ec.relationship);
+
+      // Reminders
+      setValue('vaccinationsAndDewormingReminder', originalProfile.reminders?.vaccinations);
+      setValue('medicalCheckupsReminder', originalProfile.reminders?.checkups);
+      setValue('groomingReminder', originalProfile.reminders?.grooming);
+
+      // Photo Preview
+      const preview = document.getElementById('petPhotoPreview');
+      if (preview && originalProfile.petPhoto) {
+        preview.src = originalProfile.petPhoto;
+        preview.style.display = 'block';
+      }
     }
+
+    // Cleanup
     sessionStorage.removeItem(`editingProfile_${editingProfileId}`);
     editingProfileId = null;
-    const cancelButton = document.getElementById('cancelEdit');
-    if (cancelButton) cancelButton.style.display = 'none';
+    document.getElementById('cancelEdit').style.display = 'none';
   }
   resetForm();
 }
@@ -1378,11 +1389,11 @@ document.getElementById('dietForm').addEventListener('submit', async (e) => {
       
       localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
     }
-    // UI Feedback
-    showSuccessNotification(
-      editingProfileIndex !== null ? 'Profile updated' : 'Profile saved',
-      petData.petName || 'Unnamed Pet'
-    );
+    // In the form submission success feedback:
+   showSuccessNotification(
+    editingProfileId !== null ? 'Profile updated' : 'Profile saved', // ✅ Fixed
+    petData.petName || 'Unnamed Pet'
+   );
 
     // Reset and reload
     loadSavedPetProfile(); // Fixed function name
