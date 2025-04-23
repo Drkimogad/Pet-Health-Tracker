@@ -292,14 +292,15 @@ function getFirestore() {
 const REMINDER_THRESHOLD_DAYS = 5;
 const ALLOWED_REMINDER_TYPES = ['vaccination', 'checkup', 'grooming'];
 const REMINDER_TYPE_MAP = {
-  vaccinationDue: 'vaccination',
-  checkupDue: 'checkup',
-  groomingDue: 'grooming'
+  vaccinations: 'vaccination',
+  checkups: 'checkup',
+  grooming: 'grooming'
 };
+
 const reminderFields = {
-  vaccinationDue: 'Vaccinations/Deworming',
-  checkupDue: 'Medical Check-ups',
-  groomingDue: 'Grooming'
+  vaccinations: 'Vaccinations/Deworming',
+  checkups: 'Medical Check-ups',
+  grooming: 'Grooming'
 };
 
 // ======== CORE FUNCTIONS ========
@@ -376,8 +377,8 @@ function formatReminder(dateTimeString) {
 }
 // FUNCTION REMINDER VALIDATION
 function validateReminder(reminderData) {
-  const standardizedType = REMINDER_TYPE_MAP[reminderData.type];
-  if (!ALLOWED_REMINDER_TYPES.includes(standardizedType)) {
+  // Use direct key matching instead of type mapping
+  if (!Object.keys(reminderFields).includes(reminderData.type)) {
     throw new Error(`Invalid reminder type: ${reminderData.type}`);
   }
   
@@ -464,10 +465,9 @@ function highlightReminders(reminders, index) {
   Object.entries(reminders).forEach(([reminderKey, reminderValue]) => {
     if (!reminderValue) return;
 
-    const reminderDateTime = new Date(reminderValue);
-    const timeDiff = reminderDateTime.getTime() - today.getTime();
-    const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-    const reminderLabel = reminderFields[reminderKey];
+  // Map to standardized type using REMINDER_TYPE_MAP
+  const standardizedType = REMINDER_TYPE_MAP[reminderKey];
+  const reminderLabel = reminderFields[reminderKey]; // Now matches data
 
     if (timeDiff < 0) {
       const div = document.createElement('div');
@@ -674,9 +674,9 @@ function showPetDetails(profile) {
         <div>Current Mood: ${profile.mood || 'N/A'}</div>
         
         <div class="section-break"><strong>Reminders:</strong></div>
-        <div>Vaccinations: ${formatReminder(profile.vaccinationsAndDewormingReminder)}</div>
-        <div>Checkups: ${formatReminder(profile.medicalCheckupsReminder)}</div>
-        <div>Grooming: ${formatReminder(profile.groomingReminder)}</div>
+        <div>Vaccinations: ${formatReminder(profile.reminders?.vaccinations)}</div>
+        <div>Checkups: ${formatReminder(profile.reminders?.checkups)}</div>
+        <div>Grooming: ${formatReminder(profile.reminders?.grooming)}</div>
         
         <div class="section-break"><strong>Emergency Contact:</strong></div>
         <div>Name: ${emergencyContact.name || 'N/A'}</div>
