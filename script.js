@@ -1,5 +1,8 @@
 'use strict'; // Add if not already present
 import { setupNotifications, sendPushNotification } from './pushNotifications.js';
+// ======================
+// STARTUP
+// ======================
 // ======== GLOBAL VARIABLES ========
 let editingProfileId = null;
 let auth, firestore, storage, googleAuthProvider;
@@ -468,6 +471,12 @@ function resetForm() {
     preview.style.display = 'none';
   }
 }
+// Global error handler
+window.onerror = (msg, url, line) => {
+  alert(`Error: ${msg}\nLine: ${line}`);
+  return true; // Prevent default logging
+};
+
 //FUNCTION HIGHLIGHT REMINDERS 
 function highlightReminders(reminders, index) {
   const today = new Date();
@@ -1536,6 +1545,3 @@ async function initializeApp() {
     await processSyncQueue(); // Sync any pending changes
   }
 }
-
-// Run on load
-document.addEventListener('DOMContentLoaded', initializeApp);
