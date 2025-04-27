@@ -1536,3 +1536,4 @@ window.onerror = (msg, url, line) => {
   alert(`Error: ${msg}\nLine: ${line}`);
   return true; // Prevent default error logging
 };
+});
