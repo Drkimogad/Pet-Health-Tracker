@@ -1,18 +1,18 @@
 'use strict'; // Add if not already present
 import { setupNotifications, sendPushNotification } from './pushNotifications.js';
 // ======================
-// STARTUP
+// STARTUP 🌟
 // ======================
-// ======== GLOBAL VARIABLES ========
+// ======== GLOBAL VARIABLES 🌟========
 let editingProfileId = null;
 let auth, firestore, storage, googleAuthProvider;
 let petDB; // Global reference to IndexedDB
 let gapiInitialized = false;
 let profile; 
 
-// ======== FIREBASE INITIALIZATION ========
+// ======== 🔥 FIREBASE INITIALIZATION  🔥 ========
 // ======================
-// ENHANCED FIREBASE INIT FOR GOOGLE DRIVE IMPLEMENTATION
+// ENHANCED FIREBASE INIT FOR GOOGLE DRIVE IMPLEMENTATION🌟
 // ======================
 const firebaseConfig = {
   apiKey: "AIzaSyBIej7yNj0LkkLd6VtQxBL4mEDSsHLJvig",
@@ -64,7 +64,7 @@ function initializeFirebaseServices() {
   }
 }
 // ======================
-// AUTH TRIGGERS (GOOGLE DRIVE SYNC)
+// AUTH TRIGGERS (GOOGLE DRIVE SYNC)🌟
 // ======================
 auth.onAuthStateChanged(async (user) => {
   if (user) {
@@ -91,7 +91,7 @@ async function initializeApp() {
     }
 }
 // ======================
-// INDEXEDDB (OFFLINE-FIRST)
+// INDEXEDDB (OFFLINE-FIRST)🌟
 // ======================
 function initIndexedDB() {
   return new Promise((resolve, reject) => {
@@ -120,7 +120,7 @@ function initIndexedDB() {
   });
 }
 // ======================
-// GOOGLE DRIVE API
+// GOOGLE DRIVE API 🌟
 // ======================
 async function initGoogleDriveAPI() {
   return new Promise((resolve) => {
@@ -247,7 +247,7 @@ async function loadPetsFromDrive() {
     return [];
   }
 }
-// Drive Folder Management
+// Drive Folder Management 🌟
 async function getPetFolderId() {
   // Check if folder exists
   const response = await gapi.client.drive.files.list({
@@ -270,7 +270,7 @@ async function getPetFolderId() {
   return response.result.files[0].id;
 }
 // Sync Queue Processor when app is online
-// ======== SYNC QUEUE PROCESSOR ========
+// ======== SYNC QUEUE PROCESSOR 🌟 ========
 async function processSyncQueue() {
   const queueTx = petDB.transaction('syncQueue', 'readwrite');
   const queueStore = queueTx.objectStore('syncQueue');
@@ -298,7 +298,7 @@ async function processSyncQueue() {
 // Call this when network status changes
 window.addEventListener('online', processSyncQueue);
 // ========================
-// SAFE SERVICE ACCESSORS
+// SAFE SERVICE ACCESSORS 🌟🌟
 // ========================
 function getAuth() {
   if (!auth) throw new Error("Authentication service not initialized");
@@ -308,7 +308,7 @@ function getFirestore() {
   if (!firestore) console.warn("Firestore not initialized - using localStorage fallback");
   return firestore;
 }
-// =======REMINDERS
+// =======REMINDERS🌟
 const REMINDER_THRESHOLD_DAYS = 5;
 const ALLOWED_REMINDER_TYPES = ['vaccination', 'checkup', 'grooming'];
 const REMINDER_TYPE_MAP = {
@@ -323,7 +323,7 @@ const reminderFields = {
   grooming: 'Grooming'
 };
 
-// ======== CORE FUNCTIONS ========
+// ======== CORE FUNCTIONS 🌟========
 // A. Generate Unique ID For Drives
 function generateUniqueId() {
   return 'pet-' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
@@ -410,7 +410,7 @@ function validateReminder(reminderData) {
   return { type: standardizedType, dueDate: dateValue };
 }
 // ======================
-// AUTH FORM MANAGEMENT
+// AUTH FORM MANAGEMENT 🌟🌟
 // ======================
 function setupAuthFormSwitchers() {
   // Login/Signup Toggle Handlers
@@ -435,7 +435,7 @@ function switchAuthForm(targetForm) {
   }
 }
 // ======================
-// UTILITY FUNCTIONS
+// UTILITY FUNCTIONS🌟🌟
 // ======================
 function showAuthError(message) {
   const errorElement = document.getElementById('authError');
@@ -534,7 +534,7 @@ function deleteOverdueReminder(profileIndex, reminderKey) {
   }
 }
 // ======================
-// MODAL UTILITIES
+// MODAL UTILITIES🌟🌟
 // ======================
 function showModal(content) {
   // Create or reuse modal elements
@@ -610,7 +610,7 @@ function trapFocus(modal) {
   });
 }
 // ======================
-// LOAD SAVED PET PROFILES (UPDATED)
+// LOAD SAVED PET PROFILES 🌟🌟
 // ======================
 async function loadSavedPetProfile() {
   try {
