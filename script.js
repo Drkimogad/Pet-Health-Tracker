@@ -1536,17 +1536,3 @@ window.onerror = (msg, url, line) => {
   alert(`Error: ${msg}\nLine: ${line}`);
   return true; // Prevent default error logging
 };
-  
-// ======================
-// STARTUP
-// ======================
-async function initializeApp() {
-  await initializeFirebaseServices();
-  await initIndexedDB();
-  
-  // Only init Drive if user is logged in
-  if (auth.currentUser) {
-    await initGoogleDriveAPI();
-    await processSyncQueue(); // Sync any pending changes
-  }
-}
