@@ -66,7 +66,7 @@ function initializeFirebaseServices() {
 // ======================
 // AUTH TRIGGERS (GOOGLE DRIVE SYNC)🌟
 // ======================
-auth.onAuthStateChanged(async (user) => {
+firebase.auth().onAuthStateChanged(async (user) => {
   if (user) {
     console.log("👤 User signed in, initializing Drive...");
     try {
