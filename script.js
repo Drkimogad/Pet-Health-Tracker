@@ -1470,7 +1470,7 @@ firebase.auth().createUserWithEmailAndPassword(email, password)
     alert(`Sign-up failed: ${error.message}`);
     // Don't reset form to allow error correction
   });
-
+}); // << ✅ This final brace and semicolon CLOSE the event listener
 // ======== LOGIN HANDLER ========
 const loginForm = document.getElementById('loginForm');
 if (loginForm) {
