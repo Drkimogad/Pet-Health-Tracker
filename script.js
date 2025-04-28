@@ -1200,10 +1200,12 @@ Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relatio
   
 // ======== MAIN INITIALIZATION UPDATED ========
 document.addEventListener('DOMContentLoaded', () => {
+  setupAuthFormSwitchers();
   // Authentication Section
   const authSection = document.getElementById('authSection');
   const mainContent = document.getElementById('mainContent');
   const logoutButton = document.getElementById('logoutButton');
+  
 // Image Preview Handler (NO CHANGES NEEDED)
   const petPhotoInput = document.getElementById('petPhoto');
   const petPhotoPreview = document.getElementById('petPhotoPreview');
