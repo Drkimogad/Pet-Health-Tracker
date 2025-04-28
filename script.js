@@ -1448,7 +1448,7 @@ document.getElementById('savedProfilesList')?.addEventListener('click', (e) => {
 });
 // ======== AUTHENTICATION HANDLERS ========
 // ======== SIGN-UP HANDLER ========
-document.getElementById('signUpForm')?.addEventListener('submit', function(event) {
+document.getElementById('signUp')?.addEventListener('submit', function(event) {
   event.preventDefault();
   const form = this;
   const email = this.querySelector('#signUpEmail').value.trim();
