@@ -1450,6 +1450,7 @@ document.getElementById('savedProfilesList')?.addEventListener('click', (e) => {
 // ======== SIGN-UP HANDLER ========
 document.getElementById('signUpForm')?.addEventListener('submit', function(event) {
   event.preventDefault();
+  const form = this;
   const email = this.querySelector('#signUpEmail').value.trim();
   const password = this.querySelector('#signUpPassword').value.trim();
 
@@ -1457,7 +1458,7 @@ document.getElementById('signUpForm')?.addEventListener('submit', function(event
     .then((userCredential) => {
       console.log('User created:', userCredential.user);
       alert('Sign-up successful! Please login.');
-      this.reset();
+      form.reset();
       
       // NEW: Automatically sign out after registration
       return firebase.auth().signOut(); // <-- This ensures clean login flow
