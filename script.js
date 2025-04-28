@@ -1472,9 +1472,9 @@ firebase.auth().createUserWithEmailAndPassword(email, password)
   });
 }); // << ✅ This final brace and semicolon CLOSE the event listener
 // ======== LOGIN HANDLER ========
-const loginForm = document.getElementById('loginForm');
-if (loginForm) {
-  loginForm.addEventListener('submit', function(event) {
+const login = document.getElementById('login');
+if (login) {
+  login.addEventListener('submit', function(event) {
     event.preventDefault();
     const form = this; // Capture form reference
     
