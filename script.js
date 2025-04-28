@@ -1395,7 +1395,7 @@ document.getElementById('dietForm').addEventListener('submit', async (e) => {
     }
 
     // Save using hybrid approach
-    if (auth.currentUser && gapiInitialized) {
+    if (firebase.auth().currentUser && gapiInitialized) {
       await savePet(petData); // Google Drive + IndexedDB
     } else {
       // LocalStorage fallback (your existing code)
