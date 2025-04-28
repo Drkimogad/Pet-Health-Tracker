@@ -617,7 +617,7 @@ async function loadSavedPetProfile() {
     // Get profiles from hybrid storage (Drive + IndexedDB fallback)
     let savedProfiles = [];
     
-    if (auth.currentUser && gapiInitialized) {
+    if (firebase.auth().currentUser && gapiInitialized) {
       savedProfiles = await loadPets(); // From hybrid storage
     } else {
       // Fallback to localStorage
@@ -1454,25 +1454,22 @@ document.getElementById('signUpForm')?.addEventListener('submit', function(event
   const email = this.querySelector('#signUpEmail').value.trim();
   const password = this.querySelector('#signUpPassword').value.trim();
 
-  firebase.auth().createUserWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-      console.log('User created:', userCredential.user);
-      alert('Sign-up successful! Please login.');
-      form.reset();
-      
-      // NEW: Automatically sign out after registration
-      return firebase.auth().signOut(); // <-- This ensures clean login flow
-    })
-    .then(() => {
-      // Force show login form
-      switchAuthForm('login'); // <-- This redirects to login
-    })
-    .catch((error) => {
-      console.error('Sign-up error:', error);
-      alert(`Sign-up failed: ${error.message}`);
-      // Don't reset form to allow error correction
-    });
-});
+firebase.auth().createUserWithEmailAndPassword(email, password)
+  .then((userCredential) => {
+    console.log('User created:', userCredential.user);
+    alert('Sign-up successful! Please login.');
+    form.reset();
+    // Return the signOut Promise
+    return firebase.auth().signOut();
+  })
+  .then(() => {
+    switchAuthForm('login');
+  })
+  .catch((error) => {
+    console.error('Sign-up error:', error);
+    alert(`Sign-up failed: ${error.message}`);
+    // Don't reset form to allow error correction
+  });
 
 // ======== LOGIN HANDLER ========
 const loginForm = document.getElementById('loginForm');
