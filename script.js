@@ -1190,9 +1190,9 @@ Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relatio
     } finally {
       const loader = qrWindow.document.querySelector('.loader');
       if (loader) loader.style.display = 'none';
+      }
      });
-   }
-  catch (error) { // <- Add catch directly after closing try brace
+   } catch (error) { // <- Add catch directly after closing try brace
     console.error("Main Error:", error);
     alert("QR initialization failed");
   }
