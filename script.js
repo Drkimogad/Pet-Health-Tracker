@@ -1374,7 +1374,7 @@ document.getElementById('dietForm').addEventListener('submit', async (e) => {
       
       // New fields we're adding
       id: editingProfileId || generateUniqueId(), // Fixed ID generation
-      ownerId: auth.currentUser?.uid || 'local-user',
+      ownerId: firebase.auth().currentUser?.uid || 'local-user',
       lastUpdated: Date.now(),
       createdAt: Date.now(),
       type: 'Unknown', // Will add to form later
