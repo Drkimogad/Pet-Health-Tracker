@@ -1,5 +1,4 @@
 'use strict'; // Add if not already present
-import { setupNotifications, sendPushNotification } from './pushNotifications.js';
 // ======================
 // STARTUP 🌟
 // ======================
