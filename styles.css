@@ -1,0 +1,502 @@
+/* ===== GLOBAL STYLES ===== */
+:root {
+  --primary-color: #3498db;
+  --primary-dark: #2980b9;
+  --secondary-color: #27ae60;
+  --secondary-dark: #219a52;
+  --error-color: #e74c3c;
+  --text-color: #333;
+  --light-bg: #f5f5f5;
+  --card-bg: #f9f9f9;
+  --border-color: #ddd;
+  --qr-blue: #3498db;
+  --qr-green: #27ae60;
+  --link-blue: #3498db;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  line-height: 1.6;
+  color: var(--text-color);
+  background-color: var(--light-bg);
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ===== LAYOUT ===== */
+.background-container {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  overflow: hidden;
+  padding-bottom: 20px;
+}
+
+header, footer {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 15px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* ===== AUTHENTICATION FORMS ===== */
+.auth-form {
+  display: none;
+  background: rgba(255, 255, 255, 0.98);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  max-width: 420px;
+  margin: 2rem auto;
+  border: 1px solid #e0e0e0;
+}
+
+.auth-form.active {
+  display: block;
+  animation: formEntrance 0.4s ease-out;
+}
+
+.auth-form h2 {
+  color: #2c3e50;
+  margin: 0 0 1.5rem 0;
+  padding-bottom: 0.8rem;
+  border-bottom: 2px solid var(--primary-color);
+}
+
+.form-switch {
+  text-align: center;
+  margin: 1.5rem 0 0 0;
+  font-size: 0.95rem;
+}
+
+.form-switch a {
+  color: var(--link-blue);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  padding: 0.3rem 0.5rem;
+  border-radius: 4px;
+}
+
+.form-switch a:hover {
+  background-color: rgba(52, 152, 219, 0.1);
+  text-decoration: underline;
+}
+
+/* ===== FORM STYLES ===== */
+.form-container {
+  padding: 25px;
+  margin: 0 auto 30px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  max-width: 800px;
+}
+
+fieldset {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+legend {
+  padding: 0 10px;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+label {
+  display: block;
+  margin: 15px 0 5px;
+  font-weight: 600;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+input[type="date"],
+textarea,
+select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 16px;
+  transition: all 0.3s;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* ===== BUTTONS ===== */
+button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s, transform 0.2s ease;
+  margin-top: 15px;
+}
+
+button:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.editProfileButton {
+  background: var(--qr-blue) !important;
+}
+
+.shareProfileButton {
+  background: var(--secondary-color) !important;
+}
+
+#logoutButton {
+  display: block;
+  margin: 20px auto;
+  width: 150px;
+}
+
+#cancelEdit {
+    background-color: #e74c3c;
+    margin-left: 10px;
+}
+
+/* ===== SAVED PROFILES ===== */
+.saved-profiles {
+  padding: 0 20px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+#savedProfilesList {
+  list-style: none;
+  padding: 0;
+}
+
+.pet-card {
+  background: var(--card-bg);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  border: 1px solid var(--border-color);
+}
+
+.pet-card h4 {
+  color: var(--primary-color);
+  margin-bottom: 15px;
+  font-size: 1.4em;
+}
+
+.pet-photo {
+  max-width: 150px;
+  max-height: 150px;
+  border-radius: 8px;
+  margin: 10px 0;
+  display: block;
+}
+
+/* ===== REMINDERS & LOADERS ===== */
+.reminders-container {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 20px auto;
+  max-width: 800px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.reminder {
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 6px;
+}
+
+.reminder.overdue {
+  background-color: #ffebee;
+  color: #c62828;
+  border-left: 4px solid #c62828;
+}
+
+.reminder.upcoming {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border-left: 4px solid #2e7d32;
+}
+
+.loader {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid var(--qr-blue);
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  animation: spin 1s linear infinite;
+  margin: 2rem auto;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+}
+
+/* for sharing */
+@keyframes highlight {
+    0% { background: rgba(255,235,59,0.3); }
+    100% { background: transparent; }
+}
+
+/* ===== QR CODE STYLES ===== */
+.qr-window {
+  padding: 20px;
+  text-align: center;
+}
+
+.qr-controls {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.qr-controls button {
+  padding: 0.8rem 1.8rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+#downloadQR {
+  background: var(--qr-blue);
+}
+
+#printQR {
+  background: var(--qr-green);
+}
+
+/* ===== ERROR STATES ===== */
+.error-message {
+  color: var(--error-color);
+  font-size: 0.9rem;
+  margin-top: 0.3rem;
+  display: none;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes formEntrance {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+  body {
+    font-size: 14pt;
+    background: white;
+    color: black;
+    padding: 0;
+  }
+
+  .no-print, 
+  .pet-card-buttons, 
+  #logoutButton, 
+  footer,
+  .auth-form,
+  header, 
+  button {
+    display: none !important;
+  }
+
+  .pet-card {
+    page-break-inside: avoid;
+    border: none;
+    box-shadow: none;
+    margin-bottom: 1.5rem;
+  }
+
+  img.pet-photo {
+    max-width: 250px !important;
+    height: auto !important;
+  }
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  .form-container, .reminders-container {
+    padding: 15px;
+  }
+
+  fieldset {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  button {
+    width: 100%;
+  }
+
+  .pet-card {
+    padding: 15px;
+  }
+
+  .qr-controls {
+    flex-direction: column;
+  }
+}
+/* Pet Cards */
+.pet-card {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.pet-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.pet-photo {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.pet-photo.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f0f0;
+  font-size: 1.5rem;
+}
+
+.pet-details {
+  margin: 1rem 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.pet-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Details Modal */
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+}
+
+.modal-overlay.active .modal-content {
+  transform: translateY(0);
+}
+
+.close-modal {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.pet-details-modal {
+  max-width: 600px;
+  padding: 1rem;
+}
+
+.detail-photo {
+  max-width: 200px;
+  display: block;
+  margin: 0 auto 1rem;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.section-break {
+  grid-column: 1 / -1;
+  margin-top: 1rem;
+  font-weight: bold;
+}
