@@ -1,21 +1,133 @@
 <!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
     <title>Pet Health Tracker</title>
+    <meta name="description" content="Celebrate your pets' milestones and keep track of their birthdays with PetStudio">
+    <meta property="og:title" content="PetStudio - Pet Profile Manager">
+    <meta property="og:description" content="Create and share your pet's profile with milestones and birthday reminders">
+    <meta property="og:type" content="website">
+    
+    <!-- Enhanced CSP with Nonce -->
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' 'unsafe-inline' 'unsafe-eval'
+    https://www.gstatic.com
+    https://cdn.jsdelivr.net
+    https://cdnjs.cloudflare.com
+    https://apis.google.com
+    https://accounts.google.com
+    https://www.googleapis.com
+    https://unpkg.com;
+  style-src 'self' 'unsafe-inline'
+    https://fonts.googleapis.com
+    https://accounts.google.com;
+  style-src-elem 'self' 'unsafe-inline'
+    https://fonts.googleapis.com
+    https://accounts.google.com;
+  connect-src 'self'
+    https://www.googleapis.com
+    https://firestore.googleapis.com
+    https://*.googleapis.com
+    https://identitytoolkit.googleapis.com
+    https://accounts.google.com
+    https://pet-studio.vercel.app;
+  frame-src https://accounts.google.com;
+  font-src 'self' https://fonts.gstatic.com;
+  img-src 'self' blob: data: https://*.googleusercontent.com;
+  object-src 'none';
+  base-uri 'self';
+  form-action 'self';
+  worker-src 'self';
+">
+
+    
+<!-- Preload critical resources -->
+<link rel="preconnect" href="https://accounts.google.com">
+<link rel="preconnect" href="https://apis.google.com">
+<link rel="preload" href="https://accounts.google.com/gsi/client" as="script">
+
+<script>
+  window.handleScriptError = (error) => {
+    console.error('Script failed to load:', error);
+    document.getElementById('authContainer').innerHTML = `
+      <div class="error-message">
+        <h2>Application Error</h2>
+        <p>Failed to load required resources. Please refresh or try again later.</p>
+      </div>
+    `;
+  };
+</script>
+    
+  <!-- Google Sign-In -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+  window.onload = function () {
+    google.accounts.id.initialize({
+      client_id: "480425185692-i5d0f4gi96t2ap41frgfr2dlpjpvp278.apps.googleusercontent.com",
+      callback: handleCredentialResponse,
+    });
+
+    google.accounts.id.renderButton(
+      document.getElementById("googleSignInButton"), // Make sure this exists in your HTML
+      { theme: "filled_blue", size: "large" }
+    );
+  };
+  function handleCredentialResponse(response) {
+    console.log("Google ID Token", response.credential);
+  }
+</script>
+    
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
     <link rel="manifest" href="./manifest.json">
     <link rel="stylesheet" href="./styles.css">
+
+    <script src="https://unpkg.com/cloudinary-core@2.11.4/cloudinary-core-shrinkwrap.min.js"></script>  
     <script src="https://apis.google.com/js/api.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script type="module" src="pushNotifications.js"></script>
+
+    </style>
+        /* Additional auth-specific styles */
+        .auth-switch-btn {
+            background: none;
+            border: none;
+            color: #0066cc;
+            text-decoration: underline;
+            cursor: pointer;
+            padding: 10px 0;
+            font-size: 1rem;
+            margin-top: 15px;
+            display: block;
+            width: 100%;
+            text-align: center;
+        }
+
+        .auth-switch-btn:hover {
+            color: #004499;
+        }
+
+        .button[disabled] {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .auth-message {
+            text-align: center;
+            margin: 15px 0;
+            color: #666;
+        }
+        .success-message {
+       color: #28a745;
+       text-align: center;
+       margin: 15px 0;
+        }
+</style>
+    
 </head>
 <body>
     <noscript>
@@ -31,31 +143,26 @@
             <h1>Pet Health Tracker</h1>
         </header>
 
-        <section id="authSection">
-            <div id="signUpForm" class="auth-form active">
-                <h2>Sign Up</h2>
-                <form id="signUp">
-                    <label for="signUpEmail">Email:</label>
-                    <input type="email" id="signUpEmail" name="email" required autocomplete="email">
-                    <label for="signUpPassword">Password:</label>
-                    <input type="password" id="signUpPassword" name="password" required autocomplete="new-password">
-                    <button type="submit">Sign Up</button>
-                </form>
-                <p class="form-switch">Already have an account? <a href="#" id="showLogin">Sign In</a></p>
-            </div>
-
-            <div id="loginForm" class="auth-form">
-                <h2>Login</h2>
-                <form id="login">
-                    <label for="loginEmail">Email:</label>
-                    <input type="email" id="loginEmail" name="email" required autocomplete="email">
-                    <label for="loginPassword">Password:</label>
-                    <input type="password" id="loginPassword" name="password" required autocomplete="current-password">
-                    <button type="submit">Login</button>
-                </form>
-                <p class="form-switch">Don't have an account? <a href="#" id="showSignUp">Sign Up</a></p>
-            </div>
-        </section>
+            <div id="processing-loader" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000;">
+  <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; text-align:center;">
+    <p>Loading...</p>
+  </div>
+</div>
+    <!-- Auth Container -->
+    <div id="authContainer">
+        <div class="auth-header">
+            <h1>PetStudio</h1>
+            <h2>Design your pet gallery!</h2>
+        </div>
+        <div id="googleSignInWrapper">
+            <div id="googleSignInBtn"></div>
+            <p class="auth-message">Sign in with your Google account to continue</p>
+        </div>
+        <div id="fullPageBanner" class="banner banner-wrapper">
+             <img src="./banner/image.png" alt="Banner Image" class="banner-image">
+           <div class="quote">“Track your pet’s journey every step of the way.”</div>
+       </div>
+    </div>
 
         <main id="mainContent" style="display: none;">
             <div class="form-container">
