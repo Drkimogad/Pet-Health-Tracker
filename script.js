@@ -15,13 +15,14 @@ let profile;
 // ENHANCED FIREBASE INIT FOR GOOGLE DRIVE IMPLEMENTATION🌟
 // ======================
 const firebaseConfig = {
-  apiKey: "AIzaSyBIej7yNj0LkkLd6VtQxBL4mEDSsHLJvig",
-  projectId: "pet-health-tracker-7164d",
-  appId: "1:540185558422:web:d560ac90eb1dff3e5071b7", // Added full appId format
-  authDomain: "pet-health-tracker-7164d.firebaseapp.com",
-  storageBucket: "pet-health-tracker-7164d.appspot.com",
-  messagingSenderId: "540185558422", // Added missing field
-  measurementId: "G-XXXXXXXXXX" // Recommended for Firebase Analytics
+  const firebaseConfig = {
+  apiKey: "AIzaSyAy2ObF1WWPurBa3TZ_AbBb00o80ZmlLAo",
+  authDomain: "pet-health-tracker-4ec31.firebaseapp.com",
+  projectId: "pet-health-tracker-4ec31",
+  storageBucket: "pet-health-tracker-4ec31.firebasestorage.app",
+  messagingSenderId: "123508617321",
+  appId: "1:123508617321:web:6abb04f74ce73d7d4232f8",
+  measurementId: "G-7YDDLF95KR"
 };
 // Global service references
 function initializeFirebaseServices() {
