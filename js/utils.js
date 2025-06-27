@@ -187,3 +187,21 @@ function showSuccessNotification(action, petName) {
 function generateUniqueId() {
   return 'pet-' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
 }
+// SW snippet 
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    const swUrl = '/Pet-Health-Tracker/service-worker.js';    
+    fetch(swUrl)
+      .then(response => {
+        if (!response.ok) throw new Error('SW file not found');        
+        return navigator.serviceWorker.register(swUrl);
+      })
+      .then(registration => {
+        console.log('SW registered:', registration.scope);
+        registration.update(); // Check for updates
+      })
+      .catch(err => {
+        console.warn('Service worker not available:', err);
+      });
+  });
+}
