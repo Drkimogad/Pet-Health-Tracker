@@ -6,297 +6,8 @@
 let editingProfileId = null;
 let auth, firestore, storage, googleAuthProvider;
 let petDB; // Global reference to IndexedDB
-let gapiInitialized = false;
 let profile; 
 
-// ======== 🔥 FIREBASE INITIALIZATION  🔥 ========
-// ======================
-// ENHANCED FIREBASE INIT FOR GOOGLE DRIVE IMPLEMENTATION🌟
-// ======================
-const firebaseConfig = {
-  const firebaseConfig = {
-  apiKey: "AIzaSyAy2ObF1WWPurBa3TZ_AbBb00o80ZmlLAo",
-  authDomain: "pet-health-tracker-4ec31.firebaseapp.com",
-  projectId: "pet-health-tracker-4ec31",
-  storageBucket: "pet-health-tracker-4ec31.firebasestorage.app",
-  messagingSenderId: "123508617321",
-  appId: "1:123508617321:web:6abb04f74ce73d7d4232f8",
-  measurementId: "G-7YDDLF95KR"
-};
-// Global service references
-function initializeFirebaseServices() {
-  try {
-    // Safety check for multiple initializations
-    if (!firebase.apps.length) {
-      const app = firebase.initializeApp(firebaseConfig);     
- // Initialize services with error handling
-      auth = firebase.auth(app);
-      firestore = firebase.firestore(app); // Future-proofing
-      storage = firebase.storage(app); // For future pet images 
-// Configure Google Auth Provider
-      googleAuthProvider = new firebase.auth.GoogleAuthProvider();
-      googleAuthProvider.addScope('https://www.googleapis.com/auth/userinfo.email');
-      googleAuthProvider.addScope('https://www.googleapis.com/auth/drive.file');
-      googleAuthProvider.setCustomParameters({
-        prompt: 'select_account' // Forces account selection
-      });  
-      console.log("✅ Firebase services initialized");
-      return true;
-    }   
- // Reuse existing services if already initialized
-    auth = firebase.auth();
-    firestore = firebase.firestore();
-    storage = firebase.storage();
-    return true;
-    
-  } catch (error) {
-    console.error("🔥 Firebase initialization failed:", error);
- // User-friendly error display
-    const errorContainer = document.getElementById('firebase-error') || document.body;
-    errorContainer.insertAdjacentHTML('afterbegin', `
-      <div class="firebase-error-alert">
-        <p>System initialization failed. Please refresh or try again later.</p>
-        <small>Technical details: ${error.message}</small>
-      </div>
-    `);
-    
-    return false;
-  }
-}
-// ======================
-// AUTH TRIGGERS (GOOGLE DRIVE SYNC)🌟
-// ======================
-firebase.auth().onAuthStateChanged(async (user) => {
-  if (user) {
-    console.log("👤 User signed in, initializing Drive...");
-    try {
-      await initGoogleDriveAPI(); // Load Drive API
-      await processSyncQueue();   // Sync pending changes
-    } catch (error) {
-      console.error("Drive init failed:", error);
-    }
-  } else {
-    console.log("👤 User signed out");
-  }
-});
-// Call this in your initializeApp()
-async function initializeApp() {
-    await initializeFirebaseServices();
-    await initIndexedDB();
-    setupAuthFormSwitchers(); // Add this line
-    
-    if (auth.currentUser) {
-        await initGoogleDriveAPI();
-        await processSyncQueue();
-    }
-}
-// ======================
-// INDEXEDDB (OFFLINE-FIRST)🌟
-// ======================
-function initIndexedDB() {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open('PetHealthDB', 1);
-
-    request.onupgradeneeded = (event) => {
-      const db = event.target.result;
-      if (!db.objectStoreNames.contains('pets')) {
-        db.createObjectStore('pets', { keyPath: 'id' });
-      }
-      if (!db.objectStoreNames.contains('syncQueue')) {
-        db.createObjectStore('syncQueue', { keyPath: 'id' });
-      }
-    };
-
-    request.onsuccess = (event) => {
-      petDB = event.target.result;
-      console.log('✅ IndexedDB ready');
-      resolve();
-    };
-
-    request.onerror = (event) => {
-      console.error('IndexedDB error:', event.target.error);
-      reject(event.target.error);
-    };
-  });
-}
-// ======================
-// GOOGLE DRIVE API 🌟
-// ======================
-async function initGoogleDriveAPI() {
-  return new Promise((resolve) => {
-    gapi.load('client:auth2', async () => {
-      await gapi.client.init({
-        apiKey: firebaseConfig.apiKey,
-        clientId: '251170885789-m02ir3l60sn2pp6dveepdd7jk2ucb5hn.apps.googleusercontent.com',
-        discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
-        scope: 'https://www.googleapis.com/auth/drive.file',
-      });
-
-      gapiInitialized = true;
-      console.log('✅ Google Drive API ready');
-      resolve();
-    });
-  });
-}
-// Core Storage Operations
-// A. SAVE PET, HYBRID
-async function savePet(petData) {
-  // Add metadata
-  petData.lastUpdated = Date.now();  // Timestamp for conflict resolution
-  petData.ownerId = auth.currentUser.uid; // Link to user
-  // 1. Save to IndexedDB
-  const tx = petDB.transaction('pets', 'readwrite');
-  const store = tx.objectStore('pets');
-  store.put(petData);
-  // 2. Queue for Google Drive sync
-    if (navigator.onLine && gapiInitialized) {
-    await syncPetToDrive(petData);
-  } else {
-    const queueTx = petDB.transaction('syncQueue', 'readwrite');
-    const queueStore = queueTx.objectStore('syncQueue');
-   // Check for existing entry
-    const existingItem = await new Promise((resolve) => 
-      queueStore.get(petData.id).onsuccess = (e) => resolve(e.target.result)
-    );
-    // Update or add new entry
-    queueStore.put({
-      id: petData.id,
-      action: 'save',
-      data: petData,
-      timestamp: Date.now() // For conflict resolution
-    });
-  }
-}
-// B. Sync to Google Drive
-async function syncPetToDrive(petData) {
-  try {
-    const folderId = await getPetFolderId();
-    const fileName = `pets/${petData.id}.json`;
-
-    // Create/update file in Drive
-    const file = await gapi.client.drive.files.create({
-      resource: { name: fileName, parents: [folderId], mimeType: 'application/json' },
-      media: { mimeType: 'application/json', body: JSON.stringify(petData) },
-      fields: 'id'
-    });
-
-    // Store Drive file ID in petData
-    const driveFileId = file.result.id;
-    petData.driveFileId = driveFileId;
-
-    // Update IndexedDB with Drive ID
-    const tx = petDB.transaction('pets', 'readwrite');
-    await tx.objectStore('pets').put(petData);
-
-    console.log('📤 Synced to Drive:', driveFileId);
-    return true;
-  } catch (error) {
-    console.error('Drive sync failed:', error);
-    return false;
-  }
-}
-// C. Load Pets (Hybrid)
-async function loadPets() {
-    let pets = [];
-  // 1. Try Google Drive first (if online)
-  if (navigator.onLine && gapiInitialized) {
-    try {
-       pets = await loadPetsFromDrive();
-    } catch (error) {
-      console.warn("Drive load failed:", error);
-    }
-  }
-  // 2. Merge with IndexedDB (keep newest version)
-  const localPets = await new Promise((resolve) => {
-    const tx = petDB.transaction('pets', 'readonly');
-    tx.objectStore('pets').getAll().onsuccess = (e) => resolve(e.target.result || []);
-  });
-  // Conflict resolution: Keep the newest version
-  const mergedPets = [...pets, ...localPets].reduce((acc, pet) => {
-    const existing = acc.find(p => p.id === pet.id);
-    if (!existing || pet.lastUpdated > existing.lastUpdated) {
-      return [...acc.filter(p => p.id !== pet.id), pet];
-    }
-    return acc;
-  }, []);
-  
-  return mergedPets;
-}
-// fetches all JSON pet files from the user’s Drive folder.
-// Returns an empty array if fails (fallback to IndexedDB).
-async function loadPetsFromDrive() {
-  try {
-    const folderId = await getPetFolderId();
-    const response = await gapi.client.drive.files.list({
-      q: `'${folderId}' in parents and mimeType='application/json' and trashed=false`,
-      fields: 'files(id, name)'
-    });
-
-    const pets = [];
-    for (const file of response.result.files) {
-      const petFile = await gapi.client.drive.files.get({
-        fileId: file.id,
-        alt: 'media'
-      });
-      pets.push(petFile.result);
-    }
-
-    return pets;
-  } catch (error) {
-    console.error('Failed to load pets from Drive:', error);
-    return [];
-  }
-}
-// Drive Folder Management 🌟
-async function getPetFolderId() {
-  // Check if folder exists
-  const response = await gapi.client.drive.files.list({
-    q: "name='Pet Health Tracker' and mimeType='application/vnd.google-apps.folder' and trashed=false",
-    spaces: 'drive',
-    fields: 'files(id)'
-  });
-  // Create if missing
-  if (response.result.files.length === 0) {
-    const folder = await gapi.client.drive.files.create({
-      resource: {
-        name: 'Pet Health Tracker',
-        mimeType: 'application/vnd.google-apps.folder'
-      },
-      fields: 'id'
-    });
-    return folder.result.id;
-  }
-
-  return response.result.files[0].id;
-}
-// Sync Queue Processor when app is online
-// ======== SYNC QUEUE PROCESSOR 🌟 ========
-async function processSyncQueue() {
-  const queueTx = petDB.transaction('syncQueue', 'readwrite');
-  const queueStore = queueTx.objectStore('syncQueue');
-  const queue = await new Promise((resolve) => queueStore.getAll().onsuccess = (e) => resolve(e.target.result));
-
-  const successfulIds = [];
-
-  for (const item of queue) {
-    try {
-      if (item.action === 'save') {
-        const success = await syncPetToDrive(item.data);
-        if (success) successfulIds.push(item.id);
-      }
-      // Add other actions (delete, etc.) here
-    } catch (error) {
-      console.error('Sync failed for item:', item, error);
-    }
-  }
-
-  // Remove only successfully synced items
-  const removeTx = petDB.transaction('syncQueue', 'readwrite');
-  const removeStore = removeTx.objectStore('syncQueue');
-  successfulIds.forEach(id => removeStore.delete(id));
-}
-// Call this when network status changes
-window.addEventListener('online', processSyncQueue);
 // ========================
 // SAFE SERVICE ACCESSORS 🌟🌟
 // ========================
@@ -324,7 +35,8 @@ const reminderFields = {
 };
 
 // ======== CORE FUNCTIONS 🌟========
-// A. Generate Unique ID For Drives
+// A. Generate Unique ID For Drives, i need this function to be modified to create new profiles in Firestore 
+// under "profiles" collection 
 function generateUniqueId() {
   return 'pet-' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
 }
@@ -373,7 +85,7 @@ function getPetDataFromForm() {
     }
   };
 }
-//Handling Image Uploads
+//Handling Image Uploads// i need this function to be used for Cloudinary images upload
 async function handlePetPhotoUpload() {
   const fileInput = document.getElementById('petPhoto');
   if (!fileInput.files[0]) return '';
@@ -389,6 +101,7 @@ async function handlePetPhotoUpload() {
     reader.readAsDataURL(fileInput.files[0]);
   });
 }
+
 // FUNCTION FORMAT REMINDER
 function formatReminder(dateTimeString) {
   if (!dateTimeString) return 'N/A';
@@ -412,6 +125,7 @@ function validateReminder(reminderData) {
 // ======================
 // AUTH FORM MANAGEMENT 🌟🌟
 // ======================
+// i need full googleSignIn implementation instead common loginForm 
 function setupAuthFormSwitchers() {
   // Login/Signup Toggle Handlers
   addSafeListener('showLogin', (e) => {
@@ -434,6 +148,7 @@ function switchAuthForm(targetForm) {
     formElement.querySelector('form').reset();
   }
 }
+
 // ======================
 // UTILITY FUNCTIONS🌟🌟
 // ======================
