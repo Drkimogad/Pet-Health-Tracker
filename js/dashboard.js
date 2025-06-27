@@ -102,26 +102,7 @@ async function handlePetPhotoUpload() {
   });
 }
 
-// FUNCTION FORMAT REMINDER
-function formatReminder(dateTimeString) {
-  if (!dateTimeString) return 'N/A';
-  const date = new Date(dateTimeString);
-  return date.toLocaleString();
-}
-// FUNCTION REMINDER VALIDATION
-function validateReminder(reminderData) {
-  // Use direct key matching instead of type mapping
-  if (!Object.keys(reminderFields).includes(reminderData.type)) {
-    throw new Error(`Invalid reminder type: ${reminderData.type}`);
-  }
-  
-  const dateValue = new Date(reminderData.dueDate);
-  if (Number.isNaN(dateValue.getTime())) {
-    throw new Error('Invalid date format for reminder');
-  }
-  
-  return { type: standardizedType, dueDate: dateValue };
-}
+
 // ======================
 // AUTH FORM MANAGEMENT 🌟🌟
 // ======================
@@ -149,43 +130,6 @@ function switchAuthForm(targetForm) {
   }
 }
 
-// ======================
-// UTILITY FUNCTIONS🌟🌟
-// ======================
-function showAuthError(message) {
-  const errorElement = document.getElementById('authError');
-  if (errorElement) {
-    errorElement.textContent = message;
-    errorElement.classList.remove('hidden');
-    setTimeout(() => errorElement.classList.add('hidden'), 5000);
-  }
-}
-// FUNCTION SHOW SYSTEM MESSAGE 
-function showSystemMessage(message) {
-  const messageElement = document.createElement('div');
-  messageElement.className = 'system-message';
-  messageElement.textContent = message;
-  document.body.prepend(messageElement);
-  setTimeout(() => messageElement.remove(), 5000);
-}
-// Helper function
-function addSafeListener(id, handler) {
-  const element = document.getElementById(id);
-  if (element) {
-    element.removeEventListener('click', handler);
-    element.addEventListener('click', handler);
-  }
-}
-// FUNCTION RESET FORM
-function resetForm() {
-  const form = document.getElementById('dietForm');
-  if (form) form.reset();
-  const preview = document.getElementById('petPhotoPreview');
-  if (preview) {
-    preview.src = '';
-    preview.style.display = 'none';
-  }
-}
 // Global error handler
 window.onerror = (msg, url, line) => {
   alert(`Error: ${msg}\nLine: ${line}`);
@@ -247,82 +191,6 @@ function deleteOverdueReminder(profileIndex, reminderKey) {
     // Refresh UI
     loadSavedPetProfile();
   }
-}
-// ======================
-// MODAL UTILITIES🌟🌟
-// ======================
-function showModal(content) {
-  // Create or reuse modal elements
-  let modal = document.getElementById('pet-modal');
-  let overlay = document.getElementById('modal-overlay');
-
-  if (!modal) {
-    // Create modal structure if it doesn't exist
-    overlay = document.createElement('div');
-    overlay.id = 'modal-overlay';
-    overlay.className = 'modal-overlay';
-    
-    modal = document.createElement('div');
-    modal.id = 'pet-modal';
-    modal.className = 'modal-content';
-    
-    const closeBtn = document.createElement('button');
-    closeBtn.className = 'close-modal';
-    closeBtn.innerHTML = '&times;';
-    closeBtn.addEventListener('click', hideModal);
-    
-    modal.appendChild(closeBtn);
-    overlay.appendChild(modal);
-    document.body.appendChild(overlay);
-    
-    // Close modal when clicking outside content
-    overlay.addEventListener('click', (e) => {
-      if (e.target === overlay) hideModal();
-    });
-  }
-  // Insert content and show
-  modal.innerHTML = `
-    <button class="close-modal">&times;</button>
-    ${content}
-  `;
-  modal.querySelector('.close-modal').addEventListener('click', hideModal);
-  
-  overlay.classList.add('active');
-  document.body.style.overflow = 'hidden'; // Prevent page scrolling
-}
-
-function hideModal() {
-  const overlay = document.getElementById('modal-overlay');
-  if (overlay) {
-    overlay.classList.remove('active');
-    document.body.style.overflow = ''; // Re-enable scrolling
-  }
-}
-// Add this to handle ESC key
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') hideModal();
-});
-// Add this to trap focus within modal
-function trapFocus(modal) {
-  const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-  const first = focusable[0];
-  const last = focusable[focusable.length - 1];
-
-  modal.addEventListener('keydown', (e) => {
-    if (e.key !== 'Tab') return;
-    
-    if (e.shiftKey) {
-      if (document.activeElement === first) {
-        last.focus();
-        e.preventDefault();
-      }
-    } else {
-      if (document.activeElement === last) {
-        first.focus();
-        e.preventDefault();
-      }
-    }
-  });
 }
 // ======================
 // LOAD SAVED PET PROFILES 🌟🌟
