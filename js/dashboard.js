@@ -1,13 +1,9 @@
 'use strict'; // Add if not already present
-// ======================
-// STARTUP 🌟
-// ======================
 // ======== GLOBAL VARIABLES 🌟========
 let editingProfileId = null;
 let auth, firestore, storage, googleAuthProvider;
 let petDB; // Global reference to IndexedDB
 let profile; 
-
 // ========================
 // SAFE SERVICE ACCESSORS 🌟🌟
 // ========================
@@ -101,41 +97,11 @@ async function handlePetPhotoUpload() {
     reader.readAsDataURL(fileInput.files[0]);
   });
 }
-
-
-// ======================
-// AUTH FORM MANAGEMENT 🌟🌟
-// ======================
-// i need full googleSignIn implementation instead common loginForm 
-function setupAuthFormSwitchers() {
-  // Login/Signup Toggle Handlers
-  addSafeListener('showLogin', (e) => {
-    e.preventDefault();
-    switchAuthForm('login');
-  });
-
-  addSafeListener('showSignUp', (e) => {
-    e.preventDefault();
-    switchAuthForm('signUp');
-  });
-}
-// Keep the existing switchAuthForm function below
-function switchAuthForm(targetForm) {
-  document.getElementById('signUpForm').classList.remove('active');
-  document.getElementById('loginForm').classList.remove('active');
-  const formElement = document.getElementById(`${targetForm}Form`);
-  if (formElement) {
-    formElement.classList.add('active');
-    formElement.querySelector('form').reset();
-  }
-}
-
 // Global error handler
 window.onerror = (msg, url, line) => {
   alert(`Error: ${msg}\nLine: ${line}`);
   return true; // Prevent default logging
 };
-
 //FUNCTION HIGHLIGHT REMINDERS 
 function highlightReminders(reminders, index) {
   const today = new Date();
@@ -805,54 +771,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
-
-  // ======== FIREBASE AUTH HANDLER ========
-  const authStateHandler = async (user) => {
-    try {
-      if (user) {
-        // UI Update
-        authSection.style.display = 'none';
-        mainContent.style.display = 'block';
-        logoutButton.style.display = 'block';
-
-        // Initialize Features
-        const notificationsReady = await setupNotifications();
-        if (notificationsReady) {
-          await sendPushNotification('Welcome Back!', 'Your pet profiles are ready');
-        }
-
-        // Load Data
-        await loadSavedPetProfile();
-      } else {
-        // UI Update
-        authSection.style.display = 'block';
-        mainContent.style.display = 'none';
-        logoutButton.style.display = 'none';
-        switchAuthForm('login');
-      }
-    } catch (error) {
-      console.error('Auth state error:', error);
-      authSection.style.display = 'block'; // ADDED: Fallback to auth view
-      switchAuthForm('login'); // ADDED: Ensure login form shows
-    }
-  };
-
-  // Firebase Initialization (IMPROVED ERROR HANDLING)
-  firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-    .then(() => {
-      const unsubscribe = firebase.auth().onAuthStateChanged(authStateHandler);
-      
-      // CLEANUP ON UNLOAD
-      window.addEventListener('beforeunload', () => {
-        unsubscribe();
-      });
-    })
-    .catch((error) => {
-      console.error("Auth persistence error:", error);
-      authSection.style.display = 'block';
-      switchAuthForm('login'); // ADDED: Force login form on error
-    });
-});
 // ======== SESSION STORAGE RECOVERY ========
 const editingSessionKeys = Array.from({ length: sessionStorage.length })
   .map((_, i) => sessionStorage.key(i))
@@ -1029,10 +947,6 @@ document.getElementById('savedProfilesList')?.addEventListener('click', (e) => {
     if (petId) showPetDetails(petId);
   }
 });
-// ======== AUTHENTICATION HANDLERS ========
-
-// I need full googleSignInBtn implementation and will move it to auth.js file
-
 // Updated Service Worker Registration
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
