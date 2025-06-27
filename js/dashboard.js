@@ -4,17 +4,6 @@ let editingProfileId = null;
 let auth, firestore, storage, googleAuthProvider;
 let petDB; // Global reference to IndexedDB
 let profile; 
-// ========================
-// SAFE SERVICE ACCESSORS 🌟🌟
-// ========================
-function getAuth() {
-  if (!auth) throw new Error("Authentication service not initialized");
-  return auth;
-}
-function getFirestore() {
-  if (!firestore) console.warn("Firestore not initialized - using localStorage fallback");
-  return firestore;
-}
 // =======REMINDERS🌟
 const REMINDER_THRESHOLD_DAYS = 5;
 const ALLOWED_REMINDER_TYPES = ['vaccination', 'checkup', 'grooming'];
@@ -23,13 +12,11 @@ const REMINDER_TYPE_MAP = {
   checkups: 'checkup',
   grooming: 'grooming'
 };
-
 const reminderFields = {
   vaccinations: 'Vaccinations/Deworming',
   checkups: 'Medical Check-ups',
   grooming: 'Grooming'
 };
-
 // ======== CORE FUNCTIONS 🌟========
 // A. Generate Unique ID For Drives, i need this function to be modified to create new profiles in Firestore 
 // under "profiles" collection 
@@ -81,27 +68,6 @@ function getPetDataFromForm() {
     }
   };
 }
-//Handling Image Uploads// i need this function to be used for Cloudinary images upload
-async function handlePetPhotoUpload() {
-  const fileInput = document.getElementById('petPhoto');
-  if (!fileInput.files[0]) return '';
-  
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const preview = document.getElementById('petPhotoPreview');
-      preview.src = e.target.result;
-      preview.style.display = 'block';
-      resolve(e.target.result); // Returns base64 encoded image
-    };
-    reader.readAsDataURL(fileInput.files[0]);
-  });
-}
-// Global error handler
-window.onerror = (msg, url, line) => {
-  alert(`Error: ${msg}\nLine: ${line}`);
-  return true; // Prevent default logging
-};
 //FUNCTION HIGHLIGHT REMINDERS 
 function highlightReminders(reminders, index) {
   const today = new Date();
@@ -947,28 +913,6 @@ document.getElementById('savedProfilesList')?.addEventListener('click', (e) => {
     if (petId) showPetDetails(petId);
   }
 });
-// Updated Service Worker Registration
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    const swUrl = '/Pet-Health-Tracker/service-worker.js';    
-    // First check if the SW file exists
-    fetch(swUrl)
-      .then(response => {
-        if (!response.ok) throw new Error('SW file not found');        
-        // Only register if file exists
-        navigator.serviceWorker.register(swUrl)
-          .then(registration => {
-            console.log('SW registered:', registration.scope);
-            registration.update(); // Check for updates immediately
-          })
-          .catch(err => console.error('SW registration failed:', err));
-      })
-      .catch(err => {
-        console.warn('Service worker not available:', err);
-        // Optional: Show "Offline mode" notification to user
-      });
-  });
-}  
 // Add this to catch handled errors 
 window.onerror = (msg, url, line) => {
   alert(`Error: ${msg}\nLine: ${line}`);
