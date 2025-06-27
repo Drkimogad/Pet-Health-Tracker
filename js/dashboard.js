@@ -17,57 +17,6 @@ const reminderFields = {
   checkups: 'Medical Check-ups',
   grooming: 'Grooming'
 };
-// ======== CORE FUNCTIONS 🌟========
-// A. Generate Unique ID For Drives, i need this function to be modified to create new profiles in Firestore 
-// under "profiles" collection 
-function generateUniqueId() {
-  return 'pet-' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
-}
-// B. Form-to-Data Mapping
-function getPetDataFromForm() {
-  return {
-    // === Auto-generated Fields ===
-    id: document.getElementById('petName').value.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now().toString(36),
-    ownerId: auth.currentUser.uid,
-    lastUpdated: Date.now(),
-    createdAt: Date.now(),
-
-    // === Basic Information ===
-    name: document.getElementById('petName').value,
-    type: 'Unknown', // Not in form - we'll add a dropdown later
-    breed: document.getElementById('breed').value,
-    age: parseFloat(document.getElementById('age').value) || 0,
-    weight: parseFloat(document.getElementById('weight').value) || 0,
-    gender: 'Unknown', // Not in form - we'll add this later
-    
-    // === Microchip Information ===
-    microchip: {
-      id: document.getElementById('microchipId').value,
-      date: document.getElementById('microchipDate').value,
-      vendor: document.getElementById('microchipVendor').value
-    },
-
-    // === Health Information ===
-    allergies: document.getElementById('allergies').value,
-    medicalHistory: document.getElementById('medicalHistory').value,
-    dietPlan: document.getElementById('dietPlan').value,
-    mood: document.getElementById('moodSelector').value,
-
-    // === Emergency Contact ===
-    emergencyContact: {
-      name: document.getElementById('emergencyContactName').value,
-      phone: document.getElementById('emergencyContactPhone').value,
-      relationship: document.getElementById('emergencyContactRelationship').value
-    },
-
-    // === Reminders ===
-    reminders: {
-      vaccinations: document.getElementById('vaccinationsAndDewormingReminder').value,
-      checkups: document.getElementById('medicalCheckupsReminder').value,
-      grooming: document.getElementById('groomingReminder').value
-    }
-  };
-}
 //FUNCTION HIGHLIGHT REMINDERS 
 function highlightReminders(reminders, index) {
   const today = new Date();
@@ -123,6 +72,73 @@ function deleteOverdueReminder(profileIndex, reminderKey) {
     // Refresh UI
     loadSavedPetProfile();
   }
+}
+// Function Image Preview Handler (NO CHANGES NEEDED)
+  const petPhotoInput = document.getElementById('petPhoto');
+  const petPhotoPreview = document.getElementById('petPhotoPreview');
+  if (petPhotoInput && petPhotoPreview) {
+    petPhotoInput.addEventListener('change', function() {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          petPhotoPreview.src = e.target.result;
+          petPhotoPreview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+// I NEED THIS TO BE USED TO GENERATE NEW PROFILES FOR FIRESTORE.
+// A. Generate Unique ID For Drives, i need this function to be modified to create new profiles in Firestore 
+// under "profiles" collection 
+function generateUniqueId() {
+  return 'pet-' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+}
+// B. Form-to-Data Mapping
+function getPetDataFromForm() {
+  return {
+    // === Auto-generated Fields ===
+    id: generateUniqueId(),
+    ownerId: auth.currentUser.uid,
+    lastUpdated: Date.now(),
+    createdAt: Date.now(),
+
+    // === Basic Information ===
+    name: document.getElementById('petName').value,
+    type: 'Unknown', // Not in form - we'll add a dropdown later
+    breed: document.getElementById('breed').value,
+    age: parseFloat(document.getElementById('age').value) || 0,
+    weight: parseFloat(document.getElementById('weight').value) || 0,
+    gender: 'Unknown', // Not in form - we'll add this later
+    
+    // === Microchip Information ===
+    microchip: {
+      id: document.getElementById('microchipId').value,
+      date: document.getElementById('microchipDate').value,
+      vendor: document.getElementById('microchipVendor').value
+    },
+
+    // === Health Information ===
+    allergies: document.getElementById('allergies').value,
+    medicalHistory: document.getElementById('medicalHistory').value,
+    dietPlan: document.getElementById('dietPlan').value,
+    mood: document.getElementById('moodSelector').value,
+
+    // === Emergency Contact ===
+    emergencyContact: {
+      name: document.getElementById('emergencyContactName').value,
+      phone: document.getElementById('emergencyContactPhone').value,
+      relationship: document.getElementById('emergencyContactRelationship').value
+    },
+
+    // === Reminders ===
+    reminders: {
+      vaccinations: document.getElementById('vaccinationsAndDewormingReminder').value,
+      checkups: document.getElementById('medicalCheckupsReminder').value,
+      grooming: document.getElementById('groomingReminder').value
+    }
+  };
 }
 // ======================
 // LOAD SAVED PET PROFILES 🌟🌟
@@ -234,19 +250,6 @@ function showPetDetails(profile) {
   `;
   
   showModal(detailsHtml);
-}
-
-// FUNCTION EDIT PROFILE/HELPER FUNCTION FOR USER'S NOTIFICATION
-// ===== HELPER FUNCTION =====
-function showSuccessNotification(action, petName) {
-  const message = `${petName}'s profile was ${action} successfully!`;
-  
-  // Browser notification (if permissions allowed)
-  if ('Notification' in window && Notification.permission === 'granted') {
-    new Notification('Success', { body: message });
-  }  
-  // Always show alert as fallback
-  alert(message);
 }
 // FUNCTION EDIT PROFILE
 // FUNCTION EDIT PROFILE (UPDATED FOR HYBRID STORAGE)
@@ -712,31 +715,6 @@ Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relatio
     alert("QR initialization failed");
   }
 } // <- Final function closing brace
-  
-// ======== MAIN INITIALIZATION UPDATED ========
-document.addEventListener('DOMContentLoaded', () => {
-  setupAuthFormSwitchers();
-  // Authentication Section
-  const authSection = document.getElementById('authSection');
-  const mainContent = document.getElementById('mainContent');
-  const logoutButton = document.getElementById('logoutButton');
-  
-// Image Preview Handler (NO CHANGES NEEDED)
-  const petPhotoInput = document.getElementById('petPhoto');
-  const petPhotoPreview = document.getElementById('petPhotoPreview');
-  if (petPhotoInput && petPhotoPreview) {
-    petPhotoInput.addEventListener('change', function() {
-      const file = this.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          petPhotoPreview.src = e.target.result;
-          petPhotoPreview.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-  }
 // ======== SESSION STORAGE RECOVERY ========
 const editingSessionKeys = Array.from({ length: sessionStorage.length })
   .map((_, i) => sessionStorage.key(i))
