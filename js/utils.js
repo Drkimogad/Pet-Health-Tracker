@@ -187,6 +187,17 @@ function showSuccessNotification(action, petName) {
 function generateUniqueId() {
   return 'pet-' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
 }
+// ====== FIREBASE SAFE ACCESSORS ======
+function getAuth() {
+  if (!auth) throw new Error("Authentication service not initialized");
+  return auth;
+}
+
+function getFirestore() {
+  if (!firestore) console.warn("Firestore not initialized - using localStorage fallback");
+  return firestore;
+}
+
 // SW snippet 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
