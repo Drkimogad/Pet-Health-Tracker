@@ -1162,68 +1162,9 @@ document.getElementById('savedProfilesList')?.addEventListener('click', (e) => {
   }
 });
 // ======== AUTHENTICATION HANDLERS ========
-// ======== SIGN-UP HANDLER ========
-document.getElementById('signUp')?.addEventListener('submit', function(event) {
-  event.preventDefault();
-  const form = this;
-  const email = this.querySelector('#signUpEmail').value.trim();
-  const password = this.querySelector('#signUpPassword').value.trim();
 
-firebase.auth().createUserWithEmailAndPassword(email, password)
-  .then((userCredential) => {
-    console.log('User created:', userCredential.user);
-    alert('Sign-up successful! Please login.');
-    form.reset();
-    // Return the signOut Promise
-    return firebase.auth().signOut();
-  })
-  .then(() => {
-    switchAuthForm('login');
-  })
-  .catch((error) => {
-    console.error('Sign-up error:', error);
-    alert(`Sign-up failed: ${error.message}`);
-    // Don't reset form to allow error correction
-  });
-}); // << ✅ This final brace and semicolon CLOSE the event listener
-// ======== LOGIN HANDLER ========
-const login = document.getElementById('login');
-if (login) {
-  login.addEventListener('submit', function(event) {
-    event.preventDefault();
-    const form = this; // Capture form reference
-    
-    const email = form.querySelector('#loginEmail').value.trim();
-    const password = form.querySelector('#loginPassword').value.trim();
+// I need full googleSignInBtn implementation and will move it to auth.js file
 
-    firebase.auth().signInWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        console.log('User logged in:', userCredential.user);
-        form.reset(); // Use captured reference
-      })
-      .catch((error) => {
-        console.error('Login error:', error);
-        alert(`Login failed: ${error.message}`);
-        // Removed reset to allow retry
-      });
-  });
-}
-
-// ======== LOGOUT HANDLER ========
-const logoutButtonElement = document.getElementById('logoutButton');
-if (logoutButtonElement) {
-  logoutButtonElement.addEventListener('click', function() {
-    firebase.auth().signOut()
-      .then(() => {
-        switchAuthForm('login');
-        alert('Logged out successfully!');
-      })
-      .catch((error) => {
-        console.error("Logout error:", error);
-        alert(`Logout failed: ${error.message}`);
-      });
-  });
-}
 // Updated Service Worker Registration
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
