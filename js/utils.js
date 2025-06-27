@@ -50,7 +50,11 @@ async function uploadToCloudinary(file, userId, petProfileId) {
     throw error;
   }
 }
-
+// Global error handler
+window.onerror = (msg, url, line) => {
+  alert(`Error: ${msg}\nLine: ${line}`);
+  return true; // Prevent default logging
+};
 // ====== Error Display ======
 function showAuthError(message) {
   const errorElement = document.getElementById('authError');
