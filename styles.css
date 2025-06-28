@@ -48,54 +48,148 @@ header, footer {
 }
 
 /* ===== AUTHENTICATION FORMS ===== */
-.auth-form {
-  display: none;
-  background: rgba(255, 255, 255, 0.98);
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  max-width: 420px;
-  margin: 2rem auto;
-  border: 1px solid #e0e0e0;
-}
-
-.auth-form.active {
+/* ====================
+   AUTHENTICATION STYLES
+==================== */
+/* Auth Container: Visible by default */
+#authContainer {
   display: block;
-  animation: formEntrance 0.4s ease-out;
 }
 
-.auth-form h2 {
-  color: #2c3e50;
-  margin: 0 0 1.5rem 0;
-  padding-bottom: 0.8rem;
-  border-bottom: 2px solid var(--primary-color);
+.auth-header h1 {
+  font-size: 2.5rem;     /* Main title size */
+  color: #6a1b9a;       /* Your deep purple */
+  margin-top: 1rem;
 }
 
-.form-switch {
-  text-align: center;
-  margin: 1.5rem 0 0 0;
-  font-size: 0.95rem;
+.auth-header h2 {
+  font-size: 1.2rem;    /* Subtitle size */
+  color: #d4a017;       /* Mustard accent */
+  margin-bottom: 1rem;
 }
 
-.form-switch a {
-  color: var(--link-blue);
-  text-decoration: none;
-  font-weight: 600;
-  transition: all 0.2s ease;
-  padding: 0.3rem 0.5rem;
-  border-radius: 4px;
+#googleSignInWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
 }
 
-.form-switch a:hover {
-  background-color: rgba(52, 152, 219, 0.1);
-  text-decoration: underline;
+/* Enhanced Google Sign-In Button */
+.google-btn {
+    background: #ffffff;
+    color: #444;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 15px auto;
+    cursor: pointer;
+    transition: background 0.3s, box-shadow 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 250px;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.google-btn:hover {
+    background: #f1f1f1;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.google-btn img {
+    width: 20px;
+    height: 20px;
+}
+
+.auth-message {
+  color: #333;
+  margin-top: 10px;
+  font-size: 1rem;
+}
+
+/* Spinner styles added recently*/
+#processing-loader .spinner {
+  margin: 20px auto 0;
+  width: 50px;
+  height: 50px;
+  border: 6px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Spin animation */
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 /* added recently to keep*/
 #mainContent { display: none; }
 #authContainer, #fullPageBanner { display: block; }
 
+/* ====================
+   BANNER & QUOTE STYLES
+==================== */
+.banner-wrapper {
+  position: relative;
+  width: 100%;
+  height: 70vh;
+  overflow: hidden;
+  box-sizing: border-box;
+  border-bottom: 3px solid #e1b12c;
+  margin-bottom: 20px;
+}
 
+.banner-image {
+  width: 100% !important;
+  height: auto !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  display: block !important;
+  margin: 0 auto !important;
+}
+
+.quote {
+    position: absolute;
+    bottom: 10%; /* Responsive positioning */
+    right: 10%;
+    background: rgba(0, 0, 0, 0.6);
+    color: #f5f5dc;
+    padding: 20px 30px;
+    border-radius: 10px;
+    font-style: italic;
+    font-size: clamp(1rem, 2.2vw, 1.4rem); /* 🔧 slightly larger across devices */
+    max-width: 45%;
+    text-align: right;
+    margin: 0;
+}
+
+/* ====================
+   DRIVE SYNC STATUS
+==================== */
+.drive-status {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.drive-status.synced {
+    background: #4CAF50;
+    color: white;
+}
+
+.drive-status.error {
+    background: #F44336;
+    color: white;
+}
 /* ===== FORM STYLES ===== */
 .form-container {
   padding: 25px;
