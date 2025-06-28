@@ -1,11 +1,26 @@
 'use strict';
+// ====== UI HELPERS ======
+function showLoading(show) {
+  const loader = document.getElementById("processing-loader");
+  if (!loader) {
+    console.warn("⚠️ 'processing-loader' element not found.");
+    return;
+  }
+  loader.style.display = show ? "block" : "none";
+}
 
-// ========== GLOBALS ==========
+function disableUI() {
+  document.body.innerHTML = `
+    <h1 style="color: red; padding: 2rem; text-align: center">
+      Critical Error: Failed to load application interface
+    </h1>
+  `;
+}
+// ====== GLOBALS ======
 let auth, firestore, storage;
 let petDB;
 let editingProfileId = null;
 let profile;
-
 // ========== FIREBASE INITIALIZATION ==========
 const firebaseConfig = {
   apiKey: "AIzaSyAy2ObF1WWPurBa3TZ_AbBb00o80ZmlLAo",
