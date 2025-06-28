@@ -1,8 +1,8 @@
 'use strict';
 // clodinary declaration 
 const CLOUDINARY_CONFIG = {
-  cloudName: 'your-cloud-name',
-  uploadPreset: 'your-upload-preset'
+  cloudName: 'dh7d6otgu',
+  uploadPreset: 'PetStudio'
 };
 // ====== UI HELPERS ======
 function showLoading(show) {
