@@ -8,12 +8,13 @@ let profile;
 
 // ========== FIREBASE INITIALIZATION ==========
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyAy2ObF1WWPurBa3TZ_AbBb00o80ZmlLAo",
+  authDomain: "pet-health-tracker-4ec31.firebaseapp.com",
+  projectId: "pet-health-tracker-4ec31",
+  storageBucket: "pet-health-tracker-4ec31.firebasestorage.app",
+  messagingSenderId: "123508617321",
+  appId: "1:123508617321:web:6abb04f74ce73d7d4232f8",
+  measurementId: "G-7YDDLF95KR"
 };
 
 firebase.initializeApp(firebaseConfig);
