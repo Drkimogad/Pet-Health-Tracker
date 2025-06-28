@@ -1,4 +1,9 @@
 'use strict';
+// clodinary declaration 
+const CLOUDINARY_CONFIG = {
+  cloudName: 'your-cloud-name',
+  uploadPreset: 'your-upload-preset'
+};
 // ====== UI HELPERS ======
 function showLoading(show) {
   const loader = document.getElementById("processing-loader");
