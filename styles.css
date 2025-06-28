@@ -91,6 +91,11 @@ header, footer {
   text-decoration: underline;
 }
 
+/* added recently to keep*/
+#mainContent { display: none; }
+#authContainer, #fullPageBanner { display: block; }
+
+
 /* ===== FORM STYLES ===== */
 .form-container {
   padding: 25px;
