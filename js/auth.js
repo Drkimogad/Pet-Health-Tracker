@@ -2,7 +2,7 @@
 
 // ======== GLOBAL VARIABLES 🌟========
 let editingProfileId = null;
-let auth, firestore, storage, googleAuthProvider;
+let auth, firestore, googleAuthProvider;
 let petDB;
 let profile;
 
