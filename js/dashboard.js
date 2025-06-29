@@ -1,9 +1,5 @@
 'use strict'; // Add if not already present
-// ======== GLOBAL VARIABLES 🌟========
-let editingProfileId = null;
-let auth, firestore, storage, googleAuthProvider;
-let petDB; // Global reference to IndexedDB
-let profile; 
+ 
 // =======REMINDERS🌟
 const REMINDER_THRESHOLD_DAYS = 5;
 const ALLOWED_REMINDER_TYPES = ['vaccination', 'checkup', 'grooming'];
