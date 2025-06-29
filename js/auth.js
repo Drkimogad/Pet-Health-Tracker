@@ -1,4 +1,11 @@
 'use strict';
+
+// ======== GLOBAL VARIABLES 🌟========
+let editingProfileId = null;
+let auth, firestore, storage, googleAuthProvider;
+let petDB;
+let profile;
+
 // clodinary declaration 
 const CLOUDINARY_CONFIG = {
   cloudName: 'dh7d6otgu',
@@ -21,11 +28,6 @@ function disableUI() {
     </h1>
   `;
 }
-// ====== GLOBALS ======
-let auth, firestore, storage;
-let petDB;
-let editingProfileId = null;
-let profile;
 // ========== FIREBASE INITIALIZATION ==========
 const firebaseConfig = {
   apiKey: "AIzaSyAy2ObF1WWPurBa3TZ_AbBb00o80ZmlLAo",
