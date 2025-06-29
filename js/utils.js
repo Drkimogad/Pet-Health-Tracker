@@ -177,17 +177,7 @@ function trapFocus(modal) {
     }
   });
 }
-
-// ====== Notifications & IDs ======
-function showSuccessNotification(action, petName) {
-  const message = `${petName}'s profile was ${action} successfully!`;
-
-  if ('Notification' in window && Notification.permission === 'granted') {
-    new Notification('Success', { body: message });
-  }
-  alert(message);
-}
-
+// generate unique id
 function generateUniqueId() {
   return 'pet-' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
 }
