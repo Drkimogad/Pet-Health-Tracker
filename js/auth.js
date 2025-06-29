@@ -85,10 +85,10 @@ document.addEventListener('DOMContentLoaded', () => {
           mainContent.style.display = 'block';
           logoutButton.style.display = 'block';
 
-          const notificationsReady = await setupNotifications?.();
-          if (notificationsReady) {
-            await sendPushNotification?.('Welcome Back!', 'Your pet profiles are ready');
-          }
+         // const notificationsReady = await setupNotifications?.();
+          //if (notificationsReady) {
+         //   await sendPushNotification?.('Welcome Back!', 'Your pet profiles are ready');
+         // }
 
           await loadSavedPetProfile?.();
         } else {
