@@ -54,6 +54,14 @@ body {
   margin: 0 auto;
   position: relative;
   border-bottom: 3px solid #e1b12c;
+  overflow: hidden; /* Keeps everything contained */
+}
+
+.banner-image {
+  width: 100%; /* Stretches to full width */
+  height: 100%; /* Stretches to full height */
+  object-fit: cover; /* Like zoom-to-fill */
+  display: block; /* Removes extra space under image */
 }
 
 /* ===== UI COMPONENTS ===== */
