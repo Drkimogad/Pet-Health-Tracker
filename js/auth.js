@@ -42,8 +42,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 auth = firebase.auth();
 firestore = firebase.firestore();
-storage = firebase.storage();
-
 // ========== GOOGLE SIGN-IN (GSI V2) ==========
 window.handleCredentialResponse = async function (response) {
   const idToken = response.credential;
