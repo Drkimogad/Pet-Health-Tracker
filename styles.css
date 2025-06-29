@@ -29,7 +29,14 @@ body {
   max-width: 1200px;
   margin: 0 auto;
 }
+/* Add these new rules */
+.hidden {
+  display: none !important;
+}
 
+.visible {
+  display: block !important;
+}
 /* ===== LAYOUT ===== */
 .background-container {
   background: white;
@@ -139,11 +146,13 @@ header, footer {
 }
 
 #fullPageBanner .banner-image {
-  width: 100%;
+  width:100%;
   height: 100%;
+  margin: 20px auto;
   object-fit: cover;
-  object-position: center;
+  object-position: relative;
   display: block;
+  object-fit: cover;
 }
 
 #fullPageBanner .quote {
