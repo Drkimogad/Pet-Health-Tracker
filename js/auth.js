@@ -1,6 +1,7 @@
 'use strict';
 
 // ======== GLOBAL VARIABLES 🌟========
+let gapiInitialized = false; // Add this at the top of your file
 let editingProfileId = null;
 let auth, firestore, googleAuthProvider;
 let petDB;
