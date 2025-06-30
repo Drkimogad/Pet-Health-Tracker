@@ -31,7 +31,6 @@ const DOM = {
   signupPage: null,
   loginPage: null,
   dashboard: null,
-  processingLoader: document.getElementById('processing-loader') // For showLoading()
 };
 
 // Initialize DOM elements when page loads
