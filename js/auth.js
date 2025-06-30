@@ -37,15 +37,17 @@ const DOM = {
 // Initialize DOM elements when page loads
 // ===== Initialize DOM Elements =====
 function initDOMReferences() {
+  // Get elements safely
   DOM.authContainer = document.getElementById("authContainer");
   DOM.dashboard = document.getElementById("dashboard");
-
-  // Ensure critical elements exist
+  
+  // Check if elements exist
   if (!DOM.authContainer || !DOM.dashboard) {
-    console.error("❌ Critical dashboard elements missing!");
-    if (typeof disableUI === "function") disableUI();
+    console.warn("DOM elements not found - will retry");
+    setTimeout(initDOMReferences, 100); // Retry after 100ms
     return false;
   }
+  
   console.log("✅ DOM references initialized.");
   return true;
 }
@@ -76,6 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.warn("⚠️ setupGoogleLoginButton() not found.");
   }
   // If needed, add more initializations here
+  initializeAuth();
 });
 // ====== Core Functions ======
 function showDashboard() {
