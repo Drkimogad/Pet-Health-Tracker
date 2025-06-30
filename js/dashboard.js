@@ -35,7 +35,7 @@ const DOM = {
   groomingReminder: document.getElementById('groomingReminder'),
   
   // Buttons
-  cancelEdit: document.getElementById('cancelEdit')
+  cancelEdit: DOM.cancelEdit
 };
 
 // Safety check (optional)
@@ -64,8 +64,8 @@ const reminderFields = {
 //FUNCTION HIGHLIGHT REMINDERS 
 function highlightReminders(reminders, index) {
   const today = new Date();
-  const overdueContainer = document.getElementById(`overdueReminders-${index}`);
-  const upcomingContainer = document.getElementById(`upcomingReminders-${index}`);
+  const overdueContainer = DOM.overdueReminders-${index};
+  const upcomingContainer = DOM.upcomingReminders-${index};
 
   if (!overdueContainer || !upcomingContainer) return;
 
@@ -118,8 +118,8 @@ function deleteOverdueReminder(profileIndex, reminderKey) {
   }
 }
 // Function Image Preview Handler (NO CHANGES NEEDED)
-  const petPhotoInput = document.getElementById('petPhoto');
-  const petPhotoPreview = document.getElementById('petPhotoPreview');
+  const petPhotoInput = DOM.petPhoto;
+  const petPhotoPreview = DOM.petPhotoPreview;
   if (petPhotoInput && petPhotoPreview) {
     petPhotoInput.addEventListener('change', function() {
       const file = this.files[0];
@@ -149,18 +149,18 @@ function getPetDataFromForm() {
     createdAt: Date.now(),
 
     // === Basic Information ===
-    name: document.getElementById('petName').value,
+    name: DOM.petName.value,
     type: 'Unknown', // Not in form - we'll add a dropdown later
-    breed: document.getElementById('breed').value,
-    age: parseFloat(document.getElementById('age').value) || 0,
-    weight: parseFloat(document.getElementById('weight').value) || 0,
+    breed: DOM.breed.value,
+    age: parseFloat(DOM.age.value) || 0,
+    weight: parseFloat(DOM.weight.value) || 0,
     gender: 'Unknown', // Not in form - we'll add this later
     
     // === Microchip Information ===
     microchip: {
-      id: document.getElementById('microchipId').value,
-      date: document.getElementById('microchipDate').value,
-      vendor: document.getElementById('microchipVendor').value
+      id: DOM.microchipId.value,
+      date: DOM.microchipDate.value,
+      vendor: DOM.microchipVendor.value
     },
 
     // === Health Information ===
