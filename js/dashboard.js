@@ -189,24 +189,22 @@ function getPetDataFromForm() {
 // ======================
 async function loadSavedPetProfile() {
   try {
-    // TRY LOADING PROFILES FROM FIRESTORE IF AVAILABLE
-    const user = firebase.auth().currentUser;
     let savedProfiles = [];
     
-    if (user) {
-      // Load from Firestore
+    if (firebase.auth().currentUser) {
+      // Firestore loading logic (keep your original implementation)
       const snapshot = await firebase.firestore()
-        .collection('profiles')
-        .where('ownerId', '==', user.uid)
+        .collection("profiles")
+        .where("userId", "==", firebase.auth().currentUser.uid)
         .get();
       savedProfiles = snapshot.docs.map(doc => doc.data());
     } else {
-      // Fallback to localStorage
+      // LocalStorage fallback (keep your original implementation)
       savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
     }
-    renderProfiles(savedProfiles);
 
-  const savedProfilesList = DOM.savedProfilesList;
+    // START OF RENDERPROFILES SECTION (now using DOM object)
+    const savedProfilesList = DOM.savedProfilesList;
     if (!savedProfilesList) return;
 
     savedProfilesList.innerHTML = '';
