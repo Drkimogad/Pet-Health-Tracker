@@ -164,23 +164,23 @@ function getPetDataFromForm() {
     },
 
     // === Health Information ===
-    allergies: document.getElementById('allergies').value,
-    medicalHistory: document.getElementById('medicalHistory').value,
-    dietPlan: document.getElementById('dietPlan').value,
-    mood: document.getElementById('moodSelector').value,
+    allergies: DOM.allergies.value,
+    medicalHistory: DOM.medicalHistory.value,
+    dietPlan: DOM.dietPlan.value,
+    mood: DOM.moodSelector.value,
 
     // === Emergency Contact ===
     emergencyContact: {
-      name: document.getElementById('emergencyContactName').value,
-      phone: document.getElementById('emergencyContactPhone').value,
-      relationship: document.getElementById('emergencyContactRelationship').value
+      name: DOM.emergencyContactName.value,
+      phone: DOM.emergencyContactPhone.value,
+      relationship: DOM.emergencyContactRelationship.value
     },
 
     // === Reminders ===
     reminders: {
-      vaccinations: document.getElementById('vaccinationsAndDewormingReminder').value,
-      checkups: document.getElementById('medicalCheckupsReminder').value,
-      grooming: document.getElementById('groomingReminder').value
+      vaccinations: DOM.vaccinationsAndDewormingReminder.value,
+      checkups: DOM.medicalCheckupsReminder.value,
+      grooming: DOM.groomingReminder.value
     }
   };
 }
@@ -189,6 +189,7 @@ function getPetDataFromForm() {
 // ======================
 async function loadSavedPetProfile() {
   try {
+    // TRY LOADING PROFILES FROM FIRESTORE IF AVAILABLE
     const user = firebase.auth().currentUser;
     let savedProfiles = [];
     
@@ -305,8 +306,8 @@ function showPetDetails(profile) {
 // FUNCTION EDIT PROFILE (UPDATED FOR HYBRID STORAGE)
 async function editPetProfile(petId) {
   try {    
-    // 1. Try to load from Google Drive if available
-    if (auth.currentUser && gapiInitialized) {
+    // 1. Try to load from Firestore if available
+    if (firebase.auth().currentUser) {
       const pets = await loadPets();
       profile = pets.find(p => p.id === petId);
     }    
@@ -325,7 +326,7 @@ async function editPetProfile(petId) {
     sessionStorage.setItem(`editingProfile_${petId}`, JSON.stringify(profile));
     // Your existing field population logic (unchanged)
     const setValue = (id, value) => {
-      const el = document.getElementById(id);
+      const el = DOM.id;
       if (el) el.value = value || '';
     };
 
@@ -351,19 +352,19 @@ async function editPetProfile(petId) {
     if (profile.type) setValue('petType', profile.type);
     if (profile.gender) setValue('petGender', profile.gender);
     // Handle pet photo preview (unchanged)
-    const preview = document.getElementById('petPhotoPreview');
+    const preview = DOM.petPhotoPreview;
     if (preview && profile.petPhoto) {
       preview.src = profile.petPhoto;
       preview.style.display = 'block';
     }
     // Show cancel button (unchanged)
-    const cancelButton = document.getElementById('cancelEdit');
+    const cancelButton = DOM.cancelEdit;
     if (cancelButton) {
       cancelButton.style.display = 'inline-block';
       cancelButton.onclick = handleCancelEdit;
     }
     // Scroll to form
-    document.getElementById('dietForm').scrollIntoView({ behavior: 'smooth' });
+    DOM.dietForm.scrollIntoView({ behavior: 'smooth' });
 
   } catch (error) {
     console.error('Edit error:', error);
