@@ -2,7 +2,7 @@
 
 // DOM ELEMENTS FOR UTILS.JS
 const DOM = {
-  // Error/UI Elements (used across files)
+  // UI Elements (used across files)
   processingLoader: document.getElementById('processing-loader'),
   
   // Form Elements (used in resetForm())
