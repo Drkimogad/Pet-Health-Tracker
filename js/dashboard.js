@@ -1,6 +1,3 @@
-// ====== DOM ELEMENTS ======
-'use strict';
-
 let editingProfileId = null; // Tracks which profile is being edited
 let petDB; // IndexedDB reference (if used)
 let profile; // Current profile being processed
