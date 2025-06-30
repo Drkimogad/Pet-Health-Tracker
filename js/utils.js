@@ -3,7 +3,6 @@
 // DOM ELEMENTS FOR UTILS.JS
 const DOM = {
   // Error/UI Elements (used across files)
-  authError: document.getElementById('authError'),
   processingLoader: document.getElementById('processing-loader'),
   
   // Form Elements (used in resetForm())
