@@ -1,4 +1,20 @@
 'use strict';
+
+// DOM ELEMENTS FOR UTILS.JS
+const DOM = {
+  // Error/UI Elements (used across files)
+  authError: document.getElementById('authError'),
+  processingLoader: document.getElementById('processing-loader'),
+  
+  // Form Elements (used in resetForm())
+  dietForm: document.getElementById('dietForm'),
+  petPhotoPreview: document.getElementById('petPhotoPreview'),
+  
+  // Modal Elements (used in showModal())
+  petModal: document.getElementById('pet-modal') || null, // Optional fallback
+  modalOverlay: document.getElementById('modal-overlay') || null
+};
+
 //🔄 Updated uploadToCloudinary()
 async function uploadToCloudinary(file, userId, petProfileId) {
   // 1. VALIDATE FILE TYPE
@@ -57,7 +73,7 @@ window.onerror = (msg, url, line) => {
 };
 // ====== Error Display ======
 function showAuthError(message) {
-  const errorElement = document.getElementById('authError');
+  const errorElement = DOM.authError;
   if (errorElement) {
     errorElement.textContent = message;
     errorElement.classList.remove('hidden');
@@ -75,7 +91,7 @@ function showSystemMessage(message) {
 
 // ====== DOM & UI Helpers ======
 function addSafeListener(id, handler) {
-  const element = document.getElementById(id);
+  const element = DOM.id;
   if (element) {
     element.removeEventListener('click', handler);
     element.addEventListener('click', handler);
@@ -83,9 +99,9 @@ function addSafeListener(id, handler) {
 }
 
 function resetForm() {
-  const form = document.getElementById('dietForm');
+  const form = DOM.dietForm;
   if (form) form.reset();
-  const preview = document.getElementById('petPhotoPreview');
+  const preview = DOM.petPhotoPreview;
   if (preview) {
     preview.src = '';
     preview.style.display = 'none';
@@ -117,8 +133,8 @@ function validateReminder(reminderData) {
 
 // ====== Modal Utilities ======
 function showModal(content) {
-  let modal = document.getElementById('pet-modal');
-  let overlay = document.getElementById('modal-overlay');
+  let modal = DOM.pet-modal;
+  let overlay = DOM.modal-overlay;
 
   if (!modal) {
     overlay = document.createElement('div');
@@ -150,7 +166,7 @@ function showModal(content) {
 }
 
 function hideModal() {
-  const overlay = document.getElementById('modal-overlay');
+  const overlay = DOM.modal-overlay;
   if (overlay) {
     overlay.classList.remove('active');
     document.body.style.overflow = '';
@@ -183,8 +199,7 @@ function generateUniqueId() {
 }
 // ====== FIREBASE SAFE ACCESSORS ======
 function getAuth() {
-  if (!auth) throw new Error("Authentication service not initialized");
-  return auth;
+  return firebase.auth(); // Use directly from initialized Firebase
 }
 
 function getFirestore() {
@@ -195,7 +210,7 @@ function getFirestore() {
 // SW snippet 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    const swUrl = '/Pet-Health-Tracker/service-worker.js';    
+  const swUrl = './service-worker.js'; // Relative path
     fetch(swUrl)
       .then(response => {
         if (!response.ok) throw new Error('SW file not found');        
