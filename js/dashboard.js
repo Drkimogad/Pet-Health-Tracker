@@ -205,7 +205,7 @@ async function loadSavedPetProfile() {
 
     // START OF RENDERPROFILES SECTION (now using DOM object)
     const savedProfilesList = DOM.savedProfilesList;
-    if (!savedProfilesList) return;
+    if (!DOM.savedProfilesList) return;
 
     savedProfilesList.innerHTML = '';
 
