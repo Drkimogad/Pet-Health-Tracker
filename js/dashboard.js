@@ -141,15 +141,21 @@ function getPetDataFromForm() {
 // ======================
 async function loadSavedPetProfile() {
   try {
-    // Get profiles from hybrid storage (Drive + IndexedDB fallback)
+    const user = firebase.auth().currentUser;
     let savedProfiles = [];
     
-    if (firebase.auth().currentUser && gapiInitialized) {
-      savedProfiles = await loadPets(); // From hybrid storage
+    if (user) {
+      // Load from Firestore
+      const snapshot = await firebase.firestore()
+        .collection('profiles')
+        .where('ownerId', '==', user.uid)
+        .get();
+      savedProfiles = snapshot.docs.map(doc => doc.data());
     } else {
       // Fallback to localStorage
       savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
     }
+    renderProfiles(savedProfiles);
 
     const savedProfilesList = document.getElementById('savedProfilesList');
     if (!savedProfilesList) return;
@@ -836,11 +842,11 @@ document.getElementById('dietForm').addEventListener('submit', async (e) => {
     }
 
     // Save using hybrid approach
-    if (firebase.auth().currentUser && gapiInitialized) {
-      await savePet(petData); // Google Drive + IndexedDB
-    } else {
-      // LocalStorage fallback (your existing code)
-      const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+   if (firebase.auth().currentUser) {
+    savedProfiles = await loadPets(); // Or direct Firestore call
+   } else {
+    savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+   }
       if (editingProfileId !== null) {
       const index = savedProfiles.findIndex(p => p.id === editingProfileId);
       if (index !== -1) {
@@ -892,3 +898,19 @@ window.onerror = (msg, url, line) => {
   alert(`Error: ${msg}\nLine: ${line}`);
   return true; // Prevent default error logging
 };
+// ITIALIZE DASHBOARD
+function initializeDashboard() {
+  // Set up all event listeners
+  document.getElementById('dietForm')?.addEventListener('submit', handleFormSubmit);
+  document.getElementById('savedProfilesList')?.addEventListener('click', handleProfileActions);
+  
+  // Check auth state
+  firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+      loadSavedPetProfile();
+    }
+  });
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', initializeDashboard);
