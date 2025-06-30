@@ -39,18 +39,17 @@ function initDOMReferences() {
   // Get elements safely
   DOM.authContainer = document.getElementById("authContainer");
   DOM.dashboard = document.getElementById("dashboard");
-  DOM.googleSignInBtn = document.getElementById("googleSignInButton");
-
-  // Check if elements exist
+  
+  // Ensure critical elements exist
   if (!DOM.authContainer || !DOM.dashboard) {
-    console.warn("DOM elements not found - will retry");
-    setTimeout(initDOMReferences, 100); // Retry after 100ms
+    console.error("❌ Critical dashboard elements missing!");
+    if (typeof disableUI === "function") disableUI();
     return false;
   }
-  
   console.log("✅ DOM references initialized.");
   return true;
 }
+
 // show loading function
 function showLoading(show) {
  const loader = DOM.processingLoader;
@@ -69,18 +68,14 @@ function showLoading(show) {
 
 // ===== DOM Ready: Initialize Everything =====
 document.addEventListener("DOMContentLoaded", () => {
-  // First initialize DOM references
-  if (!initDOMReferences()) {
-    return; // Will retry automatically via the timeout in initDOMReferences
-  }
-
-  // Then check for Google login
+  const domReady = initDOMReferences();
+  if (!domReady) return;
+// Initialize login button and other startup logic
   if (typeof setupGoogleLoginButton === "function") {
     setupGoogleLoginButton();
   } else {
     console.warn("⚠️ setupGoogleLoginButton() not found.");
   }
-
   // Finally initialize auth
   initializeAuth();
 });
