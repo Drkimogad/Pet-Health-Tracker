@@ -1,5 +1,22 @@
 // ====== DOM ELEMENTS ======
 'use strict';
+
+let editingProfileId = null; // Tracks which profile is being edited
+let petDB; // IndexedDB reference (if used)
+let profile; // Current profile being processed
+let currentQRProfile = null; // Only new declaration needed
+
+// 🌍 Load from localStorage and expose globally
+let petProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+window.petProfiles = petProfiles;
+
+// SAFE GLOBAL INITIALIZATION 
+if (typeof isEditing === 'undefined') {
+    window.isEditing = false;
+}
+if (typeof currentEditIndex === 'undefined') {
+    window.currentEditIndex = -1;
+}
 // ====== DOM ELEMENTS ======
 const DOM = {
   // Main containers
@@ -42,11 +59,6 @@ const DOM = {
 if (!DOM.savedProfilesList || !DOM.dietForm) {
   console.error('Critical DOM elements missing! Check your HTML IDs');
 }
-
-// ======= STATE MANAGEMENT =======
-let editingProfileId = null; // Tracks which profile is being edited
-let petDB; // IndexedDB reference (if used)
-let profile; // Current profile being processed
 
 // =======REMINDERS🌟
 const REMINDER_THRESHOLD_DAYS = 5;
