@@ -15,7 +15,7 @@ const VALID_ORIGINS = [
 ];
 // Runtime origin check
 if (!VALID_ORIGINS.includes(window.location.origin)) {
-  window.location.href = 'https://drkimogad.github.io/PetStudio';
+  window.location.href = 'https://drkimogad.github.io/Pet-Health-Tracker';
 }
 // HELPER FUNCTION DISABLE UI    
 function disableUI() {
