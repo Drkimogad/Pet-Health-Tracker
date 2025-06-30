@@ -39,7 +39,7 @@ function initDOMReferences() {
   // Get elements safely
   DOM.authContainer = document.getElementById("authContainer");
   DOM.dashboard = document.getElementById("dashboard");
-    DOM.googleSignInBtn = document.getElementById("googleSignInBtn");
+  DOM.googleSignInBtn = document.getElementById("googleSignInButton");
 
   // Check if elements exist
   if (!DOM.authContainer || !DOM.dashboard) {
