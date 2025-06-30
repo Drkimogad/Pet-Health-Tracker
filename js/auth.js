@@ -17,14 +17,6 @@ const VALID_ORIGINS = [
 if (!VALID_ORIGINS.includes(window.location.origin)) {
   window.location.href = 'https://drkimogad.github.io/Pet-Health-Tracker';
 }
-// HELPER FUNCTION DISABLE UI    
-function disableUI() {
-  document.body.innerHTML = `
-    <h1 style="color: red; padding: 2rem; text-align: center">
-      Critical Error: Failed to load application interface
-    </h1>
-  `;
-}
 // DOM Elements - Initialize as null first
 const DOM = {
   authContainer: null,
