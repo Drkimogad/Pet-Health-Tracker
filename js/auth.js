@@ -125,22 +125,22 @@ function setupGoogleLoginButton() {
     // Initialize Google Identity Services
     google.accounts.id.initialize({
       client_id: CLIENT_ID,
-      callback: async (response) => {
-        try {
-          showLoading(true);
-          // Using v9 compat syntax
-          const credential = firebase.auth.GoogleAuthProvider.credential(response.credential);
-          await firebase.auth().signInWithCredential(credential);
-          showDashboard();
-        } catch (error) {
-          console.error("Google Sign-In failed:", error);
-          if (typeof Utils !== 'undefined' && Utils.showErrorToUser) {
-            Utils.showErrorToUser("Google Sign-In failed. Please try again.");
-          }
-        } finally {
-          showLoading(false);
-        }
-      }
+callback: async (response) => {
+  showLoading(true);
+  try {
+    const credential = firebase.auth.GoogleAuthProvider.credential(response.credential);
+    const userCredential = await firebase.auth().signInWithCredential(credential);
+    await userCredential.user.getIdToken(true); // Force token refresh
+    showDashboard();
+  } catch (error) {
+    console.error("Google Sign-In failed:", error);
+    if (typeof Utils !== 'undefined' && Utils.showErrorToUser) {
+      Utils.showErrorToUser("Google Sign-In failed. Please try again.");
+    }
+  } finally {
+    showLoading(false);
+  }
+}
     });
 // Render button if container exists
     const googleButtonContainer = document.getElementById("googleSignInBtn");
@@ -162,67 +162,47 @@ function setupGoogleLoginButton() {
     console.error("Google Sign-In setup failed:", error);
   }
 }
-
 // ====== Firebase Integration ======
 // ====== Firebase Initialization ======
-const firebaseConfig = {
-  apiKey: "AIzaSyAy2ObF1WWPurBa3TZ_AbBb00o80ZmlLAo",
-  authDomain: "pet-health-tracker-4ec31.firebaseapp.com",
-  projectId: "pet-health-tracker-4ec31",
-  storageBucket: "pet-health-tracker-4ec31.firebasestorage.app",
-  messagingSenderId: "123508617321",
-  appId: "1:123508617321:web:6abb04f74ce73d7d4232f8",
-  measurementId: "G-7YDDLF95KR"
-};
-  // Initialize Firebase if not already done
+function initializeFirebase() {
+  const firebaseConfig = {
+    apiKey: "AIzaSyAy2ObF1WWPurBa3TZ_AbBb00o80ZmlLAo",
+    authDomain: "pet-health-tracker-4ec31.firebaseapp.com",
+    projectId: "pet-health-tracker-4ec31",
+    storageBucket: "pet-health-tracker-4ec31.firebasestorage.app",
+    messagingSenderId: "123508617321",
+    appId: "1:123508617321:web:6abb04f74ce73d7d4232f8",
+    measurementId: "G-7YDDLF95KR"
+  };
+
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }
-  // ✅ Return the actual Firebase Auth instance
-  return firebase.auth(); 
+  return firebase.auth();
 }
 // ====== Auth State Listener ======
 function initAuthListeners() {
-  console.log("👤 Firebase current user:", firebase.auth().currentUser);
-
-  const auth = firebase.auth();
-  auth.onAuthStateChanged(async (user) => {
+  firebase.auth().onAuthStateChanged(async (user) => {
+    const authContainer = document.getElementById('authContainer');
+    const mainContent = document.getElementById('mainContent');
+    
     if (user) {
-      console.log("✅ User is signed in:", user);
-
+      authContainer.classList.add('hidden');
+      mainContent.classList.remove('hidden');
+      
       try {
-        const snapshot = await firebase.firestore()
-          .collection("profiles")
-          .where("userId", "==", user.uid)
-          .get();
-
-        // 🔄 Sync from Firestore to global + localStorage
-        const fetchedProfiles = snapshot.docs.map(doc => doc.data());
-        window.petProfiles = fetchedProfiles; // 🔴 Live memory
-        localStorage.setItem("petProfiles", JSON.stringify(fetchedProfiles)); // 🟡 Persistent backup
-        // 👁️ Log for debug
-        console.log("📥 Synced petProfiles from Firestore:", fetchedProfiles);
-       // 🔁 Continue with dashboard rendering (which includes renderProfiles)
-          showDashboard();
-        
+        const snapshot = await firebase.firestore().collection("profiles").where("userId", "==", user.uid).get();
+        window.petProfiles = snapshot.docs.map(doc => doc.data());
+        localStorage.setItem("petProfiles", JSON.stringify(window.petProfiles));
+        showDashboard();
       } catch (error) {
-        console.error("❌ Failed to fetch profiles:", error);
-        Utils.showErrorToUser("Couldn't load your pet profiles.");
+        console.error("Profile load error:", error);
       }
-
     } else {
-      console.log("ℹ️ No user is signed in.");
-
-      // ✅ Show login screen
-      if (DOM.authContainer) DOM.authContainer.classList.remove('hidden');
-      if (DOM.dashboard) DOM.dashboard.classList.add('hidden');
-
-      if (typeof setupGoogleLoginButton === 'function') {
-        setupGoogleLoginButton();
-      }
+      authContainer.classList.remove('hidden');
+      mainContent.classList.add('hidden');
+      setupGoogleLoginButton();
     }
-  }, error => {
-    console.error("❌ Auth listener error:", error);
   });
 }
 // ====== Core Initialization ======
