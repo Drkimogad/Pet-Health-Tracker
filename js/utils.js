@@ -65,30 +65,47 @@ async function uploadToCloudinary(file, userId, petProfileId) {
     throw error;
   }
 }
-// Global error handler
-window.onerror = (msg, url, line) => {
-  alert(`Error: ${msg}\nLine: ${line}`);
-  return true; // Prevent default logging
-};
-// ====== Error Display ======
-function showAuthError(message) {
-  const errorElement = DOM.authError;
-  if (errorElement) {
-    errorElement.textContent = message;
-    errorElement.classList.remove('hidden');
-    setTimeout(() => errorElement.classList.add('hidden'), 5000);
+
+// Show error function
+showErrorToUser: function(message, isSuccess = false) {
+    try {
+      const errorDiv = document.getElementById('error-message');
+      if (!errorDiv) {
+        const newErrorDiv = document.createElement('div');
+        newErrorDiv.id = 'error-message';
+        newErrorDiv.className = isSuccess ? 'success-message' : 'auth-error';
+        newErrorDiv.textContent = message;
+        document.querySelector('#authContainer').prepend(newErrorDiv);
+      } else {
+        errorDiv.textContent = message;
+        errorDiv.className = isSuccess ? 'success-message' : 'auth-error';
+      }
+    } catch (fallbackError) {
+      alert(message);
+    }
+  }
+// disable UI 
+  disableUI: function() {
+    document.body.innerHTML = `
+      <h1 style="color: red; padding: 2rem; text-align: center">
+        Critical Error: Failed to load application interface
+      </h1>
+    `;
+  }
+}
+// Show auth form
+function showAuthForm() {
+  const container = document.getElementById('authContainer') || document.getElementById('auth-container');
+  if (container) container.classList.remove('hidden');
+}
+function showUserInfo(user) {
+  const emailEl = document.getElementById('userEmail');
+  if (emailEl && user?.email) {
+    emailEl.textContent = user.email;
   }
 }
 
-function showSystemMessage(message) {
-  const messageElement = document.createElement('div');
-  messageElement.className = 'system-message';
-  messageElement.textContent = message;
-  document.body.prepend(messageElement);
-  setTimeout(() => messageElement.remove(), 5000);
-}
-
-// ====== DOM & UI Helpers ======
+// DOM & UI Helpers
 function addSafeListener(id, handler) {
   const element = DOM.id;
   if (element) {
@@ -96,7 +113,7 @@ function addSafeListener(id, handler) {
     element.addEventListener('click', handler);
   }
 }
-
+// function reset form
 function resetForm() {
   const form = DOM.dietForm;
   if (form) form.reset();
@@ -107,7 +124,7 @@ function resetForm() {
   }
 }
 
-// ====== Reminder Utilities ======
+// Reminder Utilities
 function formatReminder(dateTimeString) {
   if (!dateTimeString) return 'N/A';
   const date = new Date(dateTimeString);
@@ -130,7 +147,7 @@ function validateReminder(reminderData) {
   };
 }
 
-// ====== Modal Utilities ======
+//  Modal Utilities
 function showModal(content) {
   let modal = DOM.pet-modal;
   let overlay = DOM.modal-overlay;
@@ -196,7 +213,7 @@ function trapFocus(modal) {
 function generateUniqueId() {
   return 'pet-' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
 }
-// ====== FIREBASE SAFE ACCESSORS ======
+//  FIREBASE SAFE ACCESSORS
 function getAuth() {
   return firebase.auth(); // Use directly from initialized Firebase
 }
