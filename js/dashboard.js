@@ -35,7 +35,7 @@ const DOM = {
   groomingReminder: document.getElementById('groomingReminder'),
   
   // Buttons
-  cancelEdit: DOM.cancelEdit
+  cancelEdit: document.getElementById('cancelEdit')
 };
 
 // Safety check (optional)
