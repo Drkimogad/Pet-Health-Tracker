@@ -207,7 +207,7 @@ function initAuthListeners() {
       }
     } else {
       authContainer.classList.remove('hidden');
-      mainContent.classList.add('hidden');
+      dashboard.classList.add('hidden');
       setupGoogleLoginButton();
     }
   });
