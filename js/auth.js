@@ -69,15 +69,19 @@ function showLoading(show) {
 
 // ===== DOM Ready: Initialize Everything =====
 document.addEventListener("DOMContentLoaded", () => {
-  const domReady = initDOMReferences();
-  if (!domReady) return;
-// Initialize login button and other startup logic
+  // First initialize DOM references
+  if (!initDOMReferences()) {
+    return; // Will retry automatically via the timeout in initDOMReferences
+  }
+
+  // Then check for Google login
   if (typeof setupGoogleLoginButton === "function") {
     setupGoogleLoginButton();
   } else {
     console.warn("⚠️ setupGoogleLoginButton() not found.");
   }
-  // If needed, add more initializations here
+
+  // Finally initialize auth
   initializeAuth();
 });
 // ====== Core Functions ======
