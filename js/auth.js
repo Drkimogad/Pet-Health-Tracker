@@ -11,7 +11,7 @@ let isSignupInProgress = false;
 // 🔶 State Management🔶🔶🔶
 const VALID_ORIGINS = [
   'https://drkimogad.github.io',
-  'https://drkimogad.github.io/PetStudio'
+  'https://drkimogad.github.io/Pet-Health-Tracker'
 ];
 // Runtime origin check
 if (!VALID_ORIGINS.includes(window.location.origin)) {
@@ -110,7 +110,7 @@ function showDashboard() {
 
   if (DOM.addPetProfileBtn) DOM.addPetProfileBtn.classList.remove('hidden');
   if (DOM.fullPageBanner) DOM.fullPageBanner.classList.remove('hidden');
-  if (DOM.profileSection) DOM.profileSection.classList.add('hidden');
+  if (DOM.mainContent) DOM.mainContent.classList.add('hidden');
 }
 // ====== Google Sign-In Initialization ======
 function setupGoogleLoginButton() {
@@ -120,7 +120,7 @@ function setupGoogleLoginButton() {
     setTimeout(setupGoogleLoginButton, 300);
     return;
   } 
-  const CLIENT_ID = '480425185692-i5d0f4gi96t2ap41frgfr2dlpjpvp278.apps.googleusercontent.com';
+  const CLIENT_ID = '175545140523-ufts7k2laidsobihlqnpf7q0m63h3abo.apps.googleusercontent.com';
   try {
     // Initialize Google Identity Services
     google.accounts.id.initialize({
