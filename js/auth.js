@@ -100,11 +100,12 @@ function showDashboard() {
   }
 
   DOM.authContainer.classList.add('hidden');
+  DOM.fullPageBanner.classList.add('hidden');
   DOM.dashboard.classList.remove('hidden');
 
-  if (DOM.addPetProfileBtn) DOM.addPetProfileBtn.classList.remove('hidden');
+  if (DOM.authContainer) DOM.authContainer.classList.remove('hidden');
   if (DOM.fullPageBanner) DOM.fullPageBanner.classList.remove('hidden');
-  if (DOM.mainContent) DOM.mainContent.classList.add('hidden');
+  if (DOM.dashboard) DOM.dashboard.classList.add('hidden');
 }
 // ====== Google Sign-In Initialization ======
 function setupGoogleLoginButton() {
