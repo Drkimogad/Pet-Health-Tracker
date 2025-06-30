@@ -1,4 +1,3 @@
-'use strict';
 // GLOBAL DECLARATIONS - AUTH-INITIALIZATION
 const CLOUDINARY_CONFIG = {
   cloudName: 'dh7d6otgu',
