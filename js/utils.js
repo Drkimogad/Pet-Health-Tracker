@@ -1,5 +1,3 @@
-'use strict';
-
 // DOM ELEMENTS FOR UTILS.JS
 const DOM = {
   // UI Elements (used across files)
