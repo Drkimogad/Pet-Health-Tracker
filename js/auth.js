@@ -30,7 +30,8 @@ const DOM = {
   authContainer: null,
   signupPage: null,
   loginPage: null,
-  dashboard: null
+  dashboard: null,
+  processingLoader: document.getElementById('processing-loader') // For showLoading()
 };
 
 // Initialize DOM elements when page loads
@@ -50,7 +51,7 @@ function initDOMReferences() {
 }
 // show loading function
 function showLoading(show) {
-  const loader = document.getElementById("processing-loader");
+ const loader = DOM.processingLoader;
   if (!loader) {
     console.warn("⛔ 'processing-loader' element not found.");
     return;
@@ -134,14 +135,13 @@ callback: async (response) => {
     showDashboard();
   } catch (error) {
     console.error("Google Sign-In failed:", error);
-    if (typeof Utils !== 'undefined' && Utils.showErrorToUser) {
-      Utils.showErrorToUser("Google Sign-In failed. Please try again.");
-    }
+   showAuthError("Google Sign-In failed. Please try again."); // From utils.js
+
   } finally {
     showLoading(false);
   }
 }
-    });
+    }); 
 // Render button if container exists
     const googleButtonContainer = document.getElementById("googleSignInBtn");
     if (googleButtonContainer) {
