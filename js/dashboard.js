@@ -1,5 +1,53 @@
-'use strict'; // Add if not already present
- 
+// ====== DOM ELEMENTS ======
+'use strict';
+// ====== DOM ELEMENTS ======
+const DOM = {
+  // Main containers
+  authContainer: document.getElementById('authContainer'),
+  mainContent: document.getElementById('mainContent'),
+  processingLoader: document.getElementById('processing-loader'),
+  
+  // Profile list
+  savedProfilesList: document.getElementById('savedProfilesList'),
+  
+  // Form elements
+  dietForm: document.getElementById('dietForm'),
+  petPhotoInput: document.getElementById('petPhoto'),
+  petPhotoPreview: document.getElementById('petPhotoPreview'),
+  
+  // Form fields
+  petName: document.getElementById('petName'),
+  breed: document.getElementById('breed'),
+  age: document.getElementById('age'),
+  weight: document.getElementById('weight'),
+  microchipId: document.getElementById('microchipId'),
+  microchipDate: document.getElementById('microchipDate'),
+  microchipVendor: document.getElementById('microchipVendor'),
+  allergies: document.getElementById('allergies'),
+  medicalHistory: document.getElementById('medicalHistory'),
+  dietPlan: document.getElementById('dietPlan'),
+  moodSelector: document.getElementById('moodSelector'),
+  emergencyContactName: document.getElementById('emergencyContactName'),
+  emergencyContactPhone: document.getElementById('emergencyContactPhone'),
+  emergencyContactRelationship: document.getElementById('emergencyContactRelationship'),
+  vaccinationsAndDewormingReminder: document.getElementById('vaccinationsAndDewormingReminder'),
+  medicalCheckupsReminder: document.getElementById('medicalCheckupsReminder'),
+  groomingReminder: document.getElementById('groomingReminder'),
+  
+  // Buttons
+  cancelEdit: document.getElementById('cancelEdit')
+};
+
+// Safety check (optional)
+if (!DOM.savedProfilesList || !DOM.dietForm) {
+  console.error('Critical DOM elements missing! Check your HTML IDs');
+}
+
+// ======= STATE MANAGEMENT =======
+let editingProfileId = null; // Tracks which profile is being edited
+let petDB; // IndexedDB reference (if used)
+let profile; // Current profile being processed
+
 // =======REMINDERS🌟
 const REMINDER_THRESHOLD_DAYS = 5;
 const ALLOWED_REMINDER_TYPES = ['vaccination', 'checkup', 'grooming'];
@@ -157,7 +205,7 @@ async function loadSavedPetProfile() {
     }
     renderProfiles(savedProfiles);
 
-    const savedProfilesList = document.getElementById('savedProfilesList');
+  const savedProfilesList = DOM.savedProfilesList;
     if (!savedProfilesList) return;
 
     savedProfilesList.innerHTML = '';
@@ -333,7 +381,7 @@ function handleCancelEdit() {
     if (originalProfile) {
       // ✅ Properly reset form fields
       const setValue = (id, value) => {
-        const el = document.getElementById(id);
+        const el = DOM.id;
         if (el) el.value = value || '';
       };
 
@@ -366,7 +414,7 @@ function handleCancelEdit() {
       setValue('groomingReminder', originalProfile.reminders?.grooming);
 
       // Photo Preview
-      const preview = document.getElementById('petPhotoPreview');
+      const preview = DOM.petPhotoPreview;
       if (preview && originalProfile.petPhoto) {
         preview.src = originalProfile.petPhoto;
         preview.style.display = 'block';
@@ -376,7 +424,7 @@ function handleCancelEdit() {
     // Cleanup
     sessionStorage.removeItem(`editingProfile_${editingProfileId}`);
     editingProfileId = null;
-    document.getElementById('cancelEdit').style.display = 'none';
+    DOM.cancelEdit.style.display = 'none';
   }
   resetForm();
 }
@@ -521,7 +569,7 @@ async function sharePetProfile(petId) {
     let profile;
     
     // 1. Try to load from Google Drive if available
-    if (auth.currentUser && gapiInitialized) {
+    if (firebase.auth().currentUser) {
       const pets = await loadPets();
       profile = pets.find(p => p.id === petId);
     }
@@ -639,7 +687,7 @@ async function generateQRCode(petId) { // Use ID instead of index
         </div>
         <script>
           function downloadQR() {
-            const qrcodeContainer = document.getElementById('qrcode-container');
+            const qrcodeContainer = DOM.qrcode-container;
             const canvas = qrcodeContainer.querySelector('canvas');
             if (canvas) {
               const link = document.createElement('a');
@@ -677,7 +725,7 @@ Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relatio
     `.trim();
 
     try {
-      const qrcodeContainer = qrWindow.document.getElementById('qrcode-container');
+      const qrcodeContainer = qrWindow.DOM.qrcode-container;
       if (!qrcodeContainer) throw new Error('QR container not found');
       
       qrcodeContainer.style.display = 'block';
@@ -694,7 +742,7 @@ Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relatio
         correctLevel: qrWindow.QRCode.CorrectLevel.H
       });
 
-      const qrControls = qrWindow.document.getElementById('qr-controls');
+      const qrControls = qrWindow.DOM.qr-controls;
       if (qrControls) qrControls.style.display = 'block';
 
     } catch (error) {
@@ -728,12 +776,12 @@ editingSessionKeys.forEach(key => {
 
   if (originalProfile) {
     const setValue = (id, value) => {
-      const el = document.getElementById(id);
+      const el = DOM.id;
       if (el) el.value = value || '';
     };
 
-    if (document.getElementById('petType')) setValue('petType', originalProfile.type || 'Unknown');
-    if (document.getElementById('petGender')) setValue('petGender', originalProfile.gender || 'Unknown');
+    if (DOM.petType) setValue('petType', originalProfile.type || 'Unknown');
+    if (DOM.petGender) setValue('petGender', originalProfile.gender || 'Unknown');
 
     // Basic Info
     safeSetValue('petName', originalProfile.petName || '');
@@ -778,7 +826,7 @@ editingSessionKeys.forEach(key => {
 
     // Pet Photo
     if (originalProfile.petPhoto) {
-      const petPhotoPreview = document.getElementById('petPhotoPreview');
+      const petPhotoPreview = DOM.petPhotoPreview;
       if (petPhotoPreview) {
         petPhotoPreview.src = originalProfile.petPhoto;
         petPhotoPreview.style.display = 'block';
@@ -790,34 +838,34 @@ editingSessionKeys.forEach(key => {
 // ======================
 // FORM SUBMISSION (UPDATED)
 // ======================
-document.getElementById('dietForm').addEventListener('submit', async (e) => {
+DOM.dietForm..addEventListener('submit', async (e) => {
   e.preventDefault();
   
   try {
     // Get all form data (preserving your existing structure)
     const petData = {
       // Your existing fields
-      petName: document.getElementById('petName')?.value,
-      breed: document.getElementById('breed')?.value,
-      age: document.getElementById('age')?.value,
-      weight: document.getElementById('weight')?.value,
+      petName: DOM.petName?.value,
+      breed: DOM.breed?.value,
+      age: DOM.age?.value,
+      weight: DOM.weight?.value,
       microchip: {
-        id: document.getElementById('microchipId')?.value,
-        date: document.getElementById('microchipDate')?.value,
-        vendor: document.getElementById('microchipVendor')?.value
+        id: DOM.microchipId?.value,
+        date: DOM.microchipDate?.value,
+        vendor: DOM.microchipVendor?.value
       },
-      allergies: document.getElementById('allergies')?.value,
-      medicalHistory: document.getElementById('medicalHistory')?.value,
-      dietPlan: document.getElementById('dietPlan')?.value,
+      allergies: DOM.allergies?.value,
+      medicalHistory: DOM.medicalHistory?.value,
+      dietPlan: DOM.dietPlan?.value,
       emergencyContacts: [{
-        name: document.getElementById('emergencyContactName')?.value,
-        phone: document.getElementById('emergencyContactPhone')?.value,
-        relationship: document.getElementById('emergencyContactRelationship')?.value
+        name: DOM.emergencyContactName?.value,
+        phone: DOM.emergencyContactPhone?.value,
+        relationship: DOM.emergencyContactRelationship?.value
       }],
-      mood: document.getElementById('moodSelector')?.value,
-      vaccinationsAndDewormingReminder: document.getElementById('vaccinationsAndDewormingReminder')?.value,
-      medicalCheckupsReminder: document.getElementById('medicalCheckupsReminder')?.value,
-      groomingReminder: document.getElementById('groomingReminder')?.value,
+      mood: DOM.moodSelector?.value,
+      vaccinationsAndDewormingReminder: DOM.vaccinationsAndDewormingReminder?.value,
+      medicalCheckupsReminder: DOM.medicalCheckupsReminder?.value,
+      groomingReminder: DOM.groomingReminder?.value,
       
       // New fields we're adding
       id: editingProfileId || generateUniqueId(), // Fixed ID generation
@@ -829,12 +877,12 @@ document.getElementById('dietForm').addEventListener('submit', async (e) => {
     };
 
     // Handle image upload (keeping your preview logic)
-    const fileInput = document.getElementById('petPhoto');
+    const fileInput = DOM.petPhoto;
     if (fileInput.files[0]) {
       petData.petPhoto = await new Promise((resolve) => {
         const reader = new FileReader();
         reader.onload = (e) => {
-          document.getElementById('petPhotoPreview').src = e.target.result;
+          DOM.petPhotoPreview.src = e.target.result;
           resolve(e.target.result);
         };
         reader.readAsDataURL(fileInput.files[0]);
@@ -877,7 +925,7 @@ document.getElementById('dietForm').addEventListener('submit', async (e) => {
 
 // ======== EVENT DELEGATION (FIXED) ========
 // ✅ Keep this block ✅
-document.getElementById('savedProfilesList')?.addEventListener('click', (e) => {
+DOM.savedProfilesList?.addEventListener('click', (e) => {
   if (!e.target?.closest('button')) return;
   
   const btn = e.target.closest('button');
@@ -901,8 +949,8 @@ window.onerror = (msg, url, line) => {
 // ITIALIZE DASHBOARD
 function initializeDashboard() {
   // Set up all event listeners
-  document.getElementById('dietForm')?.addEventListener('submit', handleFormSubmit);
-  document.getElementById('savedProfilesList')?.addEventListener('click', handleProfileActions);
+  DOM.dietForm?.addEventListener('submit', handleFormSubmit);
+  DOM.savedProfilesList?.addEventListener('click', handleProfileActions);
   
   // Check auth state
   firebase.auth().onAuthStateChanged((user) => {
