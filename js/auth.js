@@ -64,13 +64,16 @@ function showLoading(show) {
 document.addEventListener("DOMContentLoaded", () => {
   const domReady = initDOMReferences();
   if (!domReady) return;
+  
 // Initialize login button and other startup logic
-  if (typeof setupGoogleLoginButton === "function") {
-    setupGoogleLoginButton();
-  } else {
-    console.warn("⚠️ setupGoogleLoginButton() not found.");
-  }
-  // Finally initialize auth
+ // if (typeof setupGoogleLoginButton === "function") {
+//    setupGoogleLoginButton();
+//  } else {
+//    console.warn("⚠️ setupGoogleLoginButton() not found.");
+// }
+// Finally initialize auth. 
+  
+  // ✅ Let initializeAuth handle everything
   initializeAuth();
 });
 // ====== Core Functions ======
@@ -105,11 +108,8 @@ function showDashboard() {
   DOM.authContainer.classList.add('hidden');
   DOM.fullPageBanner.classList.add('hidden');
   DOM.dashboard.classList.remove('hidden');
+} // it might need to be removed
 
-  if (DOM.authContainer) DOM.authContainer.classList.remove('hidden');
-  if (DOM.fullPageBanner) DOM.fullPageBanner.classList.remove('hidden');
-  if (DOM.dashboard) DOM.dashboard.classList.add('hidden');
-}
 // ====== Google Sign-In Initialization ======
 function setupGoogleLoginButton() {
   // Check if Google and Firebase are loaded
