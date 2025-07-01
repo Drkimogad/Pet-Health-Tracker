@@ -103,9 +103,9 @@ function showDashboard() {
     return;
   }
   auth_DOM.authContainer.classList.add('hidden');
-  auth_DOM.fullPageBanner.classList.remove("hidden"); // Show when user signs in
   auth_DOM.dashboard.classList.remove('hidden');
   auth_DOM.logoutButton.style.display = "block";
+  if (DOM.fullPageBanner) DOM.fullPageBanner.classList.remove('hidden');
 } 
 // ====== Google Sign-In Initialization ======
 function setupGoogleLoginButton() {
