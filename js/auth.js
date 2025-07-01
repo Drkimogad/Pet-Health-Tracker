@@ -28,6 +28,7 @@ const DOM = {
 // ===== Initialize DOM Elements =====
 function initDOMReferences() {
   // Get elements safely
+  Dom.processingLoader = document.getElementById('processing-loader');
   DOM.authContainer = document.getElementById("authContainer");
   DOM.dashboard = document.getElementById("dashboard");
   DOM.fullPageBanner = document.getElementById("fullPageBanner");
@@ -201,6 +202,53 @@ function initAuthListeners() {
       setupGoogleLoginButton();
     }
   });
+}
+// MVED FUNCTIONS FROM UTILS.JS
+// Show error message to user
+function showErrorToUser(message, isSuccess = false) {
+  try {
+    const errorDiv = document.getElementById('error-message');
+    if (!errorDiv) {
+      const newErrorDiv = document.createElement('div');
+      newErrorDiv.id = 'error-message';
+      newErrorDiv.className = isSuccess ? 'success-message' : 'auth-error';
+      newErrorDiv.textContent = message;
+      document.querySelector('#authContainer').prepend(newErrorDiv);
+    } else {
+      errorDiv.textContent = message;
+      errorDiv.className = isSuccess ? 'success-message' : 'auth-error';
+    }
+  } catch (fallbackError) {
+    alert(message);
+  }
+}
+// Show the sign-in form
+function showAuthForm() {
+  const container = document.getElementById('authContainer') || document.getElementById('auth-container');
+  if (container) container.classList.remove('hidden');
+}
+// Show user email info
+function showUserInfo(user) {
+  const emailEl = document.getElementById('userEmail');
+  if (emailEl && user?.email) {
+    emailEl.textContent = user.email;
+  }
+}
+// Disable all UI on fatal error
+function disableUI() {
+  document.body.innerHTML = `
+    <h1 style="color: red; padding: 2rem; text-align: center">
+      Critical Error: Failed to load application interface
+    </h1>
+  `;
+}
+// Firebase accessors (optional to move)
+function getAuth() {
+  return firebase.auth();
+}
+function getFirestore() {
+  if (!firestore) console.warn("Firestore not initialized - using localStorage fallback");
+  return firestore;
 }
 // ====== Core Initialization ======
 async function initializeAuth() {
