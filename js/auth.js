@@ -30,7 +30,10 @@ function initDOMReferences() {
   // Get elements safely
   DOM.authContainer = document.getElementById("authContainer");
   DOM.dashboard = document.getElementById("dashboard");
-  
+  DOM.fullPageBanner = document.getElementById("fullPageBanner");
+  DOM.petList = document.getElementById("petList"); // Add this too if used in rendering
+  }
+
   // Ensure critical elements exist
   if (!DOM.authContainer || !DOM.dashboard) {
     console.error("❌ Critical dashboard elements missing!");
@@ -178,11 +181,11 @@ function initializeFirebase() {
 function initAuthListeners() {
   firebase.auth().onAuthStateChanged(async (user) => {
     const authContainer = document.getElementById('authContainer');
-    const mainContent = document.getElementById('mainContent');
+    const dashboard = document.getElementById('dashboard');
     
     if (user) {
       authContainer.classList.add('hidden');
-      mainContent.classList.remove('hidden');
+      dashboard.classList.remove('hidden');
       
       try {
         const snapshot = await firebase.firestore().collection("profiles").where("userId", "==", user.uid).get();
@@ -229,7 +232,7 @@ async function initializeAuth() {
     // 4. Set up auth state listener
     initAuthListeners(auth);  
     // 5. Set up Google Sign-In button (if exists)
-    if (document.getElementById("googleSignInBtn")) {
+    if (document.getElementById("googleSignInButton")) {
       setupGoogleLoginButton();
     }    
   } catch (error) {
