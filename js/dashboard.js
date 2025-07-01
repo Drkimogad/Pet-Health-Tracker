@@ -73,8 +73,8 @@ const reminderFields = {
 //FUNCTION HIGHLIGHT REMINDERS 
 function highlightReminders(reminders, index) {
   const today = new Date();
-  const overdueContainer = DOM.overdueReminders-${index};
-  const upcomingContainer = DOM.upcomingReminders-${index};
+  const overdueContainer = DOM[`overdueReminders-${index}`];
+  const upcomingContainer = DOM[`upcomingReminders-${index}`];
 
   if (!overdueContainer || !upcomingContainer) return;
 
