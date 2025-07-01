@@ -287,12 +287,3 @@ async function initializeAuth() {
     disableUI();
   }
 }
-// Start initialization when everything is ready
-document.addEventListener('DOMContentLoaded', function() {
-  // Additional check for Firebase
-  if (typeof firebase === 'undefined') {
-    console.error("Firebase not loaded yet");
-    // You might want to add retry logic here
-  }
-  initializeAuth();
-});
