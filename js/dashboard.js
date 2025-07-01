@@ -1,4 +1,3 @@
-let editingProfileId = null; // Tracks which profile is being edited
 let petDB; // IndexedDB reference (if used)
 let profile; // Current profile being processed
 let currentQRProfile = null; // Only new declaration needed
@@ -18,14 +17,14 @@ if (typeof currentEditIndex === 'undefined') {
 const DOM = {
   // Main containers
   authContainer: document.getElementById('authContainer'),
-  mainContent: document.getElementById('mainContent'),
+  dashboard: document.getElementById('dashboard'),
   processingLoader: document.getElementById('processing-loader'),
   
   // Profile list
   savedProfilesList: document.getElementById('savedProfilesList'),
   
   // Form elements
-  dietForm: document.getElementById('dietForm'),
+  petList: document.getElementById('petList'),
   petPhotoInput: document.getElementById('petPhoto'),
   petPhotoPreview: document.getElementById('petPhotoPreview'),
   
@@ -57,7 +56,7 @@ const DOM = {
 };
 
 // Safety check (optional)
-if (!DOM.savedProfilesList || !DOM.dietForm) {
+if (!DOM.savedProfilesList || !DOM.petList) {
   console.error('Critical DOM elements missing! Check your HTML IDs');
 }
 
@@ -850,7 +849,7 @@ editingSessionKeys.forEach(key => {
 // ======================
 // FORM SUBMISSION (UPDATED)
 // ======================
-DOM.dietForm.addEventListener('submit', async (e) => {
+DOM.petList.addEventListener('submit', async (e) => {
   e.preventDefault();
   
   try {
@@ -917,7 +916,7 @@ DOM.dietForm.addEventListener('submit', async (e) => {
      }
       
       localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
-    
+    // I HAD A BRACE HERE WHICH WAS REMOVED
     // In the form submission success feedback:
    showSuccessNotification(
     editingProfileId !== null ? 'Profile updated' : 'Profile saved', // ✅ Fixed
@@ -961,7 +960,7 @@ window.onerror = (msg, url, line) => {
 // ITIALIZE DASHBOARD
 function initializeDashboard() {
   // Set up all event listeners
-  DOM.dietForm?.addEventListener('submit', handleFormSubmit);
+  DOM.petList?.addEventListener('submit', handleFormSubmit);
   DOM.savedProfilesList?.addEventListener('click', handleProfileActions);
   
   // Check auth state
