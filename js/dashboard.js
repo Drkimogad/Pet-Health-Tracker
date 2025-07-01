@@ -914,10 +914,10 @@ DOM.dietForm.addEventListener('submit', async (e) => {
       }
      } else {
         savedProfiles.push(petData); // Add new profile
-      }
+     }
       
       localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
-    }
+    
     // In the form submission success feedback:
    showSuccessNotification(
     editingProfileId !== null ? 'Profile updated' : 'Profile saved', // ✅ Fixed
