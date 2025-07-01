@@ -103,7 +103,7 @@ function showDashboard() {
     return;
   }
   auth_DOM.authContainer.classList.add('hidden');
-  auth_DOM.fullPageBanner.classList.add('hidden');
+  auth_DOM.fullPageBanner.classList.remove("hidden"); // Show when user signs in
   auth_DOM.dashboard.classList.remove('hidden');
   auth_DOM.logoutButton.style.display = "block";
 } 
@@ -220,6 +220,7 @@ function showErrorToUser(message, isSuccess = false) {
 }
 // Show the sign-in form
 function showAuthForm() {
+  auth_DOM.fullPageBanner.classList.add("hidden"); // Keep it hidden during auth ADDED RECENTLY
   const container = document.getElementById('authContainer') || document.getElementById('auth-container');
   if (container) container.classList.remove('hidden');
 }
