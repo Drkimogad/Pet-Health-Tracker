@@ -28,14 +28,13 @@ const DOM = {
 // ===== Initialize DOM Elements =====
 function initDOMReferences() {
   // Get elements safely
-  Dom.processingLoader = document.getElementById('processing-loader');
+  DOM.processingLoader = document.getElementById('processing-loader');
   DOM.authContainer = document.getElementById("authContainer");
   DOM.dashboard = document.getElementById("dashboard");
   DOM.fullPageBanner = document.getElementById("fullPageBanner");
   DOM.petList = document.getElementById("petList"); // Add this too if used in rendering
-  }
-
-  // Ensure critical elements exist
+  
+// Keep this inside the function
   if (!DOM.authContainer || !DOM.dashboard) {
     console.error("❌ Critical dashboard elements missing!");
     if (typeof disableUI === "function") disableUI();
