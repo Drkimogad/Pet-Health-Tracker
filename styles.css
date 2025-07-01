@@ -13,23 +13,13 @@
   --qr-green: #27ae60;
   --link-blue: #3498db;
 }
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+/* ===== AUTH SECTION VISIBILITY ===== */
+#authContainer {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 100vh !important;
 }
 
-body {
-  font-family: 'Arial', sans-serif;
-  line-height: 1.6;
-  color: var(--text-color);
-  background-color: var(--light-bg);
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-/* Add these new rules */
 .hidden {
   display: none !important;
 }
@@ -37,40 +27,31 @@ body {
 .visible {
   display: block !important;
 }
-/* ===== LAYOUT ===== */
-.background-container {
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  overflow: hidden;
-  padding-bottom: 20px;
-}
 
-header, footer {
-  background-color: var(--primary-color);
+#logoutButton {
+  margin-top: 20px;
+  display: block;
+  padding: 10px 20px;
+  background-color: var(--primary-dark);
   color: white;
-  padding: 15px;
-  text-align: center;
-  margin-bottom: 30px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+#logoutButton.hidden {
+  display: none !important;
 }
 
-/* ===== AUTHENTICATION FORMS ===== */
-/* ====================AUTHENTICATION STYLES==================== */
-#authContainer {
-  display: flex !important;
-  flex-direction: column !important;
-  min-height: 100vh !important;
-}
-
+/* ===== AUTHENTICATION UI STYLES ===== */
 .auth-header h1 {
-  font-size: 2.5rem;     /* Main title size */
-  color: #6a1b9a;       /* Your deep purple */
+  font-size: 2.5rem;
+  color: #6a1b9a;
   margin-top: 1rem;
 }
 
 .auth-header h2 {
-  font-size: 1.2rem;    /* Subtitle size */
-  color: #d4a017;       /* Mustard accent */
+  font-size: 1.2rem;
+  color: #d4a017;
   margin-bottom: 1rem;
 }
 
@@ -82,33 +63,32 @@ header, footer {
   margin-top: 20px;
 }
 
-/* Enhanced Google Sign-In Button */
 .google-btn {
-    background: #ffffff;
-    color: #444;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 12px 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin: 15px auto;
-    cursor: pointer;
-    transition: background 0.3s, box-shadow 0.3s;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    max-width: 250px;
-    font-weight: bold;
-    font-size: 16px;
+  background: #ffffff;
+  color: #444;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 15px auto;
+  cursor: pointer;
+  transition: background 0.3s, box-shadow 0.3s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 250px;
+  font-weight: bold;
+  font-size: 16px;
 }
 
 .google-btn:hover {
-    background: #f1f1f1;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  background: #f1f1f1;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
 }
 
 .google-btn img {
-    width: 20px;
-    height: 20px;
+  width: 20px;
+  height: 20px;
 }
 
 .auth-message {
@@ -116,26 +96,7 @@ header, footer {
   margin-top: 10px;
   font-size: 1rem;
 }
-
-/* Spinner styles added recently*/
-#processing-loader .spinner {
-  margin: 20px auto 0;
-  width: 50px;
-  height: 50px;
-  border: 6px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-/* Spin animation */
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-/* ====================
-   BANNER & QUOTE STYLES
-==================== */
-/* Banner Styles */
+/* ===== DASHBOARD BANNER STYLES ===== */
 #fullPageBanner.banner-wrapper {
   width: 90vw;
   height: 75vh;
@@ -146,13 +107,12 @@ header, footer {
 }
 
 #fullPageBanner .banner-image {
-  width:100%;
+  width: 100%;
   height: 100%;
   margin: 20px auto;
   object-fit: cover;
-  object-position: relative;
+  object-position: center; /* Changed from "relative" */
   display: block;
-  object-fit: cover;
 }
 
 #fullPageBanner .quote {
@@ -169,27 +129,6 @@ header, footer {
   text-align: right;
 }
 
-/* ====================
-   DRIVE SYNC STATUS
-==================== */
-.drive-status {
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
-    padding: 5px 10px;
-    border-radius: 3px;
-    font-size: 12px;
-}
-
-.drive-status.synced {
-    background: #4CAF50;
-    color: white;
-}
-
-.drive-status.error {
-    background: #F44336;
-    color: white;
-}
 /* ===== FORM STYLES ===== */
 .form-container {
   padding: 25px;
