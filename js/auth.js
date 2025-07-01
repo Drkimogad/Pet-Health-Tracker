@@ -17,7 +17,7 @@ if (!VALID_ORIGINS.includes(window.location.origin)) {
   window.location.href = 'https://drkimogad.github.io/Pet-Health-Tracker';
 }
 // DOM Elements - Initialize as null first
-const DOM = {
+const auth_DOM = {
   authContainer: null,
   signupPage: null,
   loginPage: null,
@@ -28,14 +28,14 @@ const DOM = {
 // ===== Initialize DOM Elements =====
 function initDOMReferences() {
   // Get elements safely
-  DOM.processingLoader = document.getElementById('processing-loader');
-  DOM.authContainer = document.getElementById("authContainer");
-  DOM.dashboard = document.getElementById("dashboard");
-  DOM.fullPageBanner = document.getElementById("fullPageBanner");
-  DOM.petList = document.getElementById("petList"); // Add this too if used in rendering
+  auth_DOM.processingLoader = document.getElementById('processing-loader');
+  auth_DOM.authContainer = document.getElementById("authContainer");
+  auth_DOM.dashboard = document.getElementById("dashboard");
+  auth_DOM.fullPageBanner = document.getElementById("fullPageBanner");
+  auth_DOM.petList = document.getElementById("petList"); // Add this too if used in rendering
   
 // Keep this inside the function
-  if (!DOM.authContainer || !DOM.dashboard) {
+  if (!auth_DOM.authContainer || !auth_DOM.dashboard) {
     console.error("❌ Critical dashboard elements missing!");
     if (typeof disableUI === "function") disableUI();
     return false;
@@ -46,7 +46,7 @@ function initDOMReferences() {
 
 // show loading function
 function showLoading(show) {
- const loader = DOM.processingLoader;
+ const loader = auth_DOM.processingLoader;
   if (!loader) {
     console.warn("⛔ 'processing-loader' element not found.");
     return;
@@ -92,22 +92,22 @@ function showDashboard() {
   console.log("📦 petProfiles:", localProfiles);
 
   // ✅ Render pet cards if available
-  if (localProfiles.length > 0 && DOM.petList) {
-    DOM.petList.classList.remove('hidden');
+  if (localProfiles.length > 0 && auth_DOM.petList) {
+    auth_DOM.petList.classList.remove('hidden');
     renderProfiles();
   } else {
     console.log("ℹ️ No profiles to render in showDashboard");
   }
 
   // ✅ Final UI toggles
-  if (!DOM.authContainer || !DOM.dashboard) {
+  if (!auth_DOM.authContainer || !auth_DOM.dashboard) {
     console.error("DOM elements not ready in showDashboard");
     return;
   }
 
-  DOM.authContainer.classList.add('hidden');
-  DOM.fullPageBanner.classList.add('hidden');
-  DOM.dashboard.classList.remove('hidden');
+  auth_DOM.authContainer.classList.add('hidden');
+  auth_DOM.fullPageBanner.classList.add('hidden');
+  auth_DOM.dashboard.classList.remove('hidden');
 } // it might need to be removed
 
 // ====== Google Sign-In Initialization ======
