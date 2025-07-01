@@ -1,17 +1,3 @@
-// DOM ELEMENTS FOR UTILS.JS
-const DOM = {
-  // UI Elements (used across files)
-  processingLoader: document.getElementById('processing-loader'),
-  
-  // Form Elements (used in resetForm())
-  dietForm: document.getElementById('dietForm'),
-  petPhotoPreview: document.getElementById('petPhotoPreview'),
-  
-  // Modal Elements (used in showModal())
-  petModal: document.getElementById('pet-modal') || null, // Optional fallback
-  modalOverlay: document.getElementById('modal-overlay') || null
-};
-
 //🔄 Updated uploadToCloudinary()
 async function uploadToCloudinary(file, userId, petProfileId) {
   // 1. VALIDATE FILE TYPE
@@ -61,54 +47,6 @@ async function uploadToCloudinary(file, userId, petProfileId) {
   } catch (error) {
     console.error('Cloudinary upload failed:', error);
     throw error;
-  }
-}
-
-// Show error function
-function showErrorToUser(message, isSuccess = false) {
-    try {
-      const errorDiv = document.getElementById('error-message');
-      if (!errorDiv) {
-        const newErrorDiv = document.createElement('div');
-        newErrorDiv.id = 'error-message';
-        newErrorDiv.className = isSuccess ? 'success-message' : 'auth-error';
-        newErrorDiv.textContent = message;
-        document.querySelector('#authContainer').prepend(newErrorDiv);
-      } else {
-        errorDiv.textContent = message;
-        errorDiv.className = isSuccess ? 'success-message' : 'auth-error';
-      }
-    } catch (fallbackError) {
-      alert(message);
-    }
-  }
-// disable UI 
-  disableUI: function() {
-    document.body.innerHTML = `
-      <h1 style="color: red; padding: 2rem; text-align: center">
-        Critical Error: Failed to load application interface
-      </h1>
-    `;
-  }
-}
-// Show auth form
-function showAuthForm() {
-  const container = document.getElementById('authContainer') || document.getElementById('auth-container');
-  if (container) container.classList.remove('hidden');
-}
-function showUserInfo(user) {
-  const emailEl = document.getElementById('userEmail');
-  if (emailEl && user?.email) {
-    emailEl.textContent = user.email;
-  }
-}
-
-// DOM & UI Helpers
-function addSafeListener(id, handler) {
-  const element = DOM.id;
-  if (element) {
-    element.removeEventListener('click', handler);
-    element.addEventListener('click', handler);
   }
 }
 // function reset form
@@ -178,7 +116,6 @@ function showModal(content) {
   overlay.classList.add('active');
   document.body.style.overflow = 'hidden';
 }
-
 function hideModal() {
   const overlay = DOM.modal-overlay;
   if (overlay) {
@@ -207,18 +144,10 @@ function trapFocus(modal) {
     }
   });
 }
+
 // generate unique id
 function generateUniqueId() {
   return 'pet-' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
-}
-//  FIREBASE SAFE ACCESSORS
-function getAuth() {
-  return firebase.auth(); // Use directly from initialized Firebase
-}
-
-function getFirestore() {
-  if (!firestore) console.warn("Firestore not initialized - using localStorage fallback");
-  return firestore;
 }
 
 // SW snippet 
