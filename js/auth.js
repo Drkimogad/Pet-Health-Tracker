@@ -33,7 +33,8 @@ function initDOMReferences() {
   auth_DOM.dashboard = document.getElementById("dashboard");
   auth_DOM.fullPageBanner = document.getElementById("fullPageBanner");
   auth_DOM.petList = document.getElementById("petList"); // Add this too if used in rendering
-  
+  auth_DOM.logoutButton = document.getElementById("logoutButton");
+ 
 // Keep this inside the function
   if (!auth_DOM.authContainer || !auth_DOM.dashboard) {
     console.error("❌ Critical dashboard elements missing!");
@@ -79,18 +80,16 @@ document.addEventListener("DOMContentLoaded", () => {
 // ====== Core Functions ======
 function showDashboard() {
   console.log("🚪 Entered showDashboard()");
+  auth_DOM.googleSignInBtnWrapper.classList.add("hidden");
 
   // ✅ Use live memory if available, else fallback to localStorage
   let localProfiles = window.petProfiles || JSON.parse(localStorage.getItem("petProfiles")) || [];
-
   // ✅ Restore to window for consistency
   window.petProfiles = localProfiles;
-
   // ✅ Log for debugging
   console.log("🧠 Restored petProfiles in showDashboard:", localProfiles);
   console.log("🧠 petProfiles length:", localProfiles.length);
   console.log("📦 petProfiles:", localProfiles);
-
   // ✅ Render pet cards if available
   if (localProfiles.length > 0 && auth_DOM.petList) {
     auth_DOM.petList.classList.remove('hidden');
@@ -98,18 +97,16 @@ function showDashboard() {
   } else {
     console.log("ℹ️ No profiles to render in showDashboard");
   }
-
   // ✅ Final UI toggles
   if (!auth_DOM.authContainer || !auth_DOM.dashboard) {
     console.error("DOM elements not ready in showDashboard");
     return;
   }
-
   auth_DOM.authContainer.classList.add('hidden');
   auth_DOM.fullPageBanner.classList.add('hidden');
   auth_DOM.dashboard.classList.remove('hidden');
-} // it might need to be removed
-
+  auth_DOM.logoutButton.style.display = "block";
+} 
 // ====== Google Sign-In Initialization ======
 function setupGoogleLoginButton() {
   // Check if Google and Firebase are loaded
