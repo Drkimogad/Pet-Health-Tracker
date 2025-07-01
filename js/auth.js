@@ -137,7 +137,7 @@ callback: async (response) => {
 }
     }); 
 // Render button if container exists
-    const googleButtonContainer = document.getElementById("googleSignInBtn");
+    const googleButtonContainer = document.getElementById("googleSignInButton");
     if (googleButtonContainer) {
       google.accounts.id.renderButton(googleButtonContainer, {
         type: "standard",
