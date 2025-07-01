@@ -105,7 +105,7 @@ function showDashboard() {
   auth_DOM.authContainer.classList.add('hidden');
   auth_DOM.dashboard.classList.remove('hidden');
   auth_DOM.logoutButton.style.display = "block";
-  if (DOM.fullPageBanner) DOM.fullPageBanner.classList.remove('hidden');
+  auth_DOM.fullPageBanner.classList.remove('hidden');
 } 
 // ====== Google Sign-In Initialization ======
 function setupGoogleLoginButton() {
@@ -220,7 +220,11 @@ function showErrorToUser(message, isSuccess = false) {
 }
 // Show the sign-in form
 function showAuthForm() {
-  auth_DOM.fullPageBanner.classList.add("hidden"); // Keep it hidden during auth ADDED RECENTLY
+  // ✅ Safely hide the full page banner if it's available
+  if (auth_DOM.fullPageBanner) {
+    auth_DOM.fullPageBanner.classList.add("hidden");
+  }
+
   const container = document.getElementById('authContainer') || document.getElementById('auth-container');
   if (container) container.classList.remove('hidden');
 }
