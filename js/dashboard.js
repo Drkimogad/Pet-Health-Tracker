@@ -846,7 +846,7 @@ editingSessionKeys.forEach(key => {
 // ======================
 // FORM SUBMISSION (UPDATED)
 // ======================
-DOM.dietForm..addEventListener('submit', async (e) => {
+DOM.dietForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   
   try {
