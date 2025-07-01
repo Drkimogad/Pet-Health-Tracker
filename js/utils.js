@@ -65,7 +65,7 @@ async function uploadToCloudinary(file, userId, petProfileId) {
 }
 
 // Show error function
-Const showErrorToUser: function(message, isSuccess = false) {
+function showErrorToUser(message, isSuccess = false) {
     try {
       const errorDiv = document.getElementById('error-message');
       if (!errorDiv) {
