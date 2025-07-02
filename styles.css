@@ -31,6 +31,7 @@
 .visible {
   display: block !important;
 }
+/* ===== this to avoid override by hidden in html ===== */
 #authContainer.hidden {
   display: none !important;
 }
