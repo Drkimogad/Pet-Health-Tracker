@@ -31,6 +31,9 @@
 .visible {
   display: block !important;
 }
+#authContainer.hidden {
+  display: none !important;
+}
 
 /* ===== AUTHENTICATION UI STYLES ===== */
 .auth-header h1 {
