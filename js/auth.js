@@ -27,11 +27,13 @@ const auth_DOM = {
 // Initialize DOM elements when page loads
 // ===== Initialize DOM Elements =====
 function initDOMReferences() {
-  // Get elements safely
+  // auth elements
   auth_DOM.processingLoader = document.getElementById('processing-loader');
   auth_DOM.authContainer = document.getElementById("authContainer");
-  auth_DOM.dashboard = document.getElementById("dashboard");
   auth_DOM.fullPageBanner = document.getElementById("fullPageBanner");
+  // dashboard elements
+  auth_DOM.dashboard = document.getElementById("dashboard");
+  auth_DOM.addPetProfileBtn = document.getElementById("addPetProfileBtn");
   auth_DOM.petList = document.getElementById("petList"); // Add this too if used in rendering
   auth_DOM.logoutButton = document.getElementById("logoutButton");
  
@@ -89,7 +91,9 @@ function showDashboard() {
 
   // ✅ Show dashboard elements after sucessful signin
   if (auth_DOM.dashboard) auth_DOM.dashboard.classList.remove("hidden");
- // ✅ Always show petList form
+   // ✅ Always show addpetprofilebtn
+  if (auth_DOM.addPetProfileBtn) auth_DOM.addPetProfileBtn.classList.remove("hidden");
+ // ✅ Always show petList form when is called.
   if (auth_DOM.petList) auth_DOM.petList.classList.remove("hidden");
   // ✅ Show logout button
   if (auth_DOM.logoutButton) auth_DOM.logoutButton.style.display = "block";
