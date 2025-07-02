@@ -30,6 +30,7 @@ function initDOMReferences() {
   // auth elements
   auth_DOM.processingLoader = document.getElementById('processing-loader');
   auth_DOM.authContainer = document.getElementById("authContainer");
+  auth_DOM.googleSignInBtnWrapper = document.getElementById("googleSignInBtnWrapper");
   auth_DOM.fullPageBanner = document.getElementById("fullPageBanner");
   // dashboard elements
   auth_DOM.dashboard = document.getElementById("dashboard");
