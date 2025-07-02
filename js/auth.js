@@ -82,10 +82,10 @@ document.addEventListener("DOMContentLoaded", () => {
 function showDashboard() {
   console.log("🚪 Entered showDashboard()");
 
-  // 🔒 Hide auth UI
+  // 🔒 Hide sign-in related elements
   if (auth_DOM.googleSignInBtnWrapper) auth_DOM.googleSignInBtnWrapper.classList.add("hidden");
-  if (auth_DOM.authContainer) auth_DOM.authContainer.classList.add("hidden");
   if (auth_DOM.fullPageBanner) auth_DOM.fullPageBanner.classList.add("hidden");
+  if (auth_DOM.authContainer) auth_DOM.authContainer.classList.add("hidden");
 
   // ✅ Show dashboard
   if (auth_DOM.dashboard) auth_DOM.dashboard.classList.remove("hidden");
@@ -93,22 +93,22 @@ function showDashboard() {
   // ✅ Show logout button
   if (auth_DOM.logoutButton) auth_DOM.logoutButton.style.display = "block";
 
-  // 🧠 Restore profiles
+  // 🧠 Restore pet profiles
   let localProfiles = window.petProfiles || JSON.parse(localStorage.getItem("petProfiles")) || [];
   window.petProfiles = localProfiles;
 
   console.log("🧠 Restored petProfiles in showDashboard:", localProfiles);
   console.log("🧠 petProfiles length:", localProfiles.length);
+  console.log("📦 petProfiles:", localProfiles);
 
-  // ✅ Show pet list if profiles exist
   if (localProfiles.length > 0 && auth_DOM.petList) {
-    auth_DOM.petList.classList.remove('hidden');
+    auth_DOM.petList.classList.remove("hidden");
     renderProfiles();
   } else {
     console.log("ℹ️ No profiles to render in showDashboard");
+    if (auth_DOM.petList) auth_DOM.petList.classList.add("hidden");
   }
 }
-
 // ====== Google Sign-In Initialization ======
 function setupGoogleLoginButton() {
   // Check if Google and Firebase are loaded
@@ -223,17 +223,16 @@ function showErrorToUser(message, isSuccess = false) {
 // Show the sign-in form
 // ✅ Show Authentication Form
 function showAuthForm() {
-  console.log("🔓 Showing auth form");
+  console.log("🧭 Showing auth UI");
 
-  // ✅ Show auth UI
+  // ✅ Ensure all auth-related UI is visible
   if (auth_DOM.authContainer) auth_DOM.authContainer.classList.remove("hidden");
   if (auth_DOM.googleSignInBtnWrapper) auth_DOM.googleSignInBtnWrapper.classList.remove("hidden");
   if (auth_DOM.fullPageBanner) auth_DOM.fullPageBanner.classList.remove("hidden");
 
-  // 🔒 Hide dashboard elements
+  // ❌ Hide dashboard and logout
   if (auth_DOM.dashboard) auth_DOM.dashboard.classList.add("hidden");
   if (auth_DOM.logoutButton) auth_DOM.logoutButton.style.display = "none";
-  if (auth_DOM.petList) auth_DOM.petList.classList.add("hidden");
 }
 
 // Show user email info
