@@ -78,35 +78,37 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeAuth();
 });
 // ====== Core Functions ======
+// ✅ Show Dashboard after successful login
 function showDashboard() {
   console.log("🚪 Entered showDashboard()");
-  auth_DOM.googleSignInBtnWrapper.classList.add("hidden");
 
-  // ✅ Use live memory if available, else fallback to localStorage
+  // 🔒 Hide auth UI
+  if (auth_DOM.googleSignInBtnWrapper) auth_DOM.googleSignInBtnWrapper.classList.add("hidden");
+  if (auth_DOM.authContainer) auth_DOM.authContainer.classList.add("hidden");
+  if (auth_DOM.fullPageBanner) auth_DOM.fullPageBanner.classList.add("hidden");
+
+  // ✅ Show dashboard
+  if (auth_DOM.dashboard) auth_DOM.dashboard.classList.remove("hidden");
+
+  // ✅ Show logout button
+  if (auth_DOM.logoutButton) auth_DOM.logoutButton.style.display = "block";
+
+  // 🧠 Restore profiles
   let localProfiles = window.petProfiles || JSON.parse(localStorage.getItem("petProfiles")) || [];
-  // ✅ Restore to window for consistency
   window.petProfiles = localProfiles;
-  // ✅ Log for debugging
+
   console.log("🧠 Restored petProfiles in showDashboard:", localProfiles);
   console.log("🧠 petProfiles length:", localProfiles.length);
-  console.log("📦 petProfiles:", localProfiles);
-  // ✅ Render pet cards if available
+
+  // ✅ Show pet list if profiles exist
   if (localProfiles.length > 0 && auth_DOM.petList) {
     auth_DOM.petList.classList.remove('hidden');
     renderProfiles();
   } else {
     console.log("ℹ️ No profiles to render in showDashboard");
   }
-  // ✅ Final UI toggles
-  if (!auth_DOM.authContainer || !auth_DOM.dashboard) {
-    console.error("DOM elements not ready in showDashboard");
-    return;
-  }
-  auth_DOM.authContainer.classList.add('hidden');
-  auth_DOM.dashboard.classList.remove('hidden');
-  auth_DOM.logoutButton.style.display = "block";
-  auth_DOM.fullPageBanner.classList.remove('hidden');
-} 
+}
+
 // ====== Google Sign-In Initialization ======
 function setupGoogleLoginButton() {
   // Check if Google and Firebase are loaded
@@ -219,15 +221,21 @@ function showErrorToUser(message, isSuccess = false) {
   }
 }
 // Show the sign-in form
+// ✅ Show Authentication Form
 function showAuthForm() {
-  // ✅ Safely hide the full page banner if it's available
-  if (auth_DOM.fullPageBanner) {
-    auth_DOM.fullPageBanner.classList.add("hidden");
-  }
+  console.log("🔓 Showing auth form");
 
-  const container = document.getElementById('authContainer') || document.getElementById('auth-container');
-  if (container) container.classList.remove('hidden');
+  // ✅ Show auth UI
+  if (auth_DOM.authContainer) auth_DOM.authContainer.classList.remove("hidden");
+  if (auth_DOM.googleSignInBtnWrapper) auth_DOM.googleSignInBtnWrapper.classList.remove("hidden");
+  if (auth_DOM.fullPageBanner) auth_DOM.fullPageBanner.classList.remove("hidden");
+
+  // 🔒 Hide dashboard elements
+  if (auth_DOM.dashboard) auth_DOM.dashboard.classList.add("hidden");
+  if (auth_DOM.logoutButton) auth_DOM.logoutButton.style.display = "none";
+  if (auth_DOM.petList) auth_DOM.petList.classList.add("hidden");
 }
+
 // Show user email info
 function showUserInfo(user) {
   const emailEl = document.getElementById('userEmail');
