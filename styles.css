@@ -130,6 +130,26 @@
 }
 
 /* ===== FORM STYLES ===== */
+.dashboard-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+}
+
+.primary-action {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.primary-action:hover {
+  background-color: var(--primar
+
 .form-container {
   padding: 25px;
   margin: 0 auto 30px;
