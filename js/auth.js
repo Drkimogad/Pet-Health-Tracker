@@ -36,6 +36,7 @@ function initDOMReferences() {
   auth_DOM.dashboard = document.getElementById("dashboard");
   auth_DOM.addPetProfileBtn = document.getElementById("addPetProfileBtn");
   auth_DOM.petList = document.getElementById("petList"); // Add this too if used in rendering
+  auth_DOM.savedProfilesList = document.getElementById('savedProfilesList');
   auth_DOM.logoutButton = document.getElementById("logoutButton");
  
 // Keep this inside the function
@@ -276,6 +277,20 @@ function getFirestore() {
   if (!firestore) console.warn("Firestore not initialized - using localStorage fallback");
   return firestore;
 }
+function setupLogout() {
+  if (auth_DOM.logoutButton) {
+    auth_DOM.logoutButton.addEventListener('click', async () => {
+      try {
+        await firebase.auth().signOut();
+        console.log("👋 User signed out"); // IN CONSOLE FOR NOW
+        window.location.reload(); // Reset app state
+      } catch (error) {
+        console.error("Logout failed:", error);
+        showErrorToUser("Logout failed. Please try again.");
+      }
+    });
+  }
+}
 // ====== Core Initialization ======
 async function initializeAuth() {
   try {
@@ -304,11 +319,18 @@ async function initializeAuth() {
     console.log("🔐 Firebase auth persistence set to LOCAL");
     
     // 4. Set up auth state listener
-    initAuthListeners(auth);  
+    initAuthListeners(auth); 
+    
     // 5. Set up Google Sign-In button (if exists)
     if (document.getElementById("googleSignInButton")) {
       setupGoogleLoginButton();
-    }    
+    }
+
+    // ✅ Add logout listener after auth is ready
+    if (typeof setupLogout === "function") {
+      setupLogout();
+    }
+
   } catch (error) {
     console.error("Auth initialization failed:", error);
     disableUI();
