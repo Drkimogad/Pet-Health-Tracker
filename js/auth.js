@@ -7,6 +7,7 @@ const CLOUDINARY_CONFIG = {
 let auth = null;
 let provider = null;
 let isSignupInProgress = false;
+
 // 🔶 State Management🔶🔶🔶
 const VALID_ORIGINS = [
   'https://drkimogad.github.io',
@@ -150,7 +151,7 @@ callback: async (response) => {
     showDashboard();
   } catch (error) {
     console.error("Google Sign-In failed:", error);
-   showAuthError("Google Sign-In failed. Please try again."); // From utils.js
+   showErrorToUser("Google Sign-In failed. Please try again."); // From utils.js
 
   } finally {
     showLoading(false);
@@ -269,6 +270,12 @@ function disableUI() {
     </h1>
   `;
 }
+// Showsuccessnotification
+function showSuccessNotification(message) {
+  showErrorToUser(message, true);
+}
+window.showSuccessNotification = showSuccessNotification; //added recently
+
 // Firebase accessors (optional to move)
 function getAuth() {
   return firebase.auth();
@@ -277,6 +284,7 @@ function getFirestore() {
   if (!firestore) console.warn("Firestore not initialized - using localStorage fallback");
   return firestore;
 }
+// logoutbutton logic
 function setupLogout() {
   if (auth_DOM.logoutButton) {
     auth_DOM.logoutButton.addEventListener('click', async () => {
