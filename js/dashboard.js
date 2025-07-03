@@ -263,7 +263,7 @@ async function loadSavedPetProfile() {
 
   } catch (error) {
     console.error('Load error:', error);
-    showAuthError('Failed to load pet profiles');
+    showErrorToUser('Failed to load pet profiles');
   }
 }
 
@@ -330,7 +330,7 @@ async function editPetProfile(petId) {
     }
 
     if (!profile) {
-      showAuthError("Profile not found");
+      showErrorToUser("Profile not found");
       return;
     }
     // Store original profile for cancel/recovery
@@ -376,11 +376,11 @@ async function editPetProfile(petId) {
       cancelButton.onclick = handleCancelEdit;
     }
     // Scroll to form
-    DOM.dietForm.scrollIntoView({ behavior: 'smooth' });
+    DOM.petList.scrollIntoView({ behavior: 'smooth' });
 
   } catch (error) {
     console.error('Edit error:', error);
-    showAuthError('Failed to load profile for editing');
+    showErrorToUser('Failed to load profile for editing');
   }
 }
 // UPDATED CANCEL FUNCTION
@@ -473,7 +473,7 @@ async function deletePetProfile(petId) {
     
   } catch (error) {
     console.error('Delete error:', error);
-    showAuthError('Failed to delete profile');
+    showErrorToUser('Failed to delete profile');
   }
 }
 
@@ -594,7 +594,7 @@ async function sharePetProfile(petId) {
     }
 
     if (!profile) {
-      showAuthError("Profile not found");
+      showErrorToUser("Profile not found");
       return;
     }
 
@@ -643,7 +643,7 @@ async function sharePetProfile(petId) {
 
   } catch (error) {
     console.error('Share error:', error);
-    showAuthError('Failed to share profile');
+    showErrorToUser('Failed to share profile');
   }
 }
 // ======== QR CODE GENERATION button functionality ========
@@ -932,7 +932,7 @@ DOM.petList.addEventListener('submit', async (e) => {
 
   } catch (error) {
     console.error('Save error:', error);
-    showAuthError('Failed to save profile. Please try again.');
+    showErrorToUser('Failed to save profile. Please try again.');
   }
 });
 
