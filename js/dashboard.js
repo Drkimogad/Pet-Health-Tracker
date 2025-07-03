@@ -17,7 +17,8 @@ const DOM = {
   authContainer: document.getElementById('authContainer'),
   dashboard: document.getElementById('dashboard'),
   processingLoader: document.getElementById('processing-loader'),
-  
+  addPetProfileBtn: document.getElementById('addPetProfileBtn'),
+ 
   // Profile list
   savedProfilesList: document.getElementById('savedProfilesList'),
   
@@ -959,7 +960,12 @@ window.onerror = (msg, url, line) => {
 function initializeDashboard() {
   // Set up all event listeners
   DOM.savedProfilesList?.addEventListener('click', handleProfileActions);
-  
+    
+  if (DOM.addPetProfileBtn) {
+  DOM.addPetProfileBtn.addEventListener('click', () => {
+    if (DOM.petList) DOM.petList.classList.remove('hidden');
+  });
+}
   // Check auth state
   firebase.auth().onAuthStateChanged((user) => {
     if (user) {
