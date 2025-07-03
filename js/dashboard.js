@@ -959,7 +959,8 @@ window.onerror = (msg, url, line) => {
 function initializeDashboard() {
   console.log("⚙️ Running initializeDashboard()");
   // Set up all event listeners
-  DOM.savedProfilesList?.addEventListener('click', handleProfileActions);
+  // DOM.petList?.addEventListener('submit', handleFormSubmit);
+  // DOM.savedProfilesList?.addEventListener('click', handleProfileActions);
     
 if (DOM.addPetProfileBtn) {
   console.log("✅ addPetProfileBtn found:", DOM.addPetProfileBtn);
