@@ -17,16 +17,15 @@ const DOM = {
   authContainer: document.getElementById('authContainer'),
   dashboard: document.getElementById('dashboard'),
   processingLoader: document.getElementById('processing-loader'),
-  addPetProfileBtn: document.getElementById('addPetProfileBtn'),
- 
-  // Profile list
-  savedProfilesList: document.getElementById('savedProfilesList'),
   
   // Form elements
+  addPetProfileBtn: document.getElementById('addPetProfileBtn'),
   petList: document.getElementById('petList'),
   petPhotoInput: document.getElementById('petPhoto'),
   petPhotoPreview: document.getElementById('petPhotoPreview'),
   
+  // Profile list
+  savedProfilesList: document.getElementById('savedProfilesList'),
   // Form fields
   petName: document.getElementById('petName'),
   breed: document.getElementById('breed'),
@@ -962,20 +961,21 @@ function initializeDashboard() {
   // Set up all event listeners
   DOM.savedProfilesList?.addEventListener('click', handleProfileActions);
     
-  // Attach click to + New Profile button
-  if (DOM.addPetProfileBtn) {
-    console.log("✅ Found Add Profile Button");
+if (DOM.addPetProfileBtn) {
+  console.log("✅ addPetProfileBtn found:", DOM.addPetProfileBtn);
   DOM.addPetProfileBtn.addEventListener('click', () => {
-    console.log("🟢 New Profile button clicked"); 
-      if (DOM.petList) {
-        DOM.petList.classList.remove('hidden');
-      } else {
-        console.warn("❌ petList not found in DOM");
-      }  
+    console.log("🟢 New Profile button clicked");
+    if (DOM.petList) {
+      DOM.petList.classList.remove('hidden');
+      console.log("✅ petList form revealed");
+    } else {
+      console.warn("⛔ petList not found in DOM");
+    }
   });
- } else {
-    console.warn("❌ addPetProfileBtn not found in DOM");
-  }
+} else {
+  console.warn("⛔ addPetProfileBtn not found in DOM");
+}
+
   // Check auth state
   firebase.auth().onAuthStateChanged((user) => {
     if (user) {
