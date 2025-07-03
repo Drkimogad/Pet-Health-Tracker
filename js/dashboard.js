@@ -962,13 +962,20 @@ function initializeDashboard() {
   // Set up all event listeners
   DOM.savedProfilesList?.addEventListener('click', handleProfileActions);
     
+  // Attach click to + New Profile button
   if (DOM.addPetProfileBtn) {
     console.log("✅ Found Add Profile Button");
   DOM.addPetProfileBtn.addEventListener('click', () => {
     console.log("🟢 New Profile button clicked"); 
-    if (DOM.petList) DOM.petList.classList.remove('hidden');
+      if (DOM.petList) {
+        DOM.petList.classList.remove('hidden');
+      } else {
+        console.warn("❌ petList not found in DOM");
+      }  
   });
-}
+ } else {
+    console.warn("❌ addPetProfileBtn not found in DOM");
+  }
   // Check auth state
   firebase.auth().onAuthStateChanged((user) => {
     if (user) {
