@@ -958,6 +958,7 @@ window.onerror = (msg, url, line) => {
 };
 // ITIALIZE DASHBOARD
 function initializeDashboard() {
+  console.log("⚙️ Running initializeDashboard()");
   // Set up all event listeners
   DOM.savedProfilesList?.addEventListener('click', handleProfileActions);
     
