@@ -963,6 +963,7 @@ function initializeDashboard() {
     
   if (DOM.addPetProfileBtn) {
   DOM.addPetProfileBtn.addEventListener('click', () => {
+    console.log("🟢 New Profile button clicked"); // ✅ Add this
     if (DOM.petList) DOM.petList.classList.remove('hidden');
   });
 }
