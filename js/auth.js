@@ -95,7 +95,9 @@ function showDashboard() {
    // ✅ Always show addpetprofilebtn
   if (auth_DOM.addPetProfileBtn) auth_DOM.addPetProfileBtn.classList.remove("hidden");
  // ✅ Always show petList form when is called.
-  if (auth_DOM.petList) auth_DOM.petList.classList.remove("hidden");
+  if (auth_DOM.petList) auth_DOM.petList.classList.add("hidden");
+  // ✅ Show the saved profiles section (even if empty)
+  if (auth_DOM.savedProfilesList) auth_DOM.savedProfilesList.classList.remove("hidden");
   // ✅ Show logout button
   if (auth_DOM.logoutButton) auth_DOM.logoutButton.style.display = "block";
 
@@ -106,7 +108,11 @@ function showDashboard() {
   console.log("🧠 Restored petProfiles in showDashboard:", localProfiles);
   console.log("🧠 petProfiles length:", localProfiles.length);
   console.log("📦 petProfiles:", localProfiles);
-
+  
+// ✅ Optionally display "No profiles yet" message if empty
+if (window.petProfiles.length === 0) {
+  auth_DOM.savedProfilesList.innerHTML = `<li class="no-profiles-msg">No saved pet profiles yet.</li>`;
+}
   // 🐾 Render profiles if they exist
   if (localProfiles.length > 0 ) {
     renderProfiles();
