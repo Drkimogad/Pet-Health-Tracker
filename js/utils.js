@@ -85,8 +85,8 @@ function validateReminder(reminderData) {
 
 //  Modal Utilities
 function showModal(content) {
-  let modal = DOM.pet-modal;
-  let overlay = DOM.modal-overlay;
+  let modal = DOM["pet-modal"];
+  let overlay = DOM["modal-overlay"];
 
   if (!modal) {
     overlay = document.createElement('div');
