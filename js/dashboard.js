@@ -1,3 +1,9 @@
+// Global declaration
+let editingProfileId = null; // Tracks which profile is being edited
+let petDB; // IndexedDB reference (if used)
+let profile; // Current profile being processed
+let currentQRProfile = null; // Only new declaration needed
+
 // 🌍 Load from localStorage and expose globally
 let petProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
 window.petProfiles = petProfiles;
@@ -9,8 +15,6 @@ if (typeof isEditing === 'undefined') {
 if (typeof currentEditIndex === 'undefined') {
     window.currentEditIndex = -1;
 }
-let currentQRProfile = null; // Only new declaration needed
-
 // ====== DOM ELEMENTS ======
 const DOM = {
   // Main containers
