@@ -958,7 +958,6 @@ window.onerror = (msg, url, line) => {
 // ITIALIZE DASHBOARD
 function initializeDashboard() {
   // Set up all event listeners
-  DOM.petList?.addEventListener('submit', handleFormSubmit);
   DOM.savedProfilesList?.addEventListener('click', handleProfileActions);
   
   // Check auth state
