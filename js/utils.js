@@ -85,8 +85,8 @@ function validateReminder(reminderData) {
 
 //  Modal Utilities
 function showModal(content) {
-  let modal = DOM["pet-modal"];
-  let overlay = DOM["modal-overlay"];
+  let modal = DOM.petModal;
+  let overlay = DOM.modalOverlay;
 
   if (!modal) {
     overlay = document.createElement('div');
@@ -117,7 +117,7 @@ function showModal(content) {
   document.body.style.overflow = 'hidden';
 }
 function hideModal() {
-  const overlay = DOM.modal-overlay;
+  const overlay = DOM.modalOverlay;
   if (overlay) {
     overlay.classList.remove('active');
     document.body.style.overflow = '';
