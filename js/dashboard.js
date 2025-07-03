@@ -963,8 +963,9 @@ function initializeDashboard() {
   DOM.savedProfilesList?.addEventListener('click', handleProfileActions);
     
   if (DOM.addPetProfileBtn) {
+    console.log("✅ Found Add Profile Button");
   DOM.addPetProfileBtn.addEventListener('click', () => {
-    console.log("🟢 New Profile button clicked"); // ✅ Add this
+    console.log("🟢 New Profile button clicked"); 
     if (DOM.petList) DOM.petList.classList.remove('hidden');
   });
 }
