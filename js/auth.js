@@ -109,14 +109,21 @@ function showDashboard() {
   console.log("🧠 petProfiles length:", localProfiles.length);
   console.log("📦 petProfiles:", localProfiles);
   
-// ✅ Optionally display "No profiles yet" message if empty
-if (window.petProfiles.length === 0) {
-  auth_DOM.savedProfilesList.innerHTML = `<li class="no-profiles-msg">No saved pet profiles yet.</li>`;
-}
-  // 🐾 Render profiles if they exist
-  if (localProfiles.length > 0 ) {
-    renderProfiles();
+// 🐾 Render profiles if they exist
+if (localProfiles.length > 0 ) {
+   renderProfiles();
+  
   } else {
+auth_DOM.savedProfilesList.innerHTML = `
+  <li class="no-profiles-msg">
+    No saved pet profiles yet.
+    <br />
+    <img src="https://images.unsplash.com/photo-1601758123927-1961a287edb4?auto=format&fit=crop&w=60&q=80" alt="Dog" />
+    <img src="https://images.unsplash.com/photo-1574158622682-e40e69881006?auto=format&fit=crop&w=60&q=80" alt="Cat" />
+    <img src="https://images.unsplash.com/photo-1609179325949-898928c20629?auto=format&fit=crop&w=60&q=80" alt="Bird" />
+    <img src="https://images.unsplash.com/photo-1619983081563-dbd01d2b4d1f?auto=format&fit=crop&w=60&q=80" alt="Rabbit" />
+  </li>`;
+
     console.log("ℹ️ No profiles to render in showDashboard");
   }
 }
