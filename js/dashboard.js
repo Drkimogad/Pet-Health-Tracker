@@ -936,18 +936,11 @@ DOM.petList.addEventListener('submit', async (e) => {
         reader.readAsDataURL(fileInput.files[0]);
       });
     }
-
-    // Save using hybrid approach
-   if (firebase.auth().currentUser) {
-       
-   // 🚧 TEMP FIRESTORE FALLBACK – Final Refinement: Replace with actual Firestore sync logic
+    // Save using hybrid approach       
+   // 🚧 TEMP FIRESTORE FALLBACK – Final Refinement: Replace with actual Firestore sync logic Later try and catch
    console.warn("⚠️ No Firestore sync implemented. Falling back to localStorage");
    savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-   } else {
-  // 🔄 Offline/local user
-   savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-   }
-       
+     
       if (editingProfileId !== null) {
       const index = savedProfiles.findIndex(p => p.id === editingProfileId);
       if (index !== -1) {
