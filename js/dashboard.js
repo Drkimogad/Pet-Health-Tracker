@@ -941,12 +941,9 @@ DOM.petList.addEventListener('submit', async (e) => {
    if (firebase.auth().currentUser) {
        
     try {
-    savedProfiles = await loadPets(); // Or direct Firestore call
-   if (!Array.isArray(savedProfiles)) savedProfiles = [];
-  } catch (err) {
-    console.warn("⚠️ Failed to load from Firestore, falling back to localStorage", err);
-    savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-  }
+// 🚧 TEMP FIRESTORE FALLBACK – Final Refinement: Replace with actual Firestore sync logic
+  console.warn("⚠️ Failed to load from Firestore, falling back to localStorage");
+  savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
        
    } else {
     savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
