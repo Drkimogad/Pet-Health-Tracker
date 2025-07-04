@@ -1,8 +1,10 @@
 // Global declaration
-let editingProfileId = null; // Tracks which profile is being edited
 let petDB; // IndexedDB reference (if used)
-let profile; // Current profile being processed
 let currentQRProfile = null; // Only new declaration needed
+let savedProfiles = [];
+let currentProfile = null;
+// 👇 Add here
+let editingProfileId = null
 
 // 🌍 Load from localStorage and expose globally
 let petProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
@@ -848,8 +850,37 @@ editingSessionKeys.forEach(key => {
   }
 });
 
-// ======================
-// FORM SUBMISSION (UPDATED)
+// ======== EVENT DELEGATION (FIXED) ========
+// ✅ Keep this block ✅
+DOM.savedProfilesList?.addEventListener('click', (e) => {
+  if (!e.target?.closest('button')) return;
+  
+  const btn = e.target.closest('button');
+  const petId = btn.dataset?.petId;
+
+  if (btn.classList.contains('edit-btn')) {
+    if (petId) editPetProfile(petId);
+  }
+  else if (btn.classList.contains('delete-btn')) {
+    if (petId && confirm('Delete this profile?')) deletePetProfile(petId);
+  }
+  else if (btn.classList.contains('details-btn')) {
+    if (petId) showPetDetails(petId);
+  }
+});
+// Add this to catch handled errors 
+window.onerror = (msg, url, line) => {
+  alert(`Error: ${msg}\nLine: ${line}`);
+  return true; // Prevent default error logging
+};
+
+// ======================    
+// ITIALIZE DASHBOARD
+// ======================    
+function initializeDashboard() {
+  console.log("⚙️ Running initializeDashboard()");
+// ======================    
+// FORM SUBMISSION MOVED INSIDE INITIALIZEDASHBOARD FUNCTION 
 // ======================
 DOM.petList.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -935,37 +966,11 @@ DOM.petList.addEventListener('submit', async (e) => {
     showErrorToUser('Failed to save profile. Please try again.');
   }
 });
-
-// ======== EVENT DELEGATION (FIXED) ========
-// ✅ Keep this block ✅
-DOM.savedProfilesList?.addEventListener('click', (e) => {
-  if (!e.target?.closest('button')) return;
-  
-  const btn = e.target.closest('button');
-  const petId = btn.dataset?.petId;
-
-  if (btn.classList.contains('edit-btn')) {
-    if (petId) editPetProfile(petId);
-  }
-  else if (btn.classList.contains('delete-btn')) {
-    if (petId && confirm('Delete this profile?')) deletePetProfile(petId);
-  }
-  else if (btn.classList.contains('details-btn')) {
-    if (petId) showPetDetails(petId);
-  }
-});
-// Add this to catch handled errors 
-window.onerror = (msg, url, line) => {
-  alert(`Error: ${msg}\nLine: ${line}`);
-  return true; // Prevent default error logging
-};
-// ITIALIZE DASHBOARD
-function initializeDashboard() {
-  console.log("⚙️ Running initializeDashboard()");
-  // Set up all event listeners
-  // DOM.petList?.addEventListener('submit', handleFormSubmit);
-  // DOM.savedProfilesList?.addEventListener('click', handleProfileActions);
     
+  // Set up all event listeners
+   DOM.savedProfilesList?.addEventListener('click', handleProfileActions);
+    
+// REST OF INITIALIZE DASHBOARD FUNCTION  
 if (DOM.addPetProfileBtn) {
   console.log("✅ addPetProfileBtn found:", DOM.addPetProfileBtn);
   DOM.addPetProfileBtn.addEventListener('click', () => {
