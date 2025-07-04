@@ -37,6 +37,8 @@ const DOM = {
   breed: document.getElementById('breed'),
   age: document.getElementById('age'),
   weight: document.getElementById('weight'),
+  petType: document.getElementById('petType'), // to be updated in other functions
+  petGender: document.getElementById('petGender'),  //to be updated in other functions
   microchipId: document.getElementById('microchipId'),
   microchipDate: document.getElementById('microchipDate'),
   microchipVendor: document.getElementById('microchipVendor'),
@@ -851,7 +853,7 @@ editingSessionKeys.forEach(key => {
 });
 
 // ======== EVENT DELEGATION (FIXED) ========
-// ✅ Keep this block ✅
+// ✅ Keep this block to handle profile actions✅
 DOM.savedProfilesList?.addEventListener('click', (e) => {
   if (!e.target?.closest('button')) return;
   
@@ -893,6 +895,8 @@ DOM.petList.addEventListener('submit', async (e) => {
       breed: DOM.breed?.value,
       age: DOM.age?.value,
       weight: DOM.weight?.value,
+      type: DOM.petType?.value || 'Unknown',
+      gender: DOM.petGender?.value || 'Unknown',
       microchip: {
         id: DOM.microchipId?.value,
         date: DOM.microchipDate?.value,
@@ -921,7 +925,7 @@ DOM.petList.addEventListener('submit', async (e) => {
     };
 
     // Handle image upload (keeping your preview logic)
-    const fileInput = DOM.petPhoto;
+    const fileInput = DOM.petPhotoInput;
     if (fileInput.files[0]) {
       petData.petPhoto = await new Promise((resolve) => {
         const reader = new FileReader();
