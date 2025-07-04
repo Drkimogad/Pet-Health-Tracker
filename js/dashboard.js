@@ -940,14 +940,14 @@ DOM.petList.addEventListener('submit', async (e) => {
     // Save using hybrid approach
    if (firebase.auth().currentUser) {
        
-    try {
-// 🚧 TEMP FIRESTORE FALLBACK – Final Refinement: Replace with actual Firestore sync logic
-  console.warn("⚠️ Failed to load from Firestore, falling back to localStorage");
-  savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-       
+   // 🚧 TEMP FIRESTORE FALLBACK – Final Refinement: Replace with actual Firestore sync logic
+   console.warn("⚠️ No Firestore sync implemented. Falling back to localStorage");
+   savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
    } else {
-    savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+  // 🔄 Offline/local user
+   savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
    }
+       
       if (editingProfileId !== null) {
       const index = savedProfiles.findIndex(p => p.id === editingProfileId);
       if (index !== -1) {
