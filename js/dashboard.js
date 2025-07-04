@@ -939,7 +939,15 @@ DOM.petList.addEventListener('submit', async (e) => {
 
     // Save using hybrid approach
    if (firebase.auth().currentUser) {
+       
+    try {
     savedProfiles = await loadPets(); // Or direct Firestore call
+   if (!Array.isArray(savedProfiles)) savedProfiles = [];
+  } catch (err) {
+    console.warn("⚠️ Failed to load from Firestore, falling back to localStorage", err);
+    savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+  }
+       
    } else {
     savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
    }
