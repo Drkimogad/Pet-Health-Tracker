@@ -949,7 +949,6 @@ DOM.petList.addEventListener('submit', async (e) => {
      }
       
       localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
-    // I HAD A BRACE HERE WHICH WAS REMOVED
     // In the form submission success feedback:
    showSuccessNotification(
     editingProfileId !== null ? 'Profile updated' : 'Profile saved', // ✅ Fixed
@@ -968,7 +967,7 @@ DOM.petList.addEventListener('submit', async (e) => {
 });
     
   // Set up all event listeners
-   DOM.savedProfilesList?.addEventListener('click', handleProfileActions);
+ //  DOM.savedProfilesList?.addEventListener('click', handleProfileActions); leave it commented out for now
     
 // REST OF INITIALIZE DASHBOARD FUNCTION  
 if (DOM.addPetProfileBtn) {
