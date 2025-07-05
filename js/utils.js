@@ -145,11 +145,6 @@ function trapFocus(modal) {
   });
 }
 
-// generate unique id
-function generateUniqueId() {
-  return 'pet-' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
-}
-
 // SW snippet 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
