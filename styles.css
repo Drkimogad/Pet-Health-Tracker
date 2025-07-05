@@ -392,7 +392,7 @@ textarea:focus {
   margin-top: 20px;
   display: block;
   padding: 10px 20px;
-  background-color: var(--primary-dark);
+  background-color: #FF0000;
   color: white;
   border: none;
   border-radius: 6px;
@@ -403,7 +403,7 @@ textarea:focus {
 }  
 /* ===== HEADER & FOOTER STYLING ===== */
 header {
-  background-color: var(--primary-dark);
+  background-color: #967bb6;
   padding: 1.5rem 2rem;
   text-align: center;
 }
@@ -416,7 +416,7 @@ header h1 {
 
 /* Optional footer styles */
 footer {
-  background-color: var(--primary-dark);
+  background-color: #967bb6;
   color: white;
   text-align: center;
   padding: 1rem 2rem;
