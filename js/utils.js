@@ -51,7 +51,7 @@ async function uploadToCloudinary(file, userId, petProfileId) {
 }
 // function reset form
 function resetForm() {
-  const form = DOM.dietForm;
+  const form = DOM.petList;
   if (form) form.reset();
   const preview = DOM.petPhotoPreview;
   if (preview) {
