@@ -936,11 +936,18 @@ DOM.petList.addEventListener('submit', async (e) => {
         reader.readAsDataURL(fileInput.files[0]);
       });
     }
-    // Save using hybrid approach       
-   // 🚧 TEMP FIRESTORE FALLBACK – Final Refinement: Replace with actual Firestore sync logic Later try and catch
-   console.warn("⚠️ No Firestore sync implemented. Falling back to localStorage");
-   savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-     
+      
+// firestore saving implementation
+    if (firebase.auth().currentUser) {
+  const db = firebase.firestore();
+  const profileRef = db.collection("profiles").doc(petData.id); // Use pet ID as document ID
+  await profileRef.set(petData);
+  console.log("📥 Profile saved to Firestore:", petData);
+}
+      
+// 2. Also update localStorage (for offline fallback)
+savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+// IF EDITING 
       if (editingProfileId !== null) {
       const index = savedProfiles.findIndex(p => p.id === editingProfileId);
       if (index !== -1) {
