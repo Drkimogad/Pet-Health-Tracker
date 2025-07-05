@@ -913,23 +913,23 @@ DOM.petList.addEventListener('submit', async (e) => {
       allergies: DOM.allergies?.value,
       medicalHistory: DOM.medicalHistory?.value,
       dietPlan: DOM.dietPlan?.value,
-      emergencyContacts: [{
-        name: DOM.emergencyContactName?.value,
-        phone: DOM.emergencyContactPhone?.value,
-        relationship: DOM.emergencyContactRelationship?.value
-      }],
+      emergencyContact: {
+      name: DOM.emergencyContactName?.value,
+      phone: DOM.emergencyContactPhone?.value,
+      relationship: DOM.emergencyContactRelationship?.value
+      },
+
       mood: DOM.moodSelector?.value,
-      vaccinationsAndDewormingReminder: DOM.vaccinationsAndDewormingReminder?.value,
-      medicalCheckupsReminder: DOM.medicalCheckupsReminder?.value,
-      groomingReminder: DOM.groomingReminder?.value,
-      
+      reminders: {
+      vaccinations: DOM.vaccinationsAndDewormingReminder?.value,
+      checkups: DOM.medicalCheckupsReminder?.value,
+      grooming: DOM.groomingReminder?.value
+     },      
       // New fields we're adding
       id: editingProfileId || generateUniqueId(), // Fixed ID generation
       ownerId: firebase.auth().currentUser?.uid || 'local-user',
       lastUpdated: Date.now(),
-      createdAt: Date.now(),
-      type: 'Unknown', // Will add to form later
-      gender: 'Unknown' // Will add to form later
+      createdAt: Date.now()
     };
       
 // ✅ Upload to Cloudinary instead of local preview
