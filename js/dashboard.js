@@ -260,7 +260,32 @@ async function loadSavedPetProfile() {
             <p><strong>Age:</strong> ${profile.age || 'N/A'}</p>
             <p><strong>Weight:</strong> ${profile.weight || 'N/A'}</p>
             <p><strong>Gender:</strong> ${profile.gender || 'Unknown'}</p>
-          </div>
+                  <p><strong>Mood:</strong> ${profile.mood || 'N/A'}</p>
+      <p><strong>Diet:</strong> ${profile.dietPlan || 'N/A'}</p>
+      <p><strong>Allergies:</strong> ${profile.allergies || 'N/A'}</p>
+      <p><strong>Medical History:</strong> ${profile.medicalHistory || 'N/A'}</p>
+
+      <p><strong>Microchip:</strong></p>
+      <ul>
+        <li>ID: ${profile.microchip?.id || 'N/A'}</li>
+        <li>Date: ${profile.microchip?.date || 'N/A'}</li>
+        <li>Vendor: ${profile.microchip?.vendor || 'N/A'}</li>
+      </ul>
+
+      <p><strong>Reminders:</strong></p>
+      <ul>
+        <li>Vaccination: ${profile.vaccinationsAndDewormingReminder || 'N/A'}</li>
+        <li>Checkups: ${profile.medicalCheckupsReminder || 'N/A'}</li>
+        <li>Grooming: ${profile.groomingReminder || 'N/A'}</li>
+      </ul>
+
+      <p><strong>Emergency Contact:</strong></p>
+      <ul>
+        <li>Name: ${profile.emergencyContacts?.[0]?.name || 'N/A'}</li>
+        <li>Phone: ${profile.emergencyContacts?.[0]?.phone || 'N/A'}</li>
+        <li>Relationship: ${profile.emergencyContacts?.[0]?.relationship || 'N/A'}</li>
+      </ul>
+   </div>
           
           <div class="pet-actions">
              <button class="edit-btn" data-pet-id="${profile.id}">Edit</button>
