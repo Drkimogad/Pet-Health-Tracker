@@ -1,5 +1,6 @@
 /* ===== GLOBAL STYLES ===== */
 :root {
+  /* AUTHENTICATION PALETTE (preserved) */
   --primary-color: #3498db;
   --primary-dark: #2980b9;
   --secondary-color: #27ae60;
@@ -12,7 +13,15 @@
   --qr-blue: #3498db;
   --qr-green: #27ae60;
   --link-blue: #3498db;
+
+  /* DASHBOARD ADDITIONS */
+  --mustard: #f4c542;
+  --purple: #7e57c2;
+  --purple-dark: #5e35b1;
+  --green: #43a047;
+  --red: #e74c3c;
 }
+
 /* ===== AUTH SECTION VISIBILITY ===== */
 #authContainer {
   display: flex !important;
@@ -152,157 +161,113 @@
   text-align: right;
 }
 /* ===== DASHBOARD STYLES ===== */
-/* ===== FORM STYLES ===== */
+/* Pet Card Image Fix */
+.pet-photo {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* FORM Styling */
+#petList {
+  max-width: 90%;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  animation: formEntrance 0.4s ease;
+}
+
+/* Input field enhancement */
+input[type="text"],
+input[type="tel"],
+input[type="date"],
+select,
+textarea {
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 10px;
+  width: 100%;
+  font-size: 16px;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--mustard);
+  box-shadow: 0 0 0 2px rgba(244, 197, 66, 0.3);
+  outline: none;
+}
+
+/* Dashboard Action Buttons */
 .dashboard-actions {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 15px;
+  margin-bottom: 1.5rem;
 }
 
 .primary-action {
-  background-color: var(--primary-color);
+  background-color: var(--purple);
   color: white;
-  border: none;
-  padding: 10px 16px;
+  padding: 10px 20px;
+  border-radius: 6px;
   font-size: 1rem;
-  border-radius: 8px;
   cursor: pointer;
+  border: none;
   transition: background 0.3s ease;
 }
 
 .primary-action:hover {
-  background-color: var(--primar
-
-.form-container {
-  padding: 25px;
-  margin: 0 auto 30px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  max-width: 800px;
-}
-
-fieldset {
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
-}
-
-legend {
-  padding: 0 10px;
-  font-weight: bold;
-  color: var(--primary-color);
-}
-
-label {
-  display: block;
-  margin: 15px 0 5px;
-  font-weight: 600;
-}
-
-input[type="text"],
-input[type="email"],
-input[type="password"],
-input[type="tel"],
-input[type="date"],
-textarea,
-select {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  font-size: 16px;
-  transition: all 0.3s;
-}
-
-input:focus,
-textarea:focus,
-select:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-}
-
-textarea {
-  min-height: 100px;
-  resize: vertical;
-}
-
-/* ===== BUTTONS ===== */
-button {
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: 600;
-  transition: all 0.3s, transform 0.2s ease;
-  margin-top: 15px;
-}
-
-button:hover {
   background-color: var(--primary-dark);
-  transform: translateY(-1px);
 }
 
-button:active {
-  transform: scale(0.98);
-}
-
-button:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.editProfileButton {
-  background: var(--qr-blue) !important;
-}
-
-.shareProfileButton {
-  background: var(--secondary-color) !important;
+/* Save/Cancel Buttons */
+#saveProfile {
+  background-color: var(--green);
 }
 
 #cancelEdit {
-    background-color: #e74c3c;
-    margin-left: 10px;
+  background-color: var(--red);
+  margin-left: 10px;
 }
 
-/* ===== SAVED PROFILES ===== */
-.saved-profiles {
-  padding: 0 20px;
-  max-width: 900px;
-  margin: 0 auto;
+/* Pet Card Action Buttons */
+.pet-actions button {
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
 }
 
-#savedProfilesList {
-  list-style: none;
-  padding: 0;
+.edit-btn {
+  background-color: var(--purple);
+  color: white;
 }
 
-.pet-card {
-  background: var(--card-bg);
-  border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-  border: 1px solid var(--border-color);
+.delete-btn {
+  background-color: var(--red);
+  color: white;
 }
 
-.pet-card h4 {
-  color: var(--primary-color);
-  margin-bottom: 15px;
-  font-size: 1.4em;
+.details-btn {
+  background-color: var(--mustard);
+  color: white;
 }
 
-.pet-photo {
-  max-width: 150px;
-  max-height: 150px;
-  border-radius: 8px;
-  margin: 10px 0;
-  display: block;
+.shareProfileButton {
+  background-color: var(--green);
+  color: white;
+}
+
+.print-btn {
+  background-color: var(--qr-blue);
+  color: white;
 }
 
 /* ===== REMINDERS & LOADERS ===== */
@@ -411,16 +376,6 @@ button:disabled {
     padding: 0;
   }
 
-  .no-print, 
-  .pet-card-buttons, 
-  #logoutButton, 
-  footer,
-  .auth-form,
-  header, 
-  button {
-    display: none !important;
-  }
-
   .pet-card {
     page-break-inside: avoid;
     border: none;
@@ -465,8 +420,10 @@ footer {
   color: white;
   text-align: center;
   padding: 1rem 2rem;
-  margin-top: 2rem;
   font-size: 0.9rem;
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
 }
 
 /* ===== RESPONSIVE DESIGN ===== */
