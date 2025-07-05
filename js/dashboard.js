@@ -931,20 +931,29 @@ DOM.petList.addEventListener('submit', async (e) => {
       type: 'Unknown', // Will add to form later
       gender: 'Unknown' // Will add to form later
     };
-
-    // Handle image upload (keeping your preview logic)
-    const fileInput = DOM.petPhotoInput;
-    if (fileInput.files[0]) {
-      petData.petPhoto = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          DOM.petPhotoPreview.src = e.target.result;
-          resolve(e.target.result);
-        };
-        reader.readAsDataURL(fileInput.files[0]);
-      });
-    }
       
+// ✅ Upload to Cloudinary instead of local preview
+const fileInput = DOM.petPhotoInput;
+if (fileInput.files[0]) {
+  try {
+    const uploadResult = await uploadToCloudinary(
+      fileInput.files[0],
+      firebase.auth().currentUser.uid,
+      petData.id
+    );
+
+    // Set pet photo URL in Firestore data
+    petData.petPhoto = uploadResult.url;
+    petData.cloudinaryPath = uploadResult.path; // Optional
+    petData.imageDimensions = {
+      width: uploadResult.width,
+      height: uploadResult.height
+    };
+  } catch (error) {
+    showErrorToUser("❌ Image upload failed. Try again.");
+    return; // Prevent profile save if image upload fails
+  }
+}      
 // firestore saving implementation
     if (firebase.auth().currentUser) {
   const db = firebase.firestore();
