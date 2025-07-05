@@ -249,8 +249,8 @@ async function loadSavedPetProfile() {
         <div class="pet-card-content">
           <div class="pet-header">
             ${profile.petPhoto ? 
-              `<img src="${profile.petPhoto}" alt="Pet Photo" class="pet-photo"/>` : 
-              '<div class="pet-photo placeholder">🐾</div>'}
+           `<img src="${profile.petPhoto.replace('http://', 'https://')}" alt="Pet Photo" class="pet-photo"/>` : 
+           '<div class="pet-photo placeholder">🐾</div>'}
             <h4>${profile.petName || 'Unnamed Pet'}</h4>
           </div>
           
