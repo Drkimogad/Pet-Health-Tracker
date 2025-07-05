@@ -210,16 +210,24 @@ async function loadSavedPetProfile() {
     let savedProfiles = [];
     
     if (firebase.auth().currentUser) {
-      // Firestore loading logic (keep your original implementation)
-      const snapshot = await firebase.firestore()
-        .collection("profiles")
-        .where("userId", "==", firebase.auth().currentUser.uid)
-        .get();
+  try {
+    const snapshot = await firebase.firestore()
+      .collection("profiles")
+      .where("ownerId", "==", firebase.auth().currentUser.uid)
+      .get();
+
+    if (!snapshot.empty) {
       savedProfiles = snapshot.docs.map(doc => doc.data());
+      console.log("🔥 Loaded from Firestore:", savedProfiles);
     } else {
-      // LocalStorage fallback (keep your original implementation)
+      console.warn("⚠️ No profiles in Firestore. Falling back to localStorage.");
       savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
     }
+  } catch (err) {
+    console.error("❌ Firestore fetch failed:", err);
+    savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+  }
+}
 
     // START OF RENDERPROFILES SECTION (now using DOM object)
     const savedProfilesList = DOM.savedProfilesList;
