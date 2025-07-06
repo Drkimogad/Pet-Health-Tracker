@@ -79,7 +79,7 @@ const reminderFields = {
   checkups: 'Medical Check-ups',
   grooming: 'Grooming'
 };
-//FUNCTION HIGHLIGHT REMINDERS 
+//FUNCTION HIGHLIGHT REMINDERS UPDATED
 function highlightReminders(reminders, index) {
   const today = new Date();
   const overdueContainer = DOM[`overdueReminders-${index}`];
@@ -93,30 +93,51 @@ function highlightReminders(reminders, index) {
   Object.entries(reminders).forEach(([reminderKey, reminderValue]) => {
     if (!reminderValue) return;
 
-  // Map to standardized type using REMINDER_TYPE_MAP
-  const standardizedType = REMINDER_TYPE_MAP[reminderKey];
-  const reminderLabel = reminderFields[reminderKey]; // Now matches data
+    const reminderDate = new Date(reminderValue);
+    const timeDiff = reminderDate - today;
+    const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+    const isToday = reminderDate.toDateString() === today.toDateString();
+
+    const reminderLabel = reminderFields[reminderKey] || reminderKey;
+
+    const div = document.createElement('div');
+    let icon = '';
+    let cssClass = '';
+    let deleteClass = 'deleteReminderButton';
 
     if (timeDiff < 0) {
-      const div = document.createElement('div');
-      div.className = 'reminder overdue';
-      div.innerHTML = `
-        <span class="exclamation">❗</span> 
-        ${reminderLabel} was due on ${reminderDateTime.toLocaleString()}
-        <button class="deleteReminderButton" 
-                data-profile-index="${index}" 
-                data-reminder="${reminderKey}">Delete</button>
-      `;
-      
-      overdueContainer.appendChild(div);
+      icon = '❗';
+      cssClass = 'reminder overdue';
+      deleteClass += ' btn-delete'; // style red
+    } else if (isToday) {
+      icon = '⏰';
+      cssClass = 'reminder today';
+      deleteClass += ' btn-today'; // style green
     } else if (daysDiff <= REMINDER_THRESHOLD_DAYS) {
-      const div = document.createElement('div');
-      div.className = 'reminder upcoming';
-      div.textContent = `${reminderLabel} is on ${reminderDateTime.toLocaleString()}`;
+      icon = '📅';
+      cssClass = 'reminder upcoming';
+      deleteClass += ' btn-upcoming'; // style green
+    } else {
+      return; // skip far future reminders
+    }
+
+    div.className = cssClass;
+    div.innerHTML = `
+      <span>${icon}</span>
+      <strong>${reminderLabel}</strong> on ${reminderDate.toLocaleString()}
+      <button class="${deleteClass}"
+              data-profile-index="${index}"
+              data-reminder="${reminderKey}">🗑 Delete</button>
+    `;
+
+    if (timeDiff < 0) {
+      overdueContainer.appendChild(div);
+    } else {
       upcomingContainer.appendChild(div);
     }
   });
 }
+
 // FUNCTION DELETE OVERDUE REMINDERS 
 function deleteOverdueReminder(profileIndex, reminderKey) {
   const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
