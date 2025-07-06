@@ -260,6 +260,7 @@ async function loadSavedPetProfile() {
             <p><strong>Age:</strong> ${profile.age || 'N/A'}</p>
             <p><strong>Weight:</strong> ${profile.weight || 'N/A'}</p>
             <p><strong>Gender:</strong> ${profile.gender || 'Unknown'}</p>
+            <p><strong>Type:</strong> ${profile.type || 'Unknown'}</p>
             <p><strong>Mood:</strong> ${profile.mood || 'N/A'}</p>
       <p><strong>Diet:</strong> ${profile.dietPlan || 'N/A'}</p>
       <p><strong>Allergies:</strong> ${profile.allergies || 'N/A'}</p>
