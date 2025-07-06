@@ -428,9 +428,7 @@ function showPetDetails(profile) {
       <button class="print-btn" onclick="window.print()">Print</button>
       <button class="close-btn" onclick="hideModal()">Close</button>
       </div>
-      
-      <button class="close-details">Close</button>
-    </div>
+   </div>
   `;
   
   showModal(detailsHtml);
