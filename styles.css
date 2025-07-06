@@ -389,19 +389,19 @@ textarea:focus {
   }
 }
 #logoutButton {
-  margin-top: 20px;
-  display: block;
-  float: right;
-  margin: 1rem 2rem 1rem 0;
+  position: absolute;
+  top: 1.5rem;
+  right: 2rem;
   background-color: #FF0000;
   color: white;
   border: none;
   border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 1rem;
   cursor: pointer;
+  z-index: 10;
 }
-#logoutButton.hidden {
-  display: none !important;
-}  
+
 /* ===== HEADER & FOOTER STYLING ===== */
 header {
   background-color: #967bb6;
