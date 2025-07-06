@@ -968,7 +968,7 @@ editingSessionKeys.forEach(key => {
 });
 
 // ======== EVENT DELEGATION (FIXED) ========
-// ✅ Keep this block to handle profile actions ALL THE BUTTONS IN LOADSAVEDPETPROFILES FUNCTION✅
+// ✅ Keep this block to handle profile actions (WIRING) ALL THE BUTTONS IN LOADSAVEDPETPROFILES FUNCTION✅
 DOM.savedProfilesList?.addEventListener('click', (e) => {
   if (!e.target?.closest('button')) return;
   
@@ -986,10 +986,10 @@ DOM.savedProfilesList?.addEventListener('click', (e) => {
     showPetDetails(petId);
   }
 else if (btn.classList.contains('print-btn')) {
-    printPetProfile(petId); // ✅ You will implement this next
+  if (petId) printPetProfile(petId);
   }
   else if (btn.classList.contains('shareProfileButton')) {
-    sharePetProfile(petId); // ✅ You will implement this next
+  if (petId) sharePetProfile(petId);
   }
   else if (btn.classList.contains('qr-btn')) {
     showQRCode(petId); // ✅ You will implement this next
