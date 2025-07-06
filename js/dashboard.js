@@ -985,9 +985,14 @@ DOM.savedProfilesList?.addEventListener('click', (e) => {
   else if (btn.classList.contains('delete-btn')) {
     if (confirm('Delete this profile?')) deletePetProfile(petId);
   }
-  else if (btn.classList.contains('details-btn')) {
-    showPetDetails(petId);
+ else if (btn.classList.contains('details-btn')) {
+  if (petId) {
+    const profiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+    const profile = profiles.find(p => p.id === petId);
+    if (profile) showPetDetails(profile);
+    else showErrorToUser('Profile not found');
   }
+}
 else if (btn.classList.contains('print-btn')) {
   if (petId) printPetProfile(petId);
   }
