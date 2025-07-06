@@ -260,7 +260,7 @@ async function loadSavedPetProfile() {
             <p><strong>Age:</strong> ${profile.age || 'N/A'}</p>
             <p><strong>Weight:</strong> ${profile.weight || 'N/A'}</p>
             <p><strong>Gender:</strong> ${profile.gender || 'Unknown'}</p>
-                  <p><strong>Mood:</strong> ${profile.mood || 'N/A'}</p>
+            <p><strong>Mood:</strong> ${profile.mood || 'N/A'}</p>
       <p><strong>Diet:</strong> ${profile.dietPlan || 'N/A'}</p>
       <p><strong>Allergies:</strong> ${profile.allergies || 'N/A'}</p>
       <p><strong>Medical History:</strong> ${profile.medicalHistory || 'N/A'}</p>
@@ -272,25 +272,34 @@ async function loadSavedPetProfile() {
         <li>Vendor: ${profile.microchip?.vendor || 'N/A'}</li>
       </ul>
 
-      <p><strong>Reminders:</strong></p>
-      <ul>
-        <li>Vaccination: ${profile.vaccinationsAndDewormingReminder || 'N/A'}</li>
-        <li>Checkups: ${profile.medicalCheckupsReminder || 'N/A'}</li>
-        <li>Grooming: ${profile.groomingReminder || 'N/A'}</li>
-      </ul>
-
-      <p><strong>Emergency Contact:</strong></p>
+     <p><strong>Emergency Contact:</strong></p>
       <ul>
         <li>Name: ${profile.emergencyContacts?.[0]?.name || 'N/A'}</li>
         <li>Phone: ${profile.emergencyContacts?.[0]?.phone || 'N/A'}</li>
         <li>Relationship: ${profile.emergencyContacts?.[0]?.relationship || 'N/A'}</li>
       </ul>
-   </div>
+    </div>
+
+           <!-- ✅ INSERT THIS REMINDERS BLOCK BELOW -->
+      <div class="pet-reminders">
+        <div class="reminder ${getReminderClass(profile.reminders?.vaccinations)}">
+          <strong>Vaccinations:</strong> ${formatReminder(profile.reminders?.vaccinations)}
+        </div>
+        <div class="reminder ${getReminderClass(profile.reminders?.checkups)}">
+          <strong>Checkups:</strong> ${formatReminder(profile.reminders?.checkups)}
+        </div>
+        <div class="reminder ${getReminderClass(profile.reminders?.grooming)}">
+          <strong>Grooming:</strong> ${formatReminder(profile.reminders?.grooming)}
+        </div>
+      </div>
           
           <div class="pet-actions">
-             <button class="edit-btn" data-pet-id="${profile.id}">Edit</button>
-             <button class="delete-btn" data-pet-id="${profile.id}">Delete</button>
-             <button class="details-btn" data-pet-id="${profile.id}">Details</button>
+        <button class="edit-btn" data-pet-id="${profile.id}">Edit</button>
+        <button class="delete-btn" data-pet-id="${profile.id}">Delete</button>
+        <button class="print-btn" data-pet-id="${profile.id}">Print</button>
+        <button class="shareProfileButton" data-pet-id="${profile.id}">Share</button>
+        <button class="qr-btn" data-pet-id="${profile.id}">Qr</button> // to refine it later
+        <button class="details-btn" data-pet-id="${profile.id}">Details</button>
           </div>
         </div>
       `;
