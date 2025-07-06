@@ -206,8 +206,8 @@ textarea:focus {
 /* Dashboard Action Buttons */
 .dashboard-actions {
   display: flex;
-  justify-content: flex-end;
-  margin-bottom: 1.5rem;
+  justify-content: flex-start;
+  margin-bottom: 15PX;
 }
 
 .primary-action {
@@ -226,8 +226,8 @@ textarea:focus {
 }
 
 /* Save/Cancel Buttons */
-#saveProfile {
-  background-color: var(--green);
+#savePetProfile {
+  background-color: var(--purple);
 }
 
 #cancelEdit {
@@ -391,7 +391,8 @@ textarea:focus {
 #logoutButton {
   margin-top: 20px;
   display: block;
-  padding: 10px 20px;
+  float: right;
+  margin: 1rem 2rem 1rem 0;
   background-color: #FF0000;
   color: white;
   border: none;
@@ -406,6 +407,7 @@ header {
   background-color: #967bb6;
   padding: 1.5rem 2rem;
   text-align: center;
+  margin-bottom: 2rem; /* adds space below header */
 }
 
 header h1 {
@@ -421,6 +423,7 @@ footer {
   text-align: center;
   padding: 1rem 2rem;
   font-size: 0.9rem;
+  margin-top: 2rem; /* adds space above footer */
   position: sticky;
   bottom: 0;
   z-index: 10;
