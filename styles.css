@@ -254,17 +254,10 @@ textarea:focus {
 .primary-action:hover {
   background-color: var(--purple);
 }
-#logoutButton {
-  background-color: #FF0000;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 16px;
-  cursor: pointer;
-  font-weight: 600;
-  display: block;
-}
 
+#logoutButton.primary-action {
+  background-color: #FF0000; /* Override purple */
+}
 /* Pet Card Action Buttons */
 .pet-actions button {
   padding: 8px 14px;
