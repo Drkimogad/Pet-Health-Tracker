@@ -387,8 +387,9 @@ petCard.appendChild(remindersDiv); // 👈 Final append
     showErrorToUser('Failed to load pet profiles');
   }
 }
-
-// Helper function to show detailed view
+//================================
+// Helper function to show petcard details via details button
+//=================================
 function showPetDetails(profile) {
   const emergencyContact = profile.emergencyContacts?.[0] || {};
   
@@ -425,7 +426,7 @@ function showPetDetails(profile) {
         <div>Grooming: ${formatReminder(profile.reminders?.grooming)}</div>
        </div>
        <div class="modal-actions">
-      <button class="print-btn" onclick="window.print()">Print</button>
+      <button class="save-card-btn">💾 Save Card</button>
       <button class="close-btn" onclick="hideModal()">Close</button>
       </div>
    </div>
@@ -1018,6 +1019,29 @@ document.addEventListener('click', (e) => {
 
     if (profileIndex !== undefined && reminderKey) {
       deleteReminder(profileIndex, reminderKey);
+    }
+  }
+});
+
+// Show details modal Listener
+document.addEventListener('click', async (e) => {
+  if (e.target.classList.contains('save-card-btn')) {
+    const modalContent = document.querySelector('.modal-content');
+    if (!modalContent) return;
+
+    try {
+      const canvas = await html2canvas(modalContent, { useCORS: true });
+      const dataURL = canvas.toDataURL('image/png');
+
+      const link = document.createElement('a');
+      link.href = dataURL;
+      link.download = `Pet_Profile_${Date.now()}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      console.error('❌ Failed to save card as image:', err);
+      alert('Could not save image. Please try again.');
     }
   }
 });
