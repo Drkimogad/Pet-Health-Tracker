@@ -181,7 +181,7 @@ function getReminderClass(reminderDateString) {
 }
 
 // Function Image Preview Handler (NO CHANGES NEEDED)
-  const petPhotoInput = DOM.petPhoto;
+  const petPhotoInput = DOM.petPhotoInput;  // modified
   const petPhotoPreview = DOM.petPhotoPreview;
   if (petPhotoInput && petPhotoPreview) {
     petPhotoInput.addEventListener('change', function() {
@@ -324,27 +324,56 @@ async function loadSavedPetProfile() {
         <li>Phone: ${profile.emergencyContacts?.[0]?.phone || 'N/A'}</li>
         <li>Relationship: ${profile.emergencyContacts?.[0]?.relationship || 'N/A'}</li>
       </ul>
-    </div>
+</div>
+// 🔁 Dynamic Reminders Container
+const remindersDiv = document.createElement('div');
+remindersDiv.className = 'pet-reminders';
 
-           <!-- ✅ INSERT THIS REMINDERS BLOCK BELOW -->
-      <div class="pet-reminders">
-        <div class="reminder ${getReminderClass(profile.reminders?.vaccinations)}">
-          <strong>Vaccinations:</strong> ${formatReminder(profile.reminders?.vaccinations)}
-        </div>
-        <div class="reminder ${getReminderClass(profile.reminders?.checkups)}">
-          <strong>Checkups:</strong> ${formatReminder(profile.reminders?.checkups)}
-        </div>
-        <div class="reminder ${getReminderClass(profile.reminders?.grooming)}">
-          <strong>Grooming:</strong> ${formatReminder(profile.reminders?.grooming)}
-        </div>
-      </div>
+const today = new Date();
+const REMINDER_THRESHOLD_DAYS = 5;
+
+Object.entries(profile.reminders || {}).forEach(([key, value]) => {
+  if (!value) return;
+
+  const reminderDate = new Date(value);
+  const timeDiff = reminderDate - today;
+  const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+  const label = reminderFields[key] || key;
+
+  const reminder = document.createElement('div');
+  reminder.classList.add('reminder');
+
+  if (timeDiff < 0) {
+    reminder.classList.add('overdue');
+    reminder.innerHTML = `
+      ❗ <strong>${label}:</strong> was due on ${reminderDate.toLocaleString()}
+      <button class="deleteReminderButton" 
+              data-profile-index="${index}" 
+              data-reminder="${key}">
+        🗑 Delete
+      </button>
+    `;
+  } else if (daysDiff === 0) {
+    reminder.classList.add('upcoming');
+    reminder.innerHTML = `⚠️ <strong>${label}:</strong> is today (${reminderDate.toLocaleString()})`;
+  } else if (daysDiff <= REMINDER_THRESHOLD_DAYS) {
+    reminder.classList.add('upcoming');
+    reminder.innerHTML = `📅 <strong>${label}:</strong> is on ${reminderDate.toLocaleString()}`;
+  } else {
+    reminder.innerHTML = `📌 <strong>${label}:</strong> is on ${reminderDate.toLocaleString()}`;
+  }
+
+  remindersDiv.appendChild(reminder);
+});
+
+petCard.appendChild(remindersDiv); // 👈 Final append
           
           <div class="pet-actions">
         <button class="edit-btn" data-pet-id="${profile.id}">Edit</button>
         <button class="delete-btn" data-pet-id="${profile.id}">Delete</button>
         <button class="print-btn" data-pet-id="${profile.id}">Print</button>
         <button class="shareProfileButton" data-pet-id="${profile.id}">Share</button>
-        <button class="qr-btn" data-pet-id="${profile.id}">Qr</button> // to refine it later
+        <button class="qr-btn" data-pet-id="${profile.id}">Qr</button>
         <button class="details-btn" data-pet-id="${profile.id}">Details</button>
           </div>
         </div>
