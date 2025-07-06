@@ -822,7 +822,7 @@ async function generateQRCode(petId) { // Use ID instead of index
         </div>
         <script>
           function downloadQR() {
-            const qrcodeContainer = DOM.qrcode-container;
+            const qrcodeContainer = document.getElementById('qrcode-container');
             const canvas = qrcodeContainer.querySelector('canvas');
             if (canvas) {
               const link = document.createElement('a');
@@ -860,7 +860,7 @@ Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relatio
     `.trim();
 
     try {
-      const qrcodeContainer = qrWindow.DOM.qrcode-container;
+      const qrcodeContainer = qrWindow.document.getElementById('qrcode-container');
       if (!qrcodeContainer) throw new Error('QR container not found');
       
       qrcodeContainer.style.display = 'block';
@@ -877,8 +877,8 @@ Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relatio
         correctLevel: qrWindow.QRCode.CorrectLevel.H
       });
 
-      const qrControls = qrWindow.DOM.qr-controls;
-      if (qrControls) qrControls.style.display = 'block';
+        const qrControls = qrWindow.document.getElementById('qr-controls');
+        if (qrControls) qrControls.style.display = 'block';
 
     } catch (error) {
       console.error('QR Generation Error:', error);
@@ -995,7 +995,7 @@ else if (btn.classList.contains('print-btn')) {
   if (petId) sharePetProfile(petId);
   }
   else if (btn.classList.contains('qr-btn')) {
-    showQRCode(petId); // ✅ You will implement this next
+  if (petId) generateQRCode(petId);
   }
 });
 
@@ -1004,6 +1004,7 @@ window.onerror = (msg, url, line) => {
   alert(`Error: ${msg}\nLine: ${line}`);
   return true; // Prevent default error logging
 };
+
 // ✅  Add the reminders delete listener just below it
 document.addEventListener('click', (e) => {
   if (e.target.classList.contains('deleteReminderButton')) {
