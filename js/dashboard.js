@@ -968,23 +968,34 @@ editingSessionKeys.forEach(key => {
 });
 
 // ======== EVENT DELEGATION (FIXED) ========
-// ✅ Keep this block to handle profile actions✅
+// ✅ Keep this block to handle profile actions ALL THE BUTTONS IN LOADSAVEDPETPROFILES FUNCTION✅
 DOM.savedProfilesList?.addEventListener('click', (e) => {
   if (!e.target?.closest('button')) return;
   
   const btn = e.target.closest('button');
   const petId = btn.dataset?.petId;
+  if (!petId) return;
 
   if (btn.classList.contains('edit-btn')) {
-    if (petId) editPetProfile(petId);
+    editPetProfile(petId);
   }
   else if (btn.classList.contains('delete-btn')) {
-    if (petId && confirm('Delete this profile?')) deletePetProfile(petId);
+    if (confirm('Delete this profile?')) deletePetProfile(petId);
   }
   else if (btn.classList.contains('details-btn')) {
-    if (petId) showPetDetails(petId);
+    showPetDetails(petId);
+  }
+else if (btn.classList.contains('print-btn')) {
+    printPetProfile(petId); // ✅ You will implement this next
+  }
+  else if (btn.classList.contains('shareProfileButton')) {
+    sharePetProfile(petId); // ✅ You will implement this next
+  }
+  else if (btn.classList.contains('qr-btn')) {
+    showQRCode(petId); // ✅ You will implement this next
   }
 });
+
 // Add this to catch handled errors 
 window.onerror = (msg, url, line) => {
   alert(`Error: ${msg}\nLine: ${line}`);
