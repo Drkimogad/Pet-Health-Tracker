@@ -951,6 +951,17 @@ window.onerror = (msg, url, line) => {
   alert(`Error: ${msg}\nLine: ${line}`);
   return true; // Prevent default error logging
 };
+// ✅  Add the reminders delete listener just below it
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('deleteReminderButton')) {
+    const profileIndex = e.target.dataset.profileIndex;
+    const reminderKey = e.target.dataset.reminder;
+
+    if (profileIndex !== undefined && reminderKey) {
+      deleteReminder(profileIndex, reminderKey);
+    }
+  }
+});
 
 // ======================    
 // ITIALIZE DASHBOARD
