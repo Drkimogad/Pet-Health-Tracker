@@ -435,8 +435,10 @@ function showPetDetails(profile) {
   
   showModal(detailsHtml);
 }
+//=========================================
 // FUNCTION EDIT PROFILE
 // FUNCTION EDIT PROFILE (UPDATED FOR HYBRID STORAGE)
+//=======================================
 async function editPetProfile(petId) {
   try {    
     // 1. Try to load from Firestore if available
@@ -457,16 +459,19 @@ async function editPetProfile(petId) {
     // Store original profile for cancel/recovery
     editingProfileId = petId;
     sessionStorage.setItem(`editingProfile_${petId}`, JSON.stringify(profile));
+    resetForm(); // Prevent leftover values or states
     // Your existing field population logic (unchanged)
-    const setValue = (id, value) => {
-      const el = DOM.id;
-      if (el) el.value = value || '';
-    };
+    const setValue = (field, value) => {
+    const el = DOM[field];
+    if (el) el.value = value || '';
+   };
 
     setValue('petName', profile.petName);
     setValue('breed', profile.breed);
     setValue('age', profile.age);
     setValue('weight', profile.weight);
+    setValue('petType', profile?.type || '');  
+    setValue('petGender', profile?.gender || '');
     setValue('microchipId', profile.microchip?.id);
     setValue('microchipDate', profile.microchip?.date);
     setValue('microchipVendor', profile.microchip?.vendor);
@@ -479,12 +484,8 @@ async function editPetProfile(petId) {
     setValue('emergencyContactRelationship', profile.emergencyContacts?.[0]?.relationship);
     setValue('vaccinationsAndDewormingReminder', profile.vaccinationsAndDewormingReminder);
     setValue('medicalCheckupsReminder', profile.medicalCheckupsReminder);
-    setValue('groomingReminder', profile.groomingReminder);
-    
-    // Add these for new fields if they exist in the profile
-    if (profile.type) setValue('petType', profile.type);
-    if (profile.gender) setValue('petGender', profile.gender);
-    // Handle pet photo preview (unchanged)
+    setValue('groomingReminder', profile.groomingReminder);    
+    // Handle pet photo preview
     const preview = DOM.petPhotoPreview;
     if (preview && profile.petPhoto) {
       preview.src = profile.petPhoto;
@@ -504,7 +505,8 @@ async function editPetProfile(petId) {
     showErrorToUser('Failed to load profile for editing');
   }
 }
-// UPDATED CANCEL FUNCTION
+
+// UPDATED CANCEL EDIT FUNCTION
 function handleCancelEdit() {
   if (editingProfileId !== null) {
     // ✅ Retrieve original profile correctly
@@ -514,16 +516,17 @@ function handleCancelEdit() {
 
     if (originalProfile) {
       // ✅ Properly reset form fields
-      const setValue = (id, value) => {
-        const el = DOM.id;
-        if (el) el.value = value || '';
-      };
-
+      const setValue = (field, value) => {
+      const el = DOM[field];
+     if (el) el.value = value || '';
+   };
       // Basic Info
       setValue('petName', originalProfile.petName);
       setValue('breed', originalProfile.breed);
       setValue('age', originalProfile.age);
       setValue('weight', originalProfile.weight);
+      setValue('petType', originalProfile?.type || '');
+      setValue('petGender', originalProfile?.gender || '');
 
       // Microchip
       setValue('microchipId', originalProfile.microchip?.id);
@@ -543,9 +546,9 @@ function handleCancelEdit() {
       setValue('emergencyContactRelationship', ec.relationship);
 
       // Reminders
-      setValue('vaccinationsAndDewormingReminder', originalProfile.reminders?.vaccinations);
-      setValue('medicalCheckupsReminder', originalProfile.reminders?.checkups);
-      setValue('groomingReminder', originalProfile.reminders?.grooming);
+      setValue('vaccinationsAndDewormingReminder', originalProfile.vaccinationsAndDewormingReminder);
+      setValue('medicalCheckupsReminder', originalProfile.medicalCheckupsReminder);
+      setValue('groomingReminder', originalProfile.groomingReminder);
 
       // Photo Preview
       const preview = DOM.petPhotoPreview;
@@ -559,8 +562,10 @@ function handleCancelEdit() {
     sessionStorage.removeItem(`editingProfile_${editingProfileId}`);
     editingProfileId = null;
     DOM.cancelEdit.style.display = 'none';
-  }
+    DOM.petPhotoPreview.style.display = 'none';
+    DOM.petPhotoInput.value = '';
   resetForm();
+  }
 }
 //=================================================
 // FUNCTION DELETE PROFILE (UPDATED FOR HYBRID STORAGE)
@@ -607,8 +612,9 @@ async function deletePetProfile(petId) {
     showErrorToUser('Failed to delete profile');
   }
 }
-
+//====================================
 // Print Pet Profile button functionality
+//======================================
 async function printPetProfile(petId) { // Use ID instead of index
   try {
     const profiles = await loadPets(); // Hybrid data source
