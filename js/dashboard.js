@@ -427,6 +427,7 @@ function showPetDetails(profile) {
        </div>
        <div class="modal-actions">
       <button class="save-card-btn">💾 Save Card</button>
+      <button class="print-btn" onclick="window.print()">🖨 Print</button>
       <button class="close-btn" onclick="hideModal()">Close</button>
       </div>
    </div>
@@ -849,6 +850,8 @@ PET PROFILE
 Name: ${profile.petName || 'N/A'}
 Breed: ${profile.breed || 'N/A'}
 Age: ${profile.age || 'N/A'}
+Gender: ${profile.gender || 'Unknown'}
+Type: ${profile.type || 'Unknown'}
 Weight: ${profile.weight || 'N/A'}
 Microchip ID: ${microchip.id || 'N/A'}
 Allergies: ${profile.allergies || 'N/A'}
@@ -1030,18 +1033,16 @@ document.addEventListener('click', async (e) => {
     if (!modalContent) return;
 
     try {
-      const canvas = await html2canvas(modalContent, { useCORS: true });
+      const canvas = await html2canvas(modalContent);
       const dataURL = canvas.toDataURL('image/png');
 
       const link = document.createElement('a');
       link.href = dataURL;
-      link.download = `Pet_Profile_${Date.now()}.png`;
-      document.body.appendChild(link);
+      link.download = 'PetCard.png';
       link.click();
-      document.body.removeChild(link);
     } catch (err) {
-      console.error('❌ Failed to save card as image:', err);
-      alert('Could not save image. Please try again.');
+      console.error('🛑 Failed to save card:', err);
+      alert('Failed to generate image.');
     }
   }
 });
