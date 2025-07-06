@@ -139,23 +139,35 @@ function highlightReminders(reminders, index) {
 }
 
 // FUNCTION DELETE OVERDUE REMINDERS 
-function deleteOverdueReminder(profileIndex, reminderKey) {
-  const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-  
-  if (savedProfiles[profileIndex] && savedProfiles[profileIndex][reminderKey]) {
-    // Create a copy of the reminder before deletion (optional)
-    const deletedReminder = savedProfiles[profileIndex][reminderKey]; 
-    // Nullify the reminder
-    savedProfiles[profileIndex][reminderKey] = null;    
-    // Update storage
-    localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));   
-    // Show confirmation
-    const reminderLabel = reminderFields[reminderKey];
-    alert(`${reminderLabel} reminder deleted!`);
-    // Refresh UI
-    loadSavedPetProfile();
+async function deleteReminder(profileIndex, reminderKey) {
+  let savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+
+  if (!savedProfiles[profileIndex]) return;
+
+  // Clear the reminder
+  if (savedProfiles[profileIndex].reminders?.[reminderKey]) {
+    delete savedProfiles[profileIndex].reminders[reminderKey];
+
+    // Save to localStorage
+    localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+
+    // 🔄 If signed in, update Firestore too
+    if (firebase.auth().currentUser) {
+      const profileId = savedProfiles[profileIndex].id;
+      const db = firebase.firestore();
+      const docRef = db.collection("profiles").doc(profileId);
+
+      await docRef.update({
+        [`reminders.${reminderKey}`]: firebase.firestore.FieldValue.delete()
+      });
+    }
+
+    const label = reminderFields[reminderKey] || reminderKey;
+    alert(`${label} reminder deleted!`);
+    loadSavedPetProfile(); // Refresh UI
   }
 }
+
 // Function Image Preview Handler (NO CHANGES NEEDED)
   const petPhotoInput = DOM.petPhoto;
   const petPhotoPreview = DOM.petPhotoPreview;
