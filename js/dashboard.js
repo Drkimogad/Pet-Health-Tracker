@@ -458,7 +458,13 @@ async function editPetProfile(petId) {
     }
     // Store original profile for cancel/recovery
     editingProfileId = petId;
-    sessionStorage.setItem(`editingProfile_${petId}`, JSON.stringify(profile));
+    
+   sessionStorage.setItem(`editingProfile_${petId}`, JSON.stringify({
+     ...profile,
+     _savedAt: Date.now()
+   }));
+   sessionStorage.setItem(`editingProfile_${petId}_timestamp`, Date.now());
+   
     resetForm(); // Prevent leftover values or states
     // Your existing field population logic (unchanged)
     const setValue = (field, value) => {
@@ -920,76 +926,36 @@ Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relatio
     alert("QR initialization failed");
   }
 } 
-// ======== SESSION STORAGE RECOVERY ========
-const editingSessionKeys = Array.from({ length: sessionStorage.length })
-  .map((_, i) => sessionStorage.key(i))
-  .filter(key => key.startsWith('editingProfile_'));
+// =======================================
+// ==== AUTO LOGOUT AFTER INACTIVITY ====
+// Keep it running befor listeners and initialization
+let inactivityTimer;
+const SESSION_TIMEOUT_MINUTES = 30;
 
-editingSessionKeys.forEach(key => {
-  const petId = key.split('_')[1]; // Changed from index to ID
-  const originalProfile = JSON.parse(sessionStorage.getItem(key));
+function resetInactivityTimer() {
+  clearTimeout(inactivityTimer);
+  inactivityTimer = setTimeout(() => {
+    alert("Session expired due to inactivity. Logging out.");
+    firebase.auth().signOut(); // Safe logout
+  }, SESSION_TIMEOUT_MINUTES * 60 * 1000);
+}
 
-  if (originalProfile) {
-    const setValue = (id, value) => {
-      const el = DOM.id;
-      if (el) el.value = value || '';
-    };
+// Monitor activity to reset timer
+['click', 'keydown', 'mousemove', 'scroll', 'touchstart'].forEach(evt =>
+  document.addEventListener(evt, resetInactivityTimer)
+);
 
-    if (DOM.petType) setValue('petType', originalProfile.type || 'Unknown');
-    if (DOM.petGender) setValue('petGender', originalProfile.gender || 'Unknown');
+// Start timer
+resetInactivityTimer();
 
-    // Basic Info
-    safeSetValue('petName', originalProfile.petName || '');
-    safeSetValue('breed', originalProfile.breed || '');
-    safeSetValue('age', originalProfile.age || '');
-    safeSetValue('weight', originalProfile.weight || '');
-
-    // Microchip Details
-    safeSetValue('microchipId', 
-      (originalProfile.microchip && originalProfile.microchip.id) || ''
-    );
-    safeSetValue('microchipDate', 
-      (originalProfile.microchip && originalProfile.microchip.date) || ''
-    );
-    safeSetValue('microchipVendor', 
-      (originalProfile.microchip && originalProfile.microchip.vendor) || ''
-    );
-
-    // Health Info
-    safeSetValue('allergies', originalProfile.allergies || '');
-    safeSetValue('medicalHistory', originalProfile.medicalHistory || '');
-    safeSetValue('dietPlan', originalProfile.dietPlan || '');
-
-    // Emergency Contact
-    const emergencyContact = (originalProfile.emergencyContacts && 
-                            originalProfile.emergencyContacts[0]) || {};
-    safeSetValue('emergencyContactName', emergencyContact.name || '');
-    safeSetValue('emergencyContactPhone', emergencyContact.phone || '');
-    safeSetValue('emergencyContactRelationship', emergencyContact.relationship || '');
-
-    // Mood Selector
-    safeSetValue('moodSelector', originalProfile.mood || 'default');
-
-    // Reminders
-    safeSetValue('vaccinationsAndDewormingReminder', 
-      originalProfile.vaccinationsAndDewormingReminder || ''
-    );
-    safeSetValue('medicalCheckupsReminder', 
-      originalProfile.medicalCheckupsReminder || ''
-    );
-    safeSetValue('groomingReminder', originalProfile.groomingReminder || '');
-
-    // Pet Photo
-    if (originalProfile.petPhoto) {
-      const petPhotoPreview = DOM.petPhotoPreview;
-      if (petPhotoPreview) {
-        petPhotoPreview.src = originalProfile.petPhoto;
-        petPhotoPreview.style.display = 'block';
-      }
-    }
-  }
+// ===== NETWORK CONNECTIVITY AWARENESS =====
+window.addEventListener('offline', () => {
+  showErrorToUser("⚠️ You're offline. Changes will be saved locally.");
 });
 
+window.addEventListener('online', () => {
+  showSuccessNotification("✅ You're back online. Sync available.");
+});
 // ======== EVENT DELEGATION (FIXED) ========
 // ✅ Keep this block to handle profile actions (WIRING) ALL THE BUTTONS IN LOADSAVEDPETPROFILES FUNCTION✅
 DOM.savedProfilesList?.addEventListener('click', (e) => {
@@ -1200,3 +1166,69 @@ if (DOM.addPetProfileBtn) {
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', initializeDashboard);
+
+// ===== SESSION RECOVERY WITH EXPIRY =====
+function runSessionRecovery() {
+const MAX_RECOVERY_AGE = 30 * 60 * 1000; // 30 mins
+const editingSessionKeys = Array.from({ length: sessionStorage.length })
+  .map((_, i) => sessionStorage.key(i))
+  .filter(key => key.startsWith('editingProfile_'));
+
+editingSessionKeys.forEach(key => {
+  const petId = key.split('_')[1];
+  const originalProfile = JSON.parse(sessionStorage.getItem(key));
+
+  // ⏳ Only restore if saved recently
+  const isFresh = !originalProfile._savedAt || 
+    (Date.now() - originalProfile._savedAt < MAX_RECOVERY_AGE);
+
+  if (!originalProfile || !isFresh) {
+    sessionStorage.removeItem(key);
+    return;
+  }
+
+  // Pre-fill form
+  const safeSetValue = (field, value) => {
+    const el = DOM[field];
+    if (el) el.value = value || '';
+  };
+
+  // Restore fields
+  safeSetValue('petName', originalProfile.petName);
+  safeSetValue('breed', originalProfile.breed);
+  safeSetValue('age', originalProfile.age);
+  safeSetValue('weight', originalProfile.weight);
+  safeSetValue('petType', originalProfile.type);
+  safeSetValue('petGender', originalProfile.gender);
+  safeSetValue('microchipId', originalProfile.microchip?.id);
+  safeSetValue('microchipDate', originalProfile.microchip?.date);
+  safeSetValue('microchipVendor', originalProfile.microchip?.vendor);
+  safeSetValue('allergies', originalProfile.allergies);
+  safeSetValue('medicalHistory', originalProfile.medicalHistory);
+  safeSetValue('dietPlan', originalProfile.dietPlan);
+  safeSetValue('moodSelector', originalProfile.mood);
+
+  const ec = originalProfile.emergencyContacts?.[0] || {};
+  safeSetValue('emergencyContactName', ec.name);
+  safeSetValue('emergencyContactPhone', ec.phone);
+  safeSetValue('emergencyContactRelationship', ec.relationship);
+
+  safeSetValue('vaccinationsAndDewormingReminder', originalProfile.vaccinationsAndDewormingReminder);
+  safeSetValue('medicalCheckupsReminder', originalProfile.medicalCheckupsReminder);
+  safeSetValue('groomingReminder', originalProfile.groomingReminder);
+
+  if (originalProfile.petPhoto && DOM.petPhotoPreview) {
+    DOM.petPhotoPreview.src = originalProfile.petPhoto;
+    DOM.petPhotoPreview.style.display = 'block';
+  }
+
+  // Set global edit ID
+  editingProfileId = petId;
+
+  // Show cancel button
+  if (DOM.cancelEdit) {
+    DOM.cancelEdit.style.display = 'inline-block';
+    DOM.cancelEdit.onclick = handleCancelEdit;
+  }
+});
+}
