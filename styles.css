@@ -22,6 +22,32 @@
   --red: #e74c3c;
 }
 
+/* ===== HEADER & FOOTER STYLING ===== */
+header {
+  background-color: #967bb6;
+  padding: 1.5rem 2rem;
+  text-align: center;
+  margin-bottom: 2rem; /* adds space below header */
+}
+
+header h1 {
+  color: #fff;
+  margin: 0;
+  font-size: 2rem;
+}
+
+/* Optional footer styles */
+footer {
+  background-color: #967bb6;
+  color: white;
+  text-align: center;
+  padding: 1rem 2rem;
+  font-size: 0.9rem;
+  margin-top: 2rem; /* adds space above footer */
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+}
 /* ===== AUTH SECTION VISIBILITY ===== */
 #authContainer {
   display: flex !important;
@@ -202,14 +228,18 @@ textarea:focus {
   box-shadow: 0 0 0 2px rgba(244, 197, 66, 0.3);
   outline: none;
 }
-
-/* Dashboard Action Buttons */
-.dashboard-actions {
-  display: flex;
-  justify-content: flex-start;
-  margin-bottom: 15PX;
+#savePetProfile {
+  background-color: var(--purple);
 }
 
+/* Dashboard Action Buttons including new profile and logoutbutton alignement with it */
+.dashboard-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 0 1.5rem;
+}
 .primary-action {
   background-color: var(--purple);
   color: white;
@@ -222,17 +252,17 @@ textarea:focus {
 }
 
 .primary-action:hover {
-  background-color: var(--primary-dark);
-}
-
-/* Save/Cancel Buttons */
-#savePetProfile {
   background-color: var(--purple);
 }
-
-#cancelEdit {
-  background-color: var(--red);
-  margin-left: 10px;
+#logoutButton {
+  background-color: #FF0000;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: 600;
+  display: block;
 }
 
 /* Pet Card Action Buttons */
@@ -269,7 +299,11 @@ textarea:focus {
   background-color: var(--qr-blue);
   color: white;
 }
-
+/* Cancel Buttons */
+#cancelEdit {
+  background-color: var(--red);
+  margin-left: 10px;
+}
 /* ===== REMINDERS & LOADERS ===== */
 .reminders-container {
   background: white;
@@ -296,27 +330,6 @@ textarea:focus {
   background-color: #e8f5e9;
   color: #2e7d32;
   border-left: 4px solid #2e7d32;
-}
-
-.loader {
-  border: 3px solid #f3f3f3;
-  border-top: 3px solid var(--qr-blue);
-  border-radius: 50%;
-  width: 35px;
-  height: 35px;
-  animation: spin 1s linear infinite;
-  margin: 2rem auto;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1000;
-}
-
-/* for sharing */
-@keyframes highlight {
-    0% { background: rgba(255,235,59,0.3); }
-    100% { background: transparent; }
 }
 
 /* ===== QR CODE STYLES ===== */
@@ -348,25 +361,11 @@ textarea:focus {
   background: var(--qr-green);
 }
 
-/* ===== ERROR STATES ===== */
-.error-message {
-  color: var(--error-color);
-  font-size: 0.9rem;
-  margin-top: 0.3rem;
-  display: none;
+/* for sharing */
+@keyframes highlight {
+    0% { background: rgba(255,235,59,0.3); }
+    100% { background: transparent; }
 }
-
-/* ===== ANIMATIONS ===== */
-@keyframes formEntrance {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
 /* ===== PRINT STYLES ===== */
 @media print {
   body {
@@ -388,45 +387,38 @@ textarea:focus {
     height: auto !important;
   }
 }
-#logoutButton {
+/* Loader styling*/
+.loader {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid var(--qr-blue);
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  animation: spin 1s linear infinite;
+  margin: 2rem auto;
   position: absolute;
-  top: 1.5rem;
-  right: 2rem;
-  background-color: #FF0000;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 20px;
-  font-size: 1rem;
-  cursor: pointer;
-  z-index: 10;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
 }
-
-/* ===== HEADER & FOOTER STYLING ===== */
-header {
-  background-color: #967bb6;
-  padding: 1.5rem 2rem;
-  text-align: center;
-  margin-bottom: 2rem; /* adds space below header */
-}
-
-header h1 {
-  color: #fff;
-  margin: 0;
-  font-size: 2rem;
-}
-
-/* Optional footer styles */
-footer {
-  background-color: #967bb6;
-  color: white;
-  text-align: center;
-  padding: 1rem 2rem;
+/* ===== ERROR STATES ===== */
+.error-message {
+  color: var(--error-color);
   font-size: 0.9rem;
-  margin-top: 2rem; /* adds space above footer */
-  position: sticky;
-  bottom: 0;
-  z-index: 10;
+  margin-top: 0.3rem;
+  display: none;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes formEntrance {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* ===== RESPONSIVE DESIGN ===== */
