@@ -188,12 +188,14 @@ footer {
 }
 /* ===== DASHBOARD STYLES ===== */
 /* Pet Card Image Fix */
-.pet-photo {
-  width: 100px;
-  height: 100px;
+#petPhotoPreview {
+  max-width: 150px;
+  max-height: 150px;
+  margin-top: 10px;
+  border-radius: 8px;
+  display: none;
+  border: 1px solid var(--border-color);
   object-fit: cover;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 /* FORM Styling */
@@ -282,14 +284,16 @@ textarea:focus {
   gap: 1rem;
   margin-bottom: 1rem;
 }
-
+/* SAVED PETCARD PHOTO*/
 .pet-photo {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
+  width: 100px;
+  height: 100px;
   object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: block;
 }
-
+/*SAVED PETCARD PHOTO FALLBACK WHEN PHTO UPLOADING FAILS*/
 .pet-photo.placeholder {
   display: flex;
   align-items: center;
