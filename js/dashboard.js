@@ -723,11 +723,14 @@ async function sharePetProfile(petId) {
     const shareData = {
       title: `${profile.petName}'s Health Profile`,
       text: `Pet Details:\n${
-        Object.entries({
-          Name: profile.petName,
-          Breed: profile.breed,
-          Age: profile.age,
-          Weight: profile.weight,
+      Object.entries({
+           Name: profile.petName,
+           Breed: profile.breed,
+           Age: profile.age,
+           Weight: profile.weight,
+           Type: profile.type || 'N/A',
+           Gender: profile.gender || 'N/A',
+           Mood: profile.mood || 'N/A',
           'Microchip ID': (profile.microchip && profile.microchip.id) || 'N/A',
           Allergies: profile.allergies || 'N/A',
           'Medical History': profile.medicalHistory || 'N/A',
