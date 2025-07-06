@@ -167,6 +167,18 @@ async function deleteReminder(profileIndex, reminderKey) {
     loadSavedPetProfile(); // Refresh UI
   }
 }
+// getReminderClass() NEWLY INSERTED
+function getReminderClass(reminderDateString) {
+  if (!reminderDateString) return '';
+  const reminderDate = new Date(reminderDateString);
+  const now = new Date();
+  const timeDiff = reminderDate - now;
+  const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
+
+  if (timeDiff < 0) return 'overdue';
+  if (daysDiff <= REMINDER_THRESHOLD_DAYS) return 'upcoming';
+  return '';
+}
 
 // Function Image Preview Handler (NO CHANGES NEEDED)
   const petPhotoInput = DOM.petPhoto;
@@ -201,12 +213,12 @@ function getPetDataFromForm() {
 
     // === Basic Information ===
     name: DOM.petName.value,
-    type: 'Unknown', // Not in form - we'll add a dropdown later
     breed: DOM.breed.value,
     age: parseFloat(DOM.age.value) || 0,
     weight: parseFloat(DOM.weight.value) || 0,
     gender: 'Unknown', // Not in form - we'll add this later
-    
+    type: 'Unknown', // Not in form - we'll add a dropdown later
+      
     // === Microchip Information ===
     microchip: {
       id: DOM.microchipId.value,
@@ -356,10 +368,10 @@ function showPetDetails(profile) {
     ${profile.petPhoto ? `<img src="${profile.petPhoto}" class="detail-photo">` : ''}
       
       <div class="details-grid">
-        <div><strong>Type:</strong> ${profile.type || 'Unknown'}</div>
         <div><strong>Breed:</strong> ${profile.breed || 'N/A'}</div>
         <div><strong>Age:</strong> ${profile.age || 'N/A'}</div>
         <div><strong>Weight:</strong> ${profile.weight || 'N/A'}</div>
+        <div><strong>Type:</strong> ${profile.type || 'Unknown'}</div>
         <div><strong>Gender:</strong> ${profile.gender || 'Unknown'}</div>
         
         <div class="section-break"><strong>Microchip:</strong></div>
@@ -372,16 +384,16 @@ function showPetDetails(profile) {
         <div>Medical History: ${profile.medicalHistory || 'N/A'}</div>
         <div>Diet Plan: ${profile.dietPlan || 'N/A'}</div>
         <div>Current Mood: ${profile.mood || 'N/A'}</div>
-        
-        <div class="section-break"><strong>Reminders:</strong></div>
-        <div>Vaccinations: ${formatReminder(profile.reminders?.vaccinations)}</div>
-        <div>Checkups: ${formatReminder(profile.reminders?.checkups)}</div>
-        <div>Grooming: ${formatReminder(profile.reminders?.grooming)}</div>
-        
+                
         <div class="section-break"><strong>Emergency Contact:</strong></div>
         <div>Name: ${emergencyContact.name || 'N/A'}</div>
         <div>Phone: ${emergencyContact.phone || 'N/A'}</div>
         <div>Relationship: ${emergencyContact.relationship || 'N/A'}</div>
+
+        <div class="section-break"><strong>Reminders:</strong></div>
+        <div>Vaccinations: ${formatReminder(profile.reminders?.vaccinations)}</div>
+        <div>Checkups: ${formatReminder(profile.reminders?.checkups)}</div>
+        <div>Grooming: ${formatReminder(profile.reminders?.grooming)}</div>
        </div>
        <div class="modal-actions">
       <button class="print-btn" onclick="window.print()">Print</button>
