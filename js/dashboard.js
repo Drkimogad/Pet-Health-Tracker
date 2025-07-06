@@ -919,7 +919,7 @@ Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relatio
     console.error("Main Error:", error);
     alert("QR initialization failed");
   }
-} // <- Final function closing brace
+} 
 // ======== SESSION STORAGE RECOVERY ========
 const editingSessionKeys = Array.from({ length: sessionStorage.length })
   .map((_, i) => sessionStorage.key(i))
