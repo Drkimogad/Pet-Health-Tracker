@@ -562,36 +562,46 @@ function handleCancelEdit() {
   }
   resetForm();
 }
-
+//=================================================
 // FUNCTION DELETE PROFILE (UPDATED FOR HYBRID STORAGE)
+//======================================================
+// ⚠️ NOTE: Cloudinary images are not deleted here.
+// Cloudinary requires secure Admin API access (with secret key) to delete images,
+// which cannot be safely handled in a frontend-only app.
+// This means deleted profiles may leave behind orphaned images in Cloudinary.
+// ✅ Add server-side function or cleanup mechanism later if needed.
+
 async function deletePetProfile(petId) {
   try {
     const pets = await loadPets();
     const petToDelete = pets.find(p => p.id === petId);
 
-    if (petToDelete?.driveFileId) {
-      // Delete from Drive
-      await gapi.client.drive.files.delete({ fileId: petToDelete.driveFileId });
+    // 🔸 Delete from Firestore
+    if (firebase.auth().currentUser) {
+      await firebase.firestore().collection('profiles').doc(petId).delete();
     }
 
-    // Delete from IndexedDB
-    const tx = petDB.transaction('pets', 'readwrite');
-    tx.objectStore('pets').delete(petId);
-    
-    // 2. Fallback to localStorage
+    // 🔸 Optional: Remove from IndexedDB if still used
+    if (window.petDB) {
+      const tx = petDB.transaction('pets', 'readwrite');
+      tx.objectStore('pets').delete(petId);
+    }
+
+    // 🔸 Remove from localStorage
     const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
     const localIndex = savedProfiles.findIndex(p => p.id === petId);
-    
+    let petName = 'Unnamed Pet';
+
     if (localIndex !== -1) {
       petName = savedProfiles[localIndex].petName || 'Unnamed Pet';
       savedProfiles.splice(localIndex, 1);
       localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
     }
-    
-    // Update UI and show notification
+
+    // 🔸 Update UI
     loadSavedPetProfile();
     showSuccessNotification('deleted', petName);
-    
+
   } catch (error) {
     console.error('Delete error:', error);
     showErrorToUser('Failed to delete profile');
