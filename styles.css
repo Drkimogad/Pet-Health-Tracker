@@ -20,6 +20,11 @@
   --purple-dark: #5e35b1;
   --green: #43a047;
   --red: #e74c3c;
+  
+/* Reminders root colours */
+  --reminder-overdue: #c62828;
+  --reminder-today: #e67e22;
+  --reminder-upcoming: #2e7d32;
 }
 
 /* ===== HEADER & FOOTER STYLING ===== */
@@ -322,20 +327,22 @@ textarea:focus {
 
 .reminder.overdue {
   background-color: #ffebee;
-  color: #c62828;
-  border-left: 4px solid #c62828;
+  color: var(--reminder-overdue);
+  border-left: 4px solid var(--reminder-overdue);
 }
+
 .reminder.today {
   background-color: #fff3e0;
-  color: #e67e22;
-  border-left: 4px solid #e67e22;
+  color: var(--reminder-today);
+  border-left: 4px solid var(--reminder-today);
 }
 
 .reminder.upcoming {
   background-color: #e8f5e9;
-  color: #2e7d32;
-  border-left: 4px solid #2e7d32;
+  color: var(--reminder-upcoming);
+  border-left: 4px solid var(--reminder-upcoming);
 }
+
 /* ===== Reminder Delete Buttons ===== */
 .deleteReminderButton {
   padding: 6px 10px;
@@ -348,31 +355,28 @@ textarea:focus {
   transition: background 0.3s ease;
 }
 
-/* Red for Overdue */
 .btn-delete {
-  background-color: #e74c3c;
+  background-color: var(--reminder-overdue);
   color: white;
 }
 .btn-delete:hover {
-  background-color: #c0392b;
+  background-color: #b71c1c;
 }
 
-/* Orange for Today */
 .btn-today {
-  background-color: #e67e22;
+  background-color: var(--reminder-today);
   color: white;
 }
 .btn-today:hover {
-  background-color: #219a52;
+  background-color: #cf711f;
 }
 
-/* Light Green for Upcoming */
 .btn-upcoming {
-  background-color: #2ecc71;
+  background-color: var(--reminder-upcoming);
   color: white;
 }
 .btn-upcoming:hover {
-  background-color: #27ae60;
+  background-color: #1b5e20;
 }
 
 /* Pet Card Action & Buttons */
