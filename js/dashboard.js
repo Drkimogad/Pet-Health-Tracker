@@ -67,10 +67,7 @@ if (!DOM.savedProfilesList || !DOM.petList) {
 }
 
 // =======REMINDERS🌟
-// ======= Lotties REMINDER ANIMATION PLACEHOLDERS =======
-const overdueAnimation = 'https://drkimogad.github.io/Pet-Health-Tracker/lottiefiles/Overdue.json';   
-const todayAnimation   = 'https://drkimogad.github.io/Pet-Health-Tracker/lottiefiles/today.json';  
-const upcomingAnimation = 'https://drkimogad.github.io/Pet-Health-Tracker/lottiefiles/upcoming.json';  
+  
 
 const REMINDER_THRESHOLD_DAYS = 5;
 const ALLOWED_REMINDER_TYPES = ['vaccination', 'checkup', 'grooming'];
@@ -337,8 +334,10 @@ remindersDiv.className = 'pet-reminders';
 
 const today = new Date();
 const REMINDER_THRESHOLD_DAYS = 5;
-const overdueAnimation = "https://assets9.lottiefiles.com/packages/lf20_xxxxx.json";
-const upcomingAnimation = "https://assets9.lottiefiles.com/packages/lf20_yyyyy.json";
+// ======= Lotties REMINDER ANIMATION PLACEHOLDERS =======
+const overdueAnimation = 'https://drkimogad.github.io/Pet-Health-Tracker/lottiefiles/Overdue.json';   
+const todayAnimation   = 'https://drkimogad.github.io/Pet-Health-Tracker/lottiefiles/today.json';  
+const upcomingAnimation = 'https://drkimogad.github.io/Pet-Health-Tracker/lottiefiles/upcoming.json';
 
 Object.entries(profile.reminders || {}).forEach(([key, value]) => {
   if (!value) return;
@@ -371,7 +370,7 @@ if (timeDiff < 0) {
     // Due today
     lottieHTML = `
       <lottie-player 
-        src="${overdueAnimation}" 
+        src="${todayAnimation}" 
         background="transparent" 
         speed="1" 
         style="width: 50px; height: 50px;" 
