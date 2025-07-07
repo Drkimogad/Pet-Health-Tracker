@@ -346,12 +346,12 @@ Object.entries(profile.reminders || {}).forEach(([key, value]) => {
   if (timeDiff < 0) {
   reminder.classList.add('overdue');
   reminder.innerHTML = `
-    ❗ <strong>${label}:</strong> was due on ${reminderDate.toLocaleString()}
-    <button class="deleteReminderButton" 
-            data-profile-index="${index}" 
-            data-reminder="${key}">
-      🗑 Delete
-    </button>
+  &#10071; <strong>${label}:</strong> was due on ${reminderDate.toLocaleString()}
+  <button class="deleteReminderButton" 
+          data-profile-index="${index}" 
+          data-reminder="${key}">
+    &#128465; Delete
+  </button>
     `;
   } else if (daysDiff === 0) {
     reminder.classList.add('upcoming');
