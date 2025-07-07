@@ -343,30 +343,37 @@ Object.entries(profile.reminders || {}).forEach(([key, value]) => {
   const reminder = document.createElement('div');
   reminder.classList.add('reminder');
 
+  // Lottie animation placeholder
+  let lottieHTML = '';
+  let message = '';
+
   if (timeDiff < 0) {
-  reminder.classList.add('overdue');
-  reminder.innerHTML = `
-  &#10071; <strong>${label}:</strong> was due on ${reminderDate.toLocaleString()}
-  <button class="deleteReminderButton" 
-          data-profile-index="${index}" 
-          data-reminder="${key}">
-    &#128465; Delete
-  </button>
-    `;
+    // Overdue
+    lottieHTML = `<lottie-player src="${overdueAnimation}" background="transparent" speed="1" style="width: 50px; height: 50px;" autoplay></lottie-player>`;
+    message = `<strong>${label}:</strong> was due on ${reminderDate.toLocaleString()} 
+               <button class="deleteReminderButton" data-profile-index="${index}" data-reminder="${key}">🗑 Delete</button>`;
+    reminder.classList.add('overdue');
   } else if (daysDiff === 0) {
+    // Today
+    lottieHTML = `<lottie-player src="${todayAnimation}" background="transparent" speed="1" style="width: 50px; height: 50px;" autoplay></lottie-player>`;
+    message = `<strong>${label}:</strong> is today (${reminderDate.toLocaleString()})`;
     reminder.classList.add('upcoming');
-    reminder.innerHTML = `⚠️ <strong>${label}:</strong> is today (${reminderDate.toLocaleString()})`;
   } else if (daysDiff <= REMINDER_THRESHOLD_DAYS) {
+    // Upcoming
+    lottieHTML = `<lottie-player src="${upcomingAnimation}" background="transparent" speed="1" style="width: 50px; height: 50px;" autoplay></lottie-player>`;
+    message = `<strong>${label}:</strong> is on ${reminderDate.toLocaleString()}`;
     reminder.classList.add('upcoming');
-    reminder.innerHTML = `📅 <strong>${label}:</strong> is on ${reminderDate.toLocaleString()}`;
   } else {
-    reminder.innerHTML = `📌 <strong>${label}:</strong> is on ${reminderDate.toLocaleString()}`;
+    // Distant reminder (no animation)
+    message = `<strong>${label}:</strong> is on ${reminderDate.toLocaleString()}`;
   }
 
+  reminder.innerHTML = `${lottieHTML}<div class="reminder-text">${message}</div>`;
   remindersDiv.appendChild(reminder);
 });
 
-petCard.appendChild(remindersDiv); // 👈 Final append
+petCard.appendChild(remindersDiv);
+
           
           <div class="pet-actions">
         <button class="edit-btn" data-pet-id="${profile.id}">Edit</button>
