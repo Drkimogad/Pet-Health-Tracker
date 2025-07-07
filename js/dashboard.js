@@ -360,7 +360,15 @@ Object.entries(profile.reminders || {}).forEach(([key, value]) => {
     reminder.classList.add('overdue');
   } else if (daysDiff === 0) {
     // Today
-    lottieHTML = `<lottie-player src="${todayAnimation}" background="transparent" speed="1" style="width: 50px; height: 50px;" autoplay></lottie-player>`;
+const lottieHTML = `
+  <lottie-player 
+    src="${overdueAnimation}" 
+    background="transparent" 
+    speed="1" 
+    style="width: 50px; height: 50px;" 
+    autoplay>
+  </lottie-player>
+`;
     message = `<strong>${label}:</strong> is today (${reminderDate.toLocaleString()})`;
     reminder.classList.add('upcoming');
   } else if (daysDiff <= REMINDER_THRESHOLD_DAYS) {
@@ -373,12 +381,11 @@ Object.entries(profile.reminders || {}).forEach(([key, value]) => {
     message = `<strong>${label}:</strong> is on ${reminderDate.toLocaleString()}`;
   }
 
-  reminder.innerHTML = `${lottieHTML}<div class="reminder-text">${message}</div>`;
+  reminder.innerHTML = lottieHTML + `<div class="reminder-text">${reminderText}</div>` + deleteButton;
   remindersDiv.appendChild(reminder);
 });
 
 petCard.appendChild(remindersDiv);
-
           
           <div class="pet-actions">
         <button class="edit-btn" data-pet-id="${profile.id}">Edit</button>
