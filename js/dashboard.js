@@ -68,9 +68,9 @@ if (!DOM.savedProfilesList || !DOM.petList) {
 
 // =======REMINDERS🌟
 // ======= Lotties REMINDER ANIMATION PLACEHOLDERS =======
-const overdueAnimation = 'https://assets4.lottiefiles.com/packages/lf20_jcikwtux.json';     // Red Alert
-const todayAnimation   = 'https://assets10.lottiefiles.com/packages/lf20_rpgqjtvv.json';    // Bell Notification
-const upcomingAnimation = 'https://assets2.lottiefiles.com/packages/lf20_jjzjv7iv.json';    // Calendar Ping
+const overdueAnimation = 'https://lottiefiles.com/free-animation/pet-app-splash-AAaa6PQXhp.json';     // Red Alert
+const todayAnimation   = 'https://lottiefiles.com/free-animation/pets-rDG2PnAT2u.json';    // Bell Notification
+const upcomingAnimation = 'https://lottiefiles.com/free-animation/pet-loading-jxhRKoxhJq.json';    // Calendar Ping
 
 const REMINDER_THRESHOLD_DAYS = 5;
 const ALLOWED_REMINDER_TYPES = ['vaccination', 'checkup', 'grooming'];
