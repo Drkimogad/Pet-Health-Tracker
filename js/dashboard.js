@@ -345,7 +345,6 @@ Object.entries(profile.reminders || {}).forEach(([key, value]) => {
 
   if (timeDiff < 0) {
   reminder.classList.add('overdue');
-// This is the overdue reminder rendering block
   reminder.innerHTML = `
     ❗ <strong>${label}:</strong> was due on ${reminderDate.toLocaleString()}
     <button class="deleteReminderButton" 
