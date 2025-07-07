@@ -216,8 +216,8 @@ function getPetDataFromForm() {
     breed: DOM.breed.value,
     age: parseFloat(DOM.age.value) || 0,
     weight: parseFloat(DOM.weight.value) || 0,
-    gender: 'Unknown', // Not in form - we'll add this later
-    type: 'Unknown', // Not in form - we'll add a dropdown later
+    gender: 'Unknown',
+    type: 'Unknown',
       
     // === Microchip Information ===
     microchip: {
@@ -344,14 +344,15 @@ Object.entries(profile.reminders || {}).forEach(([key, value]) => {
   reminder.classList.add('reminder');
 
   if (timeDiff < 0) {
-    reminder.classList.add('overdue');
-    reminder.innerHTML = `
-      ❗ <strong>${label}:</strong> was due on ${reminderDate.toLocaleString()}
-      <button class="deleteReminderButton" 
-              data-profile-index="${index}" 
-              data-reminder="${key}">
-        🗑 Delete
-      </button>
+  reminder.classList.add('overdue');
+// This is the overdue reminder rendering block
+  reminder.innerHTML = `
+    ❗ <strong>${label}:</strong> was due on ${reminderDate.toLocaleString()}
+    <button class="deleteReminderButton" 
+            data-profile-index="${index}" 
+            data-reminder="${key}">
+      🗑 Delete
+    </button>
     `;
   } else if (daysDiff === 0) {
     reminder.classList.add('upcoming');
