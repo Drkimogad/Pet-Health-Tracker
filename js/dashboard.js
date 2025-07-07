@@ -68,9 +68,9 @@ if (!DOM.savedProfilesList || !DOM.petList) {
 
 // =======REMINDERS🌟
 // ======= Lotties REMINDER ANIMATION PLACEHOLDERS =======
-const overdueAnimation = 'https://lottiefiles.com/free-animation/pet-app-splash-AAaa6PQXhp.json';     // Red Alert
-const todayAnimation   = 'https://lottiefiles.com/free-animation/pets-rDG2PnAT2u.json';    // Bell Notification
-const upcomingAnimation = 'https://lottiefiles.com/free-animation/pet-loading-jxhRKoxhJq.json';    // Calendar Ping
+const overdueAnimation = 'https://drkimogad.github.io/Pet-Health-Tracker/lottiefiles/Overdue.json';   
+const todayAnimation   = 'https://drkimogad.github.io/Pet-Health-Tracker/lottiefiles/today.json';  
+const upcomingAnimation = 'https://drkimogad.github.io/Pet-Health-Tracker/lottiefiles/upcoming.json';  
 
 const REMINDER_THRESHOLD_DAYS = 5;
 const ALLOWED_REMINDER_TYPES = ['vaccination', 'checkup', 'grooming'];
@@ -330,12 +330,15 @@ async function loadSavedPetProfile() {
         <li>Relationship: ${profile.emergencyContacts?.[0]?.relationship || 'N/A'}</li>
       </ul>
 </div>
+
 // 🔁 Dynamic Reminders Container
 const remindersDiv = document.createElement('div');
 remindersDiv.className = 'pet-reminders';
 
 const today = new Date();
 const REMINDER_THRESHOLD_DAYS = 5;
+const overdueAnimation = "https://assets9.lottiefiles.com/packages/lf20_xxxxx.json";
+const upcomingAnimation = "https://assets9.lottiefiles.com/packages/lf20_yyyyy.json";
 
 Object.entries(profile.reminders || {}).forEach(([key, value]) => {
   if (!value) return;
@@ -348,44 +351,68 @@ Object.entries(profile.reminders || {}).forEach(([key, value]) => {
   const reminder = document.createElement('div');
   reminder.classList.add('reminder');
 
-  // Lottie animation placeholder
   let lottieHTML = '';
   let message = '';
 
   if (timeDiff < 0) {
     // Overdue
-    lottieHTML = `<lottie-player src="${overdueAnimation}" background="transparent" speed="1" style="width: 50px; height: 50px;" autoplay></lottie-player>`;
+    lottieHTML = `
+      <lottie-player 
+        src="${overdueAnimation}" 
+        background="transparent" 
+        speed="1" 
+        style="width: 50px; height: 50px;" 
+        autoplay></lottie-player>`;
+    
     message = `<strong>${label}:</strong> was due on ${reminderDate.toLocaleString()} 
-               <button class="deleteReminderButton" data-profile-index="${index}" data-reminder="${key}">🗑 Delete</button>`;
+               <button class="deleteReminderButton btn-delete" 
+                 data-profile-index="${index}" 
+                 data-reminder="${key}">🗑 Delete</button>`;
     reminder.classList.add('overdue');
+
   } else if (daysDiff === 0) {
-    // Today
-const lottieHTML = `
-  <lottie-player 
-    src="${overdueAnimation}" 
-    background="transparent" 
-    speed="1" 
-    style="width: 50px; height: 50px;" 
-    autoplay>
-  </lottie-player>
-`;
-    message = `<strong>${label}:</strong> is today (${reminderDate.toLocaleString()})`;
+    // Due today
+    lottieHTML = `
+      <lottie-player 
+        src="${overdueAnimation}" 
+        background="transparent" 
+        speed="1" 
+        style="width: 50px; height: 50px;" 
+        autoplay></lottie-player>`;
+    
+    message = `<strong>${label}:</strong> is today (${reminderDate.toLocaleString()}) 
+               <button class="deleteReminderButton btn-today" 
+                 data-profile-index="${index}" 
+                 data-reminder="${key}">🗑 Delete</button>`;
     reminder.classList.add('upcoming');
+
   } else if (daysDiff <= REMINDER_THRESHOLD_DAYS) {
     // Upcoming
-    lottieHTML = `<lottie-player src="${upcomingAnimation}" background="transparent" speed="1" style="width: 50px; height: 50px;" autoplay></lottie-player>`;
-    message = `<strong>${label}:</strong> is on ${reminderDate.toLocaleString()}`;
+    lottieHTML = `
+      <lottie-player 
+        src="${upcomingAnimation}" 
+        background="transparent" 
+        speed="1" 
+        style="width: 50px; height: 50px;" 
+        autoplay></lottie-player>`;
+    
+    message = `<strong>${label}:</strong> is on ${reminderDate.toLocaleString()} 
+               <button class="deleteReminderButton btn-upcoming" 
+                 data-profile-index="${index}" 
+                 data-reminder="${key}">🗑 Delete</button>`;
     reminder.classList.add('upcoming');
+
   } else {
-    // Distant reminder (no animation)
+    // No animation
     message = `<strong>${label}:</strong> is on ${reminderDate.toLocaleString()}`;
   }
 
-  reminder.innerHTML = lottieHTML + `<div class="reminder-text">${reminderText}</div>` + deleteButton;
+  reminder.innerHTML = lottieHTML + `<span class="reminder-text">${message}</span>`;
   remindersDiv.appendChild(reminder);
 });
 
 petCard.appendChild(remindersDiv);
+
           
           <div class="pet-actions">
         <button class="edit-btn" data-pet-id="${profile.id}">Edit</button>
