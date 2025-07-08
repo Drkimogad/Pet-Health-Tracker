@@ -357,6 +357,7 @@ async function loadSavedPetProfile() {
         try {
           if (timeDiff < 0) {
             // Overdue
+            emoji = '⚠️';
             lottieHTML = '<lottie-player src="' + overdueAnimation + '" background="transparent" speed="1" style="width:50px;height:50px;" autoplay></lottie-player>';
             message = '<strong>' + label + ':</strong> was due on ' + reminderDate.toLocaleString() +
               ' <button class="deleteReminderButton btn-delete" data-profile-index="' + index + '" data-reminder="' + key + '">🗑 Delete</button>';
@@ -364,19 +365,23 @@ async function loadSavedPetProfile() {
 
           } else if (daysDiff === 0) {
             // Today
+            emoji = '📅';
             lottieHTML = '<lottie-player src="' + todayAnimation + '" background="transparent" speed="1" style="width:50px;height:50px;" autoplay></lottie-player>';
             message = '<strong>' + label + ':</strong> is today (' + reminderDate.toLocaleString() + ') ' +
               '<button class="deleteReminderButton btn-today" data-profile-index="' + index + '" data-reminder="' + key + '">🗑 Delete</button>';
-            reminder.classList.add('upcoming');
+            reminder.classList.add('today');
 
           } else if (daysDiff <= REMINDER_THRESHOLD_DAYS) {
             // Upcoming
+            emoji = '📅';
             lottieHTML = '<lottie-player src="' + upcomingAnimation + '" background="transparent" speed="1" style="width:50px;height:50px;" autoplay></lottie-player>';
             message = '<strong>' + label + ':</strong> is on ' + reminderDate.toLocaleString() + ' ' +
               '<button class="deleteReminderButton btn-upcoming" data-profile-index="' + index + '" data-reminder="' + key + '">🗑 Delete</button>';
             reminder.classList.add('upcoming');
 
           } else {
+            // No reminder animation 
+            emoji = '🔔';
             message = '<strong>' + label + ':</strong> is on ' + reminderDate.toLocaleString();
           }
 
@@ -385,7 +390,7 @@ async function loadSavedPetProfile() {
           message = label + ': ' + reminderDate.toLocaleString() + ' (⚠️ Animation failed)';
         }
 
-        reminder.innerHTML = lottieHTML + '<span class="reminder-text">' + message + '</span>';
+        reminder.innerHTML = lottieHTML + '<span class="reminder-text">' + emoji + ' ' + message + '</span>';
         remindersDiv.appendChild(reminder);
       });
       petCard.appendChild(remindersDiv);
