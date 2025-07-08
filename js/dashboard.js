@@ -355,7 +355,7 @@ Object.entries(profile.reminders || {}).forEach(([key, value]) => {
   let message = '';
 
   if (timeDiff < 0) {
-    // Overdue
+    // Overdue KEEP THEM SAME STYLE TO AVOID ERRORS
     lottieHTML = '<lottie-player src="' + overdueAnimation + '" background="transparent" speed="1" style="width:50px;height:50px;" autoplay></lottie-player>';
     message = '<strong>' + label + ':</strong> was due on ' + reminderDate.toLocaleString() +
           ' <button class="deleteReminderButton" data-profile-index="' + index + 
@@ -363,23 +363,27 @@ Object.entries(profile.reminders || {}).forEach(([key, value]) => {
 reminder.classList.add('overdue');
 
   } else if (daysDiff === 0) {
-    // Today
-    lottieHTML = `<lottie-player src="${todayAnimation}" background="transparent" speed="1" style="width:50px;height:50px;" autoplay></lottie-player>`;
-    message = `<strong>${label}:</strong> is today (${reminderDate.toLocaleString()})
-      <button class="deleteReminderButton btn-today" data-profile-index="${index}" data-reminder="${key}">🗑 Delete</button>`;
-    reminder.classList.add('upcoming');
+  // Today
+  lottieHTML = '<lottie-player src="' + todayAnimation + '" background="transparent" speed="1" style="width:50px;height:50px;" autoplay></lottie-player>';
 
-  } else if (daysDiff <= REMINDER_THRESHOLD_DAYS) {
-    // Upcoming
-    lottieHTML = `<lottie-player src="${upcomingAnimation}" background="transparent" speed="1" style="width:50px;height:50px;" autoplay></lottie-player>`;
-    message = `<strong>${label}:</strong> is on ${reminderDate.toLocaleString()}
-      <button class="deleteReminderButton btn-upcoming" data-profile-index="${index}" data-reminder="${key}">🗑 Delete</button>`;
-    reminder.classList.add('upcoming');
+  message = '<strong>' + label + ':</strong> is today (' + reminderDate.toLocaleString() + ') ' +
+            '<button class="deleteReminderButton btn-today" data-profile-index="' + index + '" data-reminder="' + key + '">🗑 Delete</button>';
 
-  } else {
-    // No animation
-    message = `<strong>${label}:</strong> is on ${reminderDate.toLocaleString()}`;
-  }
+  reminder.classList.add('upcoming');
+
+} else if (daysDiff <= REMINDER_THRESHOLD_DAYS) {
+  // Upcoming
+  lottieHTML = '<lottie-player src="' + upcomingAnimation + '" background="transparent" speed="1" style="width:50px;height:50px;" autoplay></lottie-player>';
+
+  message = '<strong>' + label + ':</strong> is on ' + reminderDate.toLocaleString() + ' ' +
+            '<button class="deleteReminderButton btn-upcoming" data-profile-index="' + index + '" data-reminder="' + key + '">🗑 Delete</button>';
+
+  reminder.classList.add('upcoming');
+
+} else {
+  // No animation
+  message = '<strong>' + label + ':</strong> is on ' + reminderDate.toLocaleString();
+}
 
   // ✅ Set combined content cleanly — no syntax errors!
   reminder.innerHTML = `${lottieHTML}<span class="reminder-text">${message}</span>`;
@@ -387,7 +391,6 @@ reminder.classList.add('overdue');
 });
 
 petCard.appendChild(remindersDiv);
-
           
           <div class="pet-actions">
         <button class="edit-btn" data-pet-id="${profile.id}">Edit</button>
