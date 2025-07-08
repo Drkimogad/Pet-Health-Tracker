@@ -356,7 +356,7 @@ Object.entries(profile.reminders || {}).forEach(([key, value]) => {
 
   if (timeDiff < 0) {
     // Overdue
-    lottieHTML = `<lottie-player src="${overdueAnimation}" background="transparent" speed="1" style="width:50px;height:50px;" autoplay></lottie-player>`;
+    lottieHTML = '<lottie-player src="' + overdueAnimation + '" background="transparent" speed="1" style="width:50px;height:50px;" autoplay></lottie-player>';
     message = `<strong>${label}:</strong> was due on ${reminderDate.toLocaleString()}
       <button class="deleteReminderButton btn-delete" data-profile-index="${index}" data-reminder="${key}">🗑 Delete</button>`;
     reminder.classList.add('overdue');
