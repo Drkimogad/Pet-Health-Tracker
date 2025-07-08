@@ -255,31 +255,29 @@ function getPetDataFromForm() {
 async function loadSavedPetProfile() {
   try {
     let savedProfiles = [];
-    
+
     if (firebase.auth().currentUser) {
-  try {
-    const snapshot = await firebase.firestore()
-      .collection("profiles")
-      .where("ownerId", "==", firebase.auth().currentUser.uid)
-      .get();
+      try {
+        const snapshot = await firebase.firestore()
+          .collection("profiles")
+          .where("ownerId", "==", firebase.auth().currentUser.uid)
+          .get();
 
-    if (!snapshot.empty) {
-      savedProfiles = snapshot.docs.map(doc => doc.data());
-      console.log("🔥 Loaded from Firestore:", savedProfiles);
-    } else {
-      console.warn("⚠️ No profiles in Firestore. Falling back to localStorage.");
-      savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+        if (!snapshot.empty) {
+          savedProfiles = snapshot.docs.map(doc => doc.data());
+          console.log("🔥 Loaded from Firestore:", savedProfiles);
+        } else {
+          console.warn("⚠️ No profiles in Firestore. Falling back to localStorage.");
+          savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+        }
+      } catch (err) {
+        console.error("❌ Firestore fetch failed:", err);
+        savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+      }
     }
-  } catch (err) {
-    console.error("❌ Firestore fetch failed:", err);
-    savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-  }
-}
 
-    // START OF RENDERPROFILES SECTION (now using DOM object)
     const savedProfilesList = DOM.savedProfilesList;
-    if (!DOM.savedProfilesList) return;
-
+    if (!savedProfilesList) return;
     savedProfilesList.innerHTML = '';
 
     if (savedProfiles.length === 0) {
@@ -291,13 +289,14 @@ async function loadSavedPetProfile() {
       const emergencyContact = profile.emergencyContacts?.[0] || {};
       const petCard = document.createElement('li');
       petCard.className = 'pet-card';
-      
+
+      // 🧱 Set base card HTML
       petCard.innerHTML = `
         <div class="pet-card-content">
           <div class="pet-header">
-            ${profile.petPhoto ? 
-           `<img src="${profile.petPhoto.replace('http://', 'https://')}" alt="Pet Photo" class="pet-photo"/>` : 
-           '<div class="pet-photo placeholder">🐾</div>'}
+            ${profile.petPhoto ?
+              `<img src="${profile.petPhoto.replace('http://', 'https://')}" alt="Pet Photo" class="pet-photo"/>` :
+              '<div class="pet-photo placeholder">🐾</div>'}
             <h4>${profile.petName || 'Unnamed Pet'}</h4>
           </div>
           
@@ -307,106 +306,99 @@ async function loadSavedPetProfile() {
             <p><strong>Age:</strong> ${profile.age || 'N/A'}</p>
             <p><strong>Weight:</strong> ${profile.weight || 'N/A'}</p>
             <p><strong>Gender:</strong> ${profile.gender || 'Unknown'}</p>
-            <p><strong>Type:</strong> ${profile.type || 'Unknown'}</p>
             <p><strong>Mood:</strong> ${profile.mood || 'N/A'}</p>
-      <p><strong>Diet:</strong> ${profile.dietPlan || 'N/A'}</p>
-      <p><strong>Allergies:</strong> ${profile.allergies || 'N/A'}</p>
-      <p><strong>Medical History:</strong> ${profile.medicalHistory || 'N/A'}</p>
+            <p><strong>Diet:</strong> ${profile.dietPlan || 'N/A'}</p>
+            <p><strong>Allergies:</strong> ${profile.allergies || 'N/A'}</p>
+            <p><strong>Medical History:</strong> ${profile.medicalHistory || 'N/A'}</p>
 
-      <p><strong>Microchip:</strong></p>
-      <ul>
-        <li>ID: ${profile.microchip?.id || 'N/A'}</li>
-        <li>Date: ${profile.microchip?.date || 'N/A'}</li>
-        <li>Vendor: ${profile.microchip?.vendor || 'N/A'}</li>
-      </ul>
+            <p><strong>Microchip:</strong></p>
+            <ul>
+              <li>ID: ${profile.microchip?.id || 'N/A'}</li>
+              <li>Date: ${profile.microchip?.date || 'N/A'}</li>
+              <li>Vendor: ${profile.microchip?.vendor || 'N/A'}</li>
+            </ul>
 
-     <p><strong>Emergency Contact:</strong></p>
-      <ul>
-        <li>Name: ${profile.emergencyContacts?.[0]?.name || 'N/A'}</li>
-        <li>Phone: ${profile.emergencyContacts?.[0]?.phone || 'N/A'}</li>
-        <li>Relationship: ${profile.emergencyContacts?.[0]?.relationship || 'N/A'}</li>
-      </ul>
-</div>
+            <p><strong>Emergency Contact:</strong></p>
+            <ul>
+              <li>Name: ${emergencyContact.name || 'N/A'}</li>
+              <li>Phone: ${emergencyContact.phone || 'N/A'}</li>
+              <li>Relationship: ${emergencyContact.relationship || 'N/A'}</li>
+            </ul>
 
-// 🔁 Dynamic Reminders Container
-const remindersDiv = document.createElement('div');
-remindersDiv.className = 'pet-reminders';
-
-const today = new Date();
-const REMINDER_THRESHOLD_DAYS = 5;
-
-// ✅ Lotties REMINDER ANIMATION PLACEHOLDERS (hosted on GitHub)
-const overdueAnimation = 'https://drkimogad.github.io/Pet-Health-Tracker/lottiefiles/Overdue.json';   
-const todayAnimation   = 'https://drkimogad.github.io/Pet-Health-Tracker/lottiefiles/today.json';  
-const upcomingAnimation = 'https://drkimogad.github.io/Pet-Health-Tracker/lottiefiles/upcoming.json';
-
-Object.entries(profile.reminders || {}).forEach(([key, value]) => {
-  if (!value) return;
-
-  const reminderDate = new Date(value);
-  const timeDiff = reminderDate - today;
-  const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-  const label = reminderFields[key] || key;
-
-  const reminder = document.createElement('div');
-  reminder.classList.add('reminder');
-
-  let lottieHTML = '';
-  let message = '';
- 
-try {
-  if (timeDiff < 0) {
-    // Overdue KEEP THEM SAME STYLE TO AVOID ERRORS
-lottieHTML = '<lottie-player src="' + overdueAnimation + '" background="transparent" speed="1" style="width:50px;height:50px;" autoplay></lottie-player>';
-    message = '<strong>' + label + ':</strong> was due on ' + reminderDate.toLocaleString() +
-          ' <button class="deleteReminderButton" data-profile-index="' + index + 
-          '" data-reminder="' + key + '">🗑 Delete</button>';
-reminder.classList.add('overdue');
-
-  } else if (daysDiff === 0) {
-  // Today
-lottieHTML = '<lottie-player src="' + todayAnimation + '" background="transparent" speed="1" style="width:50px;height:50px;" autoplay></lottie-player>';
-
-  message = '<strong>' + label + ':</strong> is today (' + reminderDate.toLocaleString() + ') ' +
-            '<button class="deleteReminderButton btn-today" data-profile-index="' + index + '" data-reminder="' + key + '">🗑 Delete</button>';
-
-  reminder.classList.add('upcoming');
-
-} else if (daysDiff <= REMINDER_THRESHOLD_DAYS) {
-  // Upcoming
-lottieHTML = '<lottie-player src="' + upcomingAnimation + '" background="transparent" speed="1" style="width:50px;height:50px;" autoplay></lottie-player>';
-
-  message = '<strong>' + label + ':</strong> is on ' + reminderDate.toLocaleString() + ' ' +
-            '<button class="deleteReminderButton btn-upcoming" data-profile-index="' + index + '" data-reminder="' + key + '">🗑 Delete</button>';
-
-  reminder.classList.add('upcoming');
-
-} else {
-  // No animation
-      message = label + ': is on ' + reminderDate.toLocaleString();
- }
-} catch (error) {
-    console.warn('⚠️ Reminder display failed:', error);
-    message = label + ': ' + reminderDate.toLocaleString() + ' (⚠️ Animation failed)';
-  }
-  // ✅ Set combined content cleanly — no syntax errors!
-  reminder.innerHTML = lottieHTML + '<span class="reminder-text">' + message + '</span>';
-  remindersDiv.appendChild(reminder);
-});
-
-petCard.appendChild(remindersDiv);
-          
-          <div class="pet-actions">
-        <button class="edit-btn" data-pet-id="${profile.id}">Edit</button>
-        <button class="delete-btn" data-pet-id="${profile.id}">Delete</button>
-        <button class="print-btn" data-pet-id="${profile.id}">Print</button>
-        <button class="shareProfileButton" data-pet-id="${profile.id}">Share</button>
-        <button class="qr-btn" data-pet-id="${profile.id}">Qr</button>
-        <button class="details-btn" data-pet-id="${profile.id}">Details</button>
+            <div class="pet-actions">
+              <button class="edit-btn" data-pet-id="${profile.id}">Edit</button>
+              <button class="delete-btn" data-pet-id="${profile.id}">Delete</button>
+              <button class="print-btn" data-pet-id="${profile.id}">Print</button>
+              <button class="shareProfileButton" data-pet-id="${profile.id}">Share</button>
+              <button class="qr-btn" data-pet-id="${profile.id}">Qr</button>
+              <button class="details-btn" data-pet-id="${profile.id}">Details</button>
+            </div>
           </div>
         </div>
       `;
- 
+
+      // 🔁 Dynamic Reminders Container (INJECTED AFTER innerHTML)
+      const remindersDiv = document.createElement('div');
+      remindersDiv.className = 'pet-reminders';
+
+      const today = new Date();
+      const REMINDER_THRESHOLD_DAYS = 5;
+
+      // ✅ Lottie animations
+      const overdueAnimation = 'https://drkimogad.github.io/Pet-Health-Tracker/lottiefiles/Overdue.json';
+      const todayAnimation = 'https://drkimogad.github.io/Pet-Health-Tracker/lottiefiles/today.json';
+      const upcomingAnimation = 'https://drkimogad.github.io/Pet-Health-Tracker/lottiefiles/upcoming.json';
+
+      Object.entries(profile.reminders || {}).forEach(([key, value]) => {
+        if (!value) return;
+
+        const reminderDate = new Date(value);
+        const timeDiff = reminderDate - today;
+        const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+        const label = reminderFields[key] || key;
+
+        const reminder = document.createElement('div');
+        reminder.classList.add('reminder');
+
+        let lottieHTML = '';
+        let message = '';
+
+        try {
+          if (timeDiff < 0) {
+            // Overdue
+            lottieHTML = '<lottie-player src="' + overdueAnimation + '" background="transparent" speed="1" style="width:50px;height:50px;" autoplay></lottie-player>';
+            message = '<strong>' + label + ':</strong> was due on ' + reminderDate.toLocaleString() +
+              ' <button class="deleteReminderButton btn-delete" data-profile-index="' + index + '" data-reminder="' + key + '">🗑 Delete</button>';
+            reminder.classList.add('overdue');
+
+          } else if (daysDiff === 0) {
+            // Today
+            lottieHTML = '<lottie-player src="' + todayAnimation + '" background="transparent" speed="1" style="width:50px;height:50px;" autoplay></lottie-player>';
+            message = '<strong>' + label + ':</strong> is today (' + reminderDate.toLocaleString() + ') ' +
+              '<button class="deleteReminderButton btn-today" data-profile-index="' + index + '" data-reminder="' + key + '">🗑 Delete</button>';
+            reminder.classList.add('upcoming');
+
+          } else if (daysDiff <= REMINDER_THRESHOLD_DAYS) {
+            // Upcoming
+            lottieHTML = '<lottie-player src="' + upcomingAnimation + '" background="transparent" speed="1" style="width:50px;height:50px;" autoplay></lottie-player>';
+            message = '<strong>' + label + ':</strong> is on ' + reminderDate.toLocaleString() + ' ' +
+              '<button class="deleteReminderButton btn-upcoming" data-profile-index="' + index + '" data-reminder="' + key + '">🗑 Delete</button>';
+            reminder.classList.add('upcoming');
+
+          } else {
+            message = '<strong>' + label + ':</strong> is on ' + reminderDate.toLocaleString();
+          }
+
+        } catch (error) {
+          console.warn('⚠️ Reminder display failed:', error);
+          message = label + ': ' + reminderDate.toLocaleString() + ' (⚠️ Animation failed)';
+        }
+
+        reminder.innerHTML = lottieHTML + '<span class="reminder-text">' + message + '</span>';
+        remindersDiv.appendChild(reminder);
+      });
+
+      petCard.appendChild(remindersDiv);
       savedProfilesList.appendChild(petCard);
     });
 
@@ -415,6 +407,7 @@ petCard.appendChild(remindersDiv);
     showErrorToUser('Failed to load pet profiles');
   }
 }
+
 //================================
 // Helper function to show petcard details via details button
 //=================================
