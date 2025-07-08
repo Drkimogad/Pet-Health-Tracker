@@ -359,7 +359,7 @@ async function loadSavedPetProfile() {
         try {
           if (timeDiff < 0) {
             // Overdue
-            emoji = '⚠️';
+            emoji = '❗';
             lottieHTML = '<lottie-player src="' + overdueAnimation + '" background="transparent" speed="1" style="width:50px;height:50px;" autoplay></lottie-player>';
             message = '<strong>' + label + ':</strong> was due on ' + reminderDate.toLocaleString() +
               ' <button class="deleteReminderButton btn-delete" data-profile-index="' + index + '" data-reminder="' + key + '">🗑 Delete</button>';
@@ -367,7 +367,7 @@ async function loadSavedPetProfile() {
 
           } else if (daysDiff === 0) {
             // Today
-            emoji = '📅';
+            emoji = '⏰';
             lottieHTML = '<lottie-player src="' + todayAnimation + '" background="transparent" speed="1" style="width:50px;height:50px;" autoplay></lottie-player>';
             message = '<strong>' + label + ':</strong> is today (' + reminderDate.toLocaleString() + ') ' +
               '<button class="deleteReminderButton btn-today" data-profile-index="' + index + '" data-reminder="' + key + '">🗑 Delete</button>';
