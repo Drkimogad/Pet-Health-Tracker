@@ -386,7 +386,7 @@ reminder.classList.add('overdue');
 }
 
   // ✅ Set combined content cleanly — no syntax errors!
-  reminder.innerHTML = `${lottieHTML}<span class="reminder-text">${message}</span>`;
+  reminder.innerHTML = lottieHTML + '<span class="reminder-text">' + message + '</span>';
   remindersDiv.appendChild(reminder);
 });
 
