@@ -324,15 +324,6 @@ async function loadSavedPetProfile() {
               <li>Phone: ${emergencyContact.phone || 'N/A'}</li>
               <li>Relationship: ${emergencyContact.relationship || 'N/A'}</li>
             </ul>
-
-            <div class="pet-actions">
-              <button class="edit-btn" data-pet-id="${profile.id}">Edit</button>
-              <button class="delete-btn" data-pet-id="${profile.id}">Delete</button>
-              <button class="print-btn" data-pet-id="${profile.id}">Print</button>
-              <button class="shareProfileButton" data-pet-id="${profile.id}">Share</button>
-              <button class="qr-btn" data-pet-id="${profile.id}">Qr</button>
-              <button class="details-btn" data-pet-id="${profile.id}">Details</button>
-            </div>
           </div>
         </div>
       `;
@@ -397,8 +388,21 @@ async function loadSavedPetProfile() {
         reminder.innerHTML = lottieHTML + '<span class="reminder-text">' + message + '</span>';
         remindersDiv.appendChild(reminder);
       });
-
       petCard.appendChild(remindersDiv);
+        
+     // 🎯 Append pet-actions as a new block BELOW reminders
+     const actionsDiv = document.createElement('div');
+     actionsDiv.className = 'pet-actions';
+     actionsDiv.innerHTML = `
+            <div class="pet-actions">
+              <button class="edit-btn" data-pet-id="${profile.id}">Edit</button>
+              <button class="delete-btn" data-pet-id="${profile.id}">Delete</button>
+              <button class="print-btn" data-pet-id="${profile.id}">Print</button>
+              <button class="shareProfileButton" data-pet-id="${profile.id}">Share</button>
+              <button class="qr-btn" data-pet-id="${profile.id}">Qr</button>
+              <button class="details-btn" data-pet-id="${profile.id}">Details</button>
+            `;
+      petCard.appendChild(actionsDiv); // 👈 Append after remindersDiv
       savedProfilesList.appendChild(petCard);
     });
 
