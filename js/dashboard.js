@@ -336,7 +336,7 @@ async function loadSavedPetProfile() {
       const REMINDER_THRESHOLD_DAYS = 5;
 
       // ✅ Lottie animations
-      const overdueAnimation = 'https://drkimogad.github.io/Pet-Health-Tracker/lottiefiles/Overdue.json';
+      const overdueAnimation = 'https://drkimogad.github.io/Pet-Health-Tracker/lottiefiles/overdue.json';
       const todayAnimation = 'https://drkimogad.github.io/Pet-Health-Tracker/lottiefiles/today.json';
       const upcomingAnimation = 'https://drkimogad.github.io/Pet-Health-Tracker/lottiefiles/upcoming.json';
 
