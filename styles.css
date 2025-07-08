@@ -313,8 +313,10 @@ textarea:focus {
 
 /* SAVED PETCARD PHOTO*/
 .pet-photo-wrapper {
-  flex: 0 0 auto;
-  max-width: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
 }
 .pet-photo {
   width: 100px;
