@@ -233,6 +233,38 @@ textarea:focus {
 #savePetProfile {
   background-color: var(--purple);
 }
+/* Form reminders section styling */
+#petList fieldset.reminders-section {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  margin-top: 1rem;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+#petList fieldset.reminders-section legend {
+  font-weight: bold;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+#petList fieldset.reminders-section label {
+  display: block;
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #333;
+}
+
+#petList fieldset.reminders-section input[type="datetime-local"] {
+  display: block;
+  width: 100%;
+  padding: 6px 10px;
+  font-size: 0.9rem;
+  margin-top: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
 
 /* Dashboard Action Buttons including new profile and logoutbutton alignement with it */
 .dashboard-actions {
