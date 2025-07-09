@@ -129,6 +129,12 @@ auth_DOM.savedProfilesList.innerHTML = `
     console.log("ℹ️ No profiles to render in showDashboard");
   }
 }
+// alternative in case needed
+//auth_DOM.savedProfilesList.innerHTML = `
+//<li class="no-profiles-msg" style="text-align:center; font-style: italic; color: #666;">
+//   No saved pet profiles yet 🐶🐱🐦🐰🐢...
+// </li>`;
+
 // ====== Google Sign-In Initialization ======
 function setupGoogleLoginButton() {
   // Check if Google and Firebase are loaded
