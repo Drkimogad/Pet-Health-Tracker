@@ -107,30 +107,25 @@ function highlightReminders(reminders, index) {
     let cssClass = '';
     let deleteClass = 'deleteReminderButton';
 
-    if (timeDiff < 0) {
-      icon = '❗';
-      cssClass = 'reminder overdue';
-      deleteClass += ' btn-overdue'; // style red
-    } else if (isToday) {
-      icon = '⏰';
-      cssClass = 'reminder today';
-      deleteClass += ' btn-today'; // style green
-    } else if (daysDiff <= REMINDER_THRESHOLD_DAYS) {
-      icon = '📅';
-      cssClass = 'reminder upcoming';
-      deleteClass += ' btn-upcoming'; // style green
-    } else {
-      return; // skip far future reminders
-    }
+// Example inside your reminders loop:
+if (timeDiff < 0) {
+  emoji = '❗'; // Overdue
+  reminder.classList.add('overdue');
+  btnClass = 'btn-overdue';
+} else if (daysDiff === 0) {
+  emoji = '⏰'; // Today
+  reminder.classList.add('today');
+  btnClass = 'btn-today';
+} else if (daysDiff <= REMINDER_THRESHOLD_DAYS) {
+  emoji = '📅'; // Upcoming
+  reminder.classList.add('upcoming');
+  btnClass = 'btn-upcoming';
+}
 
-    div.className = cssClass;
-    div.innerHTML = `
-      <span>${icon}</span>
-      <strong>${reminderLabel}</strong> on ${reminderDate.toLocaleString()}
-      <button class="${deleteClass}"
-              data-profile-index="${index}"
-              data-reminder="${reminderKey}">🗑 Delete</button>
-    `;
+message = `<span class="reminder-emoji">${emoji}</span> 
+  <span class="reminder-text">${label}: ${msg} (${reminderDate.toLocaleString()})</span> 
+  <button class="deleteReminderButton ${btnClass}" data-profile-index="${index}" data-reminder="${key}">🗑 Delete</button>`;
+
 
     if (timeDiff < 0) {
       overdueContainer.appendChild(div);
