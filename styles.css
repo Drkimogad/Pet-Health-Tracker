@@ -388,11 +388,11 @@ textarea:focus {
   transition: background 0.3s ease;
 }
 
-.btn-delete {
+.btn-overdue {
   background-color: var(--reminder-overdue);
   color: white;
 }
-.btn-delete:hover {
+.btn-overdue:hover {
   background-color: #b71c1c;
 }
 
