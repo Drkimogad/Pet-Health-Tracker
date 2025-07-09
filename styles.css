@@ -343,38 +343,30 @@ textarea:focus {
   align-items: center;
   gap: 10px; /* ensures space between emoji, text, and button */
 }
+.reminder-text {
+  flex: 1;
+  color: inherit;        /* Inherit red, orange, green from .reminder */
+  font-size: 0.9rem;      /* Set readable size */
+  line-height: 1.4;
+}
 
 .reminder.overdue {
   background-color: #ffebee;
-  border-left: 4px solid red;
-  font-weight: 600;
-  flex: 1;
-  font-size: 0.1rem;
-  font-weight: 500;
+  border-left: 4px solid #c62828;
   color: #c62828;
-  line-height: 1.4;
+  font-weight: 500;
 }
-
 .reminder.today {
   background-color: #fff3e0;
-  border-left: 4px solid orange;
-  font-weight: 600;
-  flex: 1;
-  font-size: 0.1rem;
-  font-weight: 500;
+  border-left: 4px solid #ff9248;
   color: #ff9248;
-  line-height: 1.4;
+  font-weight: 500;
 }
-
 .reminder.upcoming {
   background-color: #e8f5e9;
-  border-left: 4px solid green;
-  font-weight: 600;
-  flex: 1;
-  font-size: 0.1rem;
-  font-weight: 500;
+  border-left: 4px solid #2e7d32;
   color: #2e7d32;
-  line-height: 1.4;
+  font-weight: 500;
 }
 
 /* ===== Reminder Delete Buttons ===== */
