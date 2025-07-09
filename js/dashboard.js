@@ -292,8 +292,10 @@ async function loadSavedPetProfile() {
 
       // 🧱 Set base card HTML
       petCard.innerHTML = `
-        <div class="pet-card-content">
-          <div class="pet-header">
+      
+        <div class="pet-card">
+        
+          <div class="card-section pet-header">
             ${profile.petPhoto ?  
                `<div class="pet-photo-wrapper">
                <img src="${profile.petPhoto.replace('http://', 'https://')}" alt="Pet Photo" class="pet-photo"/>
@@ -304,7 +306,7 @@ async function loadSavedPetProfile() {
            <h3>${profile.petName || 'Unnamed Pet'}</h3>
         </div>
      
-          <div class="pet-details">
+          <div class="card-section pet-details">
             <p><strong>Type:</strong> ${profile.type || 'Unknown'}</p>
             <p><strong>Breed:</strong> ${profile.breed || 'N/A'}</p>
             <p><strong>Age:</strong> ${profile.age || 'N/A'}</p>
