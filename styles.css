@@ -20,11 +20,6 @@
   --purple-dark: #5e35b1;
   --green: #43a047;
   --red: #e74c3c;
-  
-/* Reminders root colours */
-  --reminder-overdue: #c62828;
-  --reminder-today: #ff9248;
-  --reminder-upcoming: #2e7d32;
 }
 
 /* ===== HEADER & FOOTER STYLING ===== */
@@ -343,37 +338,43 @@ textarea:focus {
   font-size: 0.9rem;
 }
 .reminder {
-  padding-left: 4px;  /* Add small padding to give space between Lottie and emoji */
+  padding-left: 6px;  /* Add small padding to give space between Lottie and emoji */
   display: flex;
   align-items: center;
-  gap: 8px; /* ensures space between emoji, text, and button */
+  gap: 10px; /* ensures space between emoji, text, and button */
 }
-.reminder-text {
-  flex: 1;
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: inherit; /* Inherit from reminder state */
-  line-height: 1.4;
-}
+
 .reminder.overdue {
   background-color: #ffebee;
-  color: var(--reminder-overdue);
-  border-left: 4px solid var(--reminder-overdue);
+  border-left: 4px solid red;
   font-weight: 600;
+  flex: 1;
+  font-size: 0.1rem;
+  font-weight: 500;
+  color: #c62828;
+  line-height: 1.4;
 }
 
 .reminder.today {
   background-color: #fff3e0;
-  color: var(--reminder-today);
-  border-left: 4px solid var(--reminder-today);
+  border-left: 4px solid orange;
   font-weight: 600;
+  flex: 1;
+  font-size: 0.1rem;
+  font-weight: 500;
+  color: #ff9248;
+  line-height: 1.4;
 }
 
 .reminder.upcoming {
   background-color: #e8f5e9;
-  color: var(--reminder-upcoming);
-  border-left: 4px solid var(--reminder-upcoming);
+  border-left: 4px solid green;
   font-weight: 600;
+  flex: 1;
+  font-size: 0.1rem;
+  font-weight: 500;
+  color: #2e7d32;
+  line-height: 1.4;
 }
 
 /* ===== Reminder Delete Buttons ===== */
@@ -389,7 +390,7 @@ textarea:focus {
 }
 
 .btn-overdue {
-  background-color: var(--reminder-overdue);
+  background-color: #c62828;
   color: white;
 }
 .btn-overdue:hover {
@@ -397,7 +398,7 @@ textarea:focus {
 }
 
 .btn-today {
-  background-color: var(--reminder-today);
+  background-color: #ff9248;
   color: white;
 }
 .btn-today:hover {
@@ -405,7 +406,7 @@ textarea:focus {
 }
 
 .btn-upcoming {
-  background-color: var(--reminder-upcoming);
+  background-color: #2e7d32;
   color: white;
 }
 .btn-upcoming:hover {
