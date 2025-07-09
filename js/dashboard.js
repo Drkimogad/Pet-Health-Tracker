@@ -110,7 +110,7 @@ function highlightReminders(reminders, index) {
     if (timeDiff < 0) {
       icon = '❗';
       cssClass = 'reminder overdue';
-      deleteClass += ' btn-delete'; // style red
+      deleteClass += ' btn-overdue'; // style red
     } else if (isToday) {
       icon = '⏰';
       cssClass = 'reminder today';
@@ -1168,10 +1168,7 @@ savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
     showErrorToUser('Failed to save profile. Please try again.');
   }
 });
-    
-  // Set up all event listeners
- //  DOM.savedProfilesList?.addEventListener('click', handleProfileActions); leave it commented out for now
-    
+        
 // REST OF INITIALIZE DASHBOARD FUNCTION  
 if (DOM.addPetProfileBtn) {
   console.log("✅ addPetProfileBtn found:", DOM.addPetProfileBtn);
