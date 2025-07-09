@@ -71,14 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const domReady = initDOMReferences();
   if (!domReady) return;
   
-// Initialize login button and other startup logic
- // if (typeof setupGoogleLoginButton === "function") {
-//    setupGoogleLoginButton();
-//  } else {
-//    console.warn("⚠️ setupGoogleLoginButton() not found.");
-// }
-// Finally initialize auth. 
-  
   // ✅ Let initializeAuth handle everything
   initializeAuth();
 });
@@ -116,24 +108,14 @@ if (localProfiles.length > 0 ) {
    renderProfiles();
   
   } else {
-auth_DOM.savedProfilesList.innerHTML = `
-  <li class="no-profiles-msg" style="text-align:center; font-style: italic; color: #666;">
-    No saved pet profiles yet.
-    <div style="margin-top: 10px;">
-      <img src="https://drkimogad.github.io/Pet-Health-Tracker/icons/dog.png" alt="Dog" style="width:40px; margin:0 5px;" />
-      <img src="https://drkimogad.github.io/Pet-Health-Tracker/icons/cat.png" alt="Cat" style="width:40px; margin:0 5px;" />
-      <img src="https://drkimogad.github.io/Pet-Health-Tracker/icons/bird.png" alt="Bird" style="width:40px; margin:0 5px;" />
-      <img src="https://drkimogad.github.io/Pet-Health-Tracker/icons/rabbit.png" alt="Rabbit" style="width:40px; margin:0 5px;" />
-    </div>
+  
+ auth_DOM.savedProfilesList.innerHTML = `
+<li class="no-profiles-msg" style="text-align:center; font-style: italic; color: #666;">
+   No saved pet profiles yet 🐶🐱🐦🐰🐢...
   </li>`;
     console.log("ℹ️ No profiles to render in showDashboard");
   }
 }
-// alternative in case needed
-//auth_DOM.savedProfilesList.innerHTML = `
-//<li class="no-profiles-msg" style="text-align:center; font-style: italic; color: #666;">
-//   No saved pet profiles yet 🐶🐱🐦🐰🐢...
-// </li>`;
 
 // ====== Google Sign-In Initialization ======
 function setupGoogleLoginButton() {
