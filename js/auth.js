@@ -117,15 +117,15 @@ if (localProfiles.length > 0 ) {
   
   } else {
 auth_DOM.savedProfilesList.innerHTML = `
-  <li class="no-profiles-msg">
+  <li class="no-profiles-msg" style="text-align:center; font-style: italic; color: #666;">
     No saved pet profiles yet.
-    <br />
-    <img src="https://images.unsplash.com/photo-1601758123927-1961a287edb4?auto=format&fit=crop&w=60&q=80" alt="Dog" />
-    <img src="https://images.unsplash.com/photo-1574158622682-e40e69881006?auto=format&fit=crop&w=60&q=80" alt="Cat" />
-    <img src="https://images.unsplash.com/photo-1609179325949-898928c20629?auto=format&fit=crop&w=60&q=80" alt="Bird" />
-    <img src="https://images.unsplash.com/photo-1619983081563-dbd01d2b4d1f?auto=format&fit=crop&w=60&q=80" alt="Rabbit" />
+    <div style="margin-top: 10px;">
+      <img src="https://drkimogad.github.io/Pet-Health-Tracker/icons/dog.png" alt="Dog" style="width:40px; margin:0 5px;" />
+      <img src="https://drkimogad.github.io/Pet-Health-Tracker/icons/cat.png" alt="Cat" style="width:40px; margin:0 5px;" />
+      <img src="https://drkimogad.github.io/Pet-Health-Tracker/icons/bird.png" alt="Bird" style="width:40px; margin:0 5px;" />
+      <img src="https://drkimogad.github.io/Pet-Health-Tracker/icons/rabbit.png" alt="Rabbit" style="width:40px; margin:0 5px;" />
+    </div>
   </li>`;
-
     console.log("ℹ️ No profiles to render in showDashboard");
   }
 }
