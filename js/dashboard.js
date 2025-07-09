@@ -299,8 +299,10 @@ async function loadSavedPetProfile() {
                <img src="${profile.petPhoto.replace('http://', 'https://')}" alt="Pet Photo" class="pet-photo"/>
                </div>` :  
                `<div class="pet-photo-wrapper">
-              <div class="pet-photo placeholder">🐾</div>
-       </div>`}
+               <div class="pet-photo placeholder">🐾</div>
+               </div>`}
+           <h3>${profile.petName || 'Unnamed Pet'}</h3>
+        </div>
      
           <div class="pet-details">
             <p><strong>Type:</strong> ${profile.type || 'Unknown'}</p>
