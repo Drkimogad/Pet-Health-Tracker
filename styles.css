@@ -355,7 +355,10 @@ textarea:focus {
   font-size: 0.9rem;      /* Set readable size */
   line-height: 1.4;
 }
-
+.reminder-emoji {
+  font-size: 1.2rem;
+  margin-right: 6px;
+}
 .reminder.overdue {
   background-color: #ffebee;
   border-left: 4px solid #c62828;
