@@ -331,6 +331,7 @@ async function loadSavedPetProfile() {
 
       // 🔁 Dynamic Reminders Container (INJECTED AFTER innerHTML)
       const remindersDiv = document.createElement('div');
+      remindersDiv.innerHTML = '<h4>Reminders</h4>';
       remindersDiv.className = 'pet-reminders';
 
       const today = new Date();
