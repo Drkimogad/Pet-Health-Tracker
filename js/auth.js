@@ -196,24 +196,22 @@ function initAuthListeners() {
       dashboard.classList.remove('hidden');
 
       try {
-        const snapshot = await firebase.firestore()
-          .collection("profiles")
-          .where("userId", "==", user.uid)
-          .get();
-
+        const snapshot = await firebase.firestore().collection("profiles").where("userId", "==", user.uid).get();
         window.petProfiles = snapshot.docs.map(doc => doc.data());
 
-        // ✅ Save to localStorage as fallback
+        // ✅ Save to localStorage (fallback)
         localStorage.setItem("petProfiles", JSON.stringify(window.petProfiles));
 
-        // ✅ Load and render saved profiles
-        await loadSavedPetProfile();
+        // ✅ Now render profiles from storage
+        if (typeof loadSavedPetProfile === 'function') {
+          loadSavedPetProfile();
+        }
 
-        // ✅ Bonus: optionally re-call showDashboard() here if needed
+        // Optional: if showDashboard() also does other UI init
         if (typeof showDashboard === 'function') {
           showDashboard();
         }
-
+        
       } catch (error) {
         console.error("Profile load error:", error);
         showErrorToUser("Couldn't load saved profiles");
@@ -226,9 +224,8 @@ function initAuthListeners() {
     }
   });
 }
-//==============================
+
 // MVED FUNCTIONS FROM UTILS.JS
-//===================================
 // Show error message to user
 function showErrorToUser(message, isSuccess = false) {
   try {
