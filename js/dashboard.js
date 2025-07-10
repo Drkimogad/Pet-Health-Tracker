@@ -287,6 +287,7 @@ async function loadSavedPetProfile() {
    )
      ? profile.emergencyContacts[0]
      : { name: '', phone: '', relationship: '' };
+   console.log('✅ Emergency Contact:', emergencyContact);
 
       const petCard = document.createElement('li');
       petCard.className = 'pet-card';
