@@ -281,7 +281,13 @@ async function loadSavedPetProfile() {
     }
 
     savedProfiles.forEach((profile, index) => {
-      const emergencyContact = profile.emergencyContacts?.[0] || {};
+  // Emergency contacts NA fixed
+      const emergencyContact = (
+    Array.isArray(profile.emergencyContacts) && profile.emergencyContacts.length > 0
+   )
+     ? profile.emergencyContacts[0]
+     : { name: '', phone: '', relationship: '' };
+
       const petCard = document.createElement('li');
       petCard.className = 'pet-card';
 
