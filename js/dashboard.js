@@ -282,15 +282,14 @@ async function loadSavedPetProfile() {
 
     savedProfiles.forEach((profile, index) => {
   // Emergency contacts NA
-  const emergencyContact = profile.emergencyContacts?.[0] || {};  // old
+  const emergencyContact = profile.emergencyContacts?.[0] || {};
   //  const emergencyContact = (
   // Array.isArray(profile.emergencyContacts) && profile.emergencyContacts.length > 0
   //   )
   //   ? profile.emergencyContacts[0]
   // : { name: '', phone: '', relationship: '' };
   //   console.log('✅ Emergency Contact:', emergencyContact);
-
-
+        
       const petCard = document.createElement('li');
       petCard.className = 'pet-card';
 
