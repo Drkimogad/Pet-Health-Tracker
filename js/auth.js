@@ -132,11 +132,13 @@ function setupGoogleLoginButton() {
       client_id: CLIENT_ID,
 callback: async (response) => {
   showLoading(true);
+  
   try {
     const credential = firebase.auth.GoogleAuthProvider.credential(response.credential);
     const userCredential = await firebase.auth().signInWithCredential(credential);
     await userCredential.user.getIdToken(true); // Force token refresh
-    showDashboard();
+   console.log("✅ Sign-in complete. Waiting for auth state listener to handle dashboard rendering.");
+    
   } catch (error) {
     console.error("Google Sign-In failed:", error);
    showErrorToUser("Google Sign-In failed. Please try again."); // From utils.js
@@ -203,14 +205,12 @@ function initAuthListeners() {
         localStorage.setItem("petProfiles", JSON.stringify(window.petProfiles));
 
         // ✅ Now render profiles from storage
-        if (typeof loadSavedPetProfile === 'function') {
-          loadSavedPetProfile();
+       if (typeof loadSavedPetProfile === 'function') {
+       await loadSavedPetProfile(); // wait until data is rendered
         }
-
-        // Optional: if showDashboard() also does other UI init
-        if (typeof showDashboard === 'function') {
-          showDashboard();
-        }
+       if (typeof showDashboard === 'function') {
+        showDashboard(); // now dashboard sees data
+       }
         
       } catch (error) {
         console.error("Profile load error:", error);
