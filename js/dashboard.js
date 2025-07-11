@@ -1208,13 +1208,12 @@ if (DOM.addPetProfileBtn) {
 } else {
   console.warn("⛔ addPetProfileBtn not found in DOM");
 }
-
   // Check auth state
-  firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-      loadSavedPetProfile();
-    }
-  });
+ // firebase.auth().onAuthStateChanged((user) => {
+  //  if (user) {
+  //    loadSavedPetProfile();
+ //   }
+//  });
 }
 
 // Initialize when DOM is ready
