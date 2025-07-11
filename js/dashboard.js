@@ -244,6 +244,19 @@ function getPetDataFromForm() {
     }
   };
 }
+// LoadPets function  definedrecently added
+async function loadPets() {
+  if (firebase.auth().currentUser) {
+    const snapshot = await firebase.firestore()
+      .collection("profiles")
+      .where("ownerId", "==", firebase.auth().currentUser.uid)
+      .get();
+    return snapshot.docs.map(doc => doc.data());
+  } else {
+    return JSON.parse(localStorage.getItem('petProfiles')) || [];
+  }
+}
+
 // ======================
 // LOAD SAVED PET PROFILES 🌟🌟
 // ======================
@@ -260,7 +273,9 @@ async function loadSavedPetProfile() {
 
         if (!snapshot.empty) {
           savedProfiles = snapshot.docs.map(doc => doc.data());
+          localStorage.setItem('petProfiles', JSON.stringify(savedProfiles)); // ✅ ADD THIS
           console.log("🔥 Loaded from Firestore:", savedProfiles);
+            
         } else {
           console.warn("⚠️ No profiles in Firestore. Falling back to localStorage.");
           savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
