@@ -273,6 +273,7 @@ async function loadSavedPetProfile() {
 
         if (!snapshot.empty) {
           savedProfiles = snapshot.docs.map(doc => doc.data());
+          window.petProfiles = savedProfiles;
           localStorage.setItem('petProfiles', JSON.stringify(savedProfiles)); // ✅ ADD THIS
           console.log("🔥 Loaded from Firestore:", savedProfiles);
             
