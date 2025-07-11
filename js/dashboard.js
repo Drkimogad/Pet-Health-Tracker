@@ -1098,11 +1098,12 @@ DOM.petList.addEventListener('submit', async (e) => {
       allergies: DOM.allergies?.value,
       medicalHistory: DOM.medicalHistory?.value,
       dietPlan: DOM.dietPlan?.value,
-      emergencyContact: {
+        
+      emergencyContacts: [{
       name: DOM.emergencyContactName?.value,
       phone: DOM.emergencyContactPhone?.value,
       relationship: DOM.emergencyContactRelationship?.value
-      },
+     }],
 
       mood: DOM.moodSelector?.value,
       reminders: {
