@@ -105,7 +105,7 @@ function showDashboard() {
   
 // 🐾 Render profiles if they exist
 if (localProfiles.length > 0 ) {
-   renderProfiles();
+   loadSavedPetProfile();
   
   } else {
   
