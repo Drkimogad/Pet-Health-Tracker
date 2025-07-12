@@ -709,238 +709,135 @@ async function deletePetProfile(petId) {
 //====================================
 // Print Pet Profile button functionality FINALIZED
 //======================================
-async function printPetProfile(petId) { // Use ID instead of index
+// =====================
+// ✅ PHASE 1: Asset Preload
+// =====================
+async function printPetProfile(petId) {
   try {
-    const profiles = await loadPets(); // Hybrid data source
-    const profile = profiles.find(p => p.id === petId); // ✅
+    const profiles = await loadPets();
+    const profile = profiles.find(p => p.id === petId);
+    if (!profile) return alert("Profile not found!");
 
-    if (!profile) {
-      alert("Profile not found!");
-      return;
+    let photoDataURL = null;
+    const assetPromises = [];
+
+    if (profile.petPhoto) {
+      assetPromises.push(new Promise((resolve) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.naturalWidth;
+          canvas.height = img.naturalHeight;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+          photoDataURL = canvas.toDataURL('image/png');
+          resolve();
+        };
+        img.onerror = () => resolve();
+        setTimeout(() => resolve(), 5000);
+        img.src = profile.petPhoto;
+      }));
     }
 
-  const printWindow = window.open('', '_blank', 'height=600,width=800');
+    await Promise.all(assetPromises);
 
-  // Phase 1: Preload all assets
-  const assetPromises = [];
+// =====================
+// ✅ PHASE 2: Build Print HTML
+// =====================
+    const printContent = `
+      <html>
+        <head>
+          <title>${profile.petName || 'Pet'} - Profile</title>
+          <style>
+            ${document.querySelector('style')?.innerHTML || ''}
+            body { font-family: Arial, sans-serif; padding: 2rem; background: white; }
+            .pet-card { background: #fff; border: 2px solid #A88905; border-radius: 10px; padding: 1.5rem; max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem; box-shadow: none; }
+            .pet-photo-wrapper { display: flex; justify-content: center; margin-bottom: 1rem; }
+            .pet-photo { width: 120px; height: auto; border-radius: 10px; object-fit: cover; }
+            .pet-header { text-align: center; }
+            .pet-header h4 { font-size: 1.4rem; font-weight: bold; color: #2c3e50; margin: 0; }
+            .pet-details { font-size: 1rem; line-height: 1.6; }
+            .pet-details p { margin: 0.3rem 0; }
+            .pet-reminders { background: #DECCE1; padding: 1rem; border-radius: 6px; font-size: 0.95rem; }
+            .reminder { display: flex; align-items: center; margin-bottom: 0.5rem; }
+            .reminder-emoji { font-size: 1.2rem; margin-right: 8px; }
+            @media print { body { margin: 0; padding: 0; } }
+          </style>
+        </head>
+        <body>
+          <div class="pet-card">
+            <div class="pet-photo-wrapper">
+              ${photoDataURL ? `<img src="${photoDataURL}" class="pet-photo">` : ''}
+            </div>
+            <div class="pet-header">
+              <h4>${profile.petName || 'Unnamed Pet'}</h4>
+            </div>
+            <div class="pet-details">
+              <p><strong>Breed:</strong> ${profile.breed || 'N/A'}</p>
+              <p><strong>Age:</strong> ${profile.age || 'N/A'}</p>
+              <p><strong>Weight:</strong> ${profile.weight || 'N/A'}</p>
+              <p><strong>Type:</strong> ${profile.type || 'N/A'}</p>
+              <p><strong>Gender:</strong> ${profile.gender || 'N/A'}</p>
+              <p><strong>Mood:</strong> ${profile.mood || 'N/A'}</p>
+              <h4>Microchip Info</h4>
+              <p><strong>ID:</strong> ${profile.microchip?.id || 'N/A'}</p>
+              <p><strong>Date:</strong> ${profile.microchip?.date || 'N/A'}</p>
+              <p><strong>Vendor:</strong> ${profile.microchip?.vendor || 'N/A'}</p>
+              <h4>Health</h4>
+              <p><strong>Allergies:</strong> ${profile.allergies || 'None'}</p>
+              <p><strong>Medical History:</strong> ${profile.medicalHistory || 'None'}</p>
+              <p><strong>Diet Plan:</strong> ${profile.dietPlan || 'None'}</p>
+              <h4>Emergency Contact</h4>
+              <p><strong>Name:</strong> ${profile.emergencyContacts?.[0]?.name || 'N/A'}</p>
+              <p><strong>Phone:</strong> ${profile.emergencyContacts?.[0]?.phone || 'N/A'}</p>
+              <p><strong>Relationship:</strong> ${profile.emergencyContacts?.[0]?.relationship || 'N/A'}</p>
+            </div>
+            <div class="pet-reminders">
+              <h4>Reminders</h4>
+              <div class="reminder"><span class="reminder-emoji">💉</span> <span><strong>Vaccinations:</strong> ${profile.reminders?.vaccinations || 'N/A'}</span></div>
+              <div class="reminder"><span class="reminder-emoji">🩺</span> <span><strong>Checkups:</strong> ${profile.reminders?.checkups || 'N/A'}</span></div>
+              <div class="reminder"><span class="reminder-emoji">✂️</span> <span><strong>Grooming:</strong> ${profile.reminders?.grooming || 'N/A'}</span></div>
+            </div>
+          </div>
+        </body>
+      </html>`;
 
-  // Handle pet photo loading
-  let photoDataURL = null;
-  if (profile.petPhoto) {
-    assetPromises.push(new Promise((resolve, reject) => {
-      const img = new Image();
-      img.crossOrigin = 'anonymous';
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = img.naturalWidth;
-        canvas.height = img.naturalHeight;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0);
-        photoDataURL = canvas.toDataURL('image/png');
-        resolve();
-      };
-        
-      img.onerror = () => {
-    console.warn("⚠️ Pet photo failed to load. Continuing without image.");
-    resolve(); // Continue even if photo doesn't load
-     };
-        
-    setTimeout(() => {
-    console.warn("⚠️ Print timed out. Proceeding without photo.");
-    resolve();
-    }, 5000); // max wait 5s
-    img.src = profile.petPhoto; // ✅ Add this line
-    }));
-  }
-      
-  // Show loading state
-  printWindow.document.write(`
-        <html>
-            <head><title>Loading...</title></head>
-            <body style="display: flex; justify-content: center; align-items: center; height: 100vh;">
-                <div class="loader">Generating Printable Version...</div>
-            </body>
-        </html>
-    `);
+// =====================
+// ✅ PHASE 3: Open, Write, Wait & Print
+// =====================
+    const printWindow = window.open('', '_blank', 'width=800,height=1000');
+    printWindow.document.write(printContent);
+    printWindow.document.close();
 
-  // Phase 2: Build content after assets load
-  Promise.all(assetPromises)
-    .then(() => {
-const printContent = `
-<html>
-<head>
-  <title>${profile.petName}'s Profile</title>
-  <style>
-    ${document.querySelector('style')?.innerHTML || ''}
+    const waitForReadyAndPrint = () => {
+      const checkReady = setInterval(() => {
+        try {
+          const body = printWindow.document.body;
+          const imgReady = !photoDataURL || printWindow.document.querySelector('img')?.complete;
 
-    body {
-      font-family: Arial, sans-serif;
-      padding: 2rem;
-      background: white;
-    }
+          if (body && body.innerHTML.includes(profile.petName) && imgReady) {
+            clearInterval(checkReady);
+            setTimeout(() => {
+              printWindow.print();
+              printWindow.onafterprint = () => printWindow.close();
+            }, 300);
+          }
+        } catch (e) {
+          clearInterval(checkReady);
+          console.warn("❌ Print check failed:", e);
+          printWindow.close();
+        }
+      }, 300);
+    };
 
-    .pet-card {
-      background: #fff;
-      border: 2px solid #A88905;
-      border-radius: 10px;
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      max-width: 700px;
-      margin: 0 auto;
-      box-shadow: none;
-    }
-
-    .pet-photo-wrapper {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 1rem;
-    }
-
-    .pet-photo {
-      width: 120px;
-      height: auto;
-      border-radius: 10px;
-      object-fit: cover;
-    }
-
-    .pet-header {
-      text-align: center;
-    }
-
-    .pet-header h4 {
-      font-size: 1.4rem;
-      font-weight: bold;
-      color: #2c3e50;
-      margin: 0;
-    }
-
-    .pet-details {
-      font-size: 1rem;
-      line-height: 1.6;
-    }
-
-    .pet-details p {
-      margin: 0.3rem 0;
-    }
-
-    .pet-reminders {
-      background: #DECCE1;
-      padding: 1rem;
-      border-radius: 6px;
-      font-size: 0.95rem;
-    }
-
-    .reminder {
-      display: flex;
-      align-items: center;
-      margin-bottom: 0.5rem;
-    }
-
-    .reminder-emoji {
-      font-size: 1.2rem;
-      margin-right: 8px;
-    }
-
-    @media print {
-      body {
-        margin: 0;
-        padding: 0;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="pet-card">
-    <div class="pet-photo-wrapper">
-      ${photoDataURL ? `<img src="${photoDataURL}" class="pet-photo">` : ''}
-    </div>
-    <div class="pet-header">
-      <h4>${profile.petName || 'Unnamed Pet'}</h4>
-    </div>
-    <div class="pet-details">
-      <p><strong>Breed:</strong> ${profile.breed || 'N/A'}</p>
-      <p><strong>Age:</strong> ${profile.age || 'N/A'}</p>
-      <p><strong>Weight:</strong> ${profile.weight || 'N/A'}</p>
-      <p><strong>Type:</strong> ${profile.type || 'N/A'}</p>
-      <p><strong>Gender:</strong> ${profile.gender || 'N/A'}</p>
-      <p><strong>Mood:</strong> ${profile.mood || 'N/A'}</p>
-    </div>
-    <div class="pet-details">
-      <h4>Microchip Info</h4>
-      <p><strong>ID:</strong> ${profile.microchip?.id || 'N/A'}</p>
-      <p><strong>Date:</strong> ${profile.microchip?.date || 'N/A'}</p>
-      <p><strong>Vendor:</strong> ${profile.microchip?.vendor || 'N/A'}</p>
-    </div>
-    <div class="pet-details">
-      <h4>Health</h4>
-      <p><strong>Allergies:</strong> ${profile.allergies || 'None'}</p>
-      <p><strong>Medical History:</strong> ${profile.medicalHistory || 'None'}</p>
-      <p><strong>Diet Plan:</strong> ${profile.dietPlan || 'None'}</p>
-    </div>
-    <div class="pet-details">
-      <h4>Emergency Contact</h4>
-      <p><strong>Name:</strong> ${profile.emergencyContacts?.[0]?.name || 'N/A'}</p>
-      <p><strong>Phone:</strong> ${profile.emergencyContacts?.[0]?.phone || 'N/A'}</p>
-      <p><strong>Relationship:</strong> ${profile.emergencyContacts?.[0]?.relationship || 'N/A'}</p>
-    </div>
-    <div class="pet-reminders">
-      <h4>Reminders</h4>
-      <div class="reminder">
-        <span class="reminder-emoji">💉</span>
-        <span><strong>Vaccinations:</strong> ${profile.reminders?.vaccinations || 'N/A'}</span>
-      </div>
-      <div class="reminder">
-        <span class="reminder-emoji">🩺</span>
-        <span><strong>Checkups:</strong> ${profile.reminders?.checkups || 'N/A'}</span>
-      </div>
-      <div class="reminder">
-        <span class="reminder-emoji">✂️</span>
-        <span><strong>Grooming:</strong> ${profile.reminders?.grooming || 'N/A'}</span>
-      </div>
-    </div>
-  </div>
-</body>
-</html>
-`;
-
-      // Phase 3: Write final content
-      printWindow.document.write(printContent);
-      printWindow.document.close();
-
-      // Phase 4: ✅ Wait for full print window readiness (modern + fallback safe)
-const waitForReadyAndPrint = () => {
-  const checkReady = setInterval(() => {
-    try {
-      const body = printWindow.document.body;
-      const imgReady = !photoDataURL || printWindow.document.querySelector('img[src="' + photoDataURL + '"]')?.complete;
-
-      if (body && body.innerHTML.includes(profile.petName) && imgReady) {
-        clearInterval(checkReady);
-        setTimeout(() => {
-          printWindow.print();
-          printWindow.onafterprint = () => {
-            if (photoDataURL) URL.revokeObjectURL(photoDataURL);
-            printWindow.close();
-          };
-        }, 300);
-      }
-    } catch (e) {
-      clearInterval(checkReady);
-      console.warn("❌ Failed to check print window readiness:", e);
-      printWindow.close();
-    }
-  }, 300);
-};
-// 👇 Start waiting for it to be ready
-waitForReadyAndPrint();
-    }); // <-- closes Promise.all .then()
+    waitForReadyAndPrint();
   } catch (error) {
     console.error('Print error:', error);
-    alert('Failed to load profile for printing');
+    alert('Failed to print profile.');
   }
 }
+
 //============================================
 // SHARE PET PROFILE (UPDATED FOR HYBRID STORAGE) FINALIZED
 //===========================================
