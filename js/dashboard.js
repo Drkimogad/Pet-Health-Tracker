@@ -649,7 +649,6 @@ function handleCancelEdit() {
     sessionStorage.removeItem(`editingProfile_${editingProfileId}`);
     editingProfileId = null;
 
-
     const cancelButton = document.getElementById("cancelEdit");
     if (cancelButton) {
     cancelButton.remove(); // Cleanly remove it from DOM
@@ -657,7 +656,9 @@ function handleCancelEdit() {
 
     DOM.petPhotoPreview.style.display = 'none';
     DOM.petPhotoInput.value = '';
-  resetForm();
+    resetForm();
+   DOM.petList.classList.add("hidden");
+   DOM.savedProfilesList.classList.remove("hidden");
   }
 }
 //=================================================
@@ -1226,6 +1227,9 @@ savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
     loadSavedPetProfile(); // Fixed function name
     resetForm();
     editingProfileId = null; // Clear edit mode
+   // UPDATE UI
+   DOM.petList.classList.add("hidden");              // Hide the profile form
+   DOM.savedProfilesList.classList.remove("hidden"); // Show the profile cards
 
   } catch (error) {
     console.error('Save error:', error);
