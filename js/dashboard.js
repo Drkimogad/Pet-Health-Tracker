@@ -574,7 +574,7 @@ async function editPetProfile(petId) {
       preview.style.display = 'block';
     }
 
-    // Call cancel button function 
+    // Call cancel button function added recently
     ensureCancelEditButton();
 
     // Scroll to form
@@ -731,11 +731,19 @@ async function printPetProfile(petId) { // Use ID instead of index
         photoDataURL = canvas.toDataURL('image/png');
         resolve();
       };
-      img.onerror = reject;
-      img.src = profile.petPhoto;
+        
+      img.onerror = () => {
+    console.warn("⚠️ Pet photo failed to load. Continuing without image.");
+    resolve(); // Continue even if photo doesn't load
+     };
+        
+    setTimeout(() => {
+    console.warn("⚠️ Print timed out. Proceeding without photo.");
+    resolve();
+    }, 5000); // max wait 5s
     }));
   }
-
+      
   // Show loading state
   printWindow.document.write(`
         <html>
