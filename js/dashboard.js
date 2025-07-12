@@ -1173,17 +1173,11 @@ DOM.petList.addEventListener('submit', async (e) => {
       lastUpdated: Date.now(),
       createdAt: Date.now()
     };
-// ✅ Upload to Cloudinary for a new photo whether in edit or a new profile creation
+
+ // photo handling      
 const fileInput = DOM.petPhotoInput;
-if (fileInput.files[0]) {
-  try {
-    const uploadResult = await uploadToCloudinary(
-      fileInput.files[0],
-      firebase.auth().currentUser.uid,
-      petData.id
-    );
       
-// 🔁 If editing and no new photo is uploaded, reuse existing photo
+// ✅ If editing and NO new image, reuse existing photo
 if (editingProfileId !== null && !fileInput.files[0]) {
   const existingProfile = savedProfiles.find(p => p.id === editingProfileId);
   if (existingProfile && existingProfile.petPhoto) {
@@ -1191,9 +1185,31 @@ if (editingProfileId !== null && !fileInput.files[0]) {
     petData.cloudinaryPath = existingProfile.cloudinaryPath || '';
     petData.imageDimensions = existingProfile.imageDimensions || {};
   }
-}      
+}
 
-    // Set pet photo URL in Firestore data
+// ✅ If new image was uploaded, use it instead
+if (fileInput.files[0]) {
+  try {
+    const uploadResult = await uploadToCloudinary(
+      fileInput.files[0],
+      firebase.auth().currentUser.uid,
+      petData.id
+    );
+
+    petData.petPhoto = uploadResult.url.replace(/^http:\/\//, 'https://');
+    petData.cloudinaryPath = uploadResult.path;
+    petData.imageDimensions = {
+      width: uploadResult.width,
+      height: uploadResult.height
+    };
+  } catch (error) {
+    showErrorToUser("❌ Image upload failed. Try again.");
+    return;
+  }
+}
+console.log("🖼️ Using photo:", petData.petPhoto);
+      
+// Set pet photo URL in Firestore data
     petData.petPhoto = uploadResult.url;
     petData.cloudinaryPath = uploadResult.path; // Optional
     petData.imageDimensions = {
