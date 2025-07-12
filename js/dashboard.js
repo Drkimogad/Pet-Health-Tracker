@@ -1173,16 +1173,6 @@ DOM.petList.addEventListener('submit', async (e) => {
       lastUpdated: Date.now(),
       createdAt: Date.now()
     };
-
-// 🔁 If editing and no new photo is uploaded, reuse existing photo
-if (editingProfileId !== null && !fileInput.files[0]) {
-  const existingProfile = savedProfiles.find(p => p.id === editingProfileId);
-  if (existingProfile && existingProfile.petPhoto) {
-    petData.petPhoto = existingProfile.petPhoto;
-    petData.cloudinaryPath = existingProfile.cloudinaryPath || '';
-    petData.imageDimensions = existingProfile.imageDimensions || {};
-  }
-}      
 // ✅ Upload to Cloudinary for a new photo whether in edit or a new profile creation
 const fileInput = DOM.petPhotoInput;
 if (fileInput.files[0]) {
@@ -1192,6 +1182,16 @@ if (fileInput.files[0]) {
       firebase.auth().currentUser.uid,
       petData.id
     );
+      
+// 🔁 If editing and no new photo is uploaded, reuse existing photo
+if (editingProfileId !== null && !fileInput.files[0]) {
+  const existingProfile = savedProfiles.find(p => p.id === editingProfileId);
+  if (existingProfile && existingProfile.petPhoto) {
+    petData.petPhoto = existingProfile.petPhoto;
+    petData.cloudinaryPath = existingProfile.cloudinaryPath || '';
+    petData.imageDimensions = existingProfile.imageDimensions || {};
+  }
+}      
 
     // Set pet photo URL in Firestore data
     petData.petPhoto = uploadResult.url;
