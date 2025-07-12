@@ -51,11 +51,11 @@ const DOM = {
   emergencyContactRelationship: document.getElementById('emergencyContactRelationship'),
   vaccinationsAndDewormingReminder: document.getElementById('vaccinationsAndDewormingReminder'),
   medicalCheckupsReminder: document.getElementById('medicalCheckupsReminder'),
-  groomingReminder: document.getElementById('groomingReminder'),
+  groomingReminder: document.getElementById('groomingReminder')
 
   // Modal Elements (used in showModal())
-  petModal: document.getElementById('pet-modal') || null, // Optional fallback
-  modalOverlay: document.getElementById('modal-overlay') || null
+  //petModal: document.getElementById('pet-modal') || null, // Optional fallback
+  //modalOverlay: document.getElementById('modal-overlay') || null
     
   // Buttons
  // cancelEdit: document.getElementById('cancel6Edit')
