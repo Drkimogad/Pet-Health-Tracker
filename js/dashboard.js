@@ -510,7 +510,7 @@ function showPetDetails(profile) {
 }
 //=========================================
 // FUNCTION EDIT PROFILE
-// FUNCTION EDIT PROFILE (UPDATED FOR HYBRID STORAGE)
+// FUNCTION EDIT PROFILE (UPDATED FOR HYBRID STORAGE) FINALIZED
 //=======================================
 // for me to understand editting behaviour
 //🧪 Think of the logic like this:
@@ -662,7 +662,7 @@ function handleCancelEdit() {
   }
 }
 //=================================================
-// FUNCTION DELETE PROFILE (UPDATED FOR HYBRID STORAGE)
+// FUNCTION DELETE PROFILE (UPDATED FOR HYBRID STORAGE) FINALIZED EXCEPT CLOUDINARY
 //======================================================
 // ⚠️ NOTE: Cloudinary images are not deleted here.
 // Cloudinary requires secure Admin API access (with secret key) to delete images,
@@ -707,7 +707,7 @@ async function deletePetProfile(petId) {
   }
 }
 //====================================
-// Print Pet Profile button functionality
+// Print Pet Profile button functionality FINALIZED
 //======================================
 async function printPetProfile(petId) { // Use ID instead of index
   try {
@@ -794,28 +794,41 @@ async function printPetProfile(petId) { // Use ID instead of index
       printWindow.document.write(printContent);
       printWindow.document.close();
 
-      // Phase 4: Ensure DOM is ready
-      printWindow.document.addEventListener('DOMContentLoaded', () => {
-        // Phase 5: Wait for all subresources
-        printWindow.addEventListener('load', () => {
-          // Phase 6: Small delay for rendering completion
-          setTimeout(() => {
-            printWindow.print();
-            printWindow.onafterprint = () => {
-              if (photoDataURL) URL.revokeObjectURL(photoDataURL);
-              printWindow.close();
-            };
-          }, 500);
-        });
-      });
-    })
-    } catch (error) {
+      // Phase 4: ✅ Wait for full print window readiness (modern + fallback safe)
+const waitForReadyAndPrint = () => {
+  const checkReady = setInterval(() => {
+    try {
+      const body = printWindow.document.body;
+      const imgReady = !photoDataURL || printWindow.document.querySelector('img[src="' + photoDataURL + '"]')?.complete;
+
+      if (body && body.innerHTML.includes(profile.petName) && imgReady) {
+        clearInterval(checkReady);
+        setTimeout(() => {
+          printWindow.print();
+          printWindow.onafterprint = () => {
+            if (photoDataURL) URL.revokeObjectURL(photoDataURL);
+            printWindow.close();
+          };
+        }, 300);
+      }
+    } catch (e) {
+      clearInterval(checkReady);
+      console.warn("❌ Failed to check print window readiness:", e);
+      printWindow.close();
+    }
+  }, 300);
+};
+// 👇 Start waiting for it to be ready
+waitForReadyAndPrint();
+    }); // <-- closes Promise.all .then()
+  } catch (error) {
     console.error('Print error:', error);
     alert('Failed to load profile for printing');
   }
 }
-
-// SHARE PET PROFILE (UPDATED FOR HYBRID STORAGE)
+//============================================
+// SHARE PET PROFILE (UPDATED FOR HYBRID STORAGE) FINALIZED
+//===========================================
 async function sharePetProfile(petId) {
   try {
     let profile;
