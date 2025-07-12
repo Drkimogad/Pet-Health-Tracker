@@ -1208,19 +1208,7 @@ if (fileInput.files[0]) {
   }
 }
 console.log("🖼️ Using photo:", petData.petPhoto);
-      
-// Set pet photo URL in Firestore data
-    petData.petPhoto = uploadResult.url;
-    petData.cloudinaryPath = uploadResult.path; // Optional
-    petData.imageDimensions = {
-      width: uploadResult.width,
-      height: uploadResult.height
-    };
-  } catch (error) {
-    showErrorToUser("❌ Image upload failed. Try again.");
-    return; // Prevent profile save if image upload fails
-  }
-}      
+    
 // firestore saving implementation
     if (firebase.auth().currentUser) {
   const db = firebase.firestore();
