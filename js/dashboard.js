@@ -749,6 +749,7 @@ async function printPetProfile(petId) { // Use ID instead of index
     console.warn("⚠️ Print timed out. Proceeding without photo.");
     resolve();
     }, 5000); // max wait 5s
+    img.src = profile.petPhoto; // ✅ Add this line
     }));
   }
       
