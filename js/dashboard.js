@@ -256,6 +256,23 @@ async function loadPets() {
     return JSON.parse(localStorage.getItem('petProfiles')) || [];
   }
 }
+// Ensure canceledit function recently added
+function ensureCancelEditButton() {
+  let cancelButton = document.getElementById("cancelEdit");
+  if (!cancelButton) {
+    cancelButton = document.createElement("button");
+    cancelButton.id = "cancelEdit";
+    cancelButton.className = "cancel-btn";
+    cancelButton.textContent = "Cancel Edit";
+
+    const form = document.querySelector("form");
+    if (form) {
+      form.appendChild(cancelButton);
+    }
+  }
+  cancelButton.style.display = "inline-block";
+  cancelButton.onclick = handleCancelEdit;
+}
 
 // ======================
 // LOAD SAVED PET PROFILES 🌟🌟
@@ -556,21 +573,9 @@ async function editPetProfile(petId) {
       preview.src = profile.petPhoto;
       preview.style.display = 'block';
     }
-    // Show cancel button (unchanged)
-    let cancelButton = document.getElementById("cancelEdit");
-    if (!cancelButton) {
-    cancelButton = document.createElement("button");
-    cancelButton.id = "cancelEdit";
-    cancelButton.className = "cancel-btn";
-    cancelButton.textContent = "Cancel Edit";
 
-    const form = document.querySelector("form");
-    if (form) {
-    form.appendChild(cancelButton); // Append at end of form
-    }
-  }
-   cancelButton.style.display = "inline-block";
-   cancelButton.onclick = handleCancelEdit;
+    // Call cancel button function 
+    ensureCancelEditButton();
 
     // Scroll to form
     DOM.petList.scrollIntoView({ behavior: 'smooth' });
@@ -636,6 +641,8 @@ function handleCancelEdit() {
     // Cleanup
     sessionStorage.removeItem(`editingProfile_${editingProfileId}`);
     editingProfileId = null;
+
+
     const cancelButton = document.getElementById("cancelEdit");
     if (cancelButton) {
     cancelButton.remove(); // Cleanly remove it from DOM
