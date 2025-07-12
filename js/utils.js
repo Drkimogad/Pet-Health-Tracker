@@ -86,7 +86,7 @@ function validateReminder(reminderData) {
 }
 
 //=====================
-//  Modal Utilities
+//  Modal Utilities, MODAL IS NOT STATIC HTML
 //==========================
 function showModal(content) {
   let modal = DOM.petModal;
