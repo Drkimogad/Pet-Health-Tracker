@@ -300,7 +300,7 @@ textarea:focus {
   display: flex;
   flex-direction: column; /* 🔁 Changed from row */
   gap: 1rem;
-  margin-bottom: 2.5rem; /* will give more space between saved petcards 1.5rem*/
+  margin-bottom: 4rem; /* will give more space between saved petcards 1.5rem*/
   box-shadow: 0 4px 6px rgba(0,0,0,0.08);
   border: 2px solid #A88905; /* 🔲 Card frame #e0e0e0 1px*/
 }
@@ -366,7 +366,7 @@ textarea:focus {
   background: #f0f0f0;
   font-size: 1.5rem;
 }
-/* all reminders related styles*/
+/* all reminders related styleS ROOT COLOURS ARE REMOVED*/
 .pet-reminders {
   background: #DECCE1;
   border: 1px solid #f3e5ab;
@@ -550,19 +550,22 @@ textarea:focus {
   }
 
   .pet-card {
-    page-break-inside: avoid;
     border: none;
     box-shadow: none;
     margin-bottom: 1.5rem;
   }
 
-  img.pet-photo {
+  img.pet-photo-print {
     max-width: 250px !important;
     height: auto !important;
+    display: block;
+    margin: 1rem 0;
+    page-break-after: avoid;
+    break-after: avoid;
   }
 }
 
-/* Loader styling*/
+/* Loader styling  TO SEE IF CAN BE USED FOR UI UPDATING*/
 .loader {
   border: 3px solid #f3f3f3;
   border-top: 3px solid var(--qr-blue);
