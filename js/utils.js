@@ -1,4 +1,6 @@
+//===========================================
 //🔄 Updated uploadToCloudinary()
+//==============================================
 async function uploadToCloudinary(file, userId, petProfileId) {
   // 1. VALIDATE FILE TYPE
   const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
@@ -59,7 +61,7 @@ function resetForm() {
     preview.style.display = 'none';
   }
 }
-
+//==============================
 // Reminder Utilities
 function formatReminder(dateTimeString) {
   if (!dateTimeString) return 'N/A';
@@ -83,7 +85,9 @@ function validateReminder(reminderData) {
   };
 }
 
+//=====================
 //  Modal Utilities
+//==========================
 function showModal(content) {
   let modal = DOM.petModal;
   let overlay = DOM.modalOverlay;
@@ -116,14 +120,17 @@ function showModal(content) {
   overlay.classList.add('active');
   document.body.style.overflow = 'hidden';
 }
+
+// UPDATED HIDE MODAL
 function hideModal() {
-  const overlay = DOM.modalOverlay;
+  const overlay = document.getElementById('modal-overlay'); // ✅ dynamic lookup
   if (overlay) {
-    overlay.classList.remove('active');
-    document.body.style.overflow = '';
+    overlay.remove(); // 💣 remove modal from DOM
   }
+  document.body.style.overflow = ''; // ✅ restore scrolling
 }
 
+// TRAP FOCUS MODAL
 function trapFocus(modal) {
   const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
   const first = focusable[0];
@@ -144,7 +151,7 @@ function trapFocus(modal) {
     }
   });
 }
-
+//=================================
 // SW snippet 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
