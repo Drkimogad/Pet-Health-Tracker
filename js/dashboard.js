@@ -766,30 +766,68 @@ async function printPetProfile(petId) { // Use ID instead of index
   // Phase 2: Build content after assets load
   Promise.all(assetPromises)
     .then(() => {
-      const printContent = `
-                <html>
-                    <head>
-                        <title>${profile.petName}'s Profile</title>
-                        <style>
-                            ${document.querySelector('style').innerHTML}
-                            body { font-family: Arial, sans-serif; padding: 20px; }
-                            .print-section { margin-bottom: 25px; }
-                            .pet-photo-print { 
-                                max-width: 300px; 
-                                height: auto; 
-                                margin: 15px 0; 
-                                border: 2px solid #eee;
-                                border-radius: 8px;
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <h1>${profile.petName}'s Health Profile</h1>
-                        ${photoDataURL ? `<img src="${photoDataURL}" class="pet-photo-print">` : ''}
-                        <!-- Rest of your content sections -->
-                    </body>
-                </html>
-            `;
+const printContent = `
+  <html>
+    <head>
+      <title>${profile.petName}'s Profile</title>
+      <style>
+        ${document.querySelector('style').innerHTML}
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .print-section { margin-bottom: 25px; }
+        .print-label { font-weight: bold; color: #444; }
+        .pet-photo-print {
+          max-width: 300px;
+          height: auto;
+          margin: 15px 0;
+          border: 2px solid #eee;
+          border-radius: 8px;
+        }
+      </style>
+    </head>
+    <body>
+      <h1>${profile.petName}'s Health Profile</h1>
+      ${photoDataURL ? `<img src="${photoDataURL}" class="pet-photo-print">` : ''}
+
+      <div class="print-section">
+        <div><span class="print-label">Breed:</span> ${profile.breed || 'N/A'}</div>
+        <div><span class="print-label">Age:</span> ${profile.age || 'N/A'}</div>
+        <div><span class="print-label">Weight:</span> ${profile.weight || 'N/A'}</div>
+        <div><span class="print-label">Type:</span> ${profile.type || 'N/A'}</div>
+        <div><span class="print-label">Gender:</span> ${profile.gender || 'N/A'}</div>
+      </div>
+
+      <div class="print-section">
+        <h3>Microchip Info</h3>
+        <div><span class="print-label">ID:</span> ${profile.microchip?.id || 'N/A'}</div>
+        <div><span class="print-label">Date:</span> ${profile.microchip?.date || 'N/A'}</div>
+        <div><span class="print-label">Vendor:</span> ${profile.microchip?.vendor || 'N/A'}</div>
+      </div>
+
+      <div class="print-section">
+        <h3>Medical Details</h3>
+        <div><span class="print-label">Allergies:</span> ${profile.allergies || 'None'}</div>
+        <div><span class="print-label">Medical History:</span> ${profile.medicalHistory || 'None'}</div>
+        <div><span class="print-label">Diet Plan:</span> ${profile.dietPlan || 'None'}</div>
+        <div><span class="print-label">Mood:</span> ${profile.mood || 'Neutral'}</div>
+      </div>
+      
+      <div class="print-section">
+        <h3>Emergency Contact</h3>
+        <div><span class="print-label">Name:</span> ${profile.emergencyContacts?.[0]?.name || 'N/A'}</div>
+        <div><span class="print-label">Phone:</span> ${profile.emergencyContacts?.[0]?.phone || 'N/A'}</div>
+        <div><span class="print-label">Relationship:</span> ${profile.emergencyContacts?.[0]?.relationship || 'N/A'}</div>
+      </div>
+
+      <div class="print-section">
+        <h3>Reminders</h3>
+        <div><span class="print-label">Vaccinations:</span> ${profile.reminders?.vaccinations || 'N/A'}</div>
+        <div><span class="print-label">Checkups:</span> ${profile.reminders?.checkups || 'N/A'}</div>
+        <div><span class="print-label">Grooming:</span> ${profile.reminders?.grooming || 'N/A'}</div>
+      </div>
+      
+    </body>
+  </html>
+`;
 
       // Phase 3: Write final content
       printWindow.document.write(printContent);
