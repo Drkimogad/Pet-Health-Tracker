@@ -55,10 +55,10 @@ const DOM = {
 
   // Modal Elements (used in showModal())
   petModal: document.getElementById('pet-modal') || null, // Optional fallback
-  modalOverlay: document.getElementById('modal-overlay') || null,
+  modalOverlay: document.getElementById('modal-overlay') || null
     
   // Buttons
-  cancelEdit: document.getElementById('cancel6Edit')
+ // cancelEdit: document.getElementById('cancel6Edit')
 };
 
 // Safety check (optional)
@@ -1303,9 +1303,6 @@ editingSessionKeys.forEach(key => {
   editingProfileId = petId;
 
   // Show cancel button
-  if (DOM.cancelEdit) {
-    DOM.cancelEdit.style.display = 'inline-block';
-    DOM.cancelEdit.onclick = handleCancelEdit;
-  }
+  ensureCancelEditButton();
 });
 }
