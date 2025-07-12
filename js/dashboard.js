@@ -767,66 +767,142 @@ async function printPetProfile(petId) { // Use ID instead of index
   Promise.all(assetPromises)
     .then(() => {
 const printContent = `
-  <html>
-    <head>
-      <title>${profile.petName}'s Profile</title>
-      <style>
-        ${document.querySelector('style').innerHTML}
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        .print-section { margin-bottom: 25px; }
-        .print-label { font-weight: bold; color: #444; }
-        .pet-photo-print {
-          max-width: 300px;
-          height: auto;
-          margin: 15px 0;
-          border: 2px solid #eee;
-          border-radius: 8px;
-        }
-      </style>
-    </head>
-    <body>
-      <h1>${profile.petName}'s Health Profile</h1>
-      ${photoDataURL ? `<img src="${photoDataURL}" class="pet-photo-print">` : ''}
+<html>
+<head>
+  <title>${profile.petName}'s Profile</title>
+  <style>
+    ${document.querySelector('style')?.innerHTML || ''}
 
-      <div class="print-section">
-        <div><span class="print-label">Breed:</span> ${profile.breed || 'N/A'}</div>
-        <div><span class="print-label">Age:</span> ${profile.age || 'N/A'}</div>
-        <div><span class="print-label">Weight:</span> ${profile.weight || 'N/A'}</div>
-        <div><span class="print-label">Type:</span> ${profile.type || 'N/A'}</div>
-        <div><span class="print-label">Gender:</span> ${profile.gender || 'N/A'}</div>
-      </div>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background: white;
+    }
 
-      <div class="print-section">
-        <h3>Microchip Info</h3>
-        <div><span class="print-label">ID:</span> ${profile.microchip?.id || 'N/A'}</div>
-        <div><span class="print-label">Date:</span> ${profile.microchip?.date || 'N/A'}</div>
-        <div><span class="print-label">Vendor:</span> ${profile.microchip?.vendor || 'N/A'}</div>
-      </div>
+    .pet-card {
+      background: #fff;
+      border: 2px solid #A88905;
+      border-radius: 10px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 700px;
+      margin: 0 auto;
+      box-shadow: none;
+    }
 
-      <div class="print-section">
-        <h3>Medical Details</h3>
-        <div><span class="print-label">Allergies:</span> ${profile.allergies || 'None'}</div>
-        <div><span class="print-label">Medical History:</span> ${profile.medicalHistory || 'None'}</div>
-        <div><span class="print-label">Diet Plan:</span> ${profile.dietPlan || 'None'}</div>
-        <div><span class="print-label">Mood:</span> ${profile.mood || 'Neutral'}</div>
-      </div>
-      
-      <div class="print-section">
-        <h3>Emergency Contact</h3>
-        <div><span class="print-label">Name:</span> ${profile.emergencyContacts?.[0]?.name || 'N/A'}</div>
-        <div><span class="print-label">Phone:</span> ${profile.emergencyContacts?.[0]?.phone || 'N/A'}</div>
-        <div><span class="print-label">Relationship:</span> ${profile.emergencyContacts?.[0]?.relationship || 'N/A'}</div>
-      </div>
+    .pet-photo-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
 
-      <div class="print-section">
-        <h3>Reminders</h3>
-        <div><span class="print-label">Vaccinations:</span> ${profile.reminders?.vaccinations || 'N/A'}</div>
-        <div><span class="print-label">Checkups:</span> ${profile.reminders?.checkups || 'N/A'}</div>
-        <div><span class="print-label">Grooming:</span> ${profile.reminders?.grooming || 'N/A'}</div>
+    .pet-photo {
+      width: 120px;
+      height: auto;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+
+    .pet-header {
+      text-align: center;
+    }
+
+    .pet-header h4 {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #2c3e50;
+      margin: 0;
+    }
+
+    .pet-details {
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .pet-details p {
+      margin: 0.3rem 0;
+    }
+
+    .pet-reminders {
+      background: #DECCE1;
+      padding: 1rem;
+      border-radius: 6px;
+      font-size: 0.95rem;
+    }
+
+    .reminder {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .reminder-emoji {
+      font-size: 1.2rem;
+      margin-right: 8px;
+    }
+
+    @media print {
+      body {
+        margin: 0;
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="pet-card">
+    <div class="pet-photo-wrapper">
+      ${photoDataURL ? `<img src="${photoDataURL}" class="pet-photo">` : ''}
+    </div>
+    <div class="pet-header">
+      <h4>${profile.petName || 'Unnamed Pet'}</h4>
+    </div>
+    <div class="pet-details">
+      <p><strong>Breed:</strong> ${profile.breed || 'N/A'}</p>
+      <p><strong>Age:</strong> ${profile.age || 'N/A'}</p>
+      <p><strong>Weight:</strong> ${profile.weight || 'N/A'}</p>
+      <p><strong>Type:</strong> ${profile.type || 'N/A'}</p>
+      <p><strong>Gender:</strong> ${profile.gender || 'N/A'}</p>
+      <p><strong>Mood:</strong> ${profile.mood || 'N/A'}</p>
+    </div>
+    <div class="pet-details">
+      <h4>Microchip Info</h4>
+      <p><strong>ID:</strong> ${profile.microchip?.id || 'N/A'}</p>
+      <p><strong>Date:</strong> ${profile.microchip?.date || 'N/A'}</p>
+      <p><strong>Vendor:</strong> ${profile.microchip?.vendor || 'N/A'}</p>
+    </div>
+    <div class="pet-details">
+      <h4>Health</h4>
+      <p><strong>Allergies:</strong> ${profile.allergies || 'None'}</p>
+      <p><strong>Medical History:</strong> ${profile.medicalHistory || 'None'}</p>
+      <p><strong>Diet Plan:</strong> ${profile.dietPlan || 'None'}</p>
+    </div>
+    <div class="pet-details">
+      <h4>Emergency Contact</h4>
+      <p><strong>Name:</strong> ${profile.emergencyContacts?.[0]?.name || 'N/A'}</p>
+      <p><strong>Phone:</strong> ${profile.emergencyContacts?.[0]?.phone || 'N/A'}</p>
+      <p><strong>Relationship:</strong> ${profile.emergencyContacts?.[0]?.relationship || 'N/A'}</p>
+    </div>
+    <div class="pet-reminders">
+      <h4>Reminders</h4>
+      <div class="reminder">
+        <span class="reminder-emoji">💉</span>
+        <span><strong>Vaccinations:</strong> ${profile.reminders?.vaccinations || 'N/A'}</span>
       </div>
-      
-    </body>
-  </html>
+      <div class="reminder">
+        <span class="reminder-emoji">🩺</span>
+        <span><strong>Checkups:</strong> ${profile.reminders?.checkups || 'N/A'}</span>
+      </div>
+      <div class="reminder">
+        <span class="reminder-emoji">✂️</span>
+        <span><strong>Grooming:</strong> ${profile.reminders?.grooming || 'N/A'}</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
 `;
 
       // Phase 3: Write final content
