@@ -58,7 +58,7 @@ const DOM = {
   modalOverlay: document.getElementById('modal-overlay') || null,
     
   // Buttons
-  cancelEdit: document.getElementById('cancelEdit')
+  cancelEdit: document.getElementById('cancel6Edit')
 };
 
 // Safety check (optional)
@@ -522,6 +522,7 @@ async function editPetProfile(petId) {
    sessionStorage.setItem(`editingProfile_${petId}_timestamp`, Date.now());
    
     resetForm(); // Prevent leftover values or states
+      
     // Your existing field population logic (unchanged)
     const setValue = (field, value) => {
     const el = DOM[field];
@@ -544,9 +545,11 @@ async function editPetProfile(petId) {
     setValue('emergencyContactName', profile.emergencyContacts?.[0]?.name);
     setValue('emergencyContactPhone', profile.emergencyContacts?.[0]?.phone);
     setValue('emergencyContactRelationship', profile.emergencyContacts?.[0]?.relationship);
-    setValue('vaccinationsAndDewormingReminder', profile.vaccinationsAndDewormingReminder);
-    setValue('medicalCheckupsReminder', profile.medicalCheckupsReminder);
-    setValue('groomingReminder', profile.groomingReminder);    
+      // Modified 
+    setValue('vaccinationsAndDewormingReminder', profile.reminders?.vaccinations);
+    setValue('medicalCheckupsReminder', profile.reminders?.checkups);
+    setValue('groomingReminder', profile.reminders?.grooming);
+    
     // Handle pet photo preview
     const preview = DOM.petPhotoPreview;
     if (preview && profile.petPhoto) {
@@ -554,6 +557,7 @@ async function editPetProfile(petId) {
       preview.style.display = 'block';
     }
     // Show cancel button (unchanged)
+    console.log("Cancel button:", DOM.cancelEdit); // to check if the button exists
     const cancelButton = DOM.cancelEdit;
     if (cancelButton) {
       cancelButton.style.display = 'inline-block';
