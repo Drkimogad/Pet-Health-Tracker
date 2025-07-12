@@ -512,6 +512,12 @@ function showPetDetails(profile) {
 // FUNCTION EDIT PROFILE
 // FUNCTION EDIT PROFILE (UPDATED FOR HYBRID STORAGE)
 //=======================================
+// for me to understand editting behaviour
+//🧪 Think of the logic like this:
+//Reset/clean the form
+//Fill in the fields from profile
+//Make form visible
+//Scroll to it
 async function editPetProfile(petId) {
   try {    
     // 1. Try to load from Firestore if available
@@ -576,6 +582,7 @@ async function editPetProfile(petId) {
 
     // Call cancel button function added recently
     ensureCancelEditButton();
+    DOM.petList.classList.remove("hidden"); // ✅ Make the profile form visible
 
     // Scroll to form
     DOM.petList.scrollIntoView({ behavior: 'smooth' });
