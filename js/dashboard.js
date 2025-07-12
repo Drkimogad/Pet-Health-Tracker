@@ -557,12 +557,21 @@ async function editPetProfile(petId) {
       preview.style.display = 'block';
     }
     // Show cancel button (unchanged)
-    console.log("Cancel button:", DOM.cancelEdit); // to check if the button exists
-    const cancelButton = DOM.cancelEdit;
-    if (cancelButton) {
-      cancelButton.style.display = 'inline-block';
-      cancelButton.onclick = handleCancelEdit;
+    let cancelButton = document.getElementById("cancelEdit");
+    if (!cancelButton) {
+    cancelButton = document.createElement("button");
+    cancelButton.id = "cancelEdit";
+    cancelButton.className = "cancel-btn";
+    cancelButton.textContent = "Cancel Edit";
+
+    const form = document.querySelector("form");
+    if (form) {
+    form.appendChild(cancelButton); // Append at end of form
     }
+  }
+   cancelButton.style.display = "inline-block";
+   cancelButton.onclick = handleCancelEdit;
+
     // Scroll to form
     DOM.petList.scrollIntoView({ behavior: 'smooth' });
 
@@ -627,7 +636,11 @@ function handleCancelEdit() {
     // Cleanup
     sessionStorage.removeItem(`editingProfile_${editingProfileId}`);
     editingProfileId = null;
-    DOM.cancelEdit.style.display = 'none';
+    const cancelButton = document.getElementById("cancelEdit");
+    if (cancelButton) {
+    cancelButton.remove(); // Cleanly remove it from DOM
+    }
+
     DOM.petPhotoPreview.style.display = 'none';
     DOM.petPhotoInput.value = '';
   resetForm();
