@@ -542,16 +542,15 @@ async function editPetProfile(petId) {
      ...profile,
      _savedAt: Date.now()
    }));
-   sessionStorage.setItem(`editingProfile_${petId}_timestamp`, Date.now());
-   
+   sessionStorage.setItem(`editingProfile_${petId}_timestamp`, Date.now()); 
     resetForm(); // Prevent leftover values or states
+    // reassign photopreview here if needed
       
-    // Your existing field population logic (unchanged)
+// Your existing field population logic (unchanged)
     const setValue = (field, value) => {
     const el = DOM[field];
     if (el) el.value = value || '';
    };
-
     setValue('petName', profile.petName);
     setValue('breed', profile.breed);
     setValue('age', profile.age);
@@ -659,6 +658,7 @@ function handleCancelEdit() {
     resetForm();
    DOM.petList.classList.add("hidden");
    DOM.savedProfilesList.classList.remove("hidden");
+   DOM.petList.scrollIntoView({ behavior: 'smooth' });
   }
 }
 //=================================================
