@@ -463,51 +463,75 @@ async function loadSavedPetProfile() {
 //================================
 // Helper function to show petcard details via details button
 //=================================
+// ✅ UPDATED showPetDetails() with Share Button in Modal
 function showPetDetails(profile) {
   const emergencyContact = profile.emergencyContacts?.[0] || {};
-  
+
   const detailsHtml = `
     <h3>${profile.petName || 'Unnamed Pet'}</h3>
     ${profile.petPhoto ? `<img src="${profile.petPhoto}" class="detail-photo">` : ''}
-      
-      <div class="details-grid">
-        <div><strong>Breed:</strong> ${profile.breed || 'N/A'}</div>
-        <div><strong>Age:</strong> ${profile.age || 'N/A'}</div>
-        <div><strong>Weight:</strong> ${profile.weight || 'N/A'}</div>
-        <div><strong>Type:</strong> ${profile.type || 'Unknown'}</div>
-        <div><strong>Gender:</strong> ${profile.gender || 'Unknown'}</div>
-        
-        <div class="section-break"><strong>Microchip:</strong></div>
-        <div>ID: ${profile.microchip?.id || 'N/A'}</div>
-        <div>Date: ${profile.microchip?.date || 'N/A'}</div>
-        <div>Vendor: ${profile.microchip?.vendor || 'N/A'}</div>
-        
-        <div class="section-break"><strong>Health:</strong></div>
-        <div>Allergies: ${profile.allergies || 'N/A'}</div>
-        <div>Medical History: ${profile.medicalHistory || 'N/A'}</div>
-        <div>Diet Plan: ${profile.dietPlan || 'N/A'}</div>
-        <div>Current Mood: ${profile.mood || 'N/A'}</div>
-                
-        <div class="section-break"><strong>Emergency Contact:</strong></div>
-        <div>Name: ${emergencyContact.name || 'N/A'}</div>
-        <div>Phone: ${emergencyContact.phone || 'N/A'}</div>
-        <div>Relationship: ${emergencyContact.relationship || 'N/A'}</div>
 
-        <div class="section-break"><strong>Reminders:</strong></div>
-        <div>Vaccinations: ${formatReminder(profile.reminders?.vaccinations)}</div>
-        <div>Checkups: ${formatReminder(profile.reminders?.checkups)}</div>
-        <div>Grooming: ${formatReminder(profile.reminders?.grooming)}</div>
-       </div>
-       <div class="modal-actions">
+    <div class="details-grid">
+      <div><strong>Breed:</strong> ${profile.breed || 'N/A'}</div>
+      <div><strong>Age:</strong> ${profile.age || 'N/A'}</div>
+      <div><strong>Weight:</strong> ${profile.weight || 'N/A'}</div>
+      <div><strong>Type:</strong> ${profile.type || 'Unknown'}</div>
+      <div><strong>Gender:</strong> ${profile.gender || 'Unknown'}</div>
+
+      <div class="section-break"><strong>Microchip:</strong></div>
+      <div>ID: ${profile.microchip?.id || 'N/A'}</div>
+      <div>Date: ${profile.microchip?.date || 'N/A'}</div>
+      <div>Vendor: ${profile.microchip?.vendor || 'N/A'}</div>
+
+      <div class="section-break"><strong>Health:</strong></div>
+      <div>Allergies: ${profile.allergies || 'N/A'}</div>
+      <div>Medical History: ${profile.medicalHistory || 'N/A'}</div>
+      <div>Diet Plan: ${profile.dietPlan || 'N/A'}</div>
+      <div>Current Mood: ${profile.mood || 'N/A'}</div>
+
+      <div class="section-break"><strong>Emergency Contact:</strong></div>
+      <div>Name: ${emergencyContact.name || 'N/A'}</div>
+      <div>Phone: ${emergencyContact.phone || 'N/A'}</div>
+      <div>Relationship: ${emergencyContact.relationship || 'N/A'}</div>
+
+      <div class="section-break"><strong>Reminders:</strong></div>
+      <div>Vaccinations: ${formatReminder(profile.reminders?.vaccinations)}</div>
+      <div>Checkups: ${formatReminder(profile.reminders?.checkups)}</div>
+      <div>Grooming: ${formatReminder(profile.reminders?.grooming)}</div>
+    </div>
+
+    <div class="modal-actions">
       <button class="save-card-btn">💾 Save Card</button>
       <button class="print-btn" onclick="window.print()">🖨 Print</button>
+      <button class="share-btn">📤 Share</button>
       <button class="close-btn" onclick="hideModal()">Close</button>
-      </div>
-   </div>
+    </div>
   `;
-  
+
   showModal(detailsHtml);
+
+  // ✅ Event Delegation for Share Modal details Button listener
+  const shareBtn = document.querySelector('.share-btn');
+  if (shareBtn) {
+    shareBtn.addEventListener('click', () => {
+      const textToShare = document.querySelector('.modal-content')?.innerText || '';
+      const shareData = {
+        title: `${profile.petName}'s Profile`,
+        text: textToShare,
+        url: window.location.href
+      };
+
+      if (navigator.share) {
+        navigator.share(shareData).catch(err => console.error("Share failed", err));
+      } else {
+        navigator.clipboard.writeText(`${shareData.title}\n\n${shareData.text}\n\n${shareData.url}`)
+          .then(() => alert('Profile copied to clipboard!'))
+          .catch(() => alert('Copy failed'));
+      }
+    });
+  }
 }
+
 //=========================================
 // FUNCTION EDIT PROFILE
 // FUNCTION EDIT PROFILE (UPDATED FOR HYBRID STORAGE) PRODUCTION READY
