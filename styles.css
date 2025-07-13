@@ -627,6 +627,11 @@ textarea:focus {
   transform: translateY(20px);
   transition: transform 0.3s ease;
 }
+/* blur card behind spinner during loading*/
+.modal-content.loading {
+  filter: blur(2px);
+  pointer-events: none;
+}
 
 .modal-overlay.active .modal-content {
   transform: translateY(0);
