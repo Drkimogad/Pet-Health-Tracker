@@ -718,50 +718,68 @@ async function printPetProfile(petId) {
       return;
     }
 
-    // Phase 1: Load pet photo if exists
+    // Phase 1: Load and encode the photo
     let photoDataURL = null;
     if (profile.petPhoto) {
-      photoDataURL = await new Promise((resolve) => {
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.onload = () => {
+      try {
+        const img = await new Promise((resolve, reject) => {
+          const image = new Image();
+          image.crossOrigin = 'anonymous';
+          image.onload = () => resolve(image);
+          image.onerror = () => {
+            console.warn("⚠️ Photo load failed.");
+            resolve(null);
+          };
+          image.src = profile.petPhoto;
+        });
+
+        if (img) {
           const canvas = document.createElement('canvas');
           canvas.width = img.naturalWidth;
           canvas.height = img.naturalHeight;
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0);
-          resolve(canvas.toDataURL('image/png'));
-        };
-        img.onerror = () => {
-          console.warn("⚠️ Pet photo failed to load.");
-          resolve(null);
-        };
-        img.src = profile.petPhoto;
-      });
+          photoDataURL = canvas.toDataURL('image/png');
+        }
+      } catch (err) {
+        console.warn("⛔ Photo processing failed:", err);
+      }
     }
 
-    // Phase 2: Generate printable HTML
+    // Phase 2: Open print window and write full content
+    const printWindow = window.open('', '_blank', 'height=700,width=800');
+    if (!printWindow) {
+      alert("⚠️ Unable to open print window (pop-up blocker?)");
+      return;
+    }
+
     const printContent = `
       <html>
         <head>
-          <title>${profile.petName || 'Pet'} - Printable Profile</title>
+          <title>${profile.petName || 'Pet Profile'}</title>
           <style>
             body {
               font-family: Arial, sans-serif;
               padding: 2rem;
               background: white;
-              color: black;
+              margin: 0;
             }
 
             .pet-card {
-              max-width: 700px;
-              margin: 0 auto;
-              padding: 1.5rem;
+              background: #fff;
               border: 2px solid #A88905;
               border-radius: 10px;
+              padding: 1.5rem;
               display: flex;
               flex-direction: column;
               gap: 1rem;
+              max-width: 700px;
+              margin: auto;
+              page-break-after: always;
+            }
+
+            .pet-photo-wrapper {
+              text-align: center;
             }
 
             .pet-photo {
@@ -769,19 +787,26 @@ async function printPetProfile(petId) {
               height: auto;
               border-radius: 10px;
               object-fit: cover;
-              margin: 0 auto;
+            }
+
+            .pet-header {
+              text-align: center;
+              margin-top: 1rem;
             }
 
             .pet-header h4 {
-              text-align: center;
-              font-size: 1.5rem;
-              margin: 0;
+              font-size: 1.4rem;
               color: #2c3e50;
+              margin: 0;
+            }
+
+            .pet-details {
+              font-size: 1rem;
+              line-height: 1.5;
             }
 
             .pet-details p {
               margin: 0.3rem 0;
-              font-size: 1rem;
             }
 
             .pet-reminders {
@@ -792,18 +817,20 @@ async function printPetProfile(petId) {
             }
 
             .reminder {
-              display: flex;
-              align-items: center;
-              gap: 8px;
               margin-bottom: 0.5rem;
             }
 
-            .reminder-emoji {
-              font-size: 1.2rem;
+            .reminder span {
+              margin-right: 6px;
             }
 
             @media print {
-              .modal-actions, .print-btn, .save-card-btn, .close-btn {
+              body {
+                margin: 0;
+                padding: 0;
+              }
+
+              button, .modal-actions {
                 display: none !important;
               }
             }
@@ -811,10 +838,16 @@ async function printPetProfile(petId) {
         </head>
         <body>
           <div class="pet-card">
-            ${photoDataURL ? `<img src="${photoDataURL}" class="pet-photo">` : ''}
+            ${photoDataURL ? `
+              <div class="pet-photo-wrapper">
+                <img src="${photoDataURL}" class="pet-photo">
+              </div>` : ''
+            }
+
             <div class="pet-header">
               <h4>${profile.petName || 'Unnamed Pet'}</h4>
             </div>
+
             <div class="pet-details">
               <p><strong>Breed:</strong> ${profile.breed || 'N/A'}</p>
               <p><strong>Age:</strong> ${profile.age || 'N/A'}</p>
@@ -822,44 +855,69 @@ async function printPetProfile(petId) {
               <p><strong>Type:</strong> ${profile.type || 'N/A'}</p>
               <p><strong>Gender:</strong> ${profile.gender || 'N/A'}</p>
               <p><strong>Mood:</strong> ${profile.mood || 'N/A'}</p>
-              <p><strong>Microchip ID:</strong> ${profile.microchip?.id || 'N/A'}</p>
-              <p><strong>Microchip Date:</strong> ${profile.microchip?.date || 'N/A'}</p>
-              <p><strong>Microchip Vendor:</strong> ${profile.microchip?.vendor || 'N/A'}</p>
+            </div>
+
+            <div class="pet-details">
+              <h4>Microchip Info</h4>
+              <p><strong>ID:</strong> ${profile.microchip?.id || 'N/A'}</p>
+              <p><strong>Date:</strong> ${profile.microchip?.date || 'N/A'}</p>
+              <p><strong>Vendor:</strong> ${profile.microchip?.vendor || 'N/A'}</p>
+            </div>
+
+            <div class="pet-details">
+              <h4>Health</h4>
               <p><strong>Allergies:</strong> ${profile.allergies || 'None'}</p>
               <p><strong>Medical History:</strong> ${profile.medicalHistory || 'None'}</p>
               <p><strong>Diet Plan:</strong> ${profile.dietPlan || 'None'}</p>
-              <p><strong>Emergency Contact:</strong> ${profile.emergencyContacts?.[0]?.name || 'N/A'}, ${profile.emergencyContacts?.[0]?.phone || ''}</p>
             </div>
+
+            <div class="pet-details">
+              <h4>Emergency Contact</h4>
+              <p><strong>Name:</strong> ${profile.emergencyContacts?.[0]?.name || 'N/A'}</p>
+              <p><strong>Phone:</strong> ${profile.emergencyContacts?.[0]?.phone || 'N/A'}</p>
+              <p><strong>Relationship:</strong> ${profile.emergencyContacts?.[0]?.relationship || 'N/A'}</p>
+            </div>
+
             <div class="pet-reminders">
-              <div class="reminder"><span class="reminder-emoji">💉</span> Vaccinations: ${profile.reminders?.vaccinations || 'N/A'}</div>
-              <div class="reminder"><span class="reminder-emoji">🩺</span> Checkups: ${profile.reminders?.checkups || 'N/A'}</div>
-              <div class="reminder"><span class="reminder-emoji">✂️</span> Grooming: ${profile.reminders?.grooming || 'N/A'}</div>
+              <h4>Reminders</h4>
+              <div class="reminder"><span>💉</span> <strong>Vaccinations:</strong> ${profile.reminders?.vaccinations || 'N/A'}</div>
+              <div class="reminder"><span>🩺</span> <strong>Checkups:</strong> ${profile.reminders?.checkups || 'N/A'}</div>
+              <div class="reminder"><span>✂️</span> <strong>Grooming:</strong> ${profile.reminders?.grooming || 'N/A'}</div>
             </div>
           </div>
         </body>
       </html>
     `;
 
-    // Phase 3: Open print window only when all is ready
-    const printWindow = window.open('', '_blank', 'height=600,width=800');
+    // Phase 3: Write content and trigger print only when ready
+    printWindow.document.open();
     printWindow.document.write(printContent);
     printWindow.document.close();
 
-    // Phase 4: Trigger print after slight delay to ensure render
-    printWindow.onload = () => {
-      setTimeout(() => {
-        printWindow.print();
-        printWindow.onafterprint = () => {
-          printWindow.close();
-        };
-      }, 300);
-    };
+    const waitForRender = setInterval(() => {
+      try {
+        const ready = printWindow.document.readyState === 'complete';
+        const imgReady = !photoDataURL || printWindow.document.querySelector('img')?.complete;
+
+        if (ready && imgReady) {
+          clearInterval(waitForRender);
+          setTimeout(() => {
+            printWindow.focus();
+            printWindow.print();
+            printWindow.onafterprint = () => printWindow.close();
+          }, 300); // Let layout settle
+        }
+      } catch (err) {
+        clearInterval(waitForRender);
+        console.error("Print readiness check failed:", err);
+        printWindow.close();
+      }
+    }, 300);
   } catch (error) {
-    console.error("Print error:", error);
-    alert("❌ Failed to generate printable profile.");
+    console.error('Print error:', error);
+    alert('Failed to print profile');
   }
 }
-
 
 //============================================
 // SHARE PET PROFILE (UPDATED FOR HYBRID STORAGE) PRODUCTION READY
