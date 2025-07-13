@@ -510,26 +510,42 @@ function showPetDetails(profile) {
 
   showModal(detailsHtml);
 
-  // ✅ Event Delegation for Share Modal details Button listener
-  const shareBtn = document.querySelector('.share-btn');
-  if (shareBtn) {
-    shareBtn.addEventListener('click', () => {
-      const textToShare = document.querySelector('.modal-content')?.innerText || '';
-      const shareData = {
-        title: `${profile.petName}'s Profile`,
-        text: textToShare,
-        url: window.location.href
-      };
+// wiring up Share button for the modal
+const shareBtn = document.querySelector('.share-btn');
+if (shareBtn) {
+  shareBtn.addEventListener('click', async () => {
+    const modal = document.querySelector('.modal-content');
+    if (!modal) return;
 
-      if (navigator.share) {
-        navigator.share(shareData).catch(err => console.error("Share failed", err));
+    try {
+      const canvas = await html2canvas(modal, {
+        backgroundColor: '#fff',
+        useCORS: true,
+        scale: 2
+      });
+
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+      if (!blob) throw new Error("Failed to convert canvas to image");
+
+      const file = new File([blob], `${profile.petName || 'pet'}_card.png`, {
+        type: 'image/png'
+      });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          title: `${profile.petName}'s Profile`,
+          text: `Check out this pet's profile card.`,
+          files: [file]
+        });
       } else {
-        navigator.clipboard.writeText(`${shareData.title}\n\n${shareData.text}\n\n${shareData.url}`)
-          .then(() => alert('Profile copied to clipboard!'))
-          .catch(() => alert('Copy failed'));
+        alert('Sharing not supported on this device.');
       }
-    });
-  }
+
+    } catch (err) {
+      console.error("❌ Share failed:", err);
+      showErrorToUser("Failed to share the profile card");
+    }
+  });
 }
 
 //=========================================
