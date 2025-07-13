@@ -663,6 +663,45 @@ textarea:focus {
   margin-top: 1rem;
   font-weight: bold;
 }
+/* === Modal Button Styles (including new Share) === */
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.modal-actions button {
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+/* Specific Buttons */
+.save-card-btn {
+  background-color: var(--green, #4caf50);
+  color: white;
+}
+
+.print-btn {
+  background-color: var(--qr-blue, #1976d2);
+  color: white;
+}
+
+.close-btn {
+  background-color: var(--red, #e53935);
+  color: white;
+}
+
+.share-btn {
+  background-color: var(--mustard, #fbc02d);
+  color: black;
+}
 
 /* Loader styling  TO SEE IF CAN BE USED FOR UI UPDATING*/
 .loader {
