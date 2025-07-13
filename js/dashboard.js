@@ -709,20 +709,19 @@ async function deletePetProfile(petId) {
 //====================================
 // Print Pet Profile button functionality PRODUCTION READY
 //======================================
-// =====================
-// ✅ PHASE 1: Asset Preload
-// =====================
 async function printPetProfile(petId) {
   try {
     const profiles = await loadPets();
     const profile = profiles.find(p => p.id === petId);
-    if (!profile) return alert("Profile not found!");
+    if (!profile) {
+      alert("Profile not found!");
+      return;
+    }
 
+    // Phase 1: Load pet photo if exists
     let photoDataURL = null;
-    const assetPromises = [];
-
     if (profile.petPhoto) {
-      assetPromises.push(new Promise((resolve) => {
+      photoDataURL = await new Promise((resolve) => {
         const img = new Image();
         img.crossOrigin = 'anonymous';
         img.onload = () => {
@@ -731,45 +730,88 @@ async function printPetProfile(petId) {
           canvas.height = img.naturalHeight;
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0);
-          photoDataURL = canvas.toDataURL('image/png');
-          resolve();
+          resolve(canvas.toDataURL('image/png'));
         };
-        img.onerror = () => resolve();
-        setTimeout(() => resolve(), 5000);
+        img.onerror = () => {
+          console.warn("⚠️ Pet photo failed to load.");
+          resolve(null);
+        };
         img.src = profile.petPhoto;
-      }));
+      });
     }
 
-    await Promise.all(assetPromises);
-
-// =====================
-// ✅ PHASE 2: Build Print HTML
-// =====================
+    // Phase 2: Generate printable HTML
     const printContent = `
       <html>
         <head>
-          <title>${profile.petName || 'Pet'} - Profile</title>
+          <title>${profile.petName || 'Pet'} - Printable Profile</title>
           <style>
-            ${document.querySelector('style')?.innerHTML || ''}
-            body { font-family: Arial, sans-serif; padding: 2rem; background: white; }
-            .pet-card { background: #fff; border: 2px solid #A88905; border-radius: 10px; padding: 1.5rem; max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem; box-shadow: none; }
-            .pet-photo-wrapper { display: flex; justify-content: center; margin-bottom: 1rem; }
-            .pet-photo { width: 120px; height: auto; border-radius: 10px; object-fit: cover; }
-            .pet-header { text-align: center; }
-            .pet-header h4 { font-size: 1.4rem; font-weight: bold; color: #2c3e50; margin: 0; }
-            .pet-details { font-size: 1rem; line-height: 1.6; }
-            .pet-details p { margin: 0.3rem 0; }
-            .pet-reminders { background: #DECCE1; padding: 1rem; border-radius: 6px; font-size: 0.95rem; }
-            .reminder { display: flex; align-items: center; margin-bottom: 0.5rem; }
-            .reminder-emoji { font-size: 1.2rem; margin-right: 8px; }
-            @media print { body { margin: 0; padding: 0; } }
+            body {
+              font-family: Arial, sans-serif;
+              padding: 2rem;
+              background: white;
+              color: black;
+            }
+
+            .pet-card {
+              max-width: 700px;
+              margin: 0 auto;
+              padding: 1.5rem;
+              border: 2px solid #A88905;
+              border-radius: 10px;
+              display: flex;
+              flex-direction: column;
+              gap: 1rem;
+            }
+
+            .pet-photo {
+              width: 120px;
+              height: auto;
+              border-radius: 10px;
+              object-fit: cover;
+              margin: 0 auto;
+            }
+
+            .pet-header h4 {
+              text-align: center;
+              font-size: 1.5rem;
+              margin: 0;
+              color: #2c3e50;
+            }
+
+            .pet-details p {
+              margin: 0.3rem 0;
+              font-size: 1rem;
+            }
+
+            .pet-reminders {
+              background: #DECCE1;
+              padding: 1rem;
+              border-radius: 6px;
+              font-size: 0.95rem;
+            }
+
+            .reminder {
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              margin-bottom: 0.5rem;
+            }
+
+            .reminder-emoji {
+              font-size: 1.2rem;
+            }
+
+            @media print {
+              .modal-actions, .print-btn, .save-card-btn, .close-btn {
+                display: none !important;
+              }
+            }
           </style>
         </head>
         <body>
           <div class="pet-card">
-            <div class="pet-photo-wrapper">
-              ${photoDataURL ? `<img src="${photoDataURL}" class="pet-photo">` : ''}
-            </div>
+            ${photoDataURL ? `<img src="${photoDataURL}" class="pet-photo">` : ''}
             <div class="pet-header">
               <h4>${profile.petName || 'Unnamed Pet'}</h4>
             </div>
@@ -780,67 +822,44 @@ async function printPetProfile(petId) {
               <p><strong>Type:</strong> ${profile.type || 'N/A'}</p>
               <p><strong>Gender:</strong> ${profile.gender || 'N/A'}</p>
               <p><strong>Mood:</strong> ${profile.mood || 'N/A'}</p>
-              <h4>Microchip Info</h4>
-              <p><strong>ID:</strong> ${profile.microchip?.id || 'N/A'}</p>
-              <p><strong>Date:</strong> ${profile.microchip?.date || 'N/A'}</p>
-              <p><strong>Vendor:</strong> ${profile.microchip?.vendor || 'N/A'}</p>
-              <h4>Health</h4>
+              <p><strong>Microchip ID:</strong> ${profile.microchip?.id || 'N/A'}</p>
+              <p><strong>Microchip Date:</strong> ${profile.microchip?.date || 'N/A'}</p>
+              <p><strong>Microchip Vendor:</strong> ${profile.microchip?.vendor || 'N/A'}</p>
               <p><strong>Allergies:</strong> ${profile.allergies || 'None'}</p>
               <p><strong>Medical History:</strong> ${profile.medicalHistory || 'None'}</p>
               <p><strong>Diet Plan:</strong> ${profile.dietPlan || 'None'}</p>
-              <h4>Emergency Contact</h4>
-              <p><strong>Name:</strong> ${profile.emergencyContacts?.[0]?.name || 'N/A'}</p>
-              <p><strong>Phone:</strong> ${profile.emergencyContacts?.[0]?.phone || 'N/A'}</p>
-              <p><strong>Relationship:</strong> ${profile.emergencyContacts?.[0]?.relationship || 'N/A'}</p>
+              <p><strong>Emergency Contact:</strong> ${profile.emergencyContacts?.[0]?.name || 'N/A'}, ${profile.emergencyContacts?.[0]?.phone || ''}</p>
             </div>
             <div class="pet-reminders">
-              <h4>Reminders</h4>
-              <div class="reminder"><span class="reminder-emoji">💉</span> <span><strong>Vaccinations:</strong> ${profile.reminders?.vaccinations || 'N/A'}</span></div>
-              <div class="reminder"><span class="reminder-emoji">🩺</span> <span><strong>Checkups:</strong> ${profile.reminders?.checkups || 'N/A'}</span></div>
-              <div class="reminder"><span class="reminder-emoji">✂️</span> <span><strong>Grooming:</strong> ${profile.reminders?.grooming || 'N/A'}</span></div>
+              <div class="reminder"><span class="reminder-emoji">💉</span> Vaccinations: ${profile.reminders?.vaccinations || 'N/A'}</div>
+              <div class="reminder"><span class="reminder-emoji">🩺</span> Checkups: ${profile.reminders?.checkups || 'N/A'}</div>
+              <div class="reminder"><span class="reminder-emoji">✂️</span> Grooming: ${profile.reminders?.grooming || 'N/A'}</div>
             </div>
           </div>
         </body>
-      </html>`;
+      </html>
+    `;
 
-// =====================
-// ✅ PHASE 3: Open, Write, Wait & Print
-// =====================
-Promise.all(assetPromises).then(() => {
-  const printWindow = window.open('', '_blank', 'height=600,width=800');
-  printWindow.document.write(printContent);
-  printWindow.document.close();
+    // Phase 3: Open print window only when all is ready
+    const printWindow = window.open('', '_blank', 'height=600,width=800');
+    printWindow.document.write(printContent);
+    printWindow.document.close();
 
-  const waitForReadyAndPrint = () => {
-    const checkReady = setInterval(() => {
-      try {
-        const body = printWindow.document.body;
-        const imgReady = !photoDataURL || printWindow.document.querySelector('img[src="' + photoDataURL + '"]')?.complete;
-
-        if (body && body.innerHTML.includes(profile.petName) && imgReady) {
-          clearInterval(checkReady);
-          setTimeout(() => {
-            printWindow.print();
-            printWindow.onafterprint = () => {
-              printWindow.close();
-            };
-          }, 300);
-        }
-      } catch (e) {
-        clearInterval(checkReady);
-        console.warn("❌ Print check failed:", e);
-        printWindow.close();
-      }
-    }, 300);
-  };
-
-  waitForReadyAndPrint();
-  });
-} catch (error) {
-    console.error('Print error:', error);
-    alert('Failed to print profile.');
+    // Phase 4: Trigger print after slight delay to ensure render
+    printWindow.onload = () => {
+      setTimeout(() => {
+        printWindow.print();
+        printWindow.onafterprint = () => {
+          printWindow.close();
+        };
+      }, 300);
+    };
+  } catch (error) {
+    console.error("Print error:", error);
+    alert("❌ Failed to generate printable profile.");
   }
 }
+
 
 //============================================
 // SHARE PET PROFILE (UPDATED FOR HYBRID STORAGE) PRODUCTION READY
