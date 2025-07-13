@@ -806,33 +806,37 @@ async function printPetProfile(petId) {
 // =====================
 // ✅ PHASE 3: Open, Write, Wait & Print
 // =====================
-    const printWindow = window.open('', '_blank', 'width=800,height=1000');
-    printWindow.document.write(printContent);
-    printWindow.document.close();
+Promise.all(assetPromises).then(() => {
+  const printWindow = window.open('', '_blank', 'height=600,width=800');
+  printWindow.document.write(printContent);
+  printWindow.document.close();
 
-    const waitForReadyAndPrint = () => {
-      const checkReady = setInterval(() => {
-        try {
-          const body = printWindow.document.body;
-          const imgReady = !photoDataURL || printWindow.document.querySelector('img')?.complete;
+  const waitForReadyAndPrint = () => {
+    const checkReady = setInterval(() => {
+      try {
+        const body = printWindow.document.body;
+        const imgReady = !photoDataURL || printWindow.document.querySelector('img[src="' + photoDataURL + '"]')?.complete;
 
-          if (body && body.innerHTML.includes(profile.petName) && imgReady) {
-            clearInterval(checkReady);
-            setTimeout(() => {
-              printWindow.print();
-              printWindow.onafterprint = () => printWindow.close();
-            }, 300);
-          }
-        } catch (e) {
+        if (body && body.innerHTML.includes(profile.petName) && imgReady) {
           clearInterval(checkReady);
-          console.warn("❌ Print check failed:", e);
-          printWindow.close();
+          setTimeout(() => {
+            printWindow.print();
+            printWindow.onafterprint = () => {
+              printWindow.close();
+            };
+          }, 300);
         }
-      }, 300);
-    };
+      } catch (e) {
+        clearInterval(checkReady);
+        console.warn("❌ Print check failed:", e);
+        printWindow.close();
+      }
+    }, 300);
+  };
 
-    waitForReadyAndPrint();
-  } catch (error) {
+  waitForReadyAndPrint();
+  });
+} catch (error) {
     console.error('Print error:', error);
     alert('Failed to print profile.');
   }
