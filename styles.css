@@ -495,7 +495,8 @@ textarea:focus {
   background-color: var(--qr-blue);
   color: white;
 }
-/*NEW HELPER FUNCTION*/
+
+/*NEW HELPER FUNCTION FOR PET FIELDS*/
 .pet-field {
   display: flex;
   flex-direction: column;
@@ -506,7 +507,7 @@ textarea:focus {
   color: var(--text-color);
 }
 
-/* ===== QR CODE STYLES ===== */
+/* QR CODE STYLES */
 .qr-window {
   padding: 20px;
   text-align: center;
@@ -535,12 +536,13 @@ textarea:focus {
   background: var(--qr-green);
 }
 
-/* for sharing */
+/* SHARING STYLE */
 @keyframes highlight {
     0% { background: rgba(255,235,59,0.3); }
     100% { background: transparent; }
 }
-/* ===== PRINT STYLES ===== */
+
+/*  PRINT STYLES */
 @media print {
   body {
     font-size: 14pt;
@@ -563,68 +565,30 @@ textarea:focus {
     page-break-after: avoid;
     break-after: avoid;
   }
-}
-
-/* Loader styling  TO SEE IF CAN BE USED FOR UI UPDATING*/
-.loader {
-  border: 3px solid #f3f3f3;
-  border-top: 3px solid var(--qr-blue);
-  border-radius: 50%;
-  width: 35px;
-  height: 35px;
-  animation: spin 1s linear infinite;
-  margin: 2rem auto;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1000;
-}
-/* ===== ERROR STATES ===== */
-.error-message {
-  color: var(--error-color);
-  font-size: 0.9rem;
-  margin-top: 0.3rem;
-  display: none;
-}
-
-/* ===== ANIMATIONS ===== */
-@keyframes formEntrance {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* ===== RESPONSIVE DESIGN ===== */
-@media (max-width: 768px) {
-  body {
-    padding: 10px;
+  
+  /* 👇 NEW: Hide modal buttons from print view */
+  .modal-actions,
+  .close-modal {
+    display: none !important;
   }
 
-  .form-container, .reminders-container {
-    padding: 15px;
+  /* 👇 Ensure only modal content prints, not background */
+  .modal-overlay {
+    background: white !important;
+    padding: 0 !important;
   }
 
-  fieldset {
-    padding: 15px;
-  }
-}
-
-@media (max-width: 480px) {
-  button {
-    width: 100%;
+  /* 👇 Prevent duplicate prints if any */
+  body > *:not(.modal-overlay) {
+    display: none !important;
   }
 
-  .pet-card {
-    padding: 15px;
-  }
-
-  .qr-controls {
-    flex-direction: column;
+  .modal-content {
+    max-width: 100%;
+    box-shadow: none;
+    border: none;
+    margin: 0;
+    padding: 0;
   }
 }
 
@@ -698,4 +662,68 @@ textarea:focus {
   grid-column: 1 / -1;
   margin-top: 1rem;
   font-weight: bold;
+}
+
+/* Loader styling  TO SEE IF CAN BE USED FOR UI UPDATING*/
+.loader {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid var(--qr-blue);
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  animation: spin 1s linear infinite;
+  margin: 2rem auto;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+}
+
+/* ===== ERROR STATES ===== */
+.error-message {
+  color: var(--error-color);
+  font-size: 0.9rem;
+  margin-top: 0.3rem;
+  display: none;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes formEntrance {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  .form-container, .reminders-container {
+    padding: 15px;
+  }
+
+  fieldset {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  button {
+    width: 100%;
+  }
+
+  .pet-card {
+    padding: 15px;
+  }
+
+  .qr-controls {
+    flex-direction: column;
+  }
 }
