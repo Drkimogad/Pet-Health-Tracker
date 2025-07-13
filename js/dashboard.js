@@ -520,6 +520,7 @@ shareBtn.addEventListener('click', async () => {
   loader.className = 'loader';
   loader.setAttribute('id', 'share-loader');
   modal.appendChild(loader);
+  modal.classList.add('loading'); // check
 
   try {
     // 🖼️ Convert to image with html2canvas
@@ -535,7 +536,8 @@ shareBtn.addEventListener('click', async () => {
     const file = new File([blob], `${profile.petName || 'pet'}_card.png`, {
       type: 'image/png'
     });
-
+    modal.classList.remove('loading'); // check
+      
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
       await navigator.share({
         title: `${profile.petName}'s Profile`,
