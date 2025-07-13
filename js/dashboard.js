@@ -511,42 +511,50 @@ function showPetDetails(profile) {
   showModal(detailsHtml);
 
 // wiring up Share button for the modal
-const shareBtn = document.querySelector('.share-btn');
-if (shareBtn) {
-  shareBtn.addEventListener('click', async () => {
-    const modal = document.querySelector('.modal-content');
-    if (!modal) return;
+shareBtn.addEventListener('click', async () => {
+  const modal = document.querySelector('.modal-content');
+  if (!modal) return;
 
-    try {
-      const canvas = await html2canvas(modal, {
-        backgroundColor: '#fff',
-        useCORS: true,
-        scale: 2
+  // ✅ Create a temporary loader element
+  const loader = document.createElement('div');
+  loader.className = 'loader';
+  loader.setAttribute('id', 'share-loader');
+  modal.appendChild(loader);
+
+  try {
+    // 🖼️ Convert to image with html2canvas
+    const canvas = await html2canvas(modal, {
+      backgroundColor: '#fff',
+      useCORS: true,
+      scale: 2
+    });
+
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+    if (!blob) throw new Error("Failed to convert canvas to image");
+
+    const file = new File([blob], `${profile.petName || 'pet'}_card.png`, {
+      type: 'image/png'
+    });
+
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        title: `${profile.petName}'s Profile`,
+        text: `Check out this pet's profile card.`,
+        files: [file]
       });
-
-      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-      if (!blob) throw new Error("Failed to convert canvas to image");
-
-      const file = new File([blob], `${profile.petName || 'pet'}_card.png`, {
-        type: 'image/png'
-      });
-
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({
-          title: `${profile.petName}'s Profile`,
-          text: `Check out this pet's profile card.`,
-          files: [file]
-        });
-      } else {
-        alert('Sharing not supported on this device.');
-      }
-
-    } catch (err) {
-      console.error("❌ Share failed:", err);
-      showErrorToUser("Failed to share the profile card");
+    } else {
+      alert('Sharing not supported on this device.');
     }
-  });
-}
+
+  } catch (err) {
+    console.error("❌ Share failed:", err);
+    showErrorToUser("Failed to share the profile card");
+  } finally {
+    // ✅ Always remove loader after attempt
+    loader.remove();
+  }
+});
+
 
 //=========================================
 // FUNCTION EDIT PROFILE
