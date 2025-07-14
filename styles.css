@@ -300,7 +300,7 @@ textarea:focus {
   display: flex;
   flex-direction: column; /* 🔁 Changed from row */
   gap: 1rem;
-  margin-bottom: 4rem; /* will give more space between saved petcards 1.5rem*/
+  margin-bottom: 10rem; /* will give more space between saved petcards 1.5rem*/
   box-shadow: 0 4px 6px rgba(0,0,0,0.08);
   border: 2px solid #A88905; /* 🔲 Card frame #e0e0e0 1px*/
 }
@@ -537,6 +537,12 @@ textarea:focus {
 }
 
 /* SHARING STYLE */
+#share-loader {
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.1s ease-out; /* Smooth disappear */
+}
+
 @keyframes highlight {
     0% { background: rgba(255,235,59,0.3); }
     100% { background: transparent; }
