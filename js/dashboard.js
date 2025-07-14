@@ -533,25 +533,36 @@ setTimeout(() => {
     new Promise((resolve) => {
       if (!photo || photo.complete) return resolve();
       photo.onload = () => resolve();
-      photo.onerror = () => resolve(); // Proceed even if image fails
+      photo.onerror = () => resolve();
     });
 
-  // 💾 Save Card
+  // ========== 💾 SAVE CARD (UPDATED) ========== //
   const saveBtn = modal.querySelector('.save-card-btn');
   if (saveBtn) {
     saveBtn.addEventListener('click', async () => {
       await waitForImage();
       hideButtonsTemporarily();
       try {
-        const canvas = await html2canvas(modal, { backgroundColor: '#fff', useCORS: true, scale: 2 });
+        // 🔥 Key fixes for image capture:
+        const canvas = await html2canvas(modal, {
+          backgroundColor: '#fff',
+          useCORS: true,
+          scale: 1,                     // Changed from 2 → 1 to prevent clipping
+          scrollY: 0,                    // Disables scroll capture
+          windowWidth: modal.scrollWidth, // Explicit width
+          windowHeight: modal.scrollHeight, // Explicit height
+          logging: true,                 // Debugging (optional)
+          allowTaint: false              // Security (recommended)
+        });
+        
         const dataURL = canvas.toDataURL('image/png');
         const link = document.createElement('a');
         link.href = dataURL;
-        link.download = 'PetCard.png';
+        link.download = 'PetCard_' + new Date().toISOString().slice(0, 10) + '.png'; // Unique filename
         link.click();
       } catch (err) {
         console.error('🛑 Failed to save card:', err);
-        alert('Failed to generate image.');
+        alert('Failed to generate image. Details in console.');
       } finally {
         restoreButtons();
       }
