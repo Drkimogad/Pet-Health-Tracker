@@ -1025,13 +1025,18 @@ async function printPetProfile(petId) {
 //============================================
 // SHARE PET PROFILE (UPDATED FOR HYBRID STORAGE) PRODUCTION READY
 //===========================================
-// ✅ Replaces old sharePetProfile() — now used as "Invite a Friend"
+// ✅ Replaces old sharePetProfile() — now used as "Invite Friends"
 function inviteFriends() {
   const appLink = "https://drkimogad.github.io/Pet-Health-Tracker/";
-  const inviteMessage = `🐾 Check out this awesome Pet Health Tracker app to manage your pet's health, reminders, and more.\n\nCreate your own pet profiles here: ${appLink}`;
+  const inviteMessage = `🐶 Looking for a smarter way to care for your pet?
 
+  🦴 Manage health records, reminders, emergency info, and more — all in one place!
+
+  📲 Try the Pet Health Tracker app and create your pet's profile today:
+  ${appLink}`;
+    
   const shareData = {
-    title: "Invite to Pet Health Tracker",
+    title: "Invite to Pet Health Tracker app",
     text: inviteMessage,
     url: appLink
   };
