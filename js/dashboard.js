@@ -502,7 +502,7 @@ function showPetDetails(profile) {
 
     <div class="modal-actions">
       <button class="save-card-btn">💾 Save Card</button>
-      <button class="print-btn" onclick="window.print()">🖨 Print Card</button>
+      <button class="print-card-btn">🖨 Print Card</button>
       <button class="share-card-btn">📤 Share Card</button>
       <button class="close-btn" onclick="hideModal()">Close</button>
     </div>
