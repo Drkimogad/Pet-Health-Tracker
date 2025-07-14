@@ -693,6 +693,8 @@ if (printBtn) {
     }
   });
 }
+}, 50); // ✅ THIS WAS MISSING - closes setTimeout
+
 //=========================================
 // FUNCTION EDIT PROFILE
 // FUNCTION EDIT PROFILE (UPDATED FOR HYBRID STORAGE) PRODUCTION READY
