@@ -511,76 +511,105 @@ function showPetDetails(profile) {
   // ✅ Inject modal into DOM
   showModal(detailsHtml);
     
-// Listeners to share, save modal buttons are in a set time out. PRINT BUTTON doesnt need it, it's native and sufficient. 
-// ✅ SAFELY Attach share logic only after modal content is rendered
+// ✅ SAFELY Attach Modal logics only after modal content is rendered
 setTimeout(() => {
-  const shareBtn = document.querySelector('.share-card-btn');
   const modal = document.querySelector('.modal-content');
-  if (!shareBtn || !modal) return;
+  const photo = modal.querySelector('.detail-photo');
+  const actions = modal.querySelector('.modal-actions');
 
-  shareBtn.addEventListener('click', async () => {
-    const loader = document.createElement('div');
-    loader.className = 'loader';
-    loader.id = 'share-loader';
-    modal.appendChild(loader);
-    modal.classList.add('loading');
+  if (!modal || !actions) return;
 
-    try {
-      const canvas = await html2canvas(modal, {
-        backgroundColor: '#fff',
-        useCORS: true,
-        scale: 2
-      });
+  const hideButtonsTemporarily = () => {
+    actions.style.visibility = 'hidden';
+    actions.style.position = 'absolute';
+  };
 
-      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-      if (!blob) throw new Error("Failed to convert canvas to image");
+  const restoreButtons = () => {
+    actions.style.visibility = '';
+    actions.style.position = '';
+  };
 
-      const file = new File([blob], `${profile.petName || 'pet'}_card.png`, {
-        type: 'image/png'
-      });
+  const waitForImage = () =>
+    new Promise((resolve) => {
+      if (!photo || photo.complete) return resolve();
+      photo.onload = () => resolve();
+      photo.onerror = () => resolve(); // Proceed even if image fails
+    });
 
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({
-          title: `${profile.petName}'s Profile`,
-          text: `Check out this pet's profile card.`,
-          files: [file]
-        });
-      } else {
-        alert('Sharing not supported on this device.');
+  // 💾 Save Card
+  const saveBtn = modal.querySelector('.save-card-btn');
+  if (saveBtn) {
+    saveBtn.addEventListener('click', async () => {
+      await waitForImage();
+      hideButtonsTemporarily();
+      try {
+        const canvas = await html2canvas(modal, { backgroundColor: '#fff', useCORS: true, scale: 2 });
+        const dataURL = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = dataURL;
+        link.download = 'PetCard.png';
+        link.click();
+      } catch (err) {
+        console.error('🛑 Failed to save card:', err);
+        alert('Failed to generate image.');
+      } finally {
+        restoreButtons();
       }
-    } catch (err) {
-      console.error("❌ Share failed:", err);
-      showErrorToUser("Failed to share the profile card");
-    } finally {
-      loader.remove();
-      modal.classList.remove('loading');
-    }
-  });
-}, 50); // ✅ setTimeout properly closed here
-
-//=================================
-// Show details modal Listener
-//===================================
-document.addEventListener('click', async (e) => {
-  if (e.target.classList.contains('save-card-btn')) {
-    const modalContent = document.querySelector('.modal-content');
-    if (!modalContent) return;
-
-    try {
-      const canvas = await html2canvas(modalContent);
-      const dataURL = canvas.toDataURL('image/png');
-
-      const link = document.createElement('a');
-      link.href = dataURL;
-      link.download = 'PetCard.png';
-      link.click();
-    } catch (err) {
-      console.error('🛑 Failed to save card:', err);
-      alert('Failed to generate image.');
-    }
+    });
   }
-});
-}
+
+  // 📤 Share Card
+  const shareBtn = modal.querySelector('.share-card-btn');
+  if (shareBtn) {
+    shareBtn.addEventListener('click', async () => {
+      const loader = document.createElement('div');
+      loader.className = 'loader';
+      loader.id = 'share-loader';
+      modal.appendChild(loader);
+      modal.classList.add('loading');
+
+      await waitForImage();
+      hideButtonsTemporarily();
+      try {
+        const canvas = await html2canvas(modal, { backgroundColor: '#fff', useCORS: true, scale: 2 });
+        const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+        if (!blob) throw new Error("Failed to convert canvas to image");
+
+        const file = new File([blob], 'PetCard.png', { type: 'image/png' });
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            title: "Pet Profile",
+            text: "Check out this pet's profile card.",
+            files: [file]
+          });
+        } else {
+          alert("Sharing not supported on this device.");
+        }
+      } catch (err) {
+        console.error("❌ Share failed:", err);
+        showErrorToUser("Failed to share the profile card");
+      } finally {
+        loader.remove();
+        restoreButtons();
+        modal.classList.remove('loading');
+      }
+    });
+  }
+
+  // 🖨 Print Card
+  const printBtn = modal.querySelector('.print-card-btn');
+  if (printBtn) {
+    printBtn.addEventListener('click', async () => {
+      await waitForImage();
+      hideButtonsTemporarily();
+      setTimeout(() => {
+        window.print();
+        restoreButtons();
+      }, 300);
+    });
+  }
+}, 50);
   
 //=========================================
 // FUNCTION EDIT PROFILE
