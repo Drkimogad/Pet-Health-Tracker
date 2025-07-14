@@ -446,7 +446,7 @@ async function loadSavedPetProfile() {
               <button class="edit-btn" data-pet-id="${profile.id}">Edit</button>
               <button class="delete-btn" data-pet-id="${profile.id}">Delete</button>
               <button class="print-btn" data-pet-id="${profile.id}">Print</button>
-              <button class="shareProfileButton" data-pet-id="${profile.id}">Share</button>
+              <button class="share-btn" data-pet-id="${profile.id}">Share</button>
               <button class="qr-btn" data-pet-id="${profile.id}">Qr</button>
               <button class="details-btn" data-pet-id="${profile.id}">Details</button>
             `;
@@ -502,62 +502,85 @@ function showPetDetails(profile) {
 
     <div class="modal-actions">
       <button class="save-card-btn">💾 Save Card</button>
-      <button class="print-btn" onclick="window.print()">🖨 Print</button>
-      <button class="share-btn">📤 Share</button>
+      <button class="print-btn" onclick="window.print()">🖨 Print Card</button>
+      <button class="share-card-btn">📤 Share Card</button>
       <button class="close-btn" onclick="hideModal()">Close</button>
     </div>
   `;
 
+  // ✅ Inject modal into DOM
   showModal(detailsHtml);
-
-// wiring up Share button for the modal
-shareBtn.addEventListener('click', async () => {
+    
+// Listeners to share, save modal buttons are in a set time out. PRINT BUTTON doesnt need it, it's native and sufficient. 
+// ✅ SAFELY Attach share logic only after modal content is rendered
+setTimeout(() => {
+  const shareBtn = document.querySelector('.share-card-btn');
   const modal = document.querySelector('.modal-content');
-  if (!modal) return;
+  if (!shareBtn || !modal) return;
 
-  // ✅ Create a temporary loader element
-  const loader = document.createElement('div');
-  loader.className = 'loader';
-  loader.setAttribute('id', 'share-loader');
-  modal.appendChild(loader);
-  modal.classList.add('loading'); // check
+  shareBtn.addEventListener('click', async () => {
+    const loader = document.createElement('div');
+    loader.className = 'loader';
+    loader.id = 'share-loader';
+    modal.appendChild(loader);
+    modal.classList.add('loading');
 
-  try {
-    // 🖼️ Convert to image with html2canvas
-    const canvas = await html2canvas(modal, {
-      backgroundColor: '#fff',
-      useCORS: true,
-      scale: 2
-    });
-
-    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-    if (!blob) throw new Error("Failed to convert canvas to image");
-
-    const file = new File([blob], `${profile.petName || 'pet'}_card.png`, {
-      type: 'image/png'
-    });
-    modal.classList.remove('loading'); // check
-      
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({
-        title: `${profile.petName}'s Profile`,
-        text: `Check out this pet's profile card.`,
-        files: [file]
+    try {
+      const canvas = await html2canvas(modal, {
+        backgroundColor: '#fff',
+        useCORS: true,
+        scale: 2
       });
-    } else {
-      alert('Sharing not supported on this device.');
-    }
 
-  } catch (err) {
-    console.error("❌ Share failed:", err);
-    showErrorToUser("Failed to share the profile card");
-  } finally {
-    // ✅ Always remove loader after attempt
-    loader.remove();
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+      if (!blob) throw new Error("Failed to convert canvas to image");
+
+      const file = new File([blob], `${profile.petName || 'pet'}_card.png`, {
+        type: 'image/png'
+      });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          title: `${profile.petName}'s Profile`,
+          text: `Check out this pet's profile card.`,
+          files: [file]
+        });
+      } else {
+        alert('Sharing not supported on this device.');
+      }
+    } catch (err) {
+      console.error("❌ Share failed:", err);
+      showErrorToUser("Failed to share the profile card");
+    } finally {
+      loader.remove();
+      modal.classList.remove('loading');
+    }
+  });
+}, 50); // ✅ setTimeout properly closed here
+
+//=================================
+// Show details modal Listener
+//===================================
+document.addEventListener('click', async (e) => {
+  if (e.target.classList.contains('save-card-btn')) {
+    const modalContent = document.querySelector('.modal-content');
+    if (!modalContent) return;
+
+    try {
+      const canvas = await html2canvas(modalContent);
+      const dataURL = canvas.toDataURL('image/png');
+
+      const link = document.createElement('a');
+      link.href = dataURL;
+      link.download = 'PetCard.png';
+      link.click();
+    } catch (err) {
+      console.error('🛑 Failed to save card:', err);
+      alert('Failed to generate image.');
+    }
   }
 });
-}
-
+    
 //=========================================
 // FUNCTION EDIT PROFILE
 // FUNCTION EDIT PROFILE (UPDATED FOR HYBRID STORAGE) PRODUCTION READY
@@ -1236,7 +1259,7 @@ DOM.savedProfilesList?.addEventListener('click', (e) => {
 else if (btn.classList.contains('print-btn')) {
   if (petId) printPetProfile(petId);
   }
-  else if (btn.classList.contains('shareProfileButton')) {
+  else if (btn.classList.contains('share-btn')) {
   if (petId) sharePetProfile(petId);
   }
   else if (btn.classList.contains('qr-btn')) {
@@ -1250,7 +1273,7 @@ window.onerror = (msg, url, line) => {
   return true; // Prevent default error logging
 };
 
-// ✅  Add the reminders delete listener just below it
+// ✅  Reminders delete button listener
 document.addEventListener('click', (e) => {
   if (e.target.classList.contains('deleteReminderButton')) {
     const profileIndex = e.target.dataset.profileIndex;
@@ -1261,28 +1284,7 @@ document.addEventListener('click', (e) => {
     }
   }
 });
-//=================================
-// Show details modal Listener
-//===================================
-document.addEventListener('click', async (e) => {
-  if (e.target.classList.contains('save-card-btn')) {
-    const modalContent = document.querySelector('.modal-content');
-    if (!modalContent) return;
 
-    try {
-      const canvas = await html2canvas(modalContent);
-      const dataURL = canvas.toDataURL('image/png');
-
-      const link = document.createElement('a');
-      link.href = dataURL;
-      link.download = 'PetCard.png';
-      link.click();
-    } catch (err) {
-      console.error('🛑 Failed to save card:', err);
-      alert('Failed to generate image.');
-    }
-  }
-});
 
 // ======================    
 // ITIALIZE DASHBOARD PRODUCTION READY
