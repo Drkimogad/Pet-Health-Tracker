@@ -445,10 +445,10 @@ async function loadSavedPetProfile() {
             <div class="pet-actions">
               <button class="edit-btn" data-pet-id="${profile.id}">Edit</button>
               <button class="delete-btn" data-pet-id="${profile.id}">Delete</button>
-              <button class="print-btn" data-pet-id="${profile.id}">Print</button>
-              <button class="share-btn" data-pet-id="${profile.id}">Share</button>
-              <button class="qr-btn" data-pet-id="${profile.id}">Qr</button>
               <button class="details-btn" data-pet-id="${profile.id}">Details</button>
+              <button class="print-btn" data-pet-id="${profile.id}">Print</button>
+              <button class="qr-btn" data-pet-id="${profile.id}">Qr</button>
+              <button class="inviteFriends-btn" data-pet-id="${profile.id}">Invite Friends</button>
             `;
       petCard.appendChild(actionsDiv); // 👈 Append after remindersDiv
       savedProfilesList.appendChild(petCard);
@@ -996,78 +996,34 @@ async function printPetProfile(petId) {
 //============================================
 // SHARE PET PROFILE (UPDATED FOR HYBRID STORAGE) PRODUCTION READY
 //===========================================
-async function sharePetProfile(petId) {
-  try {
-    let profile;
-    
-    // 1. Try to load from Google Drive if available
-    if (firebase.auth().currentUser) {
-      const pets = await loadPets();
-      profile = pets.find(p => p.id === petId);
-    }
-    
-    // 2. Fallback to localStorage
-    if (!profile) {
-      const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-      profile = savedProfiles.find(p => p.id === petId);
-    }
+// ✅ Replaces old sharePetProfile() — now used as "Invite a Friend"
+function inviteFriends() {
+  const appLink = "https://drkimogad.github.io/Pet-Health-Tracker/";
+  const inviteMessage = `🐾 Check out this awesome Pet Health Tracker app to manage your pet's health, reminders, and more.\n\nCreate your own pet profiles here: ${appLink}`;
 
-    if (!profile) {
-      showErrorToUser("Profile not found");
-      return;
-    }
+  const shareData = {
+    title: "Invite to Pet Health Tracker",
+    text: inviteMessage,
+    url: appLink
+  };
 
-    const emergencyContact = (profile.emergencyContacts && profile.emergencyContacts[0]) || {};
-    
-    // Your existing share data preparation (unchanged)
-    const shareData = {
-      title: `${profile.petName}'s Health Profile`,
-      text: `Pet Details:\n${
-      Object.entries({
-           Name: profile.petName,
-           Breed: profile.breed,
-           Age: profile.age,
-           Weight: profile.weight,
-           Type: profile.type || 'N/A',
-           Gender: profile.gender || 'N/A',
-           Mood: profile.mood || 'N/A',
-          'Microchip ID': (profile.microchip && profile.microchip.id) || 'N/A',
-          Allergies: profile.allergies || 'N/A',
-          'Medical History': profile.medicalHistory || 'N/A',
-          'Diet Plan': profile.dietPlan || 'N/A',
-          'Vaccinations/Deworming': profile.vaccinationsAndDewormingReminder || 'N/A',
-          'Medical Check-ups': profile.medicalCheckupsReminder || 'N/A',
-          Grooming: profile.groomingReminder || 'N/A',
-          'Emergency Contact': `${emergencyContact.name || 'N/A'} (${emergencyContact.relationship || 'N/A'}) - ${emergencyContact.phone || 'N/A'}`
-        })
-        .map(([key, val]) => `${key}: ${val}`)
-        .join('\n')
-      }`,
-      url: window.location.href
-    };
-
-    // Your existing share logic (unchanged)
-    if (navigator.share) {
-      navigator.share(shareData)
-        .then(() => console.log('Shared successfully'))
-        .catch(console.error);
+  // ✅ Use Web Share API if available
+  if (navigator.share) {
+    navigator.share(shareData)
+      .then(() => console.log("✅ Invite shared successfully"))
+      .catch((err) => console.warn("❌ Share canceled or failed", err));
+  } else {
+    // ❌ Fallback: Copy to clipboard
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(inviteMessage)
+        .then(() => alert("📋 Invite link copied. Share it with your friends!"))
+        .catch(() => prompt("Copy this invite link:", inviteMessage));
     } else {
-      const textToCopy = `${shareData.title}\n\n${shareData.text}\n\n${shareData.url}`;
-      
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(textToCopy)
-          .then(() => alert('Profile copied to clipboard!'))
-          .catch(() => prompt('Copy the following text:', textToCopy));
-      } else {
-        prompt('Copy the following text:', textToCopy);
-      }
+      prompt("Copy this invite message:", inviteMessage);
     }
-
-  } catch (error) {
-    console.error('Share error:', error);
-    showErrorToUser('Failed to share profile');
   }
 }
+
 //=======================================================
 //  QR CODE GENERATION BUTTON FUNCTION 
 //=================================================
@@ -1257,8 +1213,8 @@ DOM.savedProfilesList?.addEventListener('click', (e) => {
     else showErrorToUser('Profile not found');
   }
 }
-else if (btn.classList.contains('print-btn')) {
-  if (petId) printPetProfile(petId);
+else if (btn.classList.contains('inviteFriends-btn')) {
+  if (petId) inviteFriends(petId);
   }
   else if (btn.classList.contains('share-btn')) {
   if (petId) sharePetProfile(petId);
