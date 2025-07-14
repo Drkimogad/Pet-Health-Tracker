@@ -1248,7 +1248,7 @@ DOM.savedProfilesList?.addEventListener('click', (e) => {
   }
 }
 else if (btn.classList.contains('inviteFriends-btn')) {
-  if (petId) inviteFriends(petId);
+  if (petId) inviteFriends();
   }
   else if (btn.classList.contains('print-btn')) {
   if (petId) printPetProfile(petId);
