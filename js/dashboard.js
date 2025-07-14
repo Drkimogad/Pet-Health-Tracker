@@ -610,7 +610,8 @@ setTimeout(() => {
     });
   }
 }, 50);
-  
+}  // Closes showPetDetails function
+
 //=========================================
 // FUNCTION EDIT PROFILE
 // FUNCTION EDIT PROFILE (UPDATED FOR HYBRID STORAGE) PRODUCTION READY
