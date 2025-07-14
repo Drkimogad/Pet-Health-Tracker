@@ -1216,8 +1216,8 @@ DOM.savedProfilesList?.addEventListener('click', (e) => {
 else if (btn.classList.contains('inviteFriends-btn')) {
   if (petId) inviteFriends(petId);
   }
-  else if (btn.classList.contains('share-btn')) {
-  if (petId) sharePetProfile(petId);
+  else if (btn.classList.contains('print-btn')) {
+  if (petId) printPetProfile(petId);
   }
   else if (btn.classList.contains('qr-btn')) {
   if (petId) generateQRCode(petId);
