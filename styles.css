@@ -486,7 +486,7 @@ textarea:focus {
   color: white;
 }
 
-.shareProfileButton {
+.inviteFriends-btn {
   background-color: var(--green);
   color: white;
 }
