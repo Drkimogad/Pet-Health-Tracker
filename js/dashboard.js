@@ -569,69 +569,97 @@ setTimeout(() => {
     });
   }
 
-// 📤 Share Card (Optimized)
+// 📤 Share Card (Fully Fixed)
 const shareBtn = modal.querySelector('.share-card-btn');
 if (shareBtn) {
   shareBtn.addEventListener('click', async () => {
+    // 1. Create loader OUTSIDE modal
     const loader = document.createElement('div');
     loader.className = 'loader';
     loader.id = 'share-loader';
-    modal.appendChild(loader);
-    modal.classList.add('loading');
+    Object.assign(loader.style, {
+      position: 'fixed',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      zIndex: '9999'
+    });
+    document.body.appendChild(loader);
 
+    // 2. Freeze modal state
+    const originalModalStyle = {
+      pointerEvents: modal.style.pointerEvents,
+      transition: modal.style.transition
+    };
+    modal.style.pointerEvents = 'none';
+    modal.style.transition = 'none';
+
+    // 3. Ensure image is ready
     await waitForImage();
     hideButtonsTemporarily();
-    
+
     try {
-      // 🔥 Optimized html2canvas config
+      // 4. Hide loader with 1-frame delay
+      loader.style.opacity = '0';
+      await new Promise(r => requestAnimationFrame(r));
+
+      // 5. Capture with safety checks
       const canvas = await html2canvas(modal, {
         backgroundColor: '#fff',
         useCORS: true,
-        scale: 1,                      // Reduced from 2 to prevent clipping
-        scrollY: 0,                   // Disable scroll capture
+        scale: 1,
+        scrollY: 0,
         windowWidth: modal.scrollWidth,
         windowHeight: modal.scrollHeight,
-        logging: true,                 // Debugging
-        onclone: (clonedDoc) => {      // Ensure visibility in cloned DOM
-          clonedDoc.querySelector('.modal-content').style.overflow = 'visible';
+        logging: true,
+        ignoreElements: (el) => el.id === 'share-loader',
+        onclone: (clonedDoc) => {
+          clonedDoc.getElementById('modal').style.overflow = 'visible';
         }
       });
 
-      // 🔥 Added canvas readiness check
-      await new Promise(resolve => {
-        if (canvas) resolve();
-        else throw new Error("Canvas rendering failed");
+      // 6. Quality/type adjustments
+      const blob = await new Promise((resolve) => {
+        canvas.toBlob(resolve, 'image/png', 0.92);
       });
+      if (!blob) throw new Error("Canvas conversion failed");
 
-      const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png', 0.92)); // 92% quality
-      if (!blob) throw new Error("Failed to convert canvas to image");
-
-      const file = new File([blob], `PetCard_${Date.now()}.png`, { 
-        type: 'image/png' 
-      });
+      // 7. Share with metadata
+      const file = new File([blob], 
+        `PetCard_${profile.petName || 'profile'}_${Date.now()}.png`, 
+        { type: 'image/png' }
+      );
 
       if (navigator.canShare?.({ files: [file] })) {
         await navigator.share({
-          title: "Pet Profile: " + (profile.petName || ''),
-          text: "Check out this pet's profile card" + (profile.breed ? ` (${profile.breed})` : ''),
+          title: `${profile.petName || 'Pet'} Profile`,
+          text: `Breed: ${profile.breed || 'Unknown'}\nAge: ${profile.age || 'N/A'}`,
           files: [file]
         });
       } else {
-        // Fallback: Download instead of alert
+        // Fallback download
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
         a.download = file.name;
+        document.body.appendChild(a);
         a.click();
-        URL.revokeObjectURL(url);
+        setTimeout(() => {
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }, 100);
       }
     } catch (err) {
-      console.error("❌ Share failed:", err);
-      showErrorToUser(err.message.includes("cancel") ? "Share canceled" : "Failed to share");
+      if (!err.message.includes('cancel')) {
+        console.error("Share failed:", err);
+        alert(`Share failed: ${err.message}`);
+      }
     } finally {
+      // 8. Cleanup
       loader.remove();
+      modal.style.pointerEvents = originalModalStyle.pointerEvents;
+      modal.style.transition = originalModalStyle.transition;
       restoreButtons();
-      modal.classList.remove('loading');
     }
   });
 }
@@ -656,43 +684,56 @@ if (printBtn) {
         })));
 
       // 🔥 Print preparation
-      const printWindow = window.open('', '_blank');
-      printWindow.document.write(`
+const printBtn = modal.querySelector('.print-card-btn');
+if (printBtn) {
+  printBtn.addEventListener('click', async () => {
+    await waitForImage();
+    hideButtonsTemporarily();
+    
+    try {
+      // 🔥 Add temporary print-specific styles
+      const printStyles = document.createElement('style');
+      printStyles.innerHTML = `
+        @media print {
+          body { margin: 0!important; padding: 0!important; zoom: 100%!important }
+          img { max-width: 100%!important; height: auto!important }
+        }
+      `;
+      document.head.appendChild(printStyles);
+
+      // 🔥 Tablet-friendly print trigger
+      const printContent = `
         <!DOCTYPE html>
         <html>
           <head>
             <title>${profile.petName || 'Pet Profile'}</title>
-            <style>
-              @media print {
-                body { margin: 0; padding: 0 }
-                img { max-width: 100% }
-              }
-            </style>
+            ${printStyles.outerHTML}
           </head>
-          <body>${printClone.innerHTML}</body>
+          <body>
+            ${modal.innerHTML}
+            <script>
+              setTimeout(() => {
+                window.print();
+                window.onafterprint = () => window.close();
+              }, 1000); // Longer delay for tablets
+            </script>
+          </body>
         </html>
-      `);
-      printWindow.document.close();
+      `;
 
-      // 🔥 Smart print timing
-      const checkReady = setInterval(() => {
-        if (printWindow.document.readyState === 'complete') {
-          clearInterval(checkReady);
-          printWindow.focus();
-          setTimeout(() => { // Extra delay for rendering
-            printWindow.print();
-            printWindow.onafterprint = () => printWindow.close();
-          }, 500);
-        }
-      }, 100);
+      const printWin = window.open('', '_blank');
+      printWin.document.write(printContent);
+      printWin.document.close();
+
     } catch (err) {
-      console.error("❌ Print failed:", err);
-      showErrorToUser("Print preparation failed");
+      console.error("Print error:", err);
+      // Fallback for stubborn tablets
+      alert("Can't open preview. Use browser menu → Print instead.");
     } finally {
       restoreButtons();
     }
   });
- }
+}
 }, 50); // ✅ THIS WAS MISSING - closes setTimeout
 }
 //=========================================
