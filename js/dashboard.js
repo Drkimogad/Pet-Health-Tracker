@@ -556,7 +556,7 @@ shareBtn.addEventListener('click', async () => {
     loader.remove();
   }
 });
-
+}
 
 //=========================================
 // FUNCTION EDIT PROFILE
