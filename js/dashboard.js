@@ -580,7 +580,8 @@ document.addEventListener('click', async (e) => {
     }
   }
 });
-    
+}
+  
 //=========================================
 // FUNCTION EDIT PROFILE
 // FUNCTION EDIT PROFILE (UPDATED FOR HYBRID STORAGE) PRODUCTION READY
