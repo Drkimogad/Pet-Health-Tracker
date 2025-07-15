@@ -668,77 +668,70 @@ if (shareBtn) {
 const printBtn = modal.querySelector('.print-card-btn');
 if (printBtn) {
   printBtn.addEventListener('click', async () => {
-    await waitForImage();
-    hideButtonsTemporarily();
-    
     try {
-      // 🔥 Create print-specific clone
-      const printClone = modal.cloneNode(true);
-      printClone.style.visibility = 'hidden';
-      document.body.appendChild(printClone);
+      await waitForImage();
+      hideButtonsTemporarily();
 
-      // 🔥 Wait for images in clone
-      await Promise.all(Array.from(printClone.querySelectorAll('img'))
-        .map(img => img.complete ? Promise.resolve() : new Promise(resolve => {
-          img.onload = img.onerror = resolve;
-        })));
+      // 🔁 Optional: create a cleaner version if you want to strip interactive elements
+      const cloned = modal.cloneNode(true);
+      cloned.classList.add('print-clone');
+      cloned.style.visibility = 'hidden';
+      document.body.appendChild(cloned);
 
-      // 🔥 Print preparation
-const printBtn = modal.querySelector('.print-card-btn');
-if (printBtn) {
-  printBtn.addEventListener('click', async () => {
-    await waitForImage();
-    hideButtonsTemporarily();
-    
-    try {
-      // 🔥 Add temporary print-specific styles
-      const printStyles = document.createElement('style');
-      printStyles.innerHTML = `
-        @media print {
-          body { margin: 0!important; padding: 0!important; zoom: 100%!important }
-          img { max-width: 100%!important; height: auto!important }
-        }
+      // 🔁 Wait for any images inside clone
+      await Promise.all(Array.from(cloned.querySelectorAll('img')).map(img => {
+        return img.complete ? Promise.resolve() : new Promise(res => {
+          img.onload = img.onerror = res;
+        });
+      }));
+
+      // ✅ Build printable HTML
+      const printStyles = `
+        <style>
+          @media print {
+            body { margin: 0; padding: 0; font-family: Arial; }
+            .modal-actions, .close-modal { display: none !important; }
+            img { max-width: 100%; height: auto; }
+            .print-clone { box-shadow: none !important; border: none !important; }
+          }
+        </style>
       `;
-      document.head.appendChild(printStyles);
 
-      // 🔥 Tablet-friendly print trigger
-      const printContent = `
+      const printDoc = `
         <!DOCTYPE html>
         <html>
           <head>
             <title>${profile.petName || 'Pet Profile'}</title>
-            ${printStyles.outerHTML}
+            ${printStyles}
           </head>
           <body>
-            ${modal.innerHTML}
+            ${cloned.innerHTML}
             <script>
-            try {  // ✅ Nested try for print window
-              setTimeout(() => {
-                window.print();
-                window.onafterprint = () => window.close();
-              }, 1000); // Longer delay for tablets
-            } catch (e) {
-                  console.error("Print window error:", e);
-                }
+              window.onload = function() {
+                setTimeout(() => {
+                  window.print();
+                  window.onafterprint = () => window.close();
+                }, 300);
+              }
             </script>
           </body>
         </html>
       `;
 
       const printWin = window.open('', '_blank');
-      if (!printWin) throw new Error("Popup blocked. Allow popups to print.");  // ✅ Critical check
-      printWin.document.write(printContent);
+      if (!printWin) throw new Error("Popup blocked. Allow popups to print.");
+
+      printWin.document.write(printDoc);
       printWin.document.close();
 
     } catch (err) {
       console.error("Print error:", err);
-      // Fallback for stubborn tablets
-      alert("Can't open preview. Use browser menu → Print instead.");
+      alert("Something went wrong while printing.");
     } finally {
       restoreButtons();
     }
- });  // ✅ Closes addEventListener
-}  // ✅ Closes if (printBtn)
+  }); // closes evenlistner
+} // closes if print
 }, 50); // ✅ THIS WAS MISSING - closes setTimeout
 } // Closes showdetails()
     
