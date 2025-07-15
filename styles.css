@@ -748,7 +748,7 @@ textarea:focus {
   100% { transform: rotate(360deg); }
 }
 
-/* RESPONSIVE DESIGNS */
+/* ===== RESPONSIVE DESIGNS============== */
 /* ===== DESKTOP RESPONSIVE DESIGN ===== */
 @media (max-width: 768px) {
   body {
