@@ -1042,8 +1042,65 @@ async function exportAllPetCards() {
     alert("Failed to export cards.");
   }
 }
+
+// ✅ Export All Pet Cards as Images (ZIPPED)
+async function exportAllPetCards() {
+  const cards = document.querySelectorAll('.pet-card');
+  if (!cards.length) {
+    alert("No pet cards found to export.");
+    return;
+  }
+
+  console.log(`📦 Found ${cards.length} cards to export...`);
+
+  const loader = document.createElement('div');
+  loader.className = 'loader';
+  document.body.appendChild(loader);
+
+  const zip = new JSZip();
+  let count = 0;
+
+  for (const card of cards) {
+    // Ensure image inside card is loaded
+    const img = card.querySelector('img');
+    if (img && !img.complete) {
+      await new Promise(resolve => {
+        img.onload = img.onerror = resolve;
+      });
+    }
+
+    // Capture card as image
+    const canvas = await html2canvas(card, {
+      backgroundColor: '#fff',
+      useCORS: true,
+      scale: 2
+    });
+
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+
+    if (blob) {
+      const name = card.querySelector('h3')?.innerText?.trim() || `card_${++count}`;
+      zip.file(`${name.replace(/\s+/g, '_')}.png`, blob);
+    }
+  }
+
+  // ✅ Generate and trigger download
+  const zipBlob = await zip.generateAsync({ type: 'blob' });
+  const zipURL = URL.createObjectURL(zipBlob);
+  const link = document.createElement('a');
+  link.href = zipURL;
+  link.download = 'PetCards_Export.zip';
+  link.click();
+
+  setTimeout(() => {
+    document.body.removeChild(loader);
+    URL.revokeObjectURL(zipURL);
+    console.log("✅ All cards exported.");
+  }, 100);
+}
+
 document.addEventListener('click', (e) => {
-  if (e.target.id === 'exportAll-btn') {
+  if (e.target.classList.contains('exportAll-btn')) {
     console.log("📤 Export All button clicked"); // <-- Confirmation it was triggered
   if (typeof exportAllPetCards === 'function') {
       exportAllPetCards();
