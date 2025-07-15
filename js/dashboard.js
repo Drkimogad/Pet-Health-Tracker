@@ -537,29 +537,23 @@ setTimeout(() => {
     });
 
   // ========== 💾 SAVE CARD (UPDATED) ========== //
- //===================================
-// Save Card Button (Optimized)
-//===================================
 document.addEventListener('click', async (e) => {
   if (e.target.classList.contains('save-card-btn')) {
     const modalContent = document.querySelector('.modal-content');
     if (!modalContent) return;
 
-    // ✅ Scroll to top
-    modalContent.scrollTop = 0;
-
-    // ✅ Store original padding and border
-    const originalPaddingTop = modalContent.style.paddingTop;
-    const originalBorder = modalContent.style.border;
-
-    // ✅ Apply temporary fix
-    modalContent.style.paddingTop = '4rem';
-    modalContent.style.border = '2px solid red';
-
     try {
+      // ✅ Scroll the heading into view — safer than padding
+      const heading = modalContent.querySelector('h3');
+      if (heading) heading.scrollIntoView({ block: 'start' });
+
+      // ✅ Add temporary red border (optional, for debugging)
+      const originalBorder = modalContent.style.border;
+      modalContent.style.border = '2px solid red';
+
       const canvas = await html2canvas(modalContent, {
         backgroundColor: '#fff',
-        scale: 1.25,
+        scale: 1.15,
         scrollY: 0
       });
 
@@ -573,9 +567,7 @@ document.addEventListener('click', async (e) => {
       console.error('🛑 Failed to save card:', err);
       alert('Failed to generate image.');
     } finally {
-      // ✅ Restore original styles
-      modalContent.style.paddingTop = originalPaddingTop;
-      modalContent.style.border = originalBorder;
+      modalContent.style.border = originalBorder; // Clean up
     }
   }
 });
