@@ -593,13 +593,13 @@ if (shareBtn) {
     };
     modal.style.pointerEvents = 'none';
     modal.style.transition = 'none';
-
+      
+ try {   // added
     // 3. Ensure image is ready
     await waitForImage();
     hideButtonsTemporarily();
-
-    try {
-      // 4. Hide loader with 1-frame delay
+     
+    // 4. Hide loader with 1-frame delay
       loader.style.opacity = '0';
       await new Promise(r => requestAnimationFrame(r));
 
@@ -644,12 +644,11 @@ if (shareBtn) {
         a.download = file.name;
         document.body.appendChild(a);
         a.click();
-          
-    try {  // added
         setTimeout(() => {
           document.body.removeChild(a);
           URL.revokeObjectURL(url);
         }, 100);
+      }        
     } catch (err) {
       if (!err.message.includes('cancel')) {
         console.error("Share failed:", err);
