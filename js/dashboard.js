@@ -654,10 +654,16 @@ if (shareBtn) {
       if (navigator.canShare?.({ files: [file] })) {
         await navigator.share({
         title: `${profile.petName || 'Pet'} Profile`,
-        text: `Check out this pet profile below.\n\nBreed: ${...}\nAge: ${...}\n\n🐾 Shared from Pet Health Tracker: https://drkimogad.github.io/Pet-Health-Tracker/`,
-        files: [file]
-      });
+        text: `Check out this pet profile below.
 
+        Name: ${profile.petName || 'N/A'}
+        Breed: ${profile.breed || 'N/A'}
+        Age: ${profile.age || 'N/A'}
+
+       🐾 Shared from Pet Health Tracker:
+        https://drkimogad.github.io/Pet-Health-Tracker/`,
+       files: [file]
+      });
       } else {
         // Fallback download
         const url = URL.createObjectURL(blob);
