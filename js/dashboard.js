@@ -449,15 +449,8 @@ async function loadSavedPetProfile() {
               <button id="exportAll-btn" class="print-btn">📤 Export All Cards</button>
               <button class="qr-btn" data-pet-id="${profile.id}">Qr</button>
               <button class="inviteFriends-btn" data-pet-id="${profile.id}">Invite Friends</button>
+             <button class="communityChat-btn" data-pet-id="${profile.id}">Community Chat</button>
             `;
-
-//  Dynamic Community Chat button (pure DOM)
-const chatBtn = document.createElement('button');
-chatBtn.className = 'communityChat-btn pulse-animation'; // Add your animation class
-chatBtn.dataset.petId = profile.id;
-chatBtn.innerHTML = `<i class="fas fa-comments"></i> Community Chat`;
-chatBtn.addEventListener('click', () => openCommunityChatWindow(profile.id));
-actionsDiv.appendChild(chatBtn);
 
      // Append to card        
       petCard.appendChild(actionsDiv); // 👈 Append after remindersDiv
@@ -1237,7 +1230,6 @@ async function openCommunityChatWindow(petId) {
     </html>
   `);
 }
-
   return chatBtn;
 }
 
