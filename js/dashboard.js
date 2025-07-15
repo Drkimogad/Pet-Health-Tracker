@@ -712,16 +712,21 @@ if (printBtn) {
           <body>
             ${modal.innerHTML}
             <script>
+            try {  // ✅ Nested try for print window
               setTimeout(() => {
                 window.print();
                 window.onafterprint = () => window.close();
               }, 1000); // Longer delay for tablets
+            } catch (e) {
+                  console.error("Print window error:", e);
+                }
             </script>
           </body>
         </html>
       `;
 
       const printWin = window.open('', '_blank');
+      if (!printWin) throw new Error("Popup blocked. Allow popups to print.");  // ✅ Critical check
       printWin.document.write(printContent);
       printWin.document.close();
 
@@ -732,10 +737,11 @@ if (printBtn) {
     } finally {
       restoreButtons();
     }
-  });
- }
+ });  // ✅ Closes addEventListener
+}  // ✅ Closes if (printBtn)
 }, 50); // ✅ THIS WAS MISSING - closes setTimeout
-}
+} // Closes showdetails()
+    
 //=========================================
 // FUNCTION EDIT PROFILE
 // FUNCTION EDIT PROFILE (UPDATED FOR HYBRID STORAGE) PRODUCTION READY
