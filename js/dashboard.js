@@ -650,7 +650,6 @@ if (shareBtn) {
           document.body.removeChild(a);
           URL.revokeObjectURL(url);
         }, 100);
-      }
     } catch (err) {
       if (!err.message.includes('cancel')) {
         console.error("Share failed:", err);
