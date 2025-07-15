@@ -654,7 +654,7 @@ if (shareBtn) {
       if (navigator.canShare?.({ files: [file] })) {
         await navigator.share({
         title: `${profile.petName || 'Pet'} Profile`,
-        text: `Check out this pet profile below.\n\nBreed: ${...}\nAge: ${...}\n\n🐾 Shared from Pet Health Tracker: https://drkimogad.github.io/Pet-Health-Tracker/`
+        text: `Check out this pet profile below.\n\nBreed: ${...}\nAge: ${...}\n\n🐾 Shared from Pet Health Tracker: https://drkimogad.github.io/Pet-Health-Tracker/`,
         files: [file]
       });
 
