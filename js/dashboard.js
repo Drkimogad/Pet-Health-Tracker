@@ -653,10 +653,11 @@ if (shareBtn) {
 
       if (navigator.canShare?.({ files: [file] })) {
         await navigator.share({
-          title: `${profile.petName || 'Pet'} Profile`,
-          text: `Breed: ${profile.breed || 'Unknown'}\nAge: ${profile.age || 'N/A'}`,
-          files: [file]
-        });
+        title: `${profile.petName || 'Pet'} Profile`,
+        text: `Breed: ${profile.breed || 'Unknown'}\nAge: ${profile.age || 'N/A'}\n\nShared from: https://drkimogad.github.io/Pet-Health-Tracker/`,
+        files: [file]
+      });
+
       } else {
         // Fallback download
         const url = URL.createObjectURL(blob);
