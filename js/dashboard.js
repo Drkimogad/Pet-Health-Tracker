@@ -537,37 +537,49 @@ setTimeout(() => {
     });
 
   // ========== 💾 SAVE CARD (UPDATED) ========== //
-  const saveBtn = modal.querySelector('.save-card-btn');
-  if (saveBtn) {
-    saveBtn.addEventListener('click', async () => {
-      await waitForImage();
-      hideButtonsTemporarily();
-      try {
-        // 🔥 Key fixes for image capture:
-        const canvas = await html2canvas(modal, {
-          backgroundColor: '#fff',
-          useCORS: true,
-          scale: 1.25,                     // Changed from 2 → 1.25 to prevent clipping
-          scrollY: 0,                    // Disables scroll capture
-          windowWidth: modal.scrollWidth, // Explicit width
-          windowHeight: modal.scrollHeight, // Explicit height
-          logging: true,                 // Debugging (optional)
-          allowTaint: false              // Security (recommended)
-        });
-        
-        const dataURL = canvas.toDataURL('image/png');
-        const link = document.createElement('a');
-        link.href = dataURL;
-        link.download = 'PetCard_' + new Date().toISOString().slice(0, 10) + '.png'; // Unique filename
-        link.click();
-      } catch (err) {
-        console.error('🛑 Failed to save card:', err);
-        alert('Failed to generate image. Details in console.');
-      } finally {
-        restoreButtons();
-      }
-    });
+ //===================================
+// Save Card Button (Optimized)
+//===================================
+document.addEventListener('click', async (e) => {
+  if (e.target.classList.contains('save-card-btn')) {
+    const modalContent = document.querySelector('.modal-content');
+    if (!modalContent) return;
+
+    // ✅ Scroll to top
+    modalContent.scrollTop = 0;
+
+    // ✅ Store original padding and border
+    const originalPaddingTop = modalContent.style.paddingTop;
+    const originalBorder = modalContent.style.border;
+
+    // ✅ Apply temporary fix
+    modalContent.style.paddingTop = '4rem';
+    modalContent.style.border = '2px solid red';
+
+    try {
+      const canvas = await html2canvas(modalContent, {
+        backgroundColor: '#fff',
+        scale: 1.25,
+        scrollY: 0
+      });
+
+      const dataURL = canvas.toDataURL('image/png');
+
+      const link = document.createElement('a');
+      link.href = dataURL;
+      link.download = 'PetCard.png';
+      link.click();
+    } catch (err) {
+      console.error('🛑 Failed to save card:', err);
+      alert('Failed to generate image.');
+    } finally {
+      // ✅ Restore original styles
+      modalContent.style.paddingTop = originalPaddingTop;
+      modalContent.style.border = originalBorder;
+    }
   }
+});
+
 
 // 📤 Share Card (Fully Fixed)
 const shareBtn = modal.querySelector('.share-card-btn');
