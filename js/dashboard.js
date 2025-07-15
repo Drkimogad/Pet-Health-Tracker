@@ -543,18 +543,28 @@ document.addEventListener('click', async (e) => {
     if (!modalContent) return;
 
     try {
-      // ✅ Scroll the heading into view — safer than padding
+      const petImg = modalContent.querySelector('img');
+
+      // ✅ Wait for image to fully load before capture
+      if (petImg && !petImg.complete) {
+        await new Promise((resolve) => {
+          petImg.onload = petImg.onerror = resolve;
+        });
+      }
+
+      // ✅ Scroll heading into view
       const heading = modalContent.querySelector('h3');
       if (heading) heading.scrollIntoView({ block: 'start' });
 
-      // ✅ Add temporary red border (optional, for debugging)
+      // ✅ Optional red border for visual debugging
       const originalBorder = modalContent.style.border;
       modalContent.style.border = '2px solid red';
 
       const canvas = await html2canvas(modalContent, {
         backgroundColor: '#fff',
         scale: 1.15,
-        scrollY: 0
+        scrollY: 0,
+        useCORS: true
       });
 
       const dataURL = canvas.toDataURL('image/png');
@@ -567,11 +577,10 @@ document.addEventListener('click', async (e) => {
       console.error('🛑 Failed to save card:', err);
       alert('Failed to generate image.');
     } finally {
-      modalContent.style.border = originalBorder; // Clean up
+      modalContent.style.border = originalBorder;
     }
   }
 });
-
 
 // 📤 Share Card (Fully Fixed)
 const shareBtn = modal.querySelector('.share-card-btn');
