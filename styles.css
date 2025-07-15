@@ -658,7 +658,7 @@ textarea:focus {
   cursor: pointer;
 }
 .pet-details-modal {
-  max-width: 600px;
+  max-width: 400px;
   padding: 1rem;
 }
 
