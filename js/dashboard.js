@@ -446,7 +446,7 @@ async function loadSavedPetProfile() {
               <button class="edit-btn" data-pet-id="${profile.id}">Edit</button>
               <button class="delete-btn" data-pet-id="${profile.id}">Delete</button>
               <button class="details-btn" data-pet-id="${profile.id}">Details</button>
-              <button id="exportAll-Btn" class="print-btn">📤 Export All Cards</button>
+              <button id="exportAll-btn" class="print-btn">📤 Export All Cards</button>
               <button class="qr-btn" data-pet-id="${profile.id}">Qr</button>
               <button class="inviteFriends-btn" data-pet-id="${profile.id}">Invite Friends</button>
             `;
