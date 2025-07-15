@@ -542,24 +542,28 @@ document.addEventListener('click', async (e) => {
     const modalContent = document.querySelector('.modal-content');
     if (!modalContent) return;
 
+    const modalActions = modalContent.querySelector('.modal-actions');
+    const petImg = modalContent.querySelector('img');
+    const heading = modalContent.querySelector('h3');
+
+    // ✅ Temporarily hide action buttons
+    if (modalActions) modalActions.style.display = 'none';
+
+    // ✅ Wait for pet photo to load
+    if (petImg && !petImg.complete) {
+      await new Promise((resolve) => {
+        petImg.onload = petImg.onerror = resolve;
+      });
+    }
+
+    // ✅ Optional: scroll heading into view
+    if (heading) heading.scrollIntoView({ block: 'start' });
+
+    // ✅ Temporary visual border for spacing check
+    const originalBorder = modalContent.style.border;
+    modalContent.style.border = '3px solid #4e348c'; // 👈 change here if needed
+
     try {
-      const petImg = modalContent.querySelector('img');
-
-      // ✅ Wait for image to fully load before capture
-      if (petImg && !petImg.complete) {
-        await new Promise((resolve) => {
-          petImg.onload = petImg.onerror = resolve;
-        });
-      }
-
-      // ✅ Scroll heading into view
-      const heading = modalContent.querySelector('h3');
-      if (heading) heading.scrollIntoView({ block: 'start' });
-
-      // ✅ Optional red border for visual debugging
-      const originalBorder = modalContent.style.border;
-      modalContent.style.border = '2px solid red';
-
       const canvas = await html2canvas(modalContent, {
         backgroundColor: '#fff',
         scale: 1.15,
@@ -568,7 +572,6 @@ document.addEventListener('click', async (e) => {
       });
 
       const dataURL = canvas.toDataURL('image/png');
-
       const link = document.createElement('a');
       link.href = dataURL;
       link.download = 'PetCard.png';
@@ -578,6 +581,7 @@ document.addEventListener('click', async (e) => {
       alert('Failed to generate image.');
     } finally {
       modalContent.style.border = originalBorder;
+      if (modalActions) modalActions.style.display = '';
     }
   }
 });
