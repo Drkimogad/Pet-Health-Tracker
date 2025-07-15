@@ -594,7 +594,7 @@ textarea:focus {
     box-shadow: none;
     border: none;
     margin: 0;
-    padding-top: 15rem !important; /* add a little spacing at the top of details card */
+    padding-top: 4rem !important; /* add a little spacing at the top of details card */
   }
 }
 
