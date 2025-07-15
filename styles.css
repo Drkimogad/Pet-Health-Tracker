@@ -562,14 +562,13 @@ textarea:focus {
     box-shadow: none;
     margin-bottom: 1.5rem;
   }
-
-  img.pet-photo-print {
+  
+    img.detail-photo {
     max-width: 250px !important;
     height: auto !important;
     display: block;
-    margin: 1rem 0;
+    margin: 1rem auto;
     page-break-after: avoid;
-    break-after: avoid;
   }
   
   /* 👇 NEW: Hide modal buttons from print view */
@@ -673,6 +672,7 @@ textarea:focus {
   margin-top: 1rem;
   font-weight: bold;
 }
+
 /* === Modal Button Styles (including new Share) === */
 .modal-actions {
   display: flex;
@@ -713,7 +713,7 @@ textarea:focus {
   color: black;
 }
 
-/* Loader styling  TO SEE IF CAN BE USED FOR UI UPDATING*/
+/* Loader styling used in share card logic*/
 .loader {
   border: 3px solid #f3f3f3;
   border-top: 3px solid var(--qr-blue);
@@ -748,7 +748,8 @@ textarea:focus {
   100% { transform: rotate(360deg); }
 }
 
-/* ===== RESPONSIVE DESIGN ===== */
+/* RESPONSIVE DESIGNS */
+/* ===== DESKTOP RESPONSIVE DESIGN ===== */
 @media (max-width: 768px) {
   body {
     padding: 10px;
@@ -774,5 +775,64 @@ textarea:focus {
 
   .qr-controls {
     flex-direction: column;
+  }
+}
+/* ========== Tablet Styles (Portrait & Landscape) ========== */
+@media (max-width: 1024px) {
+  .modal-content {
+    max-width: 95%;
+    padding: 1.5rem;
+    font-size: 0.95rem;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr; /* Stack details vertically */
+    gap: 1rem;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .detail-photo {
+    max-width: 160px;
+  }
+
+  .pet-card {
+    padding: 1rem;
+  }
+}
+
+/* ========== Mobile Styles (≤767px) ========== */
+@media (max-width: 767px) {
+  .modal-content {
+    padding: 1rem;
+    font-size: 0.9rem;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .detail-photo {
+    max-width: 140px;
+    margin: 0 auto 0.5rem;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr; /* Fully stacked */
+    gap: 0.75rem;
+  }
+
+  .modal-actions button {
+    width: 100%;
+    font-size: 0.9rem;
+  }
+
+  .pet-card {
+    padding: 1rem;
+    margin-bottom: 2rem;
   }
 }
