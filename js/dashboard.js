@@ -644,6 +644,8 @@ if (shareBtn) {
         a.download = file.name;
         document.body.appendChild(a);
         a.click();
+          
+    try {  // added
         setTimeout(() => {
           document.body.removeChild(a);
           URL.revokeObjectURL(url);
