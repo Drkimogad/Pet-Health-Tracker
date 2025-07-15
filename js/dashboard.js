@@ -1042,6 +1042,16 @@ async function exportAllPetCards() {
     alert("Failed to export cards.");
   }
 }
+document.addEventListener('click', (e) => {
+  if (e.target.id === 'exportAll-btn') {
+    console.log("📤 Export All button clicked"); // <-- Confirmation it was triggered
+  if (typeof exportAllPetCards === 'function') {
+      exportAllPetCards();
+    } else {
+      console.warn("❌ exportAllPetCards function is not defined.");
+    }
+  }
+});
 
 //============================================
 // Invite Friends ()
@@ -1269,9 +1279,6 @@ DOM.savedProfilesList?.addEventListener('click', (e) => {
 }
 else if (btn.classList.contains('inviteFriends-btn')) {
   if (petId) inviteFriends();
-  }
-  else  if (e.target.id === 'exportAll-btn') {
-    exportAllPetCards();
   }
   else if (btn.classList.contains('qr-btn')) {
   if (petId) generateQRCode(petId);
