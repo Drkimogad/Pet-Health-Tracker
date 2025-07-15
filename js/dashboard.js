@@ -1270,8 +1270,8 @@ DOM.savedProfilesList?.addEventListener('click', (e) => {
 else if (btn.classList.contains('inviteFriends-btn')) {
   if (petId) inviteFriends();
   }
-  else if (btn.classList.contains('exportAll-Btn')) {
-  if (petId) exportAllPetCards();
+  else  if (e.target.id === 'exportAll-btn') {
+    exportAllPetCards();
   }
   else if (btn.classList.contains('qr-btn')) {
   if (petId) generateQRCode(petId);
