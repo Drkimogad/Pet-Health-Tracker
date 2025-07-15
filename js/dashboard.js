@@ -965,32 +965,49 @@ async function deletePetProfile(petId) {
 //====================================
 // exportAllPetCards button functionality PRODUCTION READY
 //======================================
-async function exportAllPetCards() {
+/**
+ * Unified Pet Card Export Function
+ * @param {boolean} asZip - Set true to export as ZIP, false for individual downloads
+ */
+async function exportPetCards(asZip = false) {
+  const loader = document.createElement('div');
+  loader.className = 'loader';
+  document.body.appendChild(loader);
+
   try {
-    const container = document.createElement('div');
-    container.style.position = 'absolute';
-    container.style.left = '-9999px';
-    container.style.top = '0';
-    document.body.appendChild(container);
-
-    const profiles = await loadPets(); // Assumes hybrid loading is in place
-
+    const profiles = await loadPets();
     if (!profiles.length) {
       alert("No pet profiles found.");
       return;
     }
 
-    for (let profile of profiles) {
+    // Create hidden container for rendering
+    const container = document.createElement('div');
+    Object.assign(container.style, {
+      position: 'absolute',
+      left: '-9999px',
+      top: '0',
+      width: '400px' // Fixed width for consistent cards
+    });
+    document.body.appendChild(container);
+
+    // Prepare ZIP if needed
+    const zip = asZip ? new JSZip() : null;
+    let count = 0;
+
+    for (const profile of profiles) {
       const emergency = profile.emergencyContacts?.[0] || {};
       const petCard = document.createElement('div');
-      petCard.className = 'pet-card'; // You already style this
+      petCard.className = 'pet-card';
+      petCard.style.animation = 'formEntrance 0.3s ease-out'; // Your animation
 
       petCard.innerHTML = `
         <div class="pet-header">
           <h3>${profile.petName || 'Unnamed Pet'}</h3>
-          ${profile.petPhoto ? `<img src="${profile.petPhoto}" class="pet-photo" style="width:100px; border-radius:10px;">` : ''}
+          ${profile.petPhoto ? `<img src="${profile.petPhoto}" class="pet-photo" crossorigin="anonymous">` : ''}
         </div>
         <div class="pet-details">
+          <!-- All your profile fields here -->
           <p><strong>Breed:</strong> ${profile.breed || 'N/A'}</p>
           <p><strong>Age:</strong> ${profile.age || 'N/A'}</p>
           <p><strong>Weight:</strong> ${profile.weight || 'N/A'}</p>
@@ -1010,94 +1027,67 @@ async function exportAllPetCards() {
 
       container.appendChild(petCard);
 
-      // ✅ Wait for image to load
+      // Wait for image load
       const img = petCard.querySelector('img');
       if (img && !img.complete) {
-        await new Promise(res => {
-          img.onload = img.onerror = res;
-        });
+        await new Promise(res => img.onload = img.onerror = res);
       }
 
-      // ✅ Capture and download
+      // Capture card
       const canvas = await html2canvas(petCard, {
         backgroundColor: '#fff',
-        scale: 1.2,
-        useCORS: true
+        scale: asZip ? 1.5 : 1.2, // Higher quality for ZIP
+        useCORS: true,
+        logging: true,
+        onclone: (clonedDoc) => {
+          clonedDoc.querySelector('.pet-card').style.boxShadow = 'none'; // Cleaner export
+        }
       });
 
-      const dataURL = canvas.toDataURL('image/png');
+      if (asZip) {
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png', 0.9));
+        const name = profile.petName?.replace(/[^\w]/g, '_') || `pet_${++count}`;
+        zip.file(`${name}.png`, blob);
+      } else {
+        const dataURL = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = dataURL;
+        link.download = `${profile.petName || 'Pet'}_Card.png`;
+        link.click();
+        await new Promise(res => setTimeout(res, 300)); // Throttle downloads
+      }
+
+      petCard.remove();
+    }
+
+    // Handle ZIP export
+    if (asZip && zip) {
+      const zipBlob = await zip.generateAsync({ type: 'blob' });
+      const zipURL = URL.createObjectURL(zipBlob);
       const link = document.createElement('a');
-      link.href = dataURL;
-      link.download = `${profile.petName || 'Pet'}_Card.png`;
+      link.href = zipURL;
+      link.download = 'PetCards_Export.zip';
       link.click();
-
-      // Optional small delay
-      await new Promise(res => setTimeout(res, 300));
+      setTimeout(() => URL.revokeObjectURL(zipURL), 1000);
     }
 
-    document.body.removeChild(container);
-    alert("✅ All pet cards exported as images!");
+    alert(`✅ Successfully exported ${profiles.length} cards${asZip ? ' as ZIP' : ''}!`);
   } catch (err) {
-    console.error("❌ Export failed:", err);
-    alert("Failed to export cards.");
+    console.error("Export error:", err);
+    const errorEl = document.createElement('div');
+    errorEl.className = 'error-message';
+    errorEl.textContent = `Export failed: ${err.message}`;
+    errorEl.style.display = 'block';
+    loader.appendChild(errorEl);
+    setTimeout(() => errorEl.remove(), 3000);
+  } finally {
+    loader.remove();
+    container?.remove();
   }
 }
-
-// ✅ Export All Pet Cards as Images (ZIPPED)
-async function exportAllPetCards() {
-  const cards = document.querySelectorAll('.pet-card');
-  if (!cards.length) {
-    alert("No pet cards found to export.");
-    return;
-  }
-
-  console.log(`📦 Found ${cards.length} cards to export...`);
-
-  const loader = document.createElement('div');
-  loader.className = 'loader';
-  document.body.appendChild(loader);
-
-  const zip = new JSZip();
-  let count = 0;
-
-  for (const card of cards) {
-    // Ensure image inside card is loaded
-    const img = card.querySelector('img');
-    if (img && !img.complete) {
-      await new Promise(resolve => {
-        img.onload = img.onerror = resolve;
-      });
-    }
-
-    // Capture card as image
-    const canvas = await html2canvas(card, {
-      backgroundColor: '#fff',
-      useCORS: true,
-      scale: 2
-    });
-
-    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-
-    if (blob) {
-      const name = card.querySelector('h3')?.innerText?.trim() || `card_${++count}`;
-      zip.file(`${name.replace(/\s+/g, '_')}.png`, blob);
-    }
-  }
-
-  // ✅ Generate and trigger download
-  const zipBlob = await zip.generateAsync({ type: 'blob' });
-  const zipURL = URL.createObjectURL(zipBlob);
-  const link = document.createElement('a');
-  link.href = zipURL;
-  link.download = 'PetCards_Export.zip';
-  link.click();
-
-  setTimeout(() => {
-    document.body.removeChild(loader);
-    URL.revokeObjectURL(zipURL);
-    console.log("✅ All cards exported.");
-  }, 100);
-}
+// Usage examples:
+// exportPetCards();       // Individual downloads
+// exportPetCards(true);   // ZIP download
 
 document.addEventListener('click', (e) => {
   if (e.target.classList.contains('exportAll-btn')) {
