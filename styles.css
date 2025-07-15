@@ -596,6 +596,13 @@ textarea:focus {
     padding-top: 4rem !important; /* add a little spacing at the top of details card */
   }
 }
+/* keep it outside media */
+.modal-content {
+  width: 100%;
+  max-width: 600px; /* restore good size */
+  min-width: 320px;
+  margin: auto;
+}
 
 /* Details Modal */
 /* Modal Styles */
