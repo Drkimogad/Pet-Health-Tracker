@@ -547,7 +547,7 @@ setTimeout(() => {
         const canvas = await html2canvas(modal, {
           backgroundColor: '#fff',
           useCORS: true,
-          scale: 1,                     // Changed from 2 → 1 to prevent clipping
+          scale: 1.25,                     // Changed from 2 → 1.25 to prevent clipping
           scrollY: 0,                    // Disables scroll capture
           windowWidth: modal.scrollWidth, // Explicit width
           windowHeight: modal.scrollHeight, // Explicit height
@@ -613,9 +613,13 @@ if (shareBtn) {
         windowHeight: modal.scrollHeight,
         logging: true,
         ignoreElements: (el) => el.id === 'share-loader',
+          
         onclone: (clonedDoc) => {
-          clonedDoc.getElementById('modal').style.overflow = 'visible';
+       const clonedModal = clonedDoc.querySelector('.modal-content');
+       if (clonedModal) {
+       clonedModal.style.overflow = 'visible';
         }
+       }
       });
 
       // 6. Quality/type adjustments
