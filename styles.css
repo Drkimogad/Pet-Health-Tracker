@@ -491,7 +491,7 @@ textarea:focus {
   color: white;
 }
 
-.print-btn {
+.exportAll-btn {
   background-color: var(--qr-blue);
   color: white;
 }
