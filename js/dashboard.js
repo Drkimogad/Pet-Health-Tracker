@@ -1147,124 +1147,7 @@ function inviteFriends() {
 //=========================
 // Join Pet Community ()
 //============================
-const CHAT_BUTTON_OPTIONS = [
-  "Ask a Vet",      // Best for medical questions
-  "Pet Community",  // General discussions  
-  "Feedback Hub",   // For suggestions/bugs
-  "Quick Question", // Lightweight inquiries
-  "Vet Chat",       // Professional advice
-  "Pet Tips"        // Community sharing
-];
-async function initCommunityChat(buttonName = "Ask a Vet") {
-  // 1. Create dynamic button
-  const chatBtn = document.createElement('button');
-  chatBtn.className = 'chat-btn pulse-animation'; // Add your CSS
-  chatBtn.innerHTML = `
-    <i class="fas fa-comment-medical"></i> ${buttonName}
-  `;
-
-  // 2. Click handler
-  chatBtn.addEventListener('click', async () => {
-    // Open chat window
-    const chatWindow = window.open('', `${buttonName.replace(/\s+/g, '_')}_Chat`, 
-      `width=500,height=600,top=100,left=100`
-    );
-    
-    // Safety check
-    if (!chatWindow) {
-      alert("Please allow popups for chat");
-      return;
-    }
-
-    // 3. Build chat UI
-    chatWindow.document.write(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>${buttonName}</title>
-          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-          <style>
-            body { 
-              font-family: 'Segoe UI', sans-serif;
-              margin: 0;
-              padding: 20px;
-              background: #f5f7fa;
-            }
-            .chat-container {
-              max-width: 100%;
-              margin: 0 auto;
-            }
-            textarea {
-              width: 100%;
-              padding: 12px;
-              border: 1px solid #ddd;
-              border-radius: 8px;
-              resize: none;
-              margin-bottom: 10px;
-            }
-            button {
-              background: var(--qr-blue);
-              color: white;
-              border: none;
-              padding: 12px 20px;
-              border-radius: 8px;
-              cursor: pointer;
-              transition: 0.3s;
-            }
-            button:hover {
-              opacity: 0.9;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="chat-container">
-            <h2><i class="fas fa-paw"></i> ${buttonName}</h2>
-            <textarea id="messageInput" placeholder="Type your ${buttonName.toLowerCase()}..." rows="6"></textarea>
-            <button id="sendBtn"><i class="fas fa-paper-plane"></i> Send</button>
-            <p id="status"></p>
-          </div>
-          <script>
-            document.getElementById('sendBtn').addEventListener('click', async () => {
-              const message = document.getElementById('messageInput').value.trim();
-              const statusEl = document.getElementById('status');
-              
-              if (!message) {
-                statusEl.textContent = "Please enter a message";
-                statusEl.style.color = "red";
-                return;
-              }
-
-              try {
-                statusEl.textContent = "Sending...";
-                statusEl.style.color = "gray";
-                
-                // Send to Firestore
-                await firebase.firestore().collection('community_chats').add({
-                  type: "${buttonName}",
-                  message: message,
-                  userId: "${firebase.auth().currentUser?.uid || 'anonymous'}",
-                  timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                  read: false
-                });
-
-                statusEl.textContent = "✓ Sent!";
-                statusEl.style.color = "green";
-                document.getElementById('messageInput').value = "";
-              } catch (err) {
-                statusEl.textContent = "Failed to send. Try again.";
-                statusEl.style.color = "red";
-                console.error(err);
-              }
-            });
-          </script>
-        </body>
-      </html>
-    `);
-  });
-
-  return chatBtn;
-}
-// 1. Initialize Community Chat Button (Add this to your button creation logic)
+// 1. Create Community Chat Button (add this to your button generation logic)
 function createCommunityChatButton(profileId) {
   const chatBtn = document.createElement('button');
   chatBtn.className = 'communityChat-btn pulse-animation';
@@ -1273,41 +1156,23 @@ function createCommunityChatButton(profileId) {
     <i class="fas fa-comments"></i> Community Chat
   `;
   
-  // 2. Click Handler
-  chatBtn.addEventListener('click', (e) => {
-    const petId = e.currentTarget.dataset.petId;
-    openCommunityChatWindow(petId);
-  });
-  
+  chatBtn.addEventListener('click', () => openCommunityChatWindow(profileId));
   return chatBtn;
 }
 
-// 3. Chat Window Manager (Pure Firestore-Powered)
+// 2. Chat Window Handler (updated for "Community_Chat" collection)
 async function openCommunityChatWindow(petId) {
-  // Get pet data (assuming you have this function)
-  const pet = await getPetProfile(petId); 
+  const pet = await getPetProfile(petId); // Your existing function
   const user = firebase.auth().currentUser;
-  
-  // Window settings
-  const windowFeatures = `
-    width=500,
-    height=700,
-    top=100,
-    left=100,
-    menubar=no,
-    toolbar=no,
-    location=no
-  `;
-  
-  const chatWindow = window.open('', `CommunityChat_${petId}`, windowFeatures);
-  
-  // Safety check
+
+  const chatWindow = window.open('', `CommunityChat_${petId}`, 
+    'width=500,height=700,top=100,left=100');
+
   if (!chatWindow) {
     alert("Please allow popups for Community Chat");
     return;
   }
 
-  // 4. Build Chat UI with Pet Context
   chatWindow.document.write(`
     <!DOCTYPE html>
     <html>
@@ -1315,58 +1180,29 @@ async function openCommunityChatWindow(petId) {
       <title>Community Chat - ${pet.petName || 'Pet'}</title>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
       <style>
-        /* Your existing styles + these additions */
-        .chat-header {
-          background: var(--qr-blue);
-          color: white;
-          padding: 15px;
-          border-radius: 8px 8px 0 0;
-        }
-        .pet-context {
-          background: #f0f7ff;
-          padding: 10px;
-          margin-bottom: 15px;
-          border-left: 3px solid var(--qr-blue);
-        }
-        /* ... rest of your chat styles ... */
+        /* Your chat styles here */
       </style>
     </head>
     <body>
       <div class="chat-container">
-        <div class="chat-header">
-          <h2><i class="fas fa-paw"></i> Community Chat</h2>
-        </div>
-        
+        <h2><i class="fas fa-comments"></i> Community Chat</h2>
         <div class="pet-context">
-          <p><strong>Pet:</strong> ${pet.petName || 'Unnamed'} (${pet.breed || 'Unknown breed'})</p>
-          <p><strong>Topic:</strong> 
-            <select id="chatType">
-              <option value="General Question">General Question</option>
-              <option value="Health Advice">Health Advice</option>
-              <option value="Behavior Help">Behavior Help</option>
-              <option value="Feedback">Feedback</option>
-            </select>
-          </p>
+          <p>Discussing: <strong>${pet.petName || 'Unnamed Pet'}</strong></p>
         </div>
-        
-        <textarea id="messageInput" placeholder="Type your message..." rows="6"></textarea>
-        <button id="sendBtn"><i class="fas fa-paper-plane"></i> Send Message</button>
+        <textarea id="messageInput" placeholder="Ask questions or share tips..." rows="5"></textarea>
+        <button id="sendBtn"><i class="fas fa-paper-plane"></i> Post Message</button>
         <p id="status"></p>
       </div>
 
       <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
       <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
       <script>
-        // Initialize Firebase (use your config)
         const firebaseConfig = ${JSON.stringify(firebaseConfig)};
         firebase.initializeApp(firebaseConfig);
         
         document.getElementById('sendBtn').addEventListener('click', async () => {
-          const db = firebase.firestore();
-          const messageInput = document.getElementById('messageInput');
+          const message = document.getElementById('messageInput').value.trim();
           const statusEl = document.getElementById('status');
-          const chatType = document.getElementById('chatType').value;
-          const message = messageInput.value.trim();
           
           if (!message) {
             statusEl.textContent = "Please enter a message";
@@ -1375,25 +1211,24 @@ async function openCommunityChatWindow(petId) {
           }
           
           try {
-            statusEl.textContent = "Sending...";
+            statusEl.textContent = "Posting...";
             statusEl.style.color = "gray";
             
-            await db.collection('pet_chats').add({
+            await firebase.firestore().collection('Community_Chat').add({
               petId: "${petId}",
               petName: "${pet.petName || ''}",
               userId: "${user?.uid || 'anonymous'}",
               userEmail: "${user?.email || 'anonymous'}",
-              type: chatType,
               message: message,
               timestamp: firebase.firestore.FieldValue.serverTimestamp(),
               status: "unread"
             });
             
-            statusEl.textContent = "✓ Sent! Our team will respond soon.";
+            statusEl.textContent = "✓ Posted to community!";
             statusEl.style.color = "green";
-            messageInput.value = "";
+            document.getElementById('messageInput').value = "";
           } catch (err) {
-            statusEl.textContent = "Error sending: " + err.message;
+            statusEl.textContent = "Error: " + err.message;
             statusEl.style.color = "red";
           }
         });
@@ -1403,19 +1238,9 @@ async function openCommunityChatWindow(petId) {
   `);
 }
 
-// 5. Add to your existing pet card generation
-function generatePetCard(profile) {
-  const card = document.createElement('div');
-  card.className = 'pet-card';
-  
-  // ... your existing card code ...
-  
-  // Add chat button (where your other action buttons are)
-  const chatBtn = createCommunityChatButton(profile.id);
-  card.querySelector('.pet-actions').appendChild(chatBtn);
-  
-  return card;
+  return chatBtn;
 }
+
 //=======================================================
 //  QR CODE GENERATION BUTTON FUNCTION 
 //=================================================
