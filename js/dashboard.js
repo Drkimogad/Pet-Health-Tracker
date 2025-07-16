@@ -1141,7 +1141,7 @@ function inviteFriends() {
 //=========================
 // Join Pet Community ()
 //============================
-// 1. Create Community Chat Button (add this to your button generation logic)
+// Create Community Chat Button (add this to your button generation logic)
 function createCommunityChatButton(profileId) {
   const chatBtn = document.createElement('button');
   chatBtn.className = 'communityChat-btn pulse-animation';
@@ -1154,7 +1154,20 @@ function createCommunityChatButton(profileId) {
   return chatBtn;
 }
 
-// 2. Chat Window Handler (updated for "Community_Chat" collection)
+// Add this function to your code (before openCommunityChatWindow)
+async function getPetProfile(petId) {
+  if (firebase.auth().currentUser) {
+    // Try Firestore first
+    const doc = await firebase.firestore().collection('profiles').doc(petId).get();
+    if (doc.exists) return doc.data();
+  }
+  
+  // Fallback to localStorage
+  const localProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+  return localProfiles.find(p => p.id === petId) || {};
+}
+
+// Chat Window Handler (updated for "Community_Chat" collection)
 async function openCommunityChatWindow(petId) {
   const pet = await getPetProfile(petId); // Your existing function
   const user = firebase.auth().currentUser;
