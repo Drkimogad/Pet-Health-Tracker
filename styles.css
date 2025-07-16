@@ -84,70 +84,74 @@ footer {
   margin-bottom: 1rem;
 }
 
-/* Updated Google Sign-In Wrapper */
-#googleSignInBtnWrapper {
+#googleSignInWrapper {
   display: flex;
-  flex-direction: row; /* Changed from column */
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between; /* Pushes items to sides */
-  margin: 20px 0;
-  padding: 0 10px;
-  gap: 20px; /* Space between message and button */
+  justify-content: center;
+  margin-top: 20px;
 }
 
-/* Updated Google Button - Circular Version */
 .google-btn {
   background: #ffffff;
-  color: transparent; /* Hide text */
+  color: #444;
   border: 1px solid #ddd;
-  border-radius: 50%; /* Makes it circular */
-  padding: 12px; /* Equal padding makes perfect circle */
+  border-radius: 6px;
+  padding: 12px 20px;
   display: flex;
   align-items: center;
-  justify-content: center; /* Center icon */
-  width: 44px; /* Fixed width */
-  height: 44px; /* Fixed height */
-  min-width: 44px; /* Prevents squishing */
+  gap: 12px;
+  margin: 15px auto;
   cursor: pointer;
   transition: background 0.3s, box-shadow 0.3s;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin: 0; /* Remove auto margin */
+  max-width: 250px;
+  font-weight: bold;
+  font-size: 16px;
 }
 
-/* Keep hover effect */
 .google-btn:hover {
   background: #f1f1f1;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
 }
 
-/* Adjust icon size */
 .google-btn img {
   width: 20px;
   height: 20px;
 }
 
-/* Updated Auth Message */
 .auth-message {
   color: #333;
-  margin: 0; /* Remove top margin */
+  margin-top: 10px;
   font-size: 1rem;
-  text-align: left;
-  flex-grow: 1; /* Takes available space */
-  padding-right: 10px; /* Space before button */
+}
+.auth-switch-btn {
+  background: none;
+  border: none;
+  color: #0066cc;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 10px 0;
+  font-size: 1rem;
+  margin-top: 15px;
+  display: block;
+  width: 100%;
+  text-align: center;
 }
 
-/* Responsive adjustments */
-@media (max-width: 480px) {
-  #googleSignInBtnWrapper {
-    flex-direction: column; /* Stack on small screens */
-    align-items: flex-start;
-    gap: 10px;
-  }
-  
-  .google-btn {
-    align-self: flex-end; /* Keep button to right */
-    margin-right: 10px;
-  }
+.auth-switch-btn:hover {
+  color: #004499;
+}
+
+.button[disabled] {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.success-message {
+  color: #28a745;
+  text-align: center;
+  margin: 15px 0;
 }
 
 /* ===== BANNER STYLES ===== */
