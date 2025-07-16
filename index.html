@@ -114,13 +114,24 @@
     <p style="color:white; font-size: 1.2rem; margin-top: 1rem;">Loading...</p>
   </div>
 </div>
-
         
     <!-- Auth Container -->
     <div id="authContainer">
-          <div class="auth-header">
-            <h1>Pet Health Tracker</h1>
-          </div>
+        <!-- New Small Lottie Container -->
+        <div class="pet-animation-container" style="width: 80%; margin: 20px auto; aspect-ratio: 2/1; max-width: 600px;">
+        <lottie-player
+            src="https://drkimogad.github.io/Pet-Health-Tracker/lottiefiles/Welcome.json"  <!-- Example pet animation, replace with yours -->
+            background="transparent"
+            speed="1"
+            style="width: 120px; height: 120px;"
+            loop
+            autoplay>
+        </lottie-player>
+        </div>
+        <div class="auth-header">
+        <h3>to your pet wellness hub </h3>
+        </div>
+        
         <div id="googleSignInBtnWrapper">
             <p class="auth-message">Sign in with your Google account to continue</p>
             <div id="googleSignInButton"></div>
