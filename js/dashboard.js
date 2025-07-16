@@ -1086,7 +1086,7 @@ async function exportAllPetCards(asZip = false) {
     setTimeout(() => errorEl.remove(), 3000);
   } finally {
     loader.remove();
-    container?.remove();
+  if (typeof container !== 'undefined') container.remove();
   }
 }
 // Usage examples:
