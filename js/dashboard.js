@@ -1153,8 +1153,7 @@ function createCommunityChatButton(profileId) {
   chatBtn.addEventListener('click', (e) => {
   e.stopPropagation(); // Prevent event bubbling
   openCommunityChatWindow(profile.id); // profile.id comes from your card generation  
-  return chatBtn;
-}
+});
 
 // function getpetprofile NEW (before openCommunityChatWindow)
 async function getPetProfile(petId) {
