@@ -1150,11 +1150,13 @@ function createCommunityChatButton(profileId) {
     <i class="fas fa-comments"></i> Community Chat
   `;
   
-  chatBtn.addEventListener('click', () => openCommunityChatWindow(profileId));
+  chatBtn.addEventListener('click', (e) => {
+  e.stopPropagation(); // Prevent event bubbling
+  openCommunityChatWindow(profile.id); // profile.id comes from your card generation  
   return chatBtn;
 }
 
-// Add this function to your code (before openCommunityChatWindow)
+// function getpetprofile NEW (before openCommunityChatWindow)
 async function getPetProfile(petId) {
   if (firebase.auth().currentUser) {
     // Try Firestore first
@@ -1166,10 +1168,47 @@ async function getPetProfile(petId) {
   const localProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
   return localProfiles.find(p => p.id === petId) || {};
 }
-
-// Chat Window Handler (updated for "Community_Chat" collection)
+//=========================
+// Join Pet Community
+//=========================
+// 1. Create Community Chat Button (add this to your button generation logic)
+function createCommunityChatButton(profileId) {
+  const chatBtn = document.createElement('button');
+  chatBtn.className = 'communityChat-btn pulse-animation';
+  chatBtn.dataset.petId = profileId;
+  chatBtn.innerHTML = `<i class="fas fa-comments"></i> Community Chat`;
+  
+  chatBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    openCommunityChatWindow(profileId); // Use profileId from parameter, not profile.id
+  });
+  return chatBtn; // Moved inside function
+}
+    
+// 2.function getpetprofile NEW (before openCommunityChatWindow)
+async function getPetProfile(petId) {
+        // Try Firestore first
+  if (firebase.auth().currentUser) {
+    const doc = await firebase.firestore().collection('profiles').doc(petId).get();
+    if (doc.exists) return doc.data();
+  }
+    // Fallback to localStorage
+  const localProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+  return localProfiles.find(p => p.id === petId) || {};
+}
+//3.open chat window
 async function openCommunityChatWindow(petId) {
-  const pet = await getPetProfile(petId); // Your existing function
+  const firebaseConfig = {
+    apiKey: "AIzaSyAy2ObF1WWPurBa3TZ_AbBb00o80ZmlLAo",
+    authDomain: "pet-health-tracker-4ec31.firebaseapp.com",
+    projectId: "pet-health-tracker-4ec31",
+    storageBucket: "pet-health-tracker-4ec31.firebasestorage.app",
+    messagingSenderId: "123508617321",
+    appId: "1:123508617321:web:6abb04f74ce73d7d4232f8",
+    measurementId: "G-7YDDLF95KR"
+  };
+
+  const pet = await getPetProfile(petId);
   const user = firebase.auth().currentUser;
 
   const chatWindow = window.open('', `CommunityChat_${petId}`, 
@@ -1187,8 +1226,14 @@ async function openCommunityChatWindow(petId) {
       <title>Community Chat - ${pet.petName || 'Pet'}</title>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
       <style>
-        /* Your chat styles here */
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+        .chat-container { max-width: 100%; margin: 0 auto; }
+        textarea { width: 100%; padding: 12px; margin-bottom: 10px; }
+        button { background: #4285f4; color: white; border: none; padding: 12px 20px; cursor: pointer; }
+        #status { margin-top: 10px; }
       </style>
+      <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+      <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
     </head>
     <body>
       <div class="chat-container">
@@ -1200,12 +1245,8 @@ async function openCommunityChatWindow(petId) {
         <button id="sendBtn"><i class="fas fa-paper-plane"></i> Post Message</button>
         <p id="status"></p>
       </div>
-
-      <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-      <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
       <script>
-        const firebaseConfig = ${JSON.stringify(firebaseConfig)};
-        firebase.initializeApp(firebaseConfig);
+        firebase.initializeApp(${JSON.stringify(firebaseConfig)});
         
         document.getElementById('sendBtn').addEventListener('click', async () => {
           const message = document.getElementById('messageInput').value.trim();
@@ -1244,7 +1285,6 @@ async function openCommunityChatWindow(petId) {
     </html>
   `);
 }
-
 //=======================================================
 //  QR CODE GENERATION BUTTON FUNCTION 
 //=================================================
