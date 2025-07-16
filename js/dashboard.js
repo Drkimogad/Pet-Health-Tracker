@@ -973,7 +973,7 @@ async function deletePetProfile(petId) {
  * Unified Pet Card Export Function
  * @param {boolean} asZip - Set true to export as ZIP, false for individual downloads
  */
-async function exportPetCards(asZip = false) {
+async function exportAllPetCards(asZip = false) {
   const loader = document.createElement('div');
   loader.className = 'loader';
   document.body.appendChild(loader);
@@ -1092,12 +1092,12 @@ async function exportPetCards(asZip = false) {
 // Usage examples:
 // exportPetCards();       // Individual downloads
 // exportPetCards(true);   // ZIP download
-
+// Its Listener
 document.addEventListener('click', (e) => {
   if (e.target.classList.contains('exportAll-btn')) {
     console.log("📤 Export All button clicked"); // <-- Confirmation it was triggered
   if (typeof exportAllPetCards === 'function') {
-      exportAllPetCards();
+       exportPetCards(true); // Force ZIP download
     } else {
       console.warn("❌ exportAllPetCards function is not defined.");
     }
