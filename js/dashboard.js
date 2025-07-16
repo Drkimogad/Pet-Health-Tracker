@@ -442,17 +442,18 @@ async function loadSavedPetProfile() {
      const actionsDiv = document.createElement('div');
      actionsDiv.className = 'pet-actions';
      actionsDiv.innerHTML = `
-            <div class="pet-actions">
               <button class="edit-btn" data-pet-id="${profile.id}">Edit</button>
               <button class="delete-btn" data-pet-id="${profile.id}">Delete</button>
               <button class="details-btn" data-pet-id="${profile.id}">Details</button>
               <button id="exportAll-btn" class="print-btn">📤 Export All Cards</button>
               <button class="qr-btn" data-pet-id="${profile.id}">Qr</button>
               <button class="inviteFriends-btn" data-pet-id="${profile.id}">Invite Friends</button>
-             <button class="communityChat-btn" data-pet-id="${profile.id}">Community Chat</button>
             `;
-
-     // Append to card        
+        
+     const communityChatBtn = createCommunityChatButton(profile.id);
+     actionsDiv.appendChild(communityChatBtn);
+    
+        // Append to card        
       petCard.appendChild(actionsDiv); // 👈 Append after remindersDiv
       savedProfilesList.appendChild(petCard);
     });
@@ -1229,8 +1230,6 @@ async function openCommunityChatWindow(petId) {
     </body>
     </html>
   `);
-}
-  return chatBtn;
 }
 
 //=======================================================
