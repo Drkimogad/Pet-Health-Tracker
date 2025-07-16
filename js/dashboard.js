@@ -445,7 +445,7 @@ async function loadSavedPetProfile() {
               <button class="edit-btn" data-pet-id="${profile.id}">Edit</button>
               <button class="delete-btn" data-pet-id="${profile.id}">Delete</button>
               <button class="details-btn" data-pet-id="${profile.id}">Details</button>
-              <button id="exportAll-btn" class="print-btn">📤 Export All Cards</button>
+              <button id="exportAll-btn" class="exportAll-btn">📤 Export All Cards</button>
               <button class="qr-btn" data-pet-id="${profile.id}">Qr</button>
               <button class="inviteFriends-btn" data-pet-id="${profile.id}">Invite Friends</button>
             `;
@@ -1097,7 +1097,7 @@ document.addEventListener('click', (e) => {
   if (e.target.classList.contains('exportAll-btn')) {
     console.log("📤 Export All button clicked"); // <-- Confirmation it was triggered
   if (typeof exportAllPetCards === 'function') {
-       exportPetCards(true); // Force ZIP download
+       exportAllPetCards(true); // Force ZIP download
     } else {
       console.warn("❌ exportAllPetCards function is not defined.");
     }
