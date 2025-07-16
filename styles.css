@@ -754,6 +754,21 @@ textarea:focus {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* for the added loader at the top of authContainer*/
+.pet-animation-container {
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 10px;
+    /* Responsive height through aspect-ratio */
+    aspect-ratio: 2/1; /* Makes it rectangular (2:1 ratio) */
+    /* Optional max-width to prevent it from getting too wide */
+    max-width: 600px;
+    /* Center the container */
+    margin: 20px auto;
+}
+
 /* Community Chat Styles */
 .communityChat-btn {
   background: var(--qr-blue);
