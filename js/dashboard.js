@@ -1143,17 +1143,47 @@ function inviteFriends() {
 //============================
 // Create Community Chat Button (add this to your button generation logic)
 function createCommunityChatButton(profileId) {
+    
+  // 1. Input Validation (First line of defense)
+  if (!profileId) {
+    console.error('Cannot create chat button: Missing profileId');
+    const errorSpan = document.createElement('span');
+    errorSpan.textContent = 'Chat Unavailable';
+    errorSpan.style.color = 'red';
+    return errorSpan; // Return safe fallback element
+  }
+    
+ console.log('Creating chat button for profile:', profileId);
+    
   const chatBtn = document.createElement('button');
   chatBtn.className = 'communityChat-btn pulse-animation';
   chatBtn.dataset.petId = profileId;
   chatBtn.innerHTML = `
     <i class="fas fa-comments"></i> Community Chat
   `;
-  
+    
+  // 2. SAFE EVENT LISTENER  
   chatBtn.addEventListener('click', (e) => {
+  console.log("Chat button clicked for profile:", profileId); // Debug line     
   e.stopPropagation(); // Prevent event bubbling
-  openCommunityChatWindow(profile.id); // profile.id comes from your card generation  
-});
+      
+// Secondary validation
+    if (!profileId) {
+      console.warn('Click detected but profileId is missing!');
+      alert('⚠️ Chat feature not available for this pet');
+      return; // This is valid - exits the callback without returning a value
+    }
+      
+ try {
+      openCommunityChatWindow(profileId);
+    } catch (err) {
+      console.error('Chat failed to open:', err);
+      alert('Failed to open chat. Please try again.');
+    }
+  });
+    
+  return chatBtn; // This returns the button element from the main function
+}
 
 // function getpetprofile NEW (before openCommunityChatWindow)
 async function getPetProfile(petId) {
