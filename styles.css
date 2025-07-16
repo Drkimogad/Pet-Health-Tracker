@@ -755,18 +755,25 @@ textarea:focus {
   100% { transform: rotate(360deg); }
 }
 
-/* for the added loader at the top of authContainer*/
+/* for the welcome added loader */
 .pet-animation-container {
+    width: 80%;
+    margin: 20px auto;
+    aspect-ratio: 4/1;
+    max-width: 800px;
     background-color: #f8f9fa;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    padding: 10px;
-    /* Responsive height through aspect-ratio */
-    aspect-ratio: 2/1; /* Makes it rectangular (2:1 ratio) */
-    /* Optional max-width to prevent it from getting too wide */
-    max-width: 600px;
-    /* Center the container */
-    margin: 20px auto;
+    overflow: hidden;
+    position: relative;
+}
+
+.pet-animation-container lottie-player {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 /* Community Chat Styles */
