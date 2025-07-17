@@ -119,51 +119,37 @@ footer {
 }
 
 .google-btn {
-  background: linear-gradient(to bottom, #FFF8F0, #FFFFFF);  color: #444;
-  border: 2px dashed #D2B48C; /* replace with E6C9A8 (warmer tan) or C19A6B (classic camel)*/
-  border-radius: 50%; /* Circle */
-  width: 44px; 
-  height: 44px; 
-  padding: 0; 
-  margin: 0;
+  background: #ffffff;
+  color: #444;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 12px 20px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 12px;
+  margin: 15px auto;
   cursor: pointer;
-  overflow: hidden; /* Prevents content from breaking the circle */
   transition: background 0.3s, box-shadow 0.3s;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 250px;
   font-weight: bold;
   font-size: 16px;
 }
-#googleSignInButton > div, 
-#googleSignInButton iframe {
-  width: 80px !important; /* Adjust size as needed */
-  height: 80px !important;
-  border-radius: 50% !important;
-  overflow: hidden !important;
-  border: none !important;
-  transform: scale(1); /* Ensures no distortion */
-}
-
-.google-btn span { display: none; } /* Added to hide text */
-.google-btn div { margin: 0; } /* Added to center icon */
 
 .google-btn:hover {
   background: #f1f1f1;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
 }
 
-.google-btn img, .google-btn svg {
-  display: block;
-  max-width: 100%; /* Ensures icon fits inside circle */
+.google-btn img {
+  width: 20px;
+  height: 20px;
 }
 
 .auth-message {
   color: #333;
-  margin: 0; /* Changed from margin-top: 10px */
+  margin-top: 10px;
   font-size: 1rem;
-  flex: 1; /* Added to fill space */
 }
 .auth-switch-btn {
   background: none;
@@ -179,9 +165,20 @@ footer {
   text-align: center;
 }
 
-.auth-switch-btn:hover { color: #004499; }
-.button[disabled] { opacity: 0.7; cursor: not-allowed; }
-.success-message { color: #28a745; text-align: center; margin: 15px 0; }
+.auth-switch-btn:hover {
+  color: #004499;
+}
+
+.button[disabled] {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.success-message {
+  color: #28a745;
+  text-align: center;
+  margin: 15px 0;
+}
 
 /* ===== BANNER STYLES ===== */
 #fullPageBanner.banner-wrapper {
