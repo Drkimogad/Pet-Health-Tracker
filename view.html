@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pet Profile</title>
+  <style>
+    body { font-family: Arial; max-width: 500px; margin: 0 auto; padding: 20px; }
+    .pet-card { border: 1px solid #ddd; border-radius: 10px; padding: 20px; }
+    .pet-photo { max-width: 100%; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <div id="petView"></div>
+
+  <!-- Add Firebase SDK if not already loaded -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+  
+  <script>
+    // Initialize Firebase (use your config)
+    const firebaseConfig = { /* Your config */ };
+    firebase.initializeApp(firebaseConfig);
+
+    // Get petId from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const petId = urlParams.get('petId');
+
+    function showPet(pet) {
+      document.getElementById('petView').innerHTML = `
+        <div class="pet-card">
+          <h2>${pet.petName || 'Unnamed Pet'}</h2>
+          ${pet.petPhoto ? `<img src="${pet.petPhoto}" class="pet-photo">` : ''}
+          <p><strong>Breed:</strong> ${pet.breed || 'N/A'}</p>
+          <p><strong>Emergency Contact:</strong> ${pet.emergencyContact?.phone || 'N/A'}</p>
+          <!-- Add other fields as needed -->
+        </div>
+      `;
+    }
+
+    // Try Firestore first
+    firebase.firestore().collection("profiles").doc(petId).get()
+      .then(doc => {
+        if (doc.exists) showPet(doc.data());
+        else throw new Error("Profile not found");
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById('petView').innerHTML = `
+          <p style="color: red">Profile not found or access denied</p>
+        `;
+      });
+  </script>
+</body>
+</html>
