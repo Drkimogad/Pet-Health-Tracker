@@ -92,15 +92,16 @@ footer {
   background: #ffffff;
   color: #444;
   border: 1px solid #ddd;
-  border-radius: 50%; /* Changed from 6px */
-  width: 44px; /* Added fixed size */
-  height: 44px; /* Added fixed size */
-  padding: 0; /* Changed from 12px 20px */
-  margin: 0; /* Changed from 15px auto */
+  border-radius: 50%; /* Circle */
+  width: 44px; 
+  height: 44px; 
+  padding: 0; 
+  margin: 0;
   display: flex;
   align-items: center;
-  justify-content: center; /* Added to center icon */
+  justify-content: center;
   cursor: pointer;
+  overflow: hidden; /* Prevents content from breaking the circle */
   transition: background 0.3s, box-shadow 0.3s;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   font-weight: bold;
@@ -115,9 +116,9 @@ footer {
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
 }
 
-.google-btn img {
-  width: 20px;
-  height: 20px;
+.google-btn img, .google-btn svg {
+  display: block;
+  max-width: 100%; /* Ensures icon fits inside circle */
 }
 
 .auth-message {
