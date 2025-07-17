@@ -75,7 +75,7 @@ footer {
 
 /* for the welcome added loader */
 .pet-animation-container {
-    width: 85%;
+    width: 80%;
     margin: 20px auto;
     aspect-ratio: 4/1;
     max-width: 800px;
@@ -96,7 +96,7 @@ footer {
 
 /* to your pet wellness hub */
 .auth-header h2 {
-  font-size: 2rem;
+  font-size: 1.7rem;
   color: #d4a017;
   margin: 0.5rem 10% 0.5rem auto; /* Reduced top/bottom margin, auto-left pushes right */
   text-align: right; /* Align text to right */
