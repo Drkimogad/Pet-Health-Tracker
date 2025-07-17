@@ -1592,6 +1592,7 @@ DOM.petList.addEventListener('submit', async (e) => {
       id: editingProfileId || generateUniqueId(), // Fixed ID generation
       ownerId: firebase.auth().currentUser?.uid || 'local-user',
       lastUpdated: Date.now(),
+      shareableUrl: `https://${window.location.hostname}/view.html?petId=${generateUniqueId()}`, //added recently
       createdAt: Date.now()
     };
 
