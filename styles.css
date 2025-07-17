@@ -96,12 +96,15 @@ footer {
 
 /* to your pet wellness hub */
 .auth-header h2 {
-  font-size: 1.2rem;
   color: #d4a017;
   text-align: right; /* Align text to right */
   width: 80%; /* Match Lottie container's width */
   max-width: 800px; /* Match Lottie container's max-width */
   color: #d4a017;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 1rem; /* or 0.95rem for more room */
   margin-bottom: 10px;
 }
 
