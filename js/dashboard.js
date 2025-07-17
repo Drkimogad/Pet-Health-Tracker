@@ -1136,13 +1136,24 @@ function inviteFriends(petId) {
     url: profile.shareableUrl
   };
 
-    // 4. Try Web Share API first
     if (navigator.share) {
-      await navigator.share(shareData);
-      console.log("✅ Shared successfully");
-      return;
+      await navigator.share({
+        title: `${profile.petName || 'Pet'} Profile`,
+        url: profile.shareableUrl
+      }) 
+      console.log("Shared successfully");
+    } else {
+      // Fallback for non-share API browsers
+      navigator.clipboard.writeText(profile.shareableUrl)
+        .then(() => alert("Link copied to clipboard!"))
+        .catch(() => prompt("Copy this link:", profile.shareableUrl));
     }
-
+  } catch (error) {
+    if (error.name !== 'AbortError') {
+      console.error("Sharing failed:", error);
+      alert("Couldn't share. Please try again.");
+    }
+  }
     // 5. Fallback options
     if (navigator.clipboard) {
       try {
