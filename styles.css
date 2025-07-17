@@ -72,9 +72,10 @@ footer {
 }
 
 .auth-header h2 {
-  font-size: 1.2rem;
+  font-size: 2rem;/* it was 1.2rem*/
   color: #d4a017;
   margin-bottom: 1rem;
+  margin-top: 0 0 1rem; /* addeded*/
 }
 
 /* Modified Google Sign-In Wrapper (ONLY THIS SECTION CHANGED) */
