@@ -1105,39 +1105,91 @@ document.addEventListener('click', (e) => {
 });
 
 //============================================
-// Invite Friends ()
+// Invite Friends (UPDATED)
 //===========================================
-function inviteFriends() {
-  const appLink = "https://drkimogad.github.io/Pet-Health-Tracker/";
-  const inviteMessage = `🐶 Looking for a smarter way to care for your pet?
+function inviteFriends(petId) {
+  // 1. Find profile (using your existing petProfiles array)
+  const profile = window.petProfiles.find(p => p.id === petId);
+  
+  if (!profile) {
+    alert("Pet data not loaded yet. Try again later.");
+    return;
+  }
 
-  🦴 Manage health records, reminders, emergency info, and more — all in one place!
+    // 2. Create personalized message
+    const inviteMessage = `Meet ${profile.petName || 'my pet'}! 🐾
 
-  📲 Try the Pet Health Tracker app and create your pet's profile today:
-  ${appLink}`;
-    
-  const shareData = {
-    title: "Invite to Pet Health Tracker app",
-    text: inviteMessage,
-    url: appLink
+    I'm using Pet Health Tracker to manage:
+    ✅ Vaccinations: ${profile.reminders?.vaccinations || 'Not set'}
+    ✅ Health records
+    ✅ Emergency contacts
+
+    View ${profile.petName ? profile.petName + "'s" : "my pet's"} profile:
+    ${profile.shareableUrl}
+
+    Get the app: https://drkimogad.github.io/Pet-Health-Tracker/`;
+
+    // 3. Use your existing share logic with profile.shareableUrl
+   const shareData = {
+    title: "Pet Profile",
+    text: `View ${profile.petName || 'pet'}'s details: ${profile.shareableUrl}`,
+    url: profile.shareableUrl
   };
 
-  // ✅ Use Web Share API if available
-  if (navigator.share) {
-    navigator.share(shareData)
-      .then(() => console.log("✅ Invite shared successfully"))
-      .catch((err) => console.warn("❌ Share canceled or failed", err));
-  } else {
-    // ❌ Fallback: Copy to clipboard
+    // 4. Try Web Share API first
+    if (navigator.share) {
+      await navigator.share(shareData);
+      console.log("✅ Shared successfully");
+      return;
+    }
+
+    // 5. Fallback options
     if (navigator.clipboard) {
-      navigator.clipboard.writeText(inviteMessage)
-        .then(() => alert("📋 Invite link copied. Share it with your friends!"))
-        .catch(() => prompt("Copy this invite link:", inviteMessage));
+      try {
+        await navigator.clipboard.writeText(inviteMessage);
+        alert(`📋 Copied ${profile.petName || 'pet'}'s profile link to clipboard!`);
+      } catch (err) {
+        showShareFallback(inviteMessage);
+      }
     } else {
-      prompt("Copy this invite message:", inviteMessage);
+      showShareFallback(inviteMessage);
+    }
+
+  } catch (error) {
+    if (error.name !== 'AbortError') { // Ignore user cancellation
+      console.error("Sharing failed:", error);
+      alert("Couldn't share profile. Please try again.");
     }
   }
 }
+
+// Helper for fallback sharing
+function showShareFallback(message) {
+  const shareContainer = document.createElement('div');
+  shareContainer.style.position = 'fixed';
+  shareContainer.style.bottom = '20px';
+  shareContainer.style.left = '10px';
+  shareContainer.style.right = '10px';
+  shareContainer.style.padding = '15px';
+  shareContainer.style.background = 'white';
+  shareContainer.style.borderRadius = '10px';
+  shareContainer.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+  shareContainer.style.zIndex = '1000';
+  
+  shareContainer.innerHTML = `
+    <p style="margin-top:0">Share this link:</p>
+    <input type="text" value="${message}" readonly 
+           style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #ddd; border-radius:4px">
+    <button onclick="this.parentElement.remove()" 
+            style="padding:8px 15px; background:#4CAF50; color:white; border:none; border-radius:4px">
+      Done
+    </button>
+  `;
+  
+  document.body.appendChild(shareContainer);
+  shareContainer.querySelector('input').select();
+}
+
 //=========================
 // Join Pet Community ()
 //============================
