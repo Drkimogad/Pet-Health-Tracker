@@ -84,7 +84,7 @@ footer {
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     overflow: hidden;
     position: relative;
-    margin-bottom: 2px; /* adjust to reduce space below Lottie and h2 */
+    margin-bottom: 0px; /* adjust to reduce space below Lottie and h2 */
 }
 .pet-animation-container lottie-player {
     width: 100%;
@@ -104,8 +104,8 @@ footer {
   white-space: nowrap;
   display: block;
   margin: 0 auto 10px 0;
-  font-size: 1rem; /* or 0.95rem for more room */
-  margin-bottom: 10px;
+  font-size: 1.8rem; /* or 0.95rem for more room */
+  margin-bottom: 20px;
 }
 
 /* Modified Google Sign-In Wrapper */
