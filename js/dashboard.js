@@ -1415,11 +1415,15 @@ Microchip ID: ${microchip.id || 'N/A'}
 Allergies: ${profile.allergies || 'N/A'}
 Medical History: ${profile.medicalHistory || 'N/A'}
 Diet Plan: ${profile.dietPlan || 'N/A'}
-Vaccinations/Deworming: ${profile.vaccinationsAndDewormingReminder || 'N/A'}
-Medical Check-ups: ${profile.medicalCheckupsReminder || 'N/A'}
-Grooming: ${profile.groomingReminder || 'N/A'}
-Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relationship || 'N/A'}) - ${emergencyContact.phone || 'N/A'}
-    `.trim();
+REMINDERS
+Vaccinations/Deworming: ${profile.reminders?.vaccinations || 'N/A'}
+Medical Check-ups: ${profile.reminders?.checkups || 'N/A'}
+Grooming: ${profile.reminders?.grooming || 'N/A'}
+EMERGENCY CONTACT
+Name: ${emergencyContact.name || 'N/A'}
+Relationship: ${emergencyContact.relationship || 'N/A'}
+Phone: ${emergencyContact.phone || 'N/A'}    
+`.trim();
 
     try {
       const qrcodeContainer = qrWindow.document.getElementById('qrcode-container');
