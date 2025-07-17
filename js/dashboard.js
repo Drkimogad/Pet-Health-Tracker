@@ -1400,72 +1400,57 @@ async function generateQRCode(petId) { // Use ID instead of index
   qrWindow.document.close();
 
   // FIX 7: Added null checks for profile data
-  qrWindow.addEventListener('load', () => {
-    const emergencyContact = (profile.emergencyContacts && profile.emergencyContacts[0]) || {};
-    const microchip = profile.microchip || {};
-const qrText = `
-PET PROFILE
-Name: ${profile.petName || 'N/A'}
-Breed: ${profile.breed || 'N/A'}
-Age: ${profile.age || 'N/A'}
-Gender: ${profile.gender || 'Unknown'}
-Type: ${profile.type || 'Unknown'}
-Weight: ${profile.weight || 'N/A'}
-Microchip ID: ${microchip.id || 'N/A'}
-Allergies: ${profile.allergies || 'N/A'}
-Medical History: ${profile.medicalHistory || 'N/A'}
-Diet Plan: ${profile.dietPlan || 'N/A'}
-REMINDERS
-Vaccinations/Deworming: ${profile.reminders?.vaccinations || 'N/A'}
-Medical Check-ups: ${profile.reminders?.checkups || 'N/A'}
-Grooming: ${profile.reminders?.grooming || 'N/A'}
-EMERGENCY CONTACT
-Name: ${emergencyContact.name || 'N/A'}
-Relationship: ${emergencyContact.relationship || 'N/A'}
-Phone: ${emergencyContact.phone || 'N/A'}    
-`.trim();
-
-    try {
-      const qrcodeContainer = qrWindow.document.getElementById('qrcode-container');
-      if (!qrcodeContainer) throw new Error('QR container not found');
+qrWindow.addEventListener('load', () => {
+  const emergencyContact = (profile.emergencyContacts && profile.emergencyContacts[0]) || {};
+  const microchip = profile.microchip || {};
+  
+  try {
+      // ✅ Explicitly declare the QR content variable
+    const qrContent = profile.shareableUrl;
+          // Validate URL exists
+    if (!qrContent) throw new Error('Profile missing shareable URL');
       
-      qrcodeContainer.style.display = 'block';
-      
-      // FIX 8: Verify QRCode library loaded
-      if (!qrWindow.QRCode) throw new Error('QRCode library not loaded');
-      
-      new qrWindow.QRCode(qrcodeContainer, {
-        text: qrText,
-        width: 256,
-        height: 256,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: qrWindow.QRCode.CorrectLevel.H
-      });
+    const qrcodeContainer = qrWindow.document.getElementById('qrcode-container');
+    if (!qrcodeContainer) throw new Error('QR container not found');
+    
+    qrcodeContainer.style.display = 'block';
+    
+    // Verify QRCode library loaded
+    if (!qrWindow.QRCode) throw new Error('QRCode library not loaded');
+    
+    // Use qrContent instead of qrText
+    new qrWindow.QRCode(qrcodeContainer, {
+      text: profile.shareableUrl, // Changed from qrText to profile.shareableUrl
+      width: 256,
+      height: 256,
+      colorDark: "#000000",
+      colorLight: "#ffffff",
+      correctLevel: qrWindow.QRCode.CorrectLevel.H
+    });
 
-        const qrControls = qrWindow.document.getElementById('qr-controls');
-        if (qrControls) qrControls.style.display = 'block';
+    const qrControls = qrWindow.document.getElementById('qr-controls');
+    if (qrControls) qrControls.style.display = 'block';
 
-    } catch (error) {
-      console.error('QR Generation Error:', error);
-      qrWindow.document.body.innerHTML = `
-        <h1 style="color: red; text-align: center; margin-top: 50px;">
-          Error: ${error.message}
-        </h1>
-        <button onclick="window.close()" style="display: block; margin: 20px auto; padding: 10px 20px;">
-          Close Window
-        </button>
-      `;
-    } finally {
-      const loader = qrWindow.document.querySelector('.loader');
-      if (loader) loader.style.display = 'none';
-      }
-     });
-   } catch (error) { // <- Add catch directly after closing try brace
-    console.error("Main Error:", error);
-    alert("QR initialization failed");
+  } catch (error) {
+    console.error('QR Generation Error:', error);
+    qrWindow.document.body.innerHTML = `
+      <h1 style="color: red; text-align: center; margin-top: 50px;">
+        Error: ${error.message}
+      </h1>
+      <button onclick="window.close()" style="display: block; margin: 20px auto; padding: 10px 20px;">
+        Close Window
+      </button>
+    `;
+  } finally {
+    const loader = qrWindow.document.querySelector('.loader');
+    if (loader) loader.style.display = 'none';
   }
-} 
+});
+} catch (error) {
+  console.error("Main Error:", error);
+  alert("QR initialization failed");
+}
+    
 // =======================================
 // ==== AUTO LOGOUT AFTER INACTIVITY ====PRODUCTION READY
 // Keep it running befor listeners and initialization
@@ -1592,8 +1577,8 @@ DOM.petList.addEventListener('submit', async (e) => {
       id: editingProfileId || generateUniqueId(), // Fixed ID generation
       ownerId: firebase.auth().currentUser?.uid || 'local-user',
       lastUpdated: Date.now(),
-      shareableUrl: `https://${window.location.hostname}/view.html?petId=${generateUniqueId()}`, //added recently
-      createdAt: Date.now()
+      createdAt: Date.now(),
+      shareableUrl: `https://${window.location.hostname}/view.html?petId=${editingProfileId || generateUniqueId()}` // Fix: Use same ID as above
     };
 
  // photo handling      
