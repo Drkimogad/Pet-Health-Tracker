@@ -89,10 +89,10 @@ footer {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
   gap: 15px;
-  margin: 15px 0;
-  margin-top: 20px;
+  margin: 20px 0;
+  width: 100%;
+  max-width: 400px; /* Matches your Lottie container width */
 }
 
 .google-btn {
@@ -100,20 +100,21 @@ footer {
   color: #444;
   border: 1px solid #ddd;
   display: flex;
+  flex-direction: row;
   align-items: center;
-  border-radius: 50%;
-  width: 44px;
   max-width: 250px;
-  min-width: auto;
-  height: 44px;
-  padding: 0;
-  margin: 0;
   gap: 12px;
   cursor: pointer;
   transition: background 0.3s, box-shadow 0.3s;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   font-weight: bold;
   font-size: 16px;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  min-width: auto;
+  margin: 0;
 }
 
 .google-btn span {
@@ -122,6 +123,9 @@ footer {
 
 .google-btn div {
   margin: 0 !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .google-btn:hover {
@@ -136,8 +140,12 @@ footer {
 
 .auth-message {
   color: #333;
-  margin-top: 10px;
   font-size: 1rem;
+  flex: 1; /* Takes remaining space */
+  margin: 0;
+  display: flex;
+  text-align: left;
+  padding-right: 10px;
 }
 
 .auth-switch-btn {
