@@ -100,7 +100,7 @@ footer {
   color: #d4a017;
   margin: 0.5rem 10% 0.5rem auto; /* Reduced top/bottom margin, auto-left pushes right */
   text-align: right; /* Align text to right */
-  width: 60%; /* Match Lottie container's width */
+  width: 80%; /* Match Lottie container's width */
   max-width: 800px; /* Match Lottie container's max-width */
   padding-right: 20px; /* Optional: Add right padding if needed */
 }
