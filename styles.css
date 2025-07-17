@@ -96,13 +96,13 @@ footer {
 
 /* to your pet wellness hub */
 .auth-header h2 {
-  font-size: 2.2rem;
+  font-size: 1.2rem;
   color: #d4a017;
-  margin: 0.2rem 10% 0 0; /* Top | Right | Bottom | Left */
   text-align: right; /* Align text to right */
   width: 80%; /* Match Lottie container's width */
   max-width: 800px; /* Match Lottie container's max-width */
-  padding-right: 20px; /* Optional: Add right padding if needed */
+  color: #d4a017;
+  margin-bottom: 10px;
 }
 
 /* Modified Google Sign-In Wrapper */
