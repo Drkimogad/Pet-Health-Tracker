@@ -75,7 +75,7 @@ footer {
 
 /* for the welcome added loader */
 .pet-animation-container {
-    width: 80%;
+    width: 85%;
     margin: 20px auto;
     aspect-ratio: 4/1;
     max-width: 800px;
@@ -84,7 +84,7 @@ footer {
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     overflow: hidden;
     position: relative;
-    margin-bottom: 10px; /* adjust to reduce space below Lottie and h2 */
+    margin-bottom: 5px; /* adjust to reduce space below Lottie and h2 */
 }
 .pet-animation-container lottie-player {
     width: 100%;
@@ -99,7 +99,7 @@ footer {
   color: #d4a017;
   margin: 0.5rem 10% 0.5rem auto; /* Reduced top/bottom margin, auto-left pushes right */
   text-align: right; /* Align text to right */
-  width: 80%; /* Match Lottie container's width */
+  width: 60%; /* Match Lottie container's width */
   max-width: 800px; /* Match Lottie container's max-width */
   padding-right: 20px; /* Optional: Add right padding if needed */
 }
