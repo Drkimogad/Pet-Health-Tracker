@@ -114,8 +114,8 @@ footer {
 }
 #googleSignInButton > div, 
 #googleSignInButton iframe {
-  width: 60px !important; /* Adjust size as needed */
-  height: 60px !important;
+  width: 80px !important; /* Adjust size as needed */
+  height: 80px !important;
   border-radius: 50% !important;
   overflow: hidden !important;
   border: none !important;
