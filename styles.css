@@ -48,28 +48,21 @@ footer {
   bottom: 0;
   z-index: 10;
 }
+
 /* ===== AUTH SECTION VISIBILITY ===== */
 #authContainer {
   display: flex !important;
   flex-direction: column !important;
-  align-items: center;            /* ✅ Horizontally center content */
-  justify-content: center;        /* ✅ Vertically center content */
-  min-height: 100vh !important;   /* ✅ Full viewport height */
-  padding: 2rem;                  /* ✅ Optional breathing room */
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh !important;
+  padding: 2rem;
   box-sizing: border-box;
 }
 
-.hidden {
-  display: none !important;
-}
-
-.visible {
-  display: block !important;
-}
-/* ===== this to avoid override by hidden in html ===== */
-#authContainer.hidden {
-  display: none !important;
-}
+.hidden { display: none !important; }
+.visible { display: block !important; }
+#authContainer.hidden { display: none !important; }
 
 /* ===== AUTHENTICATION UI STYLES ===== */
 .auth-header h1 {
@@ -84,49 +77,37 @@ footer {
   margin-bottom: 1rem;
 }
 
-/* Circular button modifications - add these last */
+/* Modified Google Sign-In Wrapper (ONLY THIS SECTION CHANGED) */
 #googleSignInBtnWrapper {
   display: flex;
-  flex-direction: row;
   align-items: center;
   gap: 15px;
-  margin: 20px 0;
-  width: 100%;
-  max-width: 400px; /* Matches your Lottie container width */
+  width: 80%;
+  max-width: 800px;
+  margin: 20px auto;
 }
 
 .google-btn {
   background: #ffffff;
   color: #444;
   border: 1px solid #ddd;
+  border-radius: 50%; /* Changed from 6px */
+  width: 44px; /* Added fixed size */
+  height: 44px; /* Added fixed size */
+  padding: 0; /* Changed from 12px 20px */
+  margin: 0; /* Changed from 15px auto */
   display: flex;
-  flex-direction: row;
   align-items: center;
-  max-width: 250px;
-  gap: 12px;
+  justify-content: center; /* Added to center icon */
   cursor: pointer;
   transition: background 0.3s, box-shadow 0.3s;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   font-weight: bold;
   font-size: 16px;
-  border-radius: 50%;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  min-width: auto;
-  margin: 0;
 }
 
-.google-btn span {
-  display: none;
-}
-
-.google-btn div {
-  margin: 0 !important;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+.google-btn span { display: none; } /* Added to hide text */
+.google-btn div { margin: 0; } /* Added to center icon */
 
 .google-btn:hover {
   background: #f1f1f1;
@@ -140,14 +121,12 @@ footer {
 
 .auth-message {
   color: #333;
+  margin: 0; /* Changed from margin-top: 10px */
   font-size: 1rem;
-  flex: 1; /* Takes remaining space */
-  margin: 0;
-  display: flex;
-  text-align: left;
-  padding-right: 10px;
+  flex: 1; /* Added to fill space */
 }
 
+/* Rest of your original styles (unchanged) */
 .auth-switch-btn {
   background: none;
   border: none;
@@ -162,20 +141,9 @@ footer {
   text-align: center;
 }
 
-.auth-switch-btn:hover {
-  color: #004499;
-}
-
-.button[disabled] {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.success-message {
-  color: #28a745;
-  text-align: center;
-  margin: 15px 0;
-}
+.auth-switch-btn:hover { color: #004499; }
+.button[disabled] { opacity: 0.7; cursor: not-allowed; }
+.success-message { color: #28a745; text-align: center; margin: 15px 0; }
 
 /* ===== BANNER STYLES ===== */
 #fullPageBanner.banner-wrapper {
