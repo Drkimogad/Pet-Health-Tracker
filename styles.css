@@ -107,7 +107,14 @@ footer {
   font-weight: bold;
   font-size: 16px;
 }
-
+#googleSignInButton > div, 
+#googleSignInButton iframe {
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  border: none !important;
+}
 .google-btn span { display: none; } /* Added to hide text */
 .google-btn div { margin: 0; } /* Added to center icon */
 
@@ -127,8 +134,6 @@ footer {
   font-size: 1rem;
   flex: 1; /* Added to fill space */
 }
-
-/* Rest of your original styles (unchanged) */
 .auth-switch-btn {
   background: none;
   border: none;
