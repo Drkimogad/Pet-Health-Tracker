@@ -84,6 +84,7 @@ footer {
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     overflow: hidden;
     position: relative;
+    margin-bottom: 10px; /* adjust to reduce space below Lottie and h2 */
 }
 .pet-animation-container lottie-player {
     width: 100%;
@@ -94,10 +95,13 @@ footer {
 } 
 /* to your pet wellness hub */
 .auth-header h2 {
-  font-size: 2rem;/* it was 1.2rem*/
+  font-size: 2rem;
   color: #d4a017;
-  margin-bottom: 1rem;
-  margin-top: 0rem; /* addeded*/
+  margin: 0.5rem 10% 0.5rem auto; /* Reduced top/bottom margin, auto-left pushes right */
+  text-align: right; /* Align text to right */
+  width: 80%; /* Match Lottie container's width */
+  max-width: 800px; /* Match Lottie container's max-width */
+  padding-right: 20px; /* Optional: Add right padding if needed */
 }
 
 /* Modified Google Sign-In Wrapper */
