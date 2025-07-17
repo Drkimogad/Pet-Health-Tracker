@@ -102,9 +102,9 @@ footer {
   max-width: 800px; /* Match Lottie container's max-width */
   color: #d4a017;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 0.9rem; /* or 0.95rem for more room */
+  display: block;
+  margin: 0 auto 10px 0;
+  font-size: 1rem; /* or 0.95rem for more room */
   margin-bottom: 10px;
 }
 
