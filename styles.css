@@ -104,7 +104,7 @@ footer {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 1rem; /* or 0.95rem for more room */
+  font-size: 0.9rem; /* or 0.95rem for more room */
   margin-bottom: 10px;
 }
 
