@@ -73,6 +73,26 @@ footer {
   text-align: center;
 }
 
+/* for the welcome added loader */
+.pet-animation-container {
+    width: 80%;
+    margin: 20px auto;
+    aspect-ratio: 4/1;
+    max-width: 800px;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+    position: relative;
+}
+.pet-animation-container lottie-player {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+} 
+/* to your pet wellness hub */
 .auth-header h2 {
   font-size: 2rem;/* it was 1.2rem*/
   color: #d4a017;
@@ -80,7 +100,7 @@ footer {
   margin-top: 0rem; /* addeded*/
 }
 
-/* Modified Google Sign-In Wrapper (ONLY THIS SECTION CHANGED) */
+/* Modified Google Sign-In Wrapper */
 #googleSignInBtnWrapper {
   display: flex;
   flex-direction: column;
@@ -371,7 +391,7 @@ textarea:focus {
   background: #f0f0f0;
   font-size: 1.5rem;
 }
-/* all reminders related styleS ROOT COLOURS ARE REMOVED*/
+/* ======= all reminders related styleS ROOT COLOURS ARE REMOVED ============*/
 .pet-reminders {
   background: #DECCE1;
   border: 1px solid #f3e5ab;
@@ -451,7 +471,7 @@ textarea:focus {
   background-color: #1b5e20;
 }
 
-/* Pet Card Action & Buttons */
+/* ======== Pet Card Action & Buttons=========== */
 .pet-actions {
   display: flex;
   flex-wrap: wrap;
@@ -500,6 +520,7 @@ textarea:focus {
   background-color: var(--qr-blue);
   color: white;
 }
+/* rest of the buttons are generated dynamically and inline styled */
 
 /*NEW HELPER FUNCTION FOR PET FIELDS*/
 .pet-field {
@@ -512,7 +533,7 @@ textarea:focus {
   color: var(--text-color);
 }
 
-/* QR CODE STYLES */
+/* =====QR CODE STYLES======== */
 .qr-window {
   padding: 20px;
   text-align: center;
@@ -541,11 +562,26 @@ textarea:focus {
   background: var(--qr-green);
 }
 
-/* SHARING STYLE */
+/* ======SHARING STYLE======= */
 #share-loader {
   z-index: 9999;
   transform: translate(-50%, -50%);
   transition: opacity 0.1s ease-out; /* Smooth disappear */
+}
+/* Loader styling used in invite friends logic*/
+.loader {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid var(--qr-blue);
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  animation: spin 1s linear infinite;
+  margin: 2rem auto;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
 }
 
 @keyframes highlight {
@@ -553,7 +589,7 @@ textarea:focus {
     100% { background: transparent; }
 }
 
-/*  PRINT STYLES */
+/* ======= PRINT STYLES =========*/
 @media print {
   body {
     font-size: 14pt;
@@ -576,40 +612,7 @@ textarea:focus {
     page-break-after: avoid;
   }
   
-  /* 👇 NEW: Hide modal buttons from print view */
-  .modal-actions,
-  .close-modal {
-    display: none !important;
-  }
-
-  /* 👇 Ensure only modal content prints, not background */
-  .modal-overlay {
-    background: white !important;
-    padding: 0 !important;
-  }
-
-  /* 👇 Prevent duplicate prints if any */
-  body > *:not(.modal-overlay) {
-    display: none !important;
-  }
-
-  .modal-content {
-    max-width: 100%;
-    box-shadow: none;
-    border: none;
-    margin: 0;
-    padding-top: 4rem !important; /* add a little spacing at the top of details card */
-  }
-}
-/* keep it outside media */
-.modal-content {
-  width: 100%;
-  max-width: 600px; /* restore good size */
-  min-width: 320px;
-  margin: auto;
-}
-
-/* Details Modal */
+/* =====Details Modal========== */
 /* Modal Styles */
 .modal-overlay {
   position: fixed;
@@ -684,7 +687,38 @@ textarea:focus {
   margin-top: 1rem;
   font-weight: bold;
 }
+/* 👇 NEW: Hide modal buttons from print view */
+  .modal-actions,
+  .close-modal {
+    display: none !important;
+  }
 
+  /* 👇 Ensure only modal content prints, not background */
+  .modal-overlay {
+    background: white !important;
+    padding: 0 !important;
+  }
+
+  /* 👇 Prevent duplicate prints if any */
+  body > *:not(.modal-overlay) {
+    display: none !important;
+  }
+
+  .modal-content {
+    max-width: 100%;
+    box-shadow: none;
+    border: none;
+    margin: 0;
+    padding-top: 4rem !important; /* add a little spacing at the top of details card */
+  }
+}
+/* keep it outside media */
+.modal-content {
+  width: 100%;
+  max-width: 600px; /* restore good size */
+  min-width: 320px;
+  margin: auto;
+}
 /* === Modal Button Styles (including new Share) === */
 .modal-actions {
   display: flex;
@@ -725,22 +759,6 @@ textarea:focus {
   color: black;
 }
 
-/* Loader styling used in share card logic*/
-.loader {
-  border: 3px solid #f3f3f3;
-  border-top: 3px solid var(--qr-blue);
-  border-radius: 50%;
-  width: 35px;
-  height: 35px;
-  animation: spin 1s linear infinite;
-  margin: 2rem auto;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1000;
-}
-
 /* ===== ERROR STATES ===== */
 .error-message {
   color: var(--error-color);
@@ -760,44 +778,137 @@ textarea:focus {
   100% { transform: rotate(360deg); }
 }
 
-/* for the welcome added loader */
-.pet-animation-container {
-    width: 80%;
-    margin: 20px auto;
-    aspect-ratio: 4/1;
-    max-width: 800px;
-    background-color: #f8f9fa;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    overflow: hidden;
-    position: relative;
+/* ========== COMMUNITY CHAT MODAL ========== */
+.community-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(124, 88, 52, 0.6); /* Light brown overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
 }
 
-.pet-animation-container lottie-player {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
+.community-modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
 }
 
-/* Community Chat Styles */
-.communityChat-btn {
-  background: var(--qr-blue);
-  color: white;
+.community-modal-content {
+  background: #fefaf0; /* Light mustard base */
+  border-radius: 10px;
+  max-width: 600px;
+  width: 90%;
+  height: 70vh;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  animation: fadeSlideIn 0.3s ease;
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.community-modal-content h2 {
+  margin-top: 0;
+  color: #4e348c; /* Lavender */
+  font-size: 1.4rem;
+  text-align: center;
+}
+
+.close-community-chat {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 1.5rem;
+  background: none;
   border: none;
-  padding: 8px 12px;
-  border-radius: 20px;
+  color: #4e348c;
+  cursor: pointer;
 }
 
-.pulse-animation {
-  animation: pulse 2s infinite;
+.chat-messages {
+  flex: 1;
+  background: #fff9e6; /* Pale mustard */
+  border: 1px solid #d2b48c; /* Light brown */
+  padding: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  overflow-y: auto;
+  border-radius: 8px;
+  font-size: 0.95rem;
 }
 
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
+.chat-message {
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e0d4b7;
+}
+
+.chat-message strong {
+  color: #8e6b3f; /* Earthy brown */
+}
+
+.chat-message small {
+  display: block;
+  color: #888;
+  font-size: 0.75rem;
+}
+
+#chatInput {
+  resize: none;
+  height: 60px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #b38b6d;
+  background: #fffef7;
+  color: #4e348c;
+  outline: none;
+  margin-bottom: 0.5rem;
+}
+
+#sendChatBtn {
+  background: #fbc02d; /* Mustard */
+  color: #000;
+  font-weight: bold;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+#sendChatBtn:hover {
+  background: #f9b000;
+}
+
+.chat-status {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.no-messages {
+  text-align: center;
+  color: #aaa;
+  font-style: italic;
 }
 
 /* ===== RESPONSIVE DESIGNS============== */
