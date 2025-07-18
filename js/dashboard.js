@@ -491,9 +491,10 @@ function showPetDetails(profile) {
       <div>Current Mood: ${profile.mood || 'N/A'}</div>
 
       <div class="section-break"><strong>Emergency Contact:</strong></div>
-      <div>Name: ${emergencyContact.name || 'N/A'}</div>
-      <div>Phone: ${emergencyContact.phone || 'N/A'}</div>
-      <div>Relationship: ${emergencyContact.relationship || 'N/A'}</div>
+      <div>Name: ${profile.emergencyContacts?.[0]?.name || 'N/A'}</div>
+      <div>Phone: ${profile.emergencyContacts?.[0]?.phone || 'N/A'}</div>
+      <div>Relationship: ${profile.emergencyContacts?.[0]?.relationship || 'N/A'}</div>
+
 
       <div class="section-break"><strong>Reminders:</strong></div>
       <div>Vaccinations: ${formatReminder(profile.reminders?.vaccinations)}</div>
