@@ -52,13 +52,6 @@ const DOM = {
   vaccinationsAndDewormingReminder: document.getElementById('vaccinationsAndDewormingReminder'),
   medicalCheckupsReminder: document.getElementById('medicalCheckupsReminder'),
   groomingReminder: document.getElementById('groomingReminder')
-
-  // Modal Elements (used in showModal())
-  //petModal: document.getElementById('pet-modal') || null, // Optional fallback
-  //modalOverlay: document.getElementById('modal-overlay') || null
-    
-  // Buttons
- // cancelEdit: document.getElementById('cancel6Edit')
 };
 
 // Safety check (optional)
@@ -67,8 +60,6 @@ if (!DOM.savedProfilesList || !DOM.petList) {
 }
 
 // =======REMINDERS🌟
-  
-
 const REMINDER_THRESHOLD_DAYS = 5;
 const ALLOWED_REMINDER_TYPES = ['vaccination', 'checkup', 'grooming'];
 const REMINDER_TYPE_MAP = {
@@ -1513,6 +1504,7 @@ window.addEventListener('offline', () => {
 window.addEventListener('online', () => {
   showSuccessNotification("✅ You're back online. Sync available.");
 });
+
 // ======== EVENT DELEGATION (FIXED) ========
 // ✅ Keep this block to handle profile actions (WIRING) ALL THE BUTTONS IN LOADSAVEDPETPROFILES FUNCTION✅
 DOM.savedProfilesList?.addEventListener('click', (e) => {
