@@ -1207,10 +1207,12 @@ function createCommunityChatButton(profileId) {
   chatBtn.dataset.petId = profileId;
   chatBtn.innerHTML = `<i class="fas fa-comments"></i> Community Chat`;
   
-  chatBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    openCommunityChatWindow(profileId); // Use profileId from parameter, not profile.id
-  });
+document.addEventListener('click', e => {
+  if (e.target.closest('.communityChat-btn')) {
+    const petId = e.target.closest('.communityChat-btn').dataset.petId;
+    openCommunityChatModal(petId);
+  }
+});
   return chatBtn; // Moved inside function
 }
     
@@ -1226,93 +1228,103 @@ async function getPetProfile(petId) {
   return localProfiles.find(p => p.id === petId) || {};
 }
 //3.open chat window
-async function openCommunityChatWindow(petId) {
-  const firebaseConfig = {
-    apiKey: "AIzaSyAy2ObF1WWPurBa3TZ_AbBb00o80ZmlLAo",
-    authDomain: "pet-health-tracker-4ec31.firebaseapp.com",
-    projectId: "pet-health-tracker-4ec31",
-    storageBucket: "pet-health-tracker-4ec31.firebasestorage.app",
-    messagingSenderId: "123508617321",
-    appId: "1:123508617321:web:6abb04f74ce73d7d4232f8",
-    measurementId: "G-7YDDLF95KR"
-  };
+async function openCommunityChatModal(petId) {
+  const user = firebase.auth().currentUser;
+  if (!user) return alert("You must be signed in to access community chat.");
 
   const pet = await getPetProfile(petId);
-  const user = firebase.auth().currentUser;
+  if (!pet) return alert("Pet profile not found.");
 
-  const chatWindow = window.open('', `CommunityChat_${petId}`, 
-    'width=500,height=700,top=100,left=100');
+  // 🔄 Remove any existing chat modal first
+  const existingModal = document.getElementById('community-chat-modal');
+  if (existingModal) existingModal.remove();
 
-  if (!chatWindow) {
-    alert("Please allow popups for Community Chat");
-    return;
-  }
+  // ✅ Build modal
+  const modal = document.createElement('div');
+  modal.id = 'community-chat-modal';
+  modal.className = 'community-modal-overlay';
+  modal.innerHTML = `
+    <div class="community-modal-content">
+      <button class="close-community-chat">&times;</button>
+      <h2>💬 Community Chat: ${pet.petName || 'Pet'}</h2>
+      <div class="chat-messages" id="chatMessages">Loading messages...</div>
+      <textarea id="chatInput" placeholder="Ask or share something..."></textarea>
+      <button id="sendChatBtn">Send</button>
+      <p id="chatStatus" class="chat-status"></p>
+    </div>
+  `;
 
-  chatWindow.document.write(`
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>Community Chat - ${pet.petName || 'Pet'}</title>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-      <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
-        .chat-container { max-width: 100%; margin: 0 auto; }
-        textarea { width: 100%; padding: 12px; margin-bottom: 10px; }
-        button { background: #4285f4; color: white; border: none; padding: 12px 20px; cursor: pointer; }
-        #status { margin-top: 10px; }
-      </style>
-      <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-      <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
-    </head>
-    <body>
-      <div class="chat-container">
-        <h2><i class="fas fa-comments"></i> Community Chat</h2>
-        <div class="pet-context">
-          <p>Discussing: <strong>${pet.petName || 'Unnamed Pet'}</strong></p>
-        </div>
-        <textarea id="messageInput" placeholder="Ask questions or share tips..." rows="5"></textarea>
-        <button id="sendBtn"><i class="fas fa-paper-plane"></i> Post Message</button>
-        <p id="status"></p>
-      </div>
-      <script>
-        firebase.initializeApp(${JSON.stringify(firebaseConfig)});
-        
-        document.getElementById('sendBtn').addEventListener('click', async () => {
-          const message = document.getElementById('messageInput').value.trim();
-          const statusEl = document.getElementById('status');
-          
-          if (!message) {
-            statusEl.textContent = "Please enter a message";
-            statusEl.style.color = "red";
-            return;
-          }
-          
-          try {
-            statusEl.textContent = "Posting...";
-            statusEl.style.color = "gray";
-            
-            await firebase.firestore().collection('Community_Chat').add({
-              petId: "${petId}",
-              petName: "${pet.petName || ''}",
-              userId: "${user?.uid || 'anonymous'}",
-              userEmail: "${user?.email || 'anonymous'}",
-              message: message,
-              timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-              status: "unread"
-            });
-            
-            statusEl.textContent = "✓ Posted to community!";
-            statusEl.style.color = "green";
-            document.getElementById('messageInput').value = "";
-          } catch (err) {
-            statusEl.textContent = "Error: " + err.message;
-            statusEl.style.color = "red";
-          }
-        });
-      </script>
-    </body>
-    </html>
-  `);
+  document.body.appendChild(modal);
+  setTimeout(() => modal.classList.add('active'), 50); // animate open
+
+  // ✅ Close handler
+  modal.querySelector('.close-community-chat').addEventListener('click', () => {
+    modal.classList.remove('active');
+    setTimeout(() => modal.remove(), 300); // animate close
+  });
+
+  // ✅ Real-time listener
+  const chatMessagesDiv = modal.querySelector('#chatMessages');
+  firebase.firestore()
+    .collection("Community_Chat")
+    .where("petId", "==", petId)
+    .orderBy("timestamp", "asc")
+    .onSnapshot(snapshot => {
+      if (snapshot.empty) {
+        chatMessagesDiv.innerHTML = `<p class="no-messages">No messages yet.</p>`;
+        return;
+      }
+
+      chatMessagesDiv.innerHTML = '';
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const msgEl = document.createElement('div');
+        msgEl.className = 'chat-message';
+        msgEl.innerHTML = `
+          <strong>${data.userEmail || 'Anonymous'}:</strong>
+          <p>${data.message}</p>
+          <small>${data.timestamp?.toDate().toLocaleString() || ''}</small>
+        `;
+        chatMessagesDiv.appendChild(msgEl);
+      });
+      chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+    });
+
+  // ✅ Send logic
+  modal.querySelector('#sendChatBtn').addEventListener('click', async () => {
+    const input = modal.querySelector('#chatInput');
+    const status = modal.querySelector('#chatStatus');
+    const message = input.value.trim();
+
+    if (!message) {
+      status.textContent = "⚠️ Please write a message.";
+      status.style.color = "red";
+      return;
+    }
+
+    status.textContent = "Sending...";
+    status.style.color = "gray";
+
+    try {
+      await firebase.firestore().collection("Community_Chat").add({
+        petId,
+        petName: pet.petName || '',
+        userId: user.uid,
+        userEmail: user.email || 'Anonymous',
+        message,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        status: "unread"
+      });
+
+      input.value = '';
+      status.textContent = "✓ Message posted!";
+      status.style.color = "green";
+    } catch (err) {
+      console.error("Chat error:", err);
+      status.textContent = `❌ ${err.message}`;
+      status.style.color = "red";
+    }
+  });
 }
 //=======================================================
 //  QR CODE GENERATION BUTTON FUNCTION 
