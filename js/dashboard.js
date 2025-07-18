@@ -1108,68 +1108,42 @@ document.addEventListener('click', (e) => {
 // Invite Friends (UPDATED)
 //===========================================
 async function inviteFriends(petId) {
-  // 1. Find profile (using your existing petProfiles array)
   const profile = window.petProfiles.find(p => p.id === petId);
-  
   if (!profile) {
     alert("Pet data not loaded yet. Try again later.");
     return;
   }
 
-    // 2. Create personalized message
-    const inviteMessage = `Meet ${profile.petName || 'my pet'}! 🐾
+  const inviteMessage = `Meet ${profile.petName || 'my pet'}! 🐾
 
-    I'm using Pet Health Tracker to manage:
-    ✅ Vaccinations: ${profile.reminders?.vaccinations || 'Not set'}
-    ✅ Health records
-    ✅ Emergency contacts
+I'm using Pet Health Tracker to manage:
+✅ Vaccinations: ${profile.reminders?.vaccinations || 'Not set'}
+✅ Health records
+✅ Emergency contacts
 
-    View ${profile.petName ? profile.petName + "'s" : "my pet's"} profile:
-    ${profile.shareableUrl}
+View ${profile.petName ? profile.petName + "'s" : "my pet's"} profile:
+${profile.shareableUrl}
 
-    Get the app: https://drkimogad.github.io/Pet-Health-Tracker/`;
+Get the app: https://drkimogad.github.io/Pet-Health-Tracker/`;
 
-    // 3. Use your existing share logic with profile.shareableUrl
-   const shareData = {
+  const shareData = {
     title: "Pet Profile",
     text: `View ${profile.petName || 'pet'}'s details: ${profile.shareableUrl}`,
     url: profile.shareableUrl
   };
 
+  try {
     if (navigator.share) {
-      await navigator.share({
-        title: `${profile.petName || 'Pet'} Profile`,
-        url: profile.shareableUrl
-      }) 
+      await navigator.share(shareData);
       console.log("Shared successfully");
     } else {
-      // Fallback for non-share API browsers
-      navigator.clipboard.writeText(profile.shareableUrl)
-        .then(() => alert("Link copied to clipboard!"))
-        .catch(() => prompt("Copy this link:", profile.shareableUrl));
+      await navigator.clipboard.writeText(profile.shareableUrl);
+      alert("Link copied to clipboard!");
     }
   } catch (error) {
     if (error.name !== 'AbortError') {
       console.error("Sharing failed:", error);
       alert("Couldn't share. Please try again.");
-    }
-  }
-    // 5. Fallback options
-    if (navigator.clipboard) {
-      try {
-        await navigator.clipboard.writeText(inviteMessage);
-        alert(`📋 Copied ${profile.petName || 'pet'}'s profile link to clipboard!`);
-      } catch (err) {
-        showShareFallback(inviteMessage);
-      }
-    } else {
-      showShareFallback(inviteMessage);
-    }
-
-  } catch (error) {
-    if (error.name !== 'AbortError') { // Ignore user cancellation
-      console.error("Sharing failed:", error);
-      alert("Couldn't share profile. Please try again.");
     }
   }
 }
