@@ -469,7 +469,9 @@ async function loadSavedPetProfile() {
 //=================================
 // ✅ UPDATED showPetDetails() with Share Button in Modal
 function showPetDetails(profile) {
-  const emergencyContact = profile.emergencyContacts?.[0] || {};
+  const emergencyContact = Array.isArray(profile.emergencyContacts) && profile.emergencyContacts.length > 0
+    ? profile.emergencyContacts[0]
+    : {};
 
   const detailsHtml = `
     <h3>${profile.petName || 'Unnamed Pet'}</h3>
