@@ -449,10 +449,7 @@ async function loadSavedPetProfile() {
               <button class="qr-btn" data-pet-id="${profile.id}">Qr</button>
               <button class="inviteFriends-btn" data-pet-id="${profile.id}">Invite Friends</button>
             `;
-        
-     const communityChatBtn = createCommunityChatButton(profile.id);
-     actionsDiv.appendChild(communityChatBtn);
-    
+            
         // Append to card        
       petCard.appendChild(actionsDiv); // 👈 Append after remindersDiv
       savedProfilesList.appendChild(petCard);
@@ -764,9 +761,8 @@ if (printBtn) {
     }
   }); // closes evenlistner
 } // closes if print
-}, 50); // ✅ THIS WAS MISSING - closes setTimeout
+}, 50); // ✅ closes setTimeout
 } // Closes showdetails()
-
 
 //=========================================
 // FUNCTION EDIT PROFILE
@@ -804,7 +800,6 @@ async function editPetProfile(petId) {
    }));
    sessionStorage.setItem(`editingProfile_${petId}_timestamp`, Date.now()); 
     resetForm(); // Prevent leftover values or states
-    // reassign photopreview here if needed
       
 // Your existing field population logic (unchanged)
     const setValue = (field, value) => {
@@ -1089,9 +1084,7 @@ async function exportAllPetCards(asZip = false) {
   if (typeof container !== 'undefined') container.remove();
   }
 }
-// Usage examples:
-// exportPetCards();       // Individual downloads
-// exportPetCards(true);   // ZIP download
+
 // Its Listener
 document.addEventListener('click', (e) => {
   if (e.target.classList.contains('exportAll-btn')) {
