@@ -1508,12 +1508,7 @@ DOM.savedProfilesList?.addEventListener('click', (e) => {
     if (confirm('Delete this profile?')) deletePetProfile(petId);
   }
  else if (btn.classList.contains('details-btn')) {
-  if (petId) {
-    const profiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-    const profile = profiles.find(p => p.id === petId);
-    if (profile) showPetDetails(profile);
-    else showErrorToUser('Profile not found');
-  }
+  if (petId) showPetDetails();
 }
 else if (btn.classList.contains('inviteFriends-btn')) {
   if (petId) inviteFriends();
