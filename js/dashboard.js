@@ -469,9 +469,7 @@ async function loadSavedPetProfile() {
 //=================================
 // ✅ UPDATED showPetDetails() with Share Button in Modal
 function showPetDetails(profile) {
-  const emergencyContact = Array.isArray(profile.emergencyContacts) && profile.emergencyContacts.length > 0
-    ? profile.emergencyContacts[0]
-    : {};
+  const emergencyContact = profile.emergencyContacts?.[0] || {};
 
   const detailsHtml = `
     <h3>${profile.petName || 'Unnamed Pet'}</h3>
@@ -1107,39 +1105,76 @@ document.addEventListener('click', (e) => {
 });
 
 //============================================
-// Invite Friends ()
+// Invite Friends (UPDATED)
 //===========================================
-function inviteFriends() {
-  const appLink = "https://drkimogad.github.io/Pet-Health-Tracker/";
-  const inviteMessage = `🐶 Looking for a smarter way to care for your pet?
+async function inviteFriends(petId) {
+  const profile = window.petProfiles.find(p => p.id === petId);
+  if (!profile) {
+    alert("Pet data not loaded yet. Try again later.");
+    return;
+  }
 
-  🦴 Manage health records, reminders, emergency info, and more — all in one place!
+  const inviteMessage = `Meet ${profile.petName || 'my pet'}! 🐾
 
-  📲 Try the Pet Health Tracker app and create your pet's profile today:
-  ${appLink}`;
-    
+I'm using Pet Health Tracker to manage:
+✅ Vaccinations: ${profile.reminders?.vaccinations || 'Not set'}
+✅ Health records
+✅ Emergency contacts
+
+View ${profile.petName ? profile.petName + "'s" : "my pet's"} profile:
+${profile.shareableUrl}
+
+Get the app: https://drkimogad.github.io/Pet-Health-Tracker/`;
+
   const shareData = {
-    title: "Invite to Pet Health Tracker app",
-    text: inviteMessage,
-    url: appLink
+    title: "Pet Profile",
+    text: `View ${profile.petName || 'pet'}'s details: ${profile.shareableUrl}`,
+    url: profile.shareableUrl
   };
 
-  // ✅ Use Web Share API if available
-  if (navigator.share) {
-    navigator.share(shareData)
-      .then(() => console.log("✅ Invite shared successfully"))
-      .catch((err) => console.warn("❌ Share canceled or failed", err));
-  } else {
-    // ❌ Fallback: Copy to clipboard
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(inviteMessage)
-        .then(() => alert("📋 Invite link copied. Share it with your friends!"))
-        .catch(() => prompt("Copy this invite link:", inviteMessage));
+  try {
+    if (navigator.share) {
+      await navigator.share(shareData);
+      console.log("Shared successfully");
     } else {
-      prompt("Copy this invite message:", inviteMessage);
+      await navigator.clipboard.writeText(profile.shareableUrl);
+      alert("Link copied to clipboard!");
+    }
+  } catch (error) {
+    if (error.name !== 'AbortError') {
+      console.error("Sharing failed:", error);
+      alert("Couldn't share. Please try again.");
     }
   }
+} // <== This closes the async function
+
+// Helper for fallback sharing
+function showShareFallback(message) {
+  const shareContainer = document.createElement('div');
+  shareContainer.style.position = 'fixed';
+  shareContainer.style.bottom = '20px';
+  shareContainer.style.left = '10px';
+  shareContainer.style.right = '10px';
+  shareContainer.style.padding = '15px';
+  shareContainer.style.background = 'white';
+  shareContainer.style.borderRadius = '10px';
+  shareContainer.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+  shareContainer.style.zIndex = '1000';
+  
+  shareContainer.innerHTML = `
+    <p style="margin-top:0">Share this link:</p>
+    <input type="text" value="${message}" readonly 
+           style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #ddd; border-radius:4px">
+    <button onclick="this.parentElement.remove()" 
+            style="padding:8px 15px; background:#4CAF50; color:white; border:none; border-radius:4px">
+      Done
+    </button>
+  `;
+  
+  document.body.appendChild(shareContainer);
+  shareContainer.querySelector('input').select();
 }
+
 //=========================
 // Join Pet Community ()
 //============================
@@ -1402,68 +1437,58 @@ async function generateQRCode(petId) { // Use ID instead of index
   qrWindow.document.close();
 
   // FIX 7: Added null checks for profile data
-  qrWindow.addEventListener('load', () => {
-    const emergencyContact = (profile.emergencyContacts && profile.emergencyContacts[0]) || {};
-    const microchip = profile.microchip || {};
-const qrText = `
-PET PROFILE
-Name: ${profile.petName || 'N/A'}
-Breed: ${profile.breed || 'N/A'}
-Age: ${profile.age || 'N/A'}
-Gender: ${profile.gender || 'Unknown'}
-Type: ${profile.type || 'Unknown'}
-Weight: ${profile.weight || 'N/A'}
-Microchip ID: ${microchip.id || 'N/A'}
-Allergies: ${profile.allergies || 'N/A'}
-Medical History: ${profile.medicalHistory || 'N/A'}
-Diet Plan: ${profile.dietPlan || 'N/A'}
-Vaccinations/Deworming: ${profile.vaccinationsAndDewormingReminder || 'N/A'}
-Medical Check-ups: ${profile.medicalCheckupsReminder || 'N/A'}
-Grooming: ${profile.groomingReminder || 'N/A'}
-Emergency Contact: ${emergencyContact.name || 'N/A'} (${emergencyContact.relationship || 'N/A'}) - ${emergencyContact.phone || 'N/A'}
-    `.trim();
-
-    try {
-      const qrcodeContainer = qrWindow.document.getElementById('qrcode-container');
-      if (!qrcodeContainer) throw new Error('QR container not found');
+qrWindow.addEventListener('load', () => {
+  const emergencyContact = (profile.emergencyContacts && profile.emergencyContacts[0]) || {};
+  const microchip = profile.microchip || {};
+  
+  try {
+      // ✅ Explicitly declare the QR content variable
+    const qrContent = profile.shareableUrl;
+          // Validate URL exists
+    if (!qrContent) throw new Error('Profile missing shareable URL');
       
-      qrcodeContainer.style.display = 'block';
-      
-      // FIX 8: Verify QRCode library loaded
-      if (!qrWindow.QRCode) throw new Error('QRCode library not loaded');
-      
-      new qrWindow.QRCode(qrcodeContainer, {
-        text: qrText,
-        width: 256,
-        height: 256,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: qrWindow.QRCode.CorrectLevel.H
-      });
+    const qrcodeContainer = qrWindow.document.getElementById('qrcode-container');
+    if (!qrcodeContainer) throw new Error('QR container not found');
+    
+    qrcodeContainer.style.display = 'block';
+    
+    // Verify QRCode library loaded
+    if (!qrWindow.QRCode) throw new Error('QRCode library not loaded');
+    
+    // Use qrContent instead of qrText
+    new qrWindow.QRCode(qrcodeContainer, {
+      text: profile.shareableUrl, // Changed from qrText to profile.shareableUrl
+      width: 256,
+      height: 256,
+      colorDark: "#000000",
+      colorLight: "#ffffff",
+      correctLevel: qrWindow.QRCode.CorrectLevel.H
+    });
 
-        const qrControls = qrWindow.document.getElementById('qr-controls');
-        if (qrControls) qrControls.style.display = 'block';
+    const qrControls = qrWindow.document.getElementById('qr-controls');
+    if (qrControls) qrControls.style.display = 'block';
 
-    } catch (error) {
-      console.error('QR Generation Error:', error);
-      qrWindow.document.body.innerHTML = `
-        <h1 style="color: red; text-align: center; margin-top: 50px;">
-          Error: ${error.message}
-        </h1>
-        <button onclick="window.close()" style="display: block; margin: 20px auto; padding: 10px 20px;">
-          Close Window
-        </button>
-      `;
-    } finally {
-      const loader = qrWindow.document.querySelector('.loader');
-      if (loader) loader.style.display = 'none';
-      }
-     });
-   } catch (error) { // <- Add catch directly after closing try brace
-    console.error("Main Error:", error);
-    alert("QR initialization failed");
+  } catch (error) {
+    console.error('QR Generation Error:', error);
+    qrWindow.document.body.innerHTML = `
+      <h1 style="color: red; text-align: center; margin-top: 50px;">
+        Error: ${error.message}
+      </h1>
+      <button onclick="window.close()" style="display: block; margin: 20px auto; padding: 10px 20px;">
+        Close Window
+      </button>
+    `;
+  } finally {
+    const loader = qrWindow.document.querySelector('.loader');
+    if (loader) loader.style.display = 'none';
   }
-} 
+});
+} catch (error) {
+  console.error("Main Error:", error);
+  alert("QR initialization failed");
+ }
+}
+    
 // =======================================
 // ==== AUTO LOGOUT AFTER INACTIVITY ====PRODUCTION READY
 // Keep it running befor listeners and initialization
@@ -1510,7 +1535,12 @@ DOM.savedProfilesList?.addEventListener('click', (e) => {
     if (confirm('Delete this profile?')) deletePetProfile(petId);
   }
  else if (btn.classList.contains('details-btn')) {
-  if (petId) showPetDetails();
+  if (petId) {
+    const profiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+    const profile = profiles.find(p => p.id === petId);
+    if (profile) showPetDetails(profile);
+    else showErrorToUser('Profile not found');
+  }
 }
 else if (btn.classList.contains('inviteFriends-btn')) {
   if (petId) inviteFriends();
@@ -1585,7 +1615,8 @@ DOM.petList.addEventListener('submit', async (e) => {
       id: editingProfileId || generateUniqueId(), // Fixed ID generation
       ownerId: firebase.auth().currentUser?.uid || 'local-user',
       lastUpdated: Date.now(),
-      createdAt: Date.now()
+      createdAt: Date.now(),
+      shareableUrl: `https://${window.location.hostname}/view.html?petId=${editingProfileId || generateUniqueId()}` // Fix: Use same ID as above
     };
 
  // photo handling      
