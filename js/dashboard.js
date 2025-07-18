@@ -1146,7 +1146,7 @@ Get the app: https://drkimogad.github.io/Pet-Health-Tracker/`;
       alert("Couldn't share. Please try again.");
     }
   }
-}
+} // <== This closes the async function
 
 // Helper for fallback sharing
 function showShareFallback(message) {
@@ -1486,6 +1486,7 @@ qrWindow.addEventListener('load', () => {
 } catch (error) {
   console.error("Main Error:", error);
   alert("QR initialization failed");
+ }
 }
     
 // =======================================
