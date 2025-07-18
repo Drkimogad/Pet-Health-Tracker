@@ -1535,11 +1535,15 @@ DOM.savedProfilesList?.addEventListener('click', (e) => {
     if (confirm('Delete this profile?')) deletePetProfile(petId);
   }
  else if (btn.classList.contains('details-btn')) {
-  if (petId) {
-    const profiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-    const profile = profiles.find(p => p.id === petId);
-    if (profile) showPetDetails(profile);
-    else showErrorToUser('Profile not found');
+  const profile = window.petProfiles.find(p => p.id === petId) || 
+                 (await loadPets()).find(p => p.id === petId);
+  
+  if (profile) {
+    console.log("Showing profile:", profile.id); // Debug line
+    showPetDetails(profile);
+  } else {
+    console.error("Profile not found for ID:", petId);
+    showErrorToUser("Profile data not loaded. Try again.");
   }
 }
 else if (btn.classList.contains('inviteFriends-btn')) {
@@ -1612,11 +1616,12 @@ DOM.petList.addEventListener('submit', async (e) => {
       grooming: DOM.groomingReminder?.value
      },      
       // New fields we're adding
-      id: editingProfileId || generateUniqueId(), // Fixed ID generation
+     const id = editingProfileId || generateUniqueId();    // Generate ONCE
+      id: id,
       ownerId: firebase.auth().currentUser?.uid || 'local-user',
       lastUpdated: Date.now(),
       createdAt: Date.now(),
-      shareableUrl: `https://${window.location.hostname}/view.html?petId=${editingProfileId || generateUniqueId()}` // Fix: Use same ID as above
+      shareableUrl: `https://${window.location.hostname}/view.html?petId=${id}`
     };
 
  // photo handling      
