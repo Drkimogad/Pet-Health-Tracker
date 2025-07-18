@@ -1107,7 +1107,7 @@ document.addEventListener('click', (e) => {
 //============================================
 // Invite Friends (UPDATED)
 //===========================================
-function inviteFriends(petId) {
+async function inviteFriends(petId) {
   // 1. Find profile (using your existing petProfiles array)
   const profile = window.petProfiles.find(p => p.id === petId);
   
