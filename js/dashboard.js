@@ -1570,43 +1570,44 @@ DOM.petList.addEventListener('submit', async (e) => {
   
   try {
     // Get all form data (preserving your existing structure)
-    const petData = {
-      // Your existing fields
-      petName: DOM.petName?.value,
-      breed: DOM.breed?.value,
-      age: DOM.age?.value,
-      weight: DOM.weight?.value,
-      type: DOM.petType?.value || 'Unknown',
-      gender: DOM.petGender?.value || 'Unknown',
-      microchip: {
-        id: DOM.microchipId?.value,
-        date: DOM.microchipDate?.value,
-        vendor: DOM.microchipVendor?.value
-      },
-      allergies: DOM.allergies?.value,
-      medicalHistory: DOM.medicalHistory?.value,
-      dietPlan: DOM.dietPlan?.value,
-        
-      emergencyContacts: [{
-      name: DOM.emergencyContactName?.value,
-      phone: DOM.emergencyContactPhone?.value,
-      relationship: DOM.emergencyContactRelationship?.value
-     }],
+    // 🔑 Generate ID once
+const newId = editingProfileId || generateUniqueId();
 
-      mood: DOM.moodSelector?.value,
-      reminders: {
-      vaccinations: DOM.vaccinationsAndDewormingReminder?.value,
-      checkups: DOM.medicalCheckupsReminder?.value,
-      grooming: DOM.groomingReminder?.value
-     },      
-      // New fields we're adding
-      id: editingProfileId || generateUniqueId(), // Fixed ID generation
-      ownerId: firebase.auth().currentUser?.uid || 'local-user',
-      lastUpdated: Date.now(),
-      createdAt: Date.now(),
-        
-      shareableUrl: `https://${window.location.hostname}/view.html?petId=${editingProfileId || generateUniqueId()}` // Fix: Use same ID as above
-    };
+// 🐶 Full petData object
+const petData = {
+  id: newId,
+  ownerId: firebase.auth().currentUser?.uid || 'local-user',
+  lastUpdated: Date.now(),
+  createdAt: Date.now(),
+  shareableUrl: `https://${window.location.hostname}/view.html?petId=${newId}`,
+  
+  // 🔁 Rest of your form fields here (no changes needed)
+  petName: DOM.petName?.value,
+  breed: DOM.breed?.value,
+  age: DOM.age?.value,
+  weight: DOM.weight?.value,
+  type: DOM.petType?.value || 'Unknown',
+  gender: DOM.petGender?.value || 'Unknown',
+  microchip: {
+    id: DOM.microchipId?.value,
+    date: DOM.microchipDate?.value,
+    vendor: DOM.microchipVendor?.value
+  },
+  allergies: DOM.allergies?.value,
+  medicalHistory: DOM.medicalHistory?.value,
+  dietPlan: DOM.dietPlan?.value,
+  emergencyContacts: [{
+    name: DOM.emergencyContactName?.value,
+    phone: DOM.emergencyContactPhone?.value,
+    relationship: DOM.emergencyContactRelationship?.value
+  }],
+  mood: DOM.moodSelector?.value,
+  reminders: {
+    vaccinations: DOM.vaccinationsAndDewormingReminder?.value,
+    checkups: DOM.medicalCheckupsReminder?.value,
+    grooming: DOM.groomingReminder?.value
+  }
+};
 
  // photo handling      
 const fileInput = DOM.petPhotoInput;
