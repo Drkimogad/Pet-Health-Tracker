@@ -439,7 +439,10 @@ async function loadSavedPetProfile() {
               <button id="exportAll-btn" class="exportAll-btn">📤 Export All Cards</button>
               <button class="qr-btn" data-pet-id="${profile.id}">Qr</button>
               <button class="inviteFriends-btn" data-pet-id="${profile.id}">Invite Friends</button>
-            `;     
+            `;   
+    const communityChatBtn = createCommunityChatButton(profile.id);
+    actionsDiv.appendChild(communityChatBtn);
+        
         // Append to card        
       petCard.appendChild(actionsDiv); // 👈 Append after remindersDiv
       savedProfilesList.appendChild(petCard);
