@@ -439,11 +439,7 @@ async function loadSavedPetProfile() {
               <button id="exportAll-btn" class="exportAll-btn">📤 Export All Cards</button>
               <button class="qr-btn" data-pet-id="${profile.id}">Qr</button>
               <button class="inviteFriends-btn" data-pet-id="${profile.id}">Invite Friends</button>
-            `;
-        
-     const communityChatBtn = createCommunityChatButton(profile.id);
-     actionsDiv.appendChild(communityChatBtn);
-         
+            `;     
         // Append to card        
       petCard.appendChild(actionsDiv); // 👈 Append after remindersDiv
       savedProfilesList.appendChild(petCard);
@@ -1605,6 +1601,7 @@ DOM.petList.addEventListener('submit', async (e) => {
       ownerId: firebase.auth().currentUser?.uid || 'local-user',
       lastUpdated: Date.now(),
       createdAt: Date.now(),
+        
       shareableUrl: `https://${window.location.hostname}/view.html?petId=${editingProfileId || generateUniqueId()}` // Fix: Use same ID as above
     };
 
