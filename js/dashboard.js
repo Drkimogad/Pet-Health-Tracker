@@ -1614,7 +1614,9 @@ const fileInput = DOM.petPhotoInput;
       
 // ✅ If editing and NO new image, reuse existing photo
 if (editingProfileId !== null && !fileInput.files[0]) {
-  const existingProfile = savedProfiles.find(p => p.id === editingProfileId);
+  const existingProfiles = await loadPets(); // 🔄 Always get latest profiles
+  const existingProfile = existingProfiles.find(p => p.id === newId); 
+    
   if (existingProfile && existingProfile.petPhoto) {
     petData.petPhoto = existingProfile.petPhoto;
     petData.cloudinaryPath = existingProfile.cloudinaryPath || '';
