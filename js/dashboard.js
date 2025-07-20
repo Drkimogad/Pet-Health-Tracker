@@ -459,7 +459,12 @@ async function loadSavedPetProfile() {
 //=================================
 // ✅ UPDATED showPetDetails() with Share Button in Modal
 function showPetDetails(profile) {
-  const emergencyContact = profile.emergencyContacts?.[0] || {};
+console.log("🔍 showPetDetails() triggered", profile); // added
+
+const emergencyContact = profile.emergencyContacts?.[0] || {};
+console.log("🧱 Preparing modal content...");
+console.log("🖼️ profile.petPhoto:", profile.petPhoto);
+console.log("🔗 profile.shareableUrl:", profile.shareableUrl);
 
   const detailsHtml = `
     <h3>${profile.petName || 'Unnamed Pet'}</h3>
@@ -616,6 +621,8 @@ if (shareBtn) {
       await new Promise(r => requestAnimationFrame(r));
 
       // 5. Capture with safety checks
+let canvas;
+  try {
       const canvas = await html2canvas(modal, {
         backgroundColor: '#fff',
         useCORS: true,
@@ -630,10 +637,19 @@ if (shareBtn) {
        const clonedModal = clonedDoc.querySelector('.modal-content');
        if (clonedModal) {
        clonedModal.style.overflow = 'visible';
+        console.log("✅ html2canvas finished rendering"); // added
         }
        }
       });
-
+  } catch (htmlErr) {
+  console.error("❌ html2canvas failed:", htmlErr);
+  alert("Snapshot failed. Please check the image or try again.");
+  loader.remove(); // Clean up manually since we're skipping the rest
+  modal.style.pointerEvents = originalModalStyle.pointerEvents;
+  modal.style.transition = originalModalStyle.transition;
+  restoreButtons();
+  return; // Exit early
+}
       // 6. Quality/type adjustments
       const blob = await new Promise((resolve) => {
         canvas.toBlob(resolve, 'image/png', 0.92);
@@ -645,6 +661,7 @@ if (shareBtn) {
         `PetCard_${profile.petName || 'profile'}_${Date.now()}.png`, 
         { type: 'image/png' }
       );
+    console.error("❌ html2canvas failed:", error); // added
 
       if (navigator.canShare?.({ files: [file] })) {
         await navigator.share({
