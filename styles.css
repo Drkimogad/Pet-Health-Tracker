@@ -726,9 +726,16 @@ textarea:focus {
 .modal-actions {
   display: flex;
   justify-content: center;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* Allows wrapping on small screens */
   gap: 0.75rem;
   margin-top: 1.5rem;
+  width: 100%; /* ✅ Ensures container takes full width */
+}
+
+@media (min-width: 600px) {
+  .modal-actions {
+    flex-wrap: nowrap; /* ⛔ disables wrapping for wider viewports */
+  }
 }
 
 .modal-actions button {
