@@ -146,6 +146,28 @@ function hideModal() {
     }, 300); // Match your CSS transition duration
   }
 }
+// trapFocus function
+function trapFocus(modal) {
+  const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+
+  modal.addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab') return;
+    if (e.shiftKey) {
+      if (document.activeElement === first) {
+        last.focus();
+        e.preventDefault();
+      }
+    } else {
+      if (document.activeElement === last) {
+        first.focus();
+        e.preventDefault();
+      }
+    }
+  });
+}
+
 //=================================
 // SW snippet 
 if ('serviceWorker' in navigator) {
