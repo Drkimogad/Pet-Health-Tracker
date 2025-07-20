@@ -508,7 +508,6 @@ console.log("🔗 profile.shareableUrl:", profile.shareableUrl);
     </div>
   `;
     
-console.log("🧱 Modal innerHTML length:", DOM.modalContent.innerHTML.length);
 console.log("👀 Attempting to unhide modal overlay...");
 
   // ✅ Inject modal into DOM
@@ -517,6 +516,8 @@ console.log("👀 Attempting to unhide modal overlay...");
 // ✅ SAFELY Attach Modal logics only after modal content is rendered
 setTimeout(() => {
   const modal = document.querySelector('.modal-content');
+console.log("📦 Modal was created. InnerHTML length:", modal?.innerHTML?.length);
+
   const photo = modal.querySelector('.detail-photo');
   const actions = modal.querySelector('.modal-actions');
 
