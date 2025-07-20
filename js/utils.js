@@ -86,70 +86,65 @@ function validateReminder(reminderData) {
 }
 
 //=====================
-//  Modal Utilities, MODAL IS NOT STATIC HTML
+//  Modal Utilities, MODAL IS NOT STATIC HTML fixed version
 //==========================
 function showModal(content) {
-  let modal = DOM.petModal;
-  let overlay = DOM.modalOverlay;
-
-  if (!modal) {
-    overlay = document.createElement('div');
-    overlay.id = 'modal-overlay';
-    overlay.className = 'modal-overlay';
-
-    modal = document.createElement('div');
-    modal.id = 'pet-modal';
-    modal.className = 'modal-content';
-
-    const closeBtn = document.createElement('button');
-    closeBtn.className = 'close-modal';
-    closeBtn.innerHTML = '&times;';
-    closeBtn.addEventListener('click', hideModal);
-
-    modal.appendChild(closeBtn);
-    overlay.appendChild(modal);
-    document.body.appendChild(overlay);
-
-    overlay.addEventListener('click', (e) => {
-      if (e.target === overlay) hideModal();
-    });
+  // 1. FIRST Cleanup any existing instance
+  const existingOverlay = document.getElementById('modal-overlay');
+  if (existingOverlay) {
+    hideModal(); // Use your existing hide function
   }
 
-  modal.innerHTML = `<button class="close-modal">&times;</button>${content}`;
-  modal.querySelector('.close-modal').addEventListener('click', hideModal);
+  // 2. Create fresh elements (your existing code)
+  const overlay = document.createElement('div');
+  overlay.id = 'modal-overlay';
+  overlay.className = 'modal-overlay';
+
+  const modal = document.createElement('div');
+  modal.id = 'pet-modal';
+  modal.className = 'modal-content';
+
+  // 3. Add close button (modified to prevent duplicate handlers)
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'close-modal';
+  closeBtn.innerHTML = '&times;';
+  closeBtn.onclick = hideModal; // ← Changed from addEventListener
+
+  // 4. Build structure (your existing code)
+  modal.appendChild(closeBtn);
+  modal.innerHTML += content; // ← Preserves your content insertion
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+
+  // 5. Add overlay click handler (modified)
+  overlay.onclick = (e) => { // ← Changed from addEventListener
+    if (e.target === overlay) hideModal();
+  };
+
+  // 6. Activate (your existing code)
   overlay.classList.add('active');
   document.body.style.overflow = 'hidden';
+
+  // 7. Focus trap (your existing code)
+  trapFocus(modal);
 }
 
-// UPDATED HIDE MODAL
+// UPDATED HIDE MODAL (Enhanced)
 function hideModal() {
-  const overlay = document.getElementById('modal-overlay'); // ✅ dynamic lookup
+  const overlay = document.getElementById('modal-overlay');
   if (overlay) {
-    overlay.remove(); // 💣 remove modal from DOM
+    // 1. Remove event listeners first
+    overlay.onclick = null; // ← Cleanup click handler
+    const closeBtn = overlay.querySelector('.close-modal');
+    if (closeBtn) closeBtn.onclick = null;
+
+    // 2. Fade out before removal
+    overlay.classList.remove('active');
+    setTimeout(() => {
+      overlay.remove();
+      document.body.style.overflow = '';
+    }, 300); // Match your CSS transition duration
   }
-  document.body.style.overflow = ''; // ✅ restore scrolling
-}
-
-// TRAP FOCUS MODAL
-function trapFocus(modal) {
-  const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-  const first = focusable[0];
-  const last = focusable[focusable.length - 1];
-
-  modal.addEventListener('keydown', (e) => {
-    if (e.key !== 'Tab') return;
-    if (e.shiftKey) {
-      if (document.activeElement === first) {
-        last.focus();
-        e.preventDefault();
-      }
-    } else {
-      if (document.activeElement === last) {
-        first.focus();
-        e.preventDefault();
-      }
-    }
-  });
 }
 //=================================
 // SW snippet 
