@@ -459,13 +459,28 @@ async function loadSavedPetProfile() {
 //=================================
 // ✅ UPDATED showPetDetails() with Share Button in Modal
 function showPetDetails(profile) {
-console.log("🔍 showPetDetails() triggered", profile); // added
+  // === START CRITICAL FIXES ===
+  // 1. Verify profile exists in current data
+  const currentData = JSON.parse(localStorage.getItem('petProfiles')) || [];
+  if (!currentData.some(p => p.id === profile.id)) {
+    console.error('Profile not found in current data');
+    return hideModal(); // Don't proceed if data was cleared
+  }
 
-const emergencyContact = profile.emergencyContacts?.[0] || {};
+  // 2. Verify auth state
+  if (typeof firebase !== 'undefined' && firebase.auth().currentUser === null) {
+    console.error('No authenticated user');
+    return hideModal(); // Prevent auth popup flash
+  }
+    
+console.log("🔍 showPetDetails() triggered", profile); // added   
 console.log("🧱 Preparing modal content...");
 console.log("🖼️ profile.petPhoto:", profile.petPhoto);
 console.log("🔗 profile.shareableUrl:", profile.shareableUrl);
-
+    
+// old code
+const emergencyContact = profile.emergencyContacts?.[0] || {};
+    
   const detailsHtml = `
     <h3>${profile.petName || 'Unnamed Pet'}</h3>
     ${profile.petPhoto ? `<img src="${profile.petPhoto}" class="detail-photo">` : ''}
