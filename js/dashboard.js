@@ -626,27 +626,26 @@ if (shareBtn) {
 
       // 5. Capture with safety checks
 let canvas;
-  try {
-      const canvas = await html2canvas(modal, {
-        backgroundColor: '#fff',
-        useCORS: true,
-        scale: 1,
-        scrollY: 0,
-        windowWidth: modal.scrollWidth,
-        windowHeight: modal.scrollHeight,
-        logging: true,
-        ignoreElements: (el) => el.id === 'share-loader',
-          
-        onclone: (clonedDoc) => {
-       const clonedModal = clonedDoc.querySelector('.modal-content');
-       if (clonedModal) {
-       clonedModal.style.overflow = 'visible';
-        console.log("✅ html2canvas finished rendering"); // added
-        }
-       }
-      });
-  } catch (htmlErr) {
-  console.error("❌ html2canvas failed:", htmlErr);
+try {
+  canvas = await html2canvas(modal, { // Remove 'const' declaration
+    backgroundColor: '#fff',
+    useCORS: true,
+    scale: 1,
+    scrollY: 0,
+    windowWidth: modal.scrollWidth,
+    windowHeight: modal.scrollHeight,
+    logging: true,
+    ignoreElements: (el) => el.id === 'share-loader',
+    onclone: (clonedDoc) => {
+      const clonedModal = clonedDoc.querySelector('.modal-content');
+      if (clonedModal) {
+        clonedModal.style.overflow = 'visible';
+      }
+    }
+  });
+} catch (htmlErr) {
+  console.error("Canvas error:", htmlErr);
+  throw htmlErr; // Re-throw to be caught by outer try/catch
   alert("Snapshot failed. Please check the image or try again.");
   loader.remove(); // Clean up manually since we're skipping the rest
   modal.style.pointerEvents = originalModalStyle.pointerEvents;
@@ -654,7 +653,11 @@ let canvas;
   restoreButtons();
   return; // Exit early
 }
-      // 6. Quality/type adjustments
+// safety check before blob creation ADDED    
+ if (!canvas) {
+  throw new Error("Canvas rendering failed");
+}
+     // 6. Quality/type adjustments
       const blob = await new Promise((resolve) => {
         canvas.toBlob(resolve, 'image/png', 0.92);
       });
