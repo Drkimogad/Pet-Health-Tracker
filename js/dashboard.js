@@ -507,6 +507,9 @@ console.log("🔗 profile.shareableUrl:", profile.shareableUrl);
       <button class="close-btn" onclick="hideModal()">Close</button>
     </div>
   `;
+    
+console.log("🧱 Modal innerHTML length:", DOM.modalContent.innerHTML.length);
+console.log("👀 Attempting to unhide modal overlay...");
 
   // ✅ Inject modal into DOM
   showModal(detailsHtml);
