@@ -739,10 +739,6 @@ if (printBtn) {
       cloned.style.visibility = 'hidden';
       document.body.appendChild(cloned);
 
-      // 👇 Keep close button functional in original modal ADDED
-  const closeBtn = modal.querySelector('.close-modal');
-  if (closeBtn) closeBtn.style.display = 'block'; // Reset if hidden
-
       // 🔁 Wait for any images inside clone
       await Promise.all(Array.from(cloned.querySelectorAll('img')).map(img => {
         return img.complete ? Promise.resolve() : new Promise(res => {
