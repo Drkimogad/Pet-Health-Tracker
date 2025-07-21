@@ -748,33 +748,34 @@ if (printBtn) {
       }));
 
       // ✅ Build printable HTML
-      const printStyles = `
+const printStyles = `
 <style>
   @media print {
-    body, .print-clone { 
-      margin: 0 !important; 
-      padding: 0 !important;
-      width: 100% !important;
-      font-family: Arial, sans-serif !important;
-    }
-    .modal-actions, .close-modal, .no-print { 
-      display: none !important; 
-    }
-    img.detail-photo {
-      max-height: 180px !important;  /* Adjusted for typical print margins */
-      width: auto !important;
-      margin: 5px auto 10px !important;
-      page-break-inside: avoid !important;
-    }
-    .print-clone {
+    /* 👇 Reset cloned modal container */
+    .print-clone, 
+    .print-clone * {
+      all: revert !important; /* Nuclear reset */
       box-shadow: none !important;
       border: none !important;
-      break-inside: avoid !important;
-      page-break-after: avoid !important;
     }
-    @page {
-      size: auto;  /* Browser default (usually A4/Letter) */
-      margin: 5mm; /* Minimum for most printers */
+    
+    /* 👇 Image sizing (sync with your CSS) */
+    .print-clone .detail-photo {
+      max-height: min(180px, 30vh) !important;
+      width: auto !important;
+      margin: 0 auto 10px !important;
+    }
+    
+    /* 👇 Prevent breaks in card */
+    .print-clone {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    
+    /* 👇 Hide non-essentials */
+    .print-clone .modal-actions,
+    .print-clone .close-modal {
+      display: none !important;
     }
   }
 </style>
