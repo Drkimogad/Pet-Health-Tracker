@@ -635,7 +635,8 @@ textarea:focus {
   display: flex;
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(2px); /* 👈 New line - creates visual separation */
+  isolation: isolate; /* 👈 Creates new stacking context */
+  will-change: opacity; /* 👈 Optimizes fade performance */
 }
 
 .modal-overlay.active {
@@ -657,7 +658,7 @@ textarea:focus {
 
 /* blur card behind spinner during loading*/
 .modal-content.loading {
-  filter: blur(2px);
+  backdrop-filter: blur(2px); /* 👈 New line - creates visual separation */
   pointer-events: none;
 }
 
