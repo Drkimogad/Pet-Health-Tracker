@@ -1,4 +1,15 @@
 //===========================================
+//Global scope or utils.js
+// Put this at the VERY TOP of your utils.js
+window.hideModal = function() {
+  const overlay = document.getElementById('modal-overlay');
+  if (overlay) {
+    overlay.classList.remove('active');
+    document.body.classList.remove('modal-active');
+    setTimeout(() => overlay.remove(), 300);
+  }
+};
+
 //🔄 Updated uploadToCloudinary()
 //==============================================
 async function uploadToCloudinary(file, userId, petProfileId) {
@@ -90,41 +101,34 @@ function validateReminder(reminderData) {
 //==========================
 // 1. ShowModal ()
 function showModal(content) {
-  let overlay = document.getElementById('modal-overlay');
-  
-  // 👇 Reuse existing modal if available
-  if (!overlay) {
-    overlay = document.createElement('div');
-    overlay.id = 'modal-overlay';
-    overlay.className = 'modal-overlay';
-    document.body.appendChild(overlay);
-  }
+  // 1. Remove any existing modal
+  const oldModal = document.getElementById('modal-overlay');
+  if (oldModal) oldModal.remove();
 
-  // 👇 Optimized DOM update
+  // 2. Create fresh modal
+  const overlay = document.createElement('div');
+  overlay.id = 'modal-overlay';
+  overlay.className = 'modal-overlay';
+  
+  // 3. Set innerHTML (with close button)
   overlay.innerHTML = `
     <div class="modal-content" id="pet-modal">
-      <button class="close-modal">&times;</button>
+      <button class="close-modal" onclick="window.hideModal()">&times;</button>
       ${content}
     </div>
   `;
-  
-   // 👇 1. FIRST get reference to close button
-  const closeBtn = overlay.querySelector('.close-modal');
-  
-  // 👇 2. THEN set up event handlers (add this block)
-  if (closeBtn) {
-    closeBtn.onclick = hideModal; // Explicit binding
-    closeBtn.style.pointerEvents = 'auto'; // Ensure clickable
-    closeBtn.tabIndex = 0; // Ensure focusable
-  }
-  // 👇 3. Delegate events once
-  overlay.onclick = (e) => e.target === overlay && hideModal();
+
+  // 4. Add to DOM
+  document.body.appendChild(overlay);
+  document.body.classList.add('modal-active');
+
+  // 5. Double-binding for safety
   overlay.querySelector('.close-modal').onclick = hideModal;
-  
-  // 👇 Atomic activation
-  document.body.classList.add('modal-active'); // 👈 Add this
+  overlay.onclick = (e) => e.target === overlay && hideModal();
+
+  // 6. Activate
   overlay.classList.add('active');
-  trapFocus(overlay.querySelector('.modal-content'));  
+  trapFocus(overlay.querySelector('.modal-content'));
 }
 
 // 2. HideModal()
