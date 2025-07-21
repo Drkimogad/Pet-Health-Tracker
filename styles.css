@@ -621,6 +621,7 @@ textarea:focus {
 /* Modal Styles */
 
   /* 👇 Add this new rule */
+  
 body.modal-active {
   overflow: hidden;
   position: fixed;
@@ -641,7 +642,6 @@ body.modal-active {
   justify-content: center;
   isolation: isolate; /* 👈 Creates new stacking context */
   will-change: opacity; /* 👈 Optimizes fade performance */
-    /* 👇 New critical lines */
   transform: translateZ(0); /* Forces hardware acceleration */
   contain: strict; /* Prevents bleed */
 }
