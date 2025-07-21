@@ -739,6 +739,10 @@ if (printBtn) {
       cloned.style.visibility = 'hidden';
       document.body.appendChild(cloned);
 
+      // 👇 Keep close button functional in original modal ADDED
+  const closeBtn = modal.querySelector('.close-modal');
+  if (closeBtn) closeBtn.style.display = 'block'; // Reset if hidden
+
       // 🔁 Wait for any images inside clone
       await Promise.all(Array.from(cloned.querySelectorAll('img')).map(img => {
         return img.complete ? Promise.resolve() : new Promise(res => {
@@ -750,36 +754,30 @@ if (printBtn) {
 const printStyles = `
 <style>
   @media print {
-    /* 👇 Reset cloned modal container */
-    .print-clone, 
-    .print-clone * {
-      all: revert !important; /* Nuclear reset */
-      box-shadow: none !important;
-      border: none !important;
+    body { 
+      margin: 0 !important;
+      padding: 0 !important;
     }
-    
-    /* 👇 Image sizing (sync with your CSS) */
-    .print-clone .detail-photo {
-      max-height: min(180px, 30vh) !important;
-      width: auto !important;
-      margin: 0 auto 10px !important;
-    }
-    
-    /* 👇 Prevent breaks in card */
     .print-clone {
+      width: 100% !important;
+      max-width: 600px !important; /* Match modal size */
+      margin: 0 auto !important;
       page-break-inside: avoid !important;
       break-inside: avoid !important;
     }
-    
-    /* 👇 Hide non-essentials */
-    .print-clone .modal-actions,
-    .print-clone .close-modal {
-      display: none !important;
+    .detail-photo {
+      max-height: 150px !important; /* Fixed image size */
+      width: auto !important;
+      display: block !important;
+      margin: 5px auto 10px !important;
+    }
+    .modal-actions, 
+    .close-modal { 
+      display: none !important; 
     }
   }
 </style>
 `;
-
       const printDoc = `
         <!DOCTYPE html>
         <html>
