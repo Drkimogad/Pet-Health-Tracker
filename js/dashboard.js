@@ -713,7 +713,7 @@ try {
       }        
     } catch (err) {
       if (!err.message.includes('cancel')) {
-        console.error("Share failed:", err);
+       console.error("❌ Share failed:", err); // 👈 Fixed variable name
         alert(`Share failed: ${err.message}`);
       }
     } finally {
