@@ -113,10 +113,11 @@ function showModal(content) {
   overlay.querySelector('.close-modal').onclick = hideModal;
   
   // 👇 Atomic activation
-  document.body.classList.add('modal-open');
+  document.body.classList.add('modal-active'); // 👈 Add this
   overlay.classList.add('active');
-  trapFocus(overlay.querySelector('.modal-content'));
+  trapFocus(overlay.querySelector('.modal-content'));  
 }
+
 // 2. HideModal()
 function hideModal() {
   const overlay = document.getElementById('modal-overlay');
@@ -125,7 +126,7 @@ function hideModal() {
     overlay.classList.remove('active');
     overlay.addEventListener('transitionend', () => {
       overlay.remove();
-      document.body.classList.remove('modal-open');
+      document.body.classList.remove('modal-active'); // 👈 Add this
     }, { once: true });
   }
 }
