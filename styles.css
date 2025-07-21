@@ -593,29 +593,6 @@ textarea:focus {
     0% { background: rgba(255,235,59,0.3); }
     100% { background: transparent; }
 }
-
-/* ======= PRINT STYLES =========*/
-@media print {
-  body {
-    font-size: 14pt;
-    background: white;
-    color: black;
-    padding: 0;
-  }
-
-  .pet-card {
-    border: none;
-    box-shadow: none;
-    margin-bottom: 1.5rem;
-  }
-  
-    img.detail-photo {
-    max-width: 250px !important;
-    height: auto !important;
-    display: block;
-    margin: 1rem auto;
-    page-break-after: avoid;
-  }
   
 /* =====Details Modal========== */
 /* Modal Styles */
@@ -662,7 +639,7 @@ body.modal-active {
   box-shadow: 0 0 20px rgba(0,0,0,0.2);
   position: relative;
 }
-
+}
 /* blur card behind spinner during loading*/
 .modal-content.loading {
   backdrop-filter: blur(2px); /* 👈 New line - creates visual separation */
@@ -682,6 +659,7 @@ body.modal-active {
   font-size: 1.5rem;
   cursor: pointer;
 }
+
 .pet-details-modal {
   max-width: 400px;
   padding: 1rem;
@@ -704,6 +682,32 @@ body.modal-active {
   margin-top: 1rem;
   font-weight: bold;
 }
+/* =======General PRINT STYLES =========*/
+@media print {
+  body {
+    font-size: 14pt;
+    background: white;
+    color: black;
+    padding: 0;
+  }
+
+  .pet-card {
+    border: none;
+    box-shadow: none;
+    margin-bottom: 1.5rem;
+  }
+@media print {
+  .detail-photo {
+    max-height: 200px !important; /* Adjust based on testing */
+    width: auto !important;
+    page-break-inside: avoid !important;
+  }
+  
+  .modal-content {
+    page-break-after: avoid !important;
+    page-break-before: avoid !important;
+  }
+}  
 /* 👇 NEW: Hide modal buttons from print view */
   .modal-actions,
   .close-modal {
@@ -740,16 +744,11 @@ body.modal-active {
 .modal-actions {
   display: flex;
   justify-content: center;
-  flex-wrap: wrap; /* Allows wrapping on small screens */
+  flex-direction: row;    /* Explicit row layout (default, but ensures consistency) */
+  flex-wrap: nowrap;  
   gap: 0.75rem;
   margin-top: 1.5rem;
   width: 100%; /* ✅ Ensures container takes full width */
-}
-
-@media (min-width: 600px) {
-  .modal-actions {
-    flex-wrap: nowrap; /* ⛔ disables wrapping for wider viewports */
-  }
 }
 
 .modal-actions button {
