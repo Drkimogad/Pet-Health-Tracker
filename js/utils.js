@@ -1,15 +1,4 @@
 //===========================================
-//Global scope or utils.js
-// Put this at the VERY TOP of your utils.js
-window.hideModal = function() {
-  const overlay = document.getElementById('modal-overlay');
-  if (overlay) {
-    overlay.classList.remove('active');
-    document.body.classList.remove('modal-active');
-    setTimeout(() => overlay.remove(), 300);
-  }
-};
-
 //🔄 Updated uploadToCloudinary()
 //==============================================
 async function uploadToCloudinary(file, userId, petProfileId) {
@@ -101,43 +90,41 @@ function validateReminder(reminderData) {
 //==========================
 // 1. ShowModal ()
 function showModal(content) {
-  // 1. Remove any existing modal
-  const oldModal = document.getElementById('modal-overlay');
-  if (oldModal) oldModal.remove();
-
-  // 2. Create fresh modal
-  const overlay = document.createElement('div');
-  overlay.id = 'modal-overlay';
-  overlay.className = 'modal-overlay';
+  let overlay = document.getElementById('modal-overlay');
   
-  // 3. Set innerHTML (with close button)
+  // 👇 Reuse existing modal if available
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'modal-overlay';
+    overlay.className = 'modal-overlay';
+    document.body.appendChild(overlay);
+  }
+
+  // 👇 Optimized DOM update
   overlay.innerHTML = `
     <div class="modal-content" id="pet-modal">
-      <button class="close-modal" onclick="window.hideModal()">&times;</button>
+      <button class="close-modal">&times;</button>
       ${content}
     </div>
   `;
-  // 👇 Add this after overlay.innerHTML assignment
-  const saveBtn = overlay.querySelector('.save-card-btn');
-  if (saveBtn) {
-  // Remove ALL existing listeners
-  const newSaveBtn = saveBtn.cloneNode(true);
-  saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
   
-  // Add fresh listener
-  newSaveBtn.addEventListener('click', handleSaveCard); 
-}
-  // 4. Add to DOM
-  document.body.appendChild(overlay);
-  document.body.classList.add('modal-active');
-
-  // 5. Double-binding for safety
-  overlay.querySelector('.close-modal').onclick = hideModal;
+   // 👇 1. FIRST get reference to close button
+  const closeBtn = overlay.querySelector('.close-modal');
+  
+  // 👇 2. THEN set up event handlers (add this block)
+  if (closeBtn) {
+    closeBtn.onclick = hideModal; // Explicit binding
+    closeBtn.style.pointerEvents = 'auto'; // Ensure clickable
+    closeBtn.tabIndex = 0; // Ensure focusable
+  }
+  // 👇 3. Delegate events once
   overlay.onclick = (e) => e.target === overlay && hideModal();
-
-  // 6. Activate
+  overlay.querySelector('.close-modal').onclick = hideModal;
+  
+  // 👇 Atomic activation
+  document.body.classList.add('modal-active'); // 👈 Add this
   overlay.classList.add('active');
-  trapFocus(overlay.querySelector('.modal-content'));
+  trapFocus(overlay.querySelector('.modal-content'));  
 }
 
 // 2. HideModal()
@@ -151,16 +138,6 @@ function hideModal() {
       document.body.classList.remove('modal-active'); // 👈 Add this
     }, { once: true });
   }
-}
-// Add this right after your hideModal() function
-function clearModalEventListeners(modalElement) {
-  const saveBtn = modalElement.querySelector('.save-card-btn');
-  if (saveBtn) {
-    const newBtn = saveBtn.cloneNode(true);
-    saveBtn.parentNode.replaceChild(newBtn, saveBtn);
-    return newBtn; // Return the clean button
-  }
-  return null;
 }
 // 3. TrapFocus()
 function trapFocus(modal) {
