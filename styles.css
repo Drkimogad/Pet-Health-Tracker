@@ -619,11 +619,15 @@ textarea:focus {
   
 /* =====Details Modal========== */
 /* Modal Styles */
-  body.modal-open { /* 👈 Add this new rule */
+
+  /* 👇 Add this new rule */
+body.modal-active {
   overflow: hidden;
+  position: fixed;
+  width: 100%;
   height: 100vh;
 }
-  
+ 
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -637,6 +641,9 @@ textarea:focus {
   justify-content: center;
   isolation: isolate; /* 👈 Creates new stacking context */
   will-change: opacity; /* 👈 Optimizes fade performance */
+    /* 👇 New critical lines */
+  transform: translateZ(0); /* Forces hardware acceleration */
+  contain: strict; /* Prevents bleed */
 }
 
 .modal-overlay.active {
