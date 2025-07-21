@@ -117,7 +117,16 @@ function showModal(content) {
       ${content}
     </div>
   `;
-
+  // 👇 Add this after overlay.innerHTML assignment
+  const saveBtn = overlay.querySelector('.save-card-btn');
+  if (saveBtn) {
+  // Remove ALL existing listeners
+  const newSaveBtn = saveBtn.cloneNode(true);
+  saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
+  
+  // Add fresh listener
+  newSaveBtn.addEventListener('click', handleSaveCard); 
+}
   // 4. Add to DOM
   document.body.appendChild(overlay);
   document.body.classList.add('modal-active');
@@ -142,6 +151,16 @@ function hideModal() {
       document.body.classList.remove('modal-active'); // 👈 Add this
     }, { once: true });
   }
+}
+// Add this right after your hideModal() function
+function clearModalEventListeners(modalElement) {
+  const saveBtn = modalElement.querySelector('.save-card-btn');
+  if (saveBtn) {
+    const newBtn = saveBtn.cloneNode(true);
+    saveBtn.parentNode.replaceChild(newBtn, saveBtn);
+    return newBtn; // Return the clean button
+  }
+  return null;
 }
 // 3. TrapFocus()
 function trapFocus(modal) {
