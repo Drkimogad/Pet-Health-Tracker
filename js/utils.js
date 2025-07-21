@@ -88,44 +88,36 @@ function validateReminder(reminderData) {
 //=====================
 //  Modal Utilities, MODAL IS NOT STATIC HTML fixed version
 //==========================
+// 1. ShowModal ()
 function showModal(content) {
-  // 👇 Check if modal exists first (replace first 4 lines)
-  const existingOverlay = document.getElementById('modal-overlay');
-  if (existingOverlay) {
-    existingOverlay.querySelector('.modal-content').innerHTML = content;
-    existingOverlay.classList.add('active');
-    return; // 👈 Early return if modal exists
+  let overlay = document.getElementById('modal-overlay');
+  
+  // 👇 Reuse existing modal if available
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'modal-overlay';
+    overlay.className = 'modal-overlay';
+    document.body.appendChild(overlay);
   }
 
-  // Create fresh elements
-  const overlay = document.createElement('div');
-  overlay.id = 'modal-overlay';
-  overlay.className = 'modal-overlay';
+  // 👇 Optimized DOM update
+  overlay.innerHTML = `
+    <div class="modal-content" id="pet-modal">
+      <button class="close-modal">&times;</button>
+      ${content}
+    </div>
+  `;
 
-  const modal = document.createElement('div');
-  modal.id = 'pet-modal';
-  modal.className = 'modal-content';
-
-  const closeBtn = document.createElement('button');
-  closeBtn.className = 'close-modal';
-  closeBtn.innerHTML = '&times;';
-  closeBtn.onclick = hideModal;
-
-  modal.appendChild(closeBtn);
-  modal.innerHTML += content;
-  overlay.appendChild(modal);
-  document.body.appendChild(overlay);
-
-  overlay.onclick = (e) => {
-    if (e.target === overlay) hideModal();
-  };
-
+  // 👇 Delegate events once
+  overlay.onclick = (e) => e.target === overlay && hideModal();
+  overlay.querySelector('.close-modal').onclick = hideModal;
+  
+  // 👇 Atomic activation
+  document.body.classList.add('modal-open');
   overlay.classList.add('active');
-  document.body.style.overflow = 'hidden';
-
-  trapFocus(modal);
+  trapFocus(overlay.querySelector('.modal-content'));
 }
-
+// 2. HideModal()
 function hideModal() {
   const overlay = document.getElementById('modal-overlay');
   if (overlay) {
@@ -137,7 +129,7 @@ function hideModal() {
     }, { once: true });
   }
 }
-
+// 3. TrapFocus()
 function trapFocus(modal) {
   const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
   const first = focusable[0];
