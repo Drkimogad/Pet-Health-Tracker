@@ -630,6 +630,7 @@ textarea:focus {
   display: flex;
   align-items: center;
   justify-content: center;
+  backdrop-filter: blur(2px); /* 👈 New line - creates visual separation */
 }
 
 .modal-overlay.active {
