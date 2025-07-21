@@ -107,8 +107,17 @@ function showModal(content) {
       ${content}
     </div>
   `;
-
-  // 👇 Delegate events once
+  
+   // 👇 1. FIRST get reference to close button
+  const closeBtn = overlay.querySelector('.close-modal');
+  
+  // 👇 2. THEN set up event handlers (add this block)
+  if (closeBtn) {
+    closeBtn.onclick = hideModal; // Explicit binding
+    closeBtn.style.pointerEvents = 'auto'; // Ensure clickable
+    closeBtn.tabIndex = 0; // Ensure focusable
+  }
+  // 👇 3. Delegate events once
   overlay.onclick = (e) => e.target === overlay && hideModal();
   overlay.querySelector('.close-modal').onclick = hideModal;
   
