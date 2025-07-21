@@ -1585,7 +1585,7 @@ DOM.savedProfilesList?.addEventListener('click', (e) => {
   }
 }
 else if (btn.classList.contains('inviteFriends-btn')) {
-  if (petId) inviteFriends();
+  if (petId) inviteFriends(petId);
   }
   else if (btn.classList.contains('qr-btn')) {
   if (petId) generateQRCode(petId);
