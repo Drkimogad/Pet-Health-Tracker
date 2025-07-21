@@ -683,7 +683,6 @@ try {
         `PetCard_${profile.petName || 'profile'}_${Date.now()}.png`, 
         { type: 'image/png' }
       );
-    console.error("❌ html2canvas failed:", error); // added
 
       if (navigator.canShare?.({ files: [file] })) {
         await navigator.share({
@@ -712,10 +711,11 @@ try {
         }, 100);
       }        
     } catch (err) {
-      if (!err.message.includes('cancel')) {
-       console.error("❌ Share failed:", err); // 👈 Fixed variable name
-        alert(`Share failed: ${err.message}`);
-      }
+  console.error("❌ Share failed:", err);
+  if (!err.message.includes('cancel') && !err.message.includes('AbortError')) {
+    alert("Could not generate shareable image. Please try again.");
+   }
+  }
     } finally {
       // 8. Cleanup
       loader.remove();
@@ -749,15 +749,36 @@ if (printBtn) {
 
       // ✅ Build printable HTML
       const printStyles = `
-        <style>
-          @media print {
-            body { margin: 0; padding: 0; font-family: Arial; }
-            .modal-actions, .close-modal { display: none !important; }
-            img { max-width: 100%; height: auto; }
-            .print-clone { box-shadow: none !important; border: none !important; }
-          }
-        </style>
-      `;
+<style>
+  @media print {
+    body, .print-clone { 
+      margin: 0 !important; 
+      padding: 0 !important;
+      width: 100% !important;
+      font-family: Arial, sans-serif !important;
+    }
+    .modal-actions, .close-modal, .no-print { 
+      display: none !important; 
+    }
+    img.detail-photo {
+      max-height: 180px !important;  /* Adjusted for typical print margins */
+      width: auto !important;
+      margin: 5px auto 10px !important;
+      page-break-inside: avoid !important;
+    }
+    .print-clone {
+      box-shadow: none !important;
+      border: none !important;
+      break-inside: avoid !important;
+      page-break-after: avoid !important;
+    }
+    @page {
+      size: auto;  /* Browser default (usually A4/Letter) */
+      margin: 5mm; /* Minimum for most printers */
+    }
+  }
+</style>
+`;
 
       const printDoc = `
         <!DOCTYPE html>
