@@ -89,9 +89,13 @@ function validateReminder(reminderData) {
 //  Modal Utilities, MODAL IS NOT STATIC HTML fixed version
 //==========================
 function showModal(content) {
-  // Cleanup any existing modal
+  // 👇 Check if modal exists first (replace first 4 lines)
   const existingOverlay = document.getElementById('modal-overlay');
-  if (existingOverlay) hideModal();
+  if (existingOverlay) {
+    existingOverlay.querySelector('.modal-content').innerHTML = content;
+    existingOverlay.classList.add('active');
+    return; // 👈 Early return if modal exists
+  }
 
   // Create fresh elements
   const overlay = document.createElement('div');
@@ -125,15 +129,12 @@ function showModal(content) {
 function hideModal() {
   const overlay = document.getElementById('modal-overlay');
   if (overlay) {
-    overlay.onclick = null;
-    const closeBtn = overlay.querySelector('.close-modal');
-    if (closeBtn) closeBtn.onclick = null;
-
+    // 👇 Replace setTimeout with this
     overlay.classList.remove('active');
-    setTimeout(() => {
+    overlay.addEventListener('transitionend', () => {
       overlay.remove();
-      document.body.style.overflow = '';
-    }, 300);
+      document.body.classList.remove('modal-open');
+    }, { once: true });
   }
 }
 
