@@ -619,6 +619,11 @@ textarea:focus {
   
 /* =====Details Modal========== */
 /* Modal Styles */
+  body.modal-open { /* 👈 Add this new rule */
+  overflow: hidden;
+  height: 100vh;
+}
+  
 .modal-overlay {
   position: fixed;
   top: 0;
