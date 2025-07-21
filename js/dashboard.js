@@ -715,7 +715,6 @@ try {
   if (!err.message.includes('cancel') && !err.message.includes('AbortError')) {
     alert("Could not generate shareable image. Please try again.");
    }
-  }
     } finally {
       // 8. Cleanup
       loader.remove();
