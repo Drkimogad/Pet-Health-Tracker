@@ -607,8 +607,9 @@ body.modal-active {
   position: fixed;
   top: 0;
   left: 0;
-  width: 90vw; /* modified*/
-  height: 90vh; /*modified*/
+  width: 80vw; /* modified*/
+  height: 80vh; /*modified*/
+  margin-bottom: 20px; /* or whatever space you need */
   background: rgba(0, 0, 0, 0.5); /* dark overlay */
   z-index: 9999; /* ensure it's above everything */
   display: flex;
