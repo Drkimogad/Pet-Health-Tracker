@@ -845,10 +845,11 @@ body.modal-active {
 }
 
 .community-modal-content h2 {
-  margin-top: 0;
+  margin: 0 40px; /* Add space for toggle button */
   color: #4e348c; /* Lavender */
   font-size: 1.4rem;
   text-align: center;
+  padding-top: 5px;
 }
 
 .close-community-chat {
@@ -873,12 +874,17 @@ body.modal-active {
   border-radius: 8px;
   font-size: 0.95rem;
   overscroll-behavior-y: contain; /* Prevent page scroll when chat scrolls */
-  scrollbar-width: thin; /* For Firefox */
-  &::-webkit-scrollbar {
-    width: 6px;
-    background: #f1f1f1;
-  }
 }
+  
+/* === Scrollbar (Update these) === */
+.chat-messages::-webkit-scrollbar-thumb {
+  background: #d2b48c; /* Light brown */
+  border-radius: 3px;
+}
+.dark-mode .chat-messages::-webkit-scrollbar-thumb {
+  background: #555;
+}
+  
 .chat-message {
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
@@ -907,6 +913,33 @@ body.modal-active {
   outline: none;
   margin-bottom: 0.5rem;
 }
+/* === Message Actions (Add these) === */
+.message-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.delete-btn, .reply-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  padding: 2px;
+}
+.delete-btn:hover, .reply-btn:hover {
+  opacity: 1;
+}
+.delete-btn { color: #e74c3c; } /* Error color */
+.reply-btn { color: #4e348c; } /* Lavender */
+.reply-context {
+  font-size: 0.8em;
+  color: #8e6b3f; /* Earthy brown */
+  border-left: 2px solid #d2b48c; /* Light brown */
+  padding-left: 8px;
+  margin-top: 4px;
+}
 
 #sendChatBtn {
   background: #fbc02d; /* Mustard */
@@ -918,7 +951,6 @@ body.modal-active {
   cursor: pointer;
   transition: background 0.2s ease;
 }
-
 #sendChatBtn:hover {
   background: #f9b000;
 }
@@ -939,6 +971,34 @@ body.modal-active {
   &:focus-visible { outline: 2px solid var(--purple); }
 }
 
+/* === Manual Dark Mode (Add these) === */
+.community-modal-content.dark-mode {
+  background: #2d2d2d !important; /* Override system preference */
+  color: #f0f0f0;
+  border-color: #444;
+}
+.dark-mode .chat-messages {
+  background: #1e1e1e;
+  border-color: #555;
+}
+.dark-mode .chat-message {
+  border-color: #444;
+}
+.dark-mode #chatInput {
+  background: #252525;
+  color: white;
+}
+.dark-mode-toggle {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: rgba(0,0,0,0.1);
+  border: none;
+  border-radius: 20px;
+  padding: 5px 10px;
+  cursor: pointer;
+  z-index: 1;
+}
 /* High-contrast mode support */
 @media (prefers-contrast: high) {
   .community-modal-content {
@@ -955,7 +1015,23 @@ body.modal-active {
     color: white;
   }
 }
-
+/* === Animations (Add these) === */
+@keyframes messageFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.chat-message {
+  animation: messageFadeIn 0.3s ease-out;
+  transition: background 0.2s;
+  padding: 8px;
+  border-radius: 4px;
+}
+.chat-message:hover {
+  background: rgba(210, 180, 140, 0.1); /* Light brown tint */
+}
+.dark-mode .chat-message:hover {
+  background: rgba(210, 180, 140, 0.05);
+}
 /* ===== RESPONSIVE DESIGNS============== */
 /* Prevent header/footer from shrinking on phones*/
 header, footer {
@@ -965,6 +1041,7 @@ header, footer {
   header h1 { font-size: 2.5rem; }
   footer { padding: 1.5rem; }
 }
+
 
 /* ===== DESKTOP RESPONSIVE DESIGN ===== */
 /* Desktop (≥1024px) */
