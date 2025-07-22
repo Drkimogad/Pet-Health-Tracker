@@ -808,7 +808,7 @@ body.modal-active {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 2000;
+  z-index: 10000; /* Above other modals */
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease;
@@ -872,8 +872,13 @@ body.modal-active {
   overflow-y: auto;
   border-radius: 8px;
   font-size: 0.95rem;
+  overscroll-behavior-y: contain; /* Prevent page scroll when chat scrolls */
+  scrollbar-width: thin; /* For Firefox */
+  &::-webkit-scrollbar {
+    width: 6px;
+    background: #f1f1f1;
+  }
 }
-
 .chat-message {
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
@@ -929,6 +934,27 @@ body.modal-active {
   color: #aaa;
   font-style: italic;
 }
+.community-modal-overlay {
+  /* Ensure modal is focusable for keyboard users */
+  &:focus-visible { outline: 2px solid var(--purple); }
+}
+
+/* High-contrast mode support */
+@media (prefers-contrast: high) {
+  .community-modal-content {
+    border: 2px solid black;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  .community-modal-content {
+    background: #2d2d2d;
+    color: white;
+  }
+  #chatInput {
+    background: #1e1e1e;
+    color: white;
+  }
+}
 
 /* ===== RESPONSIVE DESIGNS============== */
 /* Prevent header/footer from shrinking on phones*/
@@ -978,6 +1004,13 @@ header, footer {
 
   .qr-controls {
     flex-direction: column;
+  }
+}
+/* Desktop Chat Modal (≥1024px) */
+@media (min-width: 1024px) {
+  .community-modal-content {
+    max-width: 700px; /* Wider chat on desktop */
+    height: 60vh;
   }
 }
 /* ========== Tablet Styles (Portrait & Landscape) ========== */
@@ -1072,5 +1105,16 @@ header, footer {
   }
   .detail-photo {
     max-width: 120px;
+  }
+}
+/* Mobile Chat Modal (≤600px) */
+@media (max-width: 600px) {
+  .community-modal-content {
+    width: 95vw;
+    height: 80vh; /* Fill most of the screen */
+    padding: 1rem;
+  }
+  #chatInput {
+    height: 80px; /* Larger input area for mobile */
   }
 }
