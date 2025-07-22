@@ -605,9 +605,9 @@ body.modal-active {
 } 
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 80vw; /* modified*/
+  top: 5vh; /* 👈 Adds top/bottom spacing */
+  top: 5vh; /* 👈 Adds top/bottom spacing */
+  width: 90vw; /* modified*/
   height: 80vh; /*modified*/
   margin-bottom: 20px; /* or whatever space you need */
   background: rgba(0, 0, 0, 0.5); /* dark overlay */
@@ -679,7 +679,7 @@ body.modal-active {
   margin-top: 1rem;
   font-weight: bold;
 }
-/* =======General PRINT STYLES =========*/
+/* =======General PRINT STYLES MERGED AND OPTIMIZED =========*/
 @media print {
   body {
     font-size: 14pt;
@@ -693,9 +693,9 @@ body.modal-active {
     box-shadow: none;
     margin-bottom: 1.5rem;
   }
-@media print {
+
   .detail-photo {
-    max-height: 200px !important; /* Adjust based on testing */
+    max-height: 200px !important;
     width: auto !important;
     page-break-inside: avoid !important;
   }
@@ -703,40 +703,39 @@ body.modal-active {
   .modal-content {
     page-break-after: avoid !important;
     page-break-before: avoid !important;
+    max-width: 100%;
+    box-shadow: none;
+    border: none;
+    margin: 0;
+    padding-top: 4rem !important;
   }
-}  
-/* 👇 NEW: Hide modal buttons from print view */
+
+  /* Hide modal buttons from print view */
   .modal-actions,
   .close-modal {
     display: none !important;
   }
 
-  /* 👇 Ensure only modal content prints, not background */
+  /* Ensure only modal content prints */
   .modal-overlay {
     background: white !important;
     padding: 0 !important;
   }
 
-  /* 👇 Prevent duplicate prints if any */
+  /* Hide everything except the modal */
   body > *:not(.modal-overlay) {
     display: none !important;
   }
-
-  .modal-content {
-    max-width: 100%;
-    box-shadow: none;
-    border: none;
-    margin: 0;
-    padding-top: 4rem !important; /* add a little spacing at the top of details card */
-  }
 }
-/* keep it outside media */
+
+/* Non-print styles (keep outside @media) */
 .modal-content {
   width: 100%;
-  max-width: 600px; /* restore good size */
+  max-width: 600px;
   min-width: 320px;
   margin: auto;
 }
+
 /* === Modal Button Styles (including new Share) === */
 .modal-actions {
   display: flex;
@@ -932,7 +931,28 @@ body.modal-active {
 }
 
 /* ===== RESPONSIVE DESIGNS============== */
+/* Prevent header/footer from shrinking on phones*/
+header, footer {
+  padding: 1rem;
+}
+@media (min-width: 768px) {
+  header h1 { font-size: 2.5rem; }
+  footer { padding: 1.5rem; }
+}
+
 /* ===== DESKTOP RESPONSIVE DESIGN ===== */
+/* Desktop (≥1024px) */
+@media (min-width: 1024px) {
+  .pet-card {
+    flex-direction: row; /* Side-by-side layout */
+    max-width: 800px;
+    margin: 0 auto 2rem;
+  }
+  .pet-photo {
+    width: 150px; /* Larger image on desktop */
+  }
+}
+
 @media (max-width: 768px) {
   body {
     padding: 10px;
@@ -1017,5 +1037,40 @@ body.modal-active {
   .pet-card {
     padding: 1rem;
     margin-bottom: 2rem;
+  }
+}
+
+/* Phone (≤600px) */
+@media (max-width: 600px) {
+  .pet-card {
+    padding: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+  .pet-actions button {
+    min-width: 100%; /* Full-width buttons */
+    margin-bottom: 0.5rem;
+  }
+}
+/* Phone forms */
+@media (max-width: 600px) {
+  input[type="text"],
+  select,
+  textarea {
+    font-size: 14px; /* Larger touch targets */
+    padding: 12px;
+  }
+  #petList {
+    padding: 1rem;
+    margin: 1rem auto;
+  }
+}
+/* Phone modals */
+@media (max-width: 600px) {
+  .modal-content {
+    width: 95vw;
+    padding: 1rem;
+  }
+  .detail-photo {
+    max-width: 120px;
   }
 }
