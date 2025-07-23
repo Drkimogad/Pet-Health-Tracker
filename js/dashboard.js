@@ -1157,11 +1157,13 @@ async function inviteFriends(petId) {
 
   const inviteMessage = `Meet ${profile.petName || 'my pet'}! 🐾
 
-I'm using Pet Health Tracker to manage:
-✅ Vaccinations: ${profile.reminders?.vaccinations || 'Not set'}
-✅ Health records
-✅ Emergency contacts
-and more!
+I'm using this awesome app (Pet Health Tracker) to manage:
+📋 Basic Information  
+⏰ Reminders for Vaccinations, Checkups & Grooming  
+🩺 Medical History  
+🔎 Microchip Details  
+📞 Emergency Contacts  
+...and more!
 
 View ${profile.petName ? profile.petName + "'s" : "my pet's"} profile:
 ${profile.shareableUrl}
