@@ -810,6 +810,7 @@ const printStyles = `
 
       printWin.document.write(printDoc);
       printWin.document.close();
+      printWin.focus(); // 👈 Ensures popup gains focus (especially on tablets)
 
     } catch (err) {
       console.error("Print error:", err);
