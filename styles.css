@@ -600,16 +600,16 @@ textarea:focus {
 body.modal-active {
   overflow: hidden;
   position: fixed;
-  width: 90%;
-  height: 90vh;
+  width: 100%;
+  height: 100vh;
 } 
 .modal-overlay {
   position: fixed;
   top: 5vh; /* 👈 Adds top/bottom spacing */
   left: 5vh; /* 👈 Adds top/bottom spacing */
   width: 90vw; /* modified*/
-  height: 80vh; /*modified*/
-  margin-bottom: 60px; /* or whatever space you need */
+  height: 90vh; /*modified*/
+  margin-bottom: 20px; /* or whatever space you need */
   background: rgba(0, 0, 0, 0.5); /* dark overlay */
   z-index: 9999; /* ensure it's above everything */
   display: flex;
@@ -629,9 +629,9 @@ body.modal-active {
 .modal-content {
   background: #fff;
   padding: 20px;
-  max-width: 400px; /*modified*/
-  width: 80%;
-  max-height: 80vh;
+  max-width: 480px; /*modified*/
+  width: 90%;
+  max-height: 90vh;
   overflow-y: auto;
   border-radius: 12px;
   box-shadow: 0 0 20px rgba(0,0,0,0.2);
