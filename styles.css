@@ -609,8 +609,8 @@ body.modal-active {
   left: 5vh; /* 👈 Adds top/bottom spacing */
   width: 90vw; /* modified*/
   height: 90vh; /*modified*/
-  margin-bottom: 20px; /* or whatever space you need */
-  background: rgba(0, 0, 0, 0.5); /* dark overlay */
+  padding-bottom: 2rem; /* 👈 pushes the card up inside the overlay */  
+  background: rgba(0, 0, 0, 0.7); /* dark overlay */
   z-index: 9999; /* ensure it's above everything */
   display: flex;
   align-items: center;
@@ -631,11 +631,13 @@ body.modal-active {
   padding: 20px;
   max-width: 480px; /*modified*/
   width: 90%;
-  max-height: 90vh;
+  max-height: 85vh;     /* 👈 Slightly reduced */
+  min-height: auto;     /* 👈 Allow shrinkage if content is short */
   overflow-y: auto;
   border-radius: 12px;
   box-shadow: 0 0 20px rgba(0,0,0,0.2);
   position: relative;
+  margin-bottom: 3rem;  /* 👈 Adds visual gap from footer */
 }
 /* blur card behind spinner during loading*/
 .modal-content.loading {
