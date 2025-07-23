@@ -507,7 +507,7 @@ textarea:focus {
 }
 
 .delete-btn {
-  background-color: var(--red);
+  background-color: #e63946 !important;
   color: white;
 }
 
