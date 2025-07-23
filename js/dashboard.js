@@ -779,28 +779,18 @@ const printStyles = `
         <html>
           <head>
             <title>${profile.petName || 'Pet Profile'}</title>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
             ${printStyles}
           </head>
           <body>
-            ${cloned.querySelector('.print-clone')?.outerHTML || cloned.innerHTML}
+            ${cloned.innerHTML}
             <script>
-          window.onload = function() {
-          const fallback = setTimeout(() => {
-          alert('Printing took too long. Try again or check browser settings.');
-          window.close();
-          }, 5000);
-
-        setTimeout(() => {
-        window.print();
-        window.onafterprint = () => {
-        clearTimeout(fallback);
-        window.close();
-              };
-        }, 300);
-      }
-          </script>
-
+              window.onload = function() {
+                setTimeout(() => {
+                  window.print();
+                  window.onafterprint = () => window.close();
+                }, 300);
+              }
+            </script>
           </body>
         </html>
       `;
@@ -810,7 +800,6 @@ const printStyles = `
 
       printWin.document.write(printDoc);
       printWin.document.close();
-      printWin.focus(); // 👈 Ensures popup gains focus (especially on tablets)
 
     } catch (err) {
       console.error("Print error:", err);
