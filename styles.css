@@ -1093,11 +1093,13 @@ header, footer {
   }
 }
 /* ========== Tablet Styles (Portrait & Landscape) ========== */
-@media (max-width: 1024px) {
+@media (min-width: 768px) and (max-width: 1024px) {
   .modal-content {
     max-width: 95%;
     padding: 1.5rem;
     font-size: 0.95rem;
+    transform: scale(0.9);
+    transform-origin: top center;
   }
 
   .details-grid {
