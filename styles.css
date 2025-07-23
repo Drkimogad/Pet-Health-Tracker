@@ -509,9 +509,9 @@ textarea:focus {
   margin-left: 10px;
 }
 
-.delete-btn {
-  background-color: var(--darkred);
-  color: white;
+.delete-btn {  /* keep em reversed*/
+  background-color: white;
+  color: var(--darkred);
 }
 
 .details-btn {
