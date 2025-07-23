@@ -585,7 +585,7 @@ document.addEventListener('click', async (e) => {
     try {
       const canvas = await html2canvas(modalContent, {
         backgroundColor: '#E6E6FA',
-        scale: 1,
+        scale: 0.9,
         scrollY: 0,
         useCORS: true
       });
