@@ -1034,6 +1034,7 @@ body.modal-active {
 .dark-mode .chat-message:hover {
   background: rgba(210, 180, 140, 0.05);
 }
+
 /* ===== RESPONSIVE DESIGNS============== */
 /* Prevent header/footer from shrinking on phones*/
 header, footer {
@@ -1085,6 +1086,13 @@ header, footer {
     flex-direction: column;
   }
 }
+@media (min-width: 1025px) {
+  .modal-content {
+    transform: scale(0.85);
+    transform-origin: top center;
+  }
+}
+
 /* Desktop Chat Modal (≥1024px) */
 @media (min-width: 1024px) {
   .community-modal-content {
@@ -1092,6 +1100,7 @@ header, footer {
     height: 60vh;
   }
 }
+
 /* ========== Tablet Styles (Portrait & Landscape) ========== */
 @media (min-width: 768px) and (max-width: 1024px) {
   .modal-content {
@@ -1126,6 +1135,8 @@ header, footer {
   .modal-content {
     padding: 1rem;
     font-size: 0.9rem;
+    transform: scale(0.95);
+    transform-origin: top center;
   }
 
   .modal-actions {
