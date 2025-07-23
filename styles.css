@@ -20,6 +20,9 @@
   --purple-dark: #5e35b1;
   --green: #43a047;
   --red: #e74c3c;
+  --darkred: #e63946;
+}
+
 
   --google-btn-size: 60px; /* New size (default was 44px) */
 }
@@ -507,8 +510,8 @@ textarea:focus {
 }
 
 .delete-btn {
-  background-color: #c62828 !important;
-  color: #FFFFFF !important;
+  background-color: var(--darkred);
+  color: white;
 }
 
 .details-btn {
