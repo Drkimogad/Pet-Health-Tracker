@@ -782,15 +782,24 @@ const printStyles = `
             ${printStyles}
           </head>
           <body>
-            ${cloned.innerHTML}
+            ${cloned.querySelector('.print-clone')?.outerHTML || cloned.innerHTML}
             <script>
-              window.onload = function() {
-                setTimeout(() => {
-                  window.print();
-                  window.onafterprint = () => window.close();
-                }, 300);
-              }
-            </script>
+          window.onload = function() {
+          const fallback = setTimeout(() => {
+          alert('Printing took too long. Try again or check browser settings.');
+          window.close();
+          }, 5000);
+
+        setTimeout(() => {
+        window.print();
+        window.onafterprint = () => {
+        clearTimeout(fallback);
+        window.close();
+              };
+        }, 300);
+      }
+          </script>
+
           </body>
         </html>
       `;
