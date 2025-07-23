@@ -1161,6 +1161,7 @@ I'm using Pet Health Tracker to manage:
 ✅ Vaccinations: ${profile.reminders?.vaccinations || 'Not set'}
 ✅ Health records
 ✅ Emergency contacts
+and more!
 
 View ${profile.petName ? profile.petName + "'s" : "my pet's"} profile:
 ${profile.shareableUrl}
@@ -1169,7 +1170,7 @@ Get the app: https://drkimogad.github.io/Pet-Health-Tracker/`;
 
   const shareData = {
     title: "Pet Profile",
-    text: `View ${profile.petName || 'pet'}'s details: ${profile.shareableUrl}`,
+    text: inviteMessage,
     url: profile.shareableUrl
   };
 
