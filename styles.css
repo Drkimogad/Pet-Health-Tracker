@@ -629,6 +629,7 @@ body.modal-active {
 .modal-content {
   background: #fff;
   padding: 20px;
+  padding-top: 30px; /* ⬅️ Add this or increase if needed */
   max-width: 480px; /*modified*/
   width: 90%;
   max-height: 85vh;     /* 👈 Slightly reduced */
@@ -1090,14 +1091,21 @@ header, footer {
   .modal-content {
     transform: scale(0.85);
     transform-origin: top center;
+    font-size: 0.95rem; 
+    line-height: 1.3;
   }
+  .details-grid {
+  gap: 0.4rem;
 }
-
+}
 /* Desktop Chat Modal (≥1024px) */
 @media (min-width: 1024px) {
   .community-modal-content {
     max-width: 700px; /* Wider chat on desktop */
     height: 60vh;
+  }
+  .details-grid {
+  gap: 0.4rem;
   }
 }
 
@@ -1107,13 +1115,14 @@ header, footer {
     max-width: 95%;
     padding: 1.5rem;
     font-size: 0.95rem;
+    line-height: 1.3;
     transform: scale(0.9);
     transform-origin: top center;
   }
 
   .details-grid {
     grid-template-columns: 1fr; /* Stack details vertically */
-    gap: 1rem;
+    gap: 0.4rem;
   }
 
   .modal-actions {
