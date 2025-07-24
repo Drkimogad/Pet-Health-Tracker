@@ -1,20 +1,22 @@
 {
-  "name": "cloudinary-delete-function",
-  "description": "Firebase Cloud Function to securely delete Cloudinary images",
-  "version": "1.0.0",
-  "main": "index.js",
-  "engines": {
-    "node": "18"
-  },
+  "name": "functions",
+  "description": "Cloudinary Image Deletion",
   "scripts": {
-    "start": "firebase emulators:start --only functions",
-    "deploy": "firebase deploy --only functions"
+    "lint": "eslint .",
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
   },
+  "engines": {
+    "node": "16"
+  },
+  "main": "index.js",
   "dependencies": {
-    "cloudinary": "^2.0.0",
-    "firebase-admin": "^11.10.1",
-    "firebase-functions": "^4.4.1",
-    "dotenv": "^16.3.1"
+    "firebase-admin": "^11.11.1",
+    "firebase-functions": "^4.9.0",
+    "cloudinary": "^1.37.0"
   },
   "private": true
 }
