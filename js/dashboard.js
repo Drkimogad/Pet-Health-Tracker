@@ -810,6 +810,7 @@ printBtn.addEventListener('click', async () => {
     cloned?.remove();
     restoreButtons();
   }
+}
 });
 } // closes if print
 }, 50); // ✅ closes setTimeout
