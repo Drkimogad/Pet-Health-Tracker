@@ -1,15 +1,18 @@
-# Firebase
-/firebase-config.js
-/firebase-messaging-sw.js
+# Firebase & Cloudinary Secrets
+functions/.env
+functions/.runtimeconfig.json
+firebase-debug.log
+firebase-debug.*.log
 
-# Environment
+# Environment files
 .env
 .env.local
+.env.*.local
 
-# Sensitive Services
-/pushNotifications.js
-
-# Standard ignores
+# Node modules
 node_modules/
-dist/
-.DS_Store
+functions/node_modules/
+
+# IDE files
+.vscode/
+.idea/
