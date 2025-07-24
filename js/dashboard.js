@@ -726,88 +726,91 @@ try {
 }
 
 // 🖨 Print Card (Optimized)
-const printBtn = modal.querySelector('.print-card-btn');
-if (printBtn) {
-  printBtn.addEventListener('click', async () => {
-    try {
-      await waitForImage();
-      hideButtonsTemporarily();
+printBtn.addEventListener('click', async () => {
+  try {
+    await waitForImage();
+    hideButtonsTemporarily();
 
-      // 🔁 Optional: create a cleaner version if you want to strip interactive elements
-      const cloned = modal.cloneNode(true);
-      cloned.classList.add('print-clone');
-      cloned.style.visibility = 'hidden';
-      document.body.appendChild(cloned);
+    // 1. Create clean clone
+    const cloned = modal.cloneNode(true);
+    cloned.classList.add('print-clone');
+    cloned.style.visibility = 'hidden';
+    document.body.appendChild(cloned);
 
-      // 🔁 Wait for any images inside clone
-      await Promise.all(Array.from(cloned.querySelectorAll('img')).map(img => {
-        return img.complete ? Promise.resolve() : new Promise(res => {
-          img.onload = img.onerror = res;
-        });
-      }));
+    // 2. Wait for ALL images (clone + original)
+    const allImages = [
+      ...cloned.querySelectorAll('img'),
+      ...modal.querySelectorAll('img')
+    ];
+    
+    await Promise.all(allImages.map(img => 
+      img.complete ? Promise.resolve() : new Promise(res => {
+        img.onload = img.onerror = res;
+      })
+    );
 
-      // ✅ Build printable HTML
-const printStyles = `
-<style>
-  @media print {
-    body { 
-      margin: 0 !important;
-      padding: 0 !important;
-    }
-    .print-clone {
-      width: 100% !important;
-      max-width: 600px !important; /* Match modal size */
-      margin: 0 auto !important;
-      page-break-inside: avoid !important;
-      break-inside: avoid !important;
-    }
-    .detail-photo {
-      max-height: 150px !important; /* Fixed image size */
-      width: auto !important;
-      display: block !important;
-      margin: 5px auto 10px !important;
-    }
-    .modal-actions, 
-    .close-modal { 
-      display: none !important; 
-    }
-  }
-</style>
-`;
-      const printDoc = `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <title>${profile.petName || 'Pet Profile'}</title>
-            ${printStyles}
-          </head>
-          <body>
-            ${cloned.innerHTML}
-            <script>
-              window.onload = function() {
-                setTimeout(() => {
-                  window.print();
-                  window.onafterprint = () => window.close();
-                }, 300);
+    // 3. Build print document
+    const printDoc = `<!DOCTYPE html>
+      <html>
+        <head>
+          <title>${profile.petName || 'Pet Profile'}</title>
+          <style>
+            @media print {
+              body { margin: 0!important; padding: 10mm!important; }
+              .print-clone { width: 100%!important; page-break-inside: avoid!important; }
+              .modal-actions, .close-modal { display: none!important; }
+              img { max-height: 150px!important; width: auto!important; }
+            }
+          </style>
+        </head>
+        <body>
+          ${cloned.innerHTML}
+          <script>
+            // Double-trigger print for reliability
+            window.onload = function() {
+              setTimeout(() => {
+                window.print();
+                setTimeout(() => window.close(), 1000);
+              }, 500);
+            }
+            // Fallback if onload fails
+            setTimeout(() => {
+              if (!window.printExecuted) {
+                window.print();
+                window.close();
               }
-            </script>
-          </body>
-        </html>
-      `;
+            }, 3000);
+          </script>
+        </body>
+      </html>`;
 
-      const printWin = window.open('', '_blank');
-      if (!printWin) throw new Error("Popup blocked. Allow popups to print.");
-
-      printWin.document.write(printDoc);
-      printWin.document.close();
-
-    } catch (err) {
-      console.error("Print error:", err);
-      alert("Something went wrong while printing.");
-    } finally {
-      restoreButtons();
+    // 4. Open print window AFTER processing
+    const printWin = window.open('', '_blank');
+    if (!printWin) {
+      throw new Error("Please allow popups to print");
     }
-  }); // closes evenlistner
+
+    printWin.document.write(printDoc);
+    printWin.document.close();
+
+    // 5. Final verification
+    const checkReady = () => {
+      if (printWin.document.readyState === 'complete') {
+        console.log('Print document fully loaded');
+      } else {
+        setTimeout(checkReady, 100);
+      }
+    };
+    checkReady();
+
+  } catch (err) {
+    console.error("Print error:", err);
+    alert("Printing failed: " + err.message);
+  } finally {
+    cloned?.remove();
+    restoreButtons();
+  }
+});
 } // closes if print
 }, 50); // ✅ closes setTimeout
 } // Closes showdetails()
