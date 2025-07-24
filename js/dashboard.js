@@ -731,88 +731,120 @@ printBtn.addEventListener('click', async () => {
     await waitForImage();
     hideButtonsTemporarily();
 
-    // 1. Create clean clone
+    // 1. Create clean clone (with enhanced device handling)
     const cloned = modal.cloneNode(true);
     cloned.classList.add('print-clone');
     cloned.style.visibility = 'hidden';
     document.body.appendChild(cloned);
 
-    // 2. Wait for ALL images (clone + original)
+    // 2. Universal image loader (handles CORS/tablet delays)
     const allImages = [
       ...cloned.querySelectorAll('img'),
       ...modal.querySelectorAll('img')
     ];
-    
-    await Promise.all(allImages.map(img => 
-      img.complete ? Promise.resolve() : new Promise(res => {
-        img.onload = img.onerror = res;
-      })
-    );
 
-    // 3. Build print document
+    await Promise.all(allImages.map(img => {
+      if (img.complete) return Promise.resolve();
+      
+      return new Promise((resolve) => {
+        // Force image reload for cached items (iOS fix)
+        img.src = img.src.split('?')[0] + '?t=' + Date.now();
+        
+        const timer = setTimeout(resolve, 3000); // Timeout fallback
+        img.onload = img.onerror = () => {
+          clearTimeout(timer);
+          resolve();
+        };
+      });
+    });
+
+    // 3. Device-optimized print document
+    const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
     const printDoc = `<!DOCTYPE html>
       <html>
         <head>
           <title>${profile.petName || 'Pet Profile'}</title>
+          ${isMobile ? '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">' : ''}
           <style>
             @media print {
-              body { margin: 0!important; padding: 10mm!important; }
-              .print-clone { width: 100%!important; page-break-inside: avoid!important; }
-              .modal-actions, .close-modal { display: none!important; }
-              img { max-height: 150px!important; width: auto!important; }
-            }
+              body { 
+                margin: 0!important; 
+                padding: ${isMobile ? '5mm' : '10mm'}!important;
+                -webkit-print-color-adjust: exact !important;
+              }
+              .print-clone { 
+                width: 100%!important; 
+                page-break-inside: avoid!important;
+                break-inside: avoid!important;
+              }
+              img { 
+                max-height: ${isMobile ? '120px' : '150px'}!important; 
+                width: auto!important;
+                display: block!important;
+                margin: 0 auto!important;
+              }
+              .no-print { display: none!important; }
           </style>
         </head>
         <body>
           ${cloned.innerHTML}
           <script>
-            // Double-trigger print for reliability
-            window.onload = function() {
-              setTimeout(() => {
+            // Universal print handler
+            function attemptPrint() {
+              try {
                 window.print();
-                setTimeout(() => window.close(), 1000);
-              }, 500);
-            }
-            // Fallback if onload fails
-            setTimeout(() => {
-              if (!window.printExecuted) {
-                window.print();
+                setTimeout(() => window.close(), ${isMobile ? '500' : '100'});
+              } catch (e) {
                 window.close();
               }
-            }, 3000);
+            }
+            
+            // Double-trigger system
+            window.addEventListener('load', () => {
+              setTimeout(attemptPrint, ${isMobile ? '1000' : '300'});
+            });
+            
+            // Safety net
+            setTimeout(() => {
+              if (!window.printExecuted) {
+                window.printExecuted = true;
+                attemptPrint();
+              }
+            }, 5000);
           </script>
         </body>
       </html>`;
 
-    // 4. Open print window AFTER processing
+    // 4. Cross-browser window handling
     const printWin = window.open('', '_blank');
-    if (!printWin) {
-      throw new Error("Please allow popups to print");
-    }
-
+    if (!printWin) throw new Error("Please allow popups to print");
+    
     printWin.document.write(printDoc);
     printWin.document.close();
 
-    // 5. Final verification
-    const checkReady = () => {
-      if (printWin.document.readyState === 'complete') {
-        console.log('Print document fully loaded');
-      } else {
-        setTimeout(checkReady, 100);
-      }
-    };
-    checkReady();
+    // 5. Enhanced ready-state verification
+    await new Promise((resolve) => {
+      const verifyReady = () => {
+        if (printWin.document.readyState === 'complete') {
+          // Force layout calculation (Android fix)
+          printWin.document.body.offsetHeight;
+          resolve();
+        } else {
+          setTimeout(verifyReady, 50);
+        }
+      };
+      verifyReady();
+    });
 
   } catch (err) {
     console.error("Print error:", err);
-    alert("Printing failed: " + err.message);
+    alert("Printing failed. Try saving as PDF instead.");
+    // Consider adding PDF fallback here
   } finally {
     cloned?.remove();
     restoreButtons();
   }
-}
 });
-} // closes if print
 }, 50); // ✅ closes setTimeout
 } // Closes showdetails()
 
