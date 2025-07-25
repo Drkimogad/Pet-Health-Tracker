@@ -794,9 +794,12 @@ printBtn.addEventListener('click', async () => {
             // Universal print handler
             function attemptPrint() {
               try {
+                console.log("🖨 Attempting to print...");
                 window.print();
+                console.log("✅ Print triggered.");
                 setTimeout(() => window.close(), ${isMobile ? '500' : '100'});
               } catch (e) {
+                console.error("❌ Print attempt failed:", e);
                 window.close();
               }
             }
