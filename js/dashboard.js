@@ -845,6 +845,7 @@ printBtn.addEventListener('click', async () => {
     restoreButtons();
   }
 });
+}
 }, 50); // ✅ closes setTimeout
 } // Closes showdetails()
 
