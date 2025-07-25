@@ -516,10 +516,10 @@ const emergencyContact = profile.emergencyContacts?.[0] || {};
     </div>
 
     <div class="modal-actions">
-      <button class="save-card-btn">💾 Save Card</button>
-      <button class="print-card-btn">🖨 Print Card</button>
-      <button class="share-card-btn">📤 Share Card</button>
-      <button class="close-btn" onclick="hideModal()">Close</button>
+    //  <button class="save-card-btn">💾 Save Card</button>
+   // <button class="print-card-btn">🖨 Print Card</button>
+    //  <button class="share-card-btn">📤 Share Card</button>
+      <button class="close-btn" onclick="hideModal()">❌️ Close Card</button>
     </div>
   `;
     
