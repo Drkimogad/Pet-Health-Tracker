@@ -585,7 +585,7 @@ document.addEventListener('click', async (e) => {
     try {
       const canvas = await html2canvas(modalContent, {
         backgroundColor: '#E6E6FA',
-        scale: 0.9,
+        scale: 0.8,
         scrollY: 0,
         useCORS: true
       });
@@ -744,19 +744,19 @@ printBtn.addEventListener('click', async () => {
     ];
 
     await Promise.all(allImages.map(img => {
-      if (img.complete) return Promise.resolve();
-      
-      return new Promise((resolve) => {
-        // Force image reload for cached items (iOS fix)
-        img.src = img.src.split('?')[0] + '?t=' + Date.now();
-        
-        const timer = setTimeout(resolve, 3000); // Timeout fallback
-        img.onload = img.onerror = () => {
-          clearTimeout(timer);
-          resolve();
-        };
-      });
-    });
+  if (img.complete) return Promise.resolve();
+
+  return new Promise((resolve) => {
+    img.src = img.src.split('?')[0] + '?t=' + Date.now();
+
+    const timer = setTimeout(resolve, 3000);
+    img.onload = img.onerror = () => {
+      clearTimeout(timer);
+      resolve();
+    };
+  });
+}));
+
 
     // 3. Device-optimized print document
     const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
@@ -845,7 +845,6 @@ printBtn.addEventListener('click', async () => {
     restoreButtons();
   }
 });
-}
 }, 50); // ✅ closes setTimeout
 } // Closes showdetails()
 
