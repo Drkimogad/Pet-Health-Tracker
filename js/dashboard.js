@@ -6,6 +6,9 @@ let currentProfile = null;
 // 👇 Add here
 let editingProfileId = null
 
+let isSaveListenerActive = false; // 👈 Add this at TOP of dashboard.js
+
+
 // 🌍 Load from localStorage and expose globally
 let petProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
 window.petProfiles = petProfiles;
@@ -556,259 +559,182 @@ console.log("📦 Modal was created. InnerHTML length:", modal?.innerHTML?.lengt
     });
 
   // ========== 💾 SAVE CARD (UPDATED) ========== //
-document.addEventListener('click', async (e) => {
-  if (e.target.classList.contains('save-card-btn')) {
+
+// Inside your setTimeout(() => { ... }, 50):
+const saveBtn = modal.querySelector('.save-card-btn');
+if (saveBtn && !isSaveListenerActive) {
+  saveBtn.addEventListener('click', async () => {
     const modalContent = document.querySelector('.modal-content');
     if (!modalContent) return;
 
-    const modalActions = modalContent.querySelector('.modal-actions');
-    const petImg = modalContent.querySelector('img');
-    const heading = modalContent.querySelector('h3');
-
-    // ✅ Temporarily hide action buttons
-    if (modalActions) modalActions.style.display = 'none';
-
-    // ✅ Wait for pet photo to load
-    if (petImg && !petImg.complete) {
-      await new Promise((resolve) => {
-        petImg.onload = petImg.onerror = resolve;
+    // 1. Hide buttons
+    modalContent.querySelector('.modal-actions').style.display = 'none';
+    
+    // 2. Wait for image
+    const img = modalContent.querySelector('img');
+    if (img && !img.complete) {
+      await new Promise(resolve => {
+        img.onload = resolve;
+        img.onerror = resolve;
       });
     }
 
-    // ✅ Optional: scroll heading into view
-    if (heading) heading.scrollIntoView({ block: 'start' });
-
-    // ✅ Temporary visual border for spacing check
-    const originalBorder = modalContent.style.border;
-    modalContent.style.border = '3px solid #4e348c'; // 👈 change here if needed
-
+    // 3. Generate image
     try {
       const canvas = await html2canvas(modalContent, {
         backgroundColor: '#E6E6FA',
         scale: 0.8,
-        scrollY: 0,
         useCORS: true
       });
-
-      const dataURL = canvas.toDataURL('image/png');
+      
+      // 4. Download
       const link = document.createElement('a');
-      link.href = dataURL;
+      link.href = canvas.toDataURL('image/png');
       link.download = 'PetCard.png';
       link.click();
     } catch (err) {
-      console.error('🛑 Failed to save card:', err);
-      alert('Failed to generate image.');
+      alert('Failed to save. Try again later.');
     } finally {
-      modalContent.style.border = originalBorder;
-      if (modalActions) modalActions.style.display = '';
+      // 5. Restore buttons
+      modalContent.querySelector('.modal-actions').style.display = '';
     }
-  }
-});
+  });
+  
+  isSaveListenerActive = true; // 👈 Prevent duplicates
+}
 
-// 📤 Share Card (Fully Fixed)
+// ========== 📤 SHARE CARD (FIXED) ========== //
 const shareBtn = modal.querySelector('.share-card-btn');
 if (shareBtn) {
   shareBtn.addEventListener('click', async () => {
-    // 1. Create loader OUTSIDE modal
+    // 1. Show loader
     const loader = document.createElement('div');
-    loader.className = 'loader';
-    loader.id = 'share-loader';
-    Object.assign(loader.style, {
-      position: 'fixed',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      zIndex: '9999'
-    });
+    loader.innerHTML = '⏳ Preparing share...';
+    loader.style.cssText = `
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      z-index: 9999;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    `;
     document.body.appendChild(loader);
 
-    // 2. Freeze modal state
-    const originalModalStyle = {
-      pointerEvents: modal.style.pointerEvents,
-      transition: modal.style.transition
-    };
-    modal.style.pointerEvents = 'none';
-    modal.style.transition = 'none';
-      
- try {   // added
-    // 3. Ensure image is ready
-    await waitForImage();
-    hideButtonsTemporarily();
-     
-    // 4. Hide loader with 1-frame delay
-      loader.style.opacity = '0';
-      await new Promise(r => requestAnimationFrame(r));
-
-      // 5. Capture with safety checks
-let canvas;
-try {
-  canvas = await html2canvas(modal, { // Remove 'const' declaration
-    backgroundColor: '#fff',
-    useCORS: true,
-    scale: 1,
-    scrollY: 0,
-    windowWidth: modal.scrollWidth,
-    windowHeight: modal.scrollHeight,
-    logging: true,
-    ignoreElements: (el) => el.id === 'share-loader',
-    onclone: (clonedDoc) => {
-      const clonedModal = clonedDoc.querySelector('.modal-content');
-      if (clonedModal) {
-        clonedModal.style.overflow = 'visible';
-      }
-    }
-  });
-} catch (htmlErr) {
-  console.error("Canvas error:", htmlErr);
-  throw htmlErr; // Re-throw to be caught by outer try/catch
-  alert("Snapshot failed. Please check the image or try again.");
-  loader.remove(); // Clean up manually since we're skipping the rest
-  modal.style.pointerEvents = originalModalStyle.pointerEvents;
-  modal.style.transition = originalModalStyle.transition;
-  restoreButtons();
-  return; // Exit early
-}
-// safety check before blob creation ADDED    
- if (!canvas) {
-  throw new Error("Canvas rendering failed");
-}
-     // 6. Quality/type adjustments
-      const blob = await new Promise((resolve) => {
-        canvas.toBlob(resolve, 'image/png', 0.92);
+    try {
+      // 2. Capture modal (simplified)
+      const canvas = await html2canvas(modal, {
+        backgroundColor: '#ffffff',
+        scale: 1,
+        useCORS: true,
+        ignoreElements: (el) => el.classList.contains('modal-actions')
       });
-      if (!blob) throw new Error("Canvas conversion failed");
 
-      // 7. Share with metadata
-      const file = new File([blob], 
-        `PetCard_${profile.petName || 'profile'}_${Date.now()}.png`, 
-        { type: 'image/png' }
-      );
+      // 3. Convert to file
+      canvas.toBlob(async (blob) => {
+        if (!blob) throw new Error('Failed to create image');
+        
+        const file = new File([blob], `Pet_${profile.petName || 'Profile'}.png`, {
+          type: 'image/png'
+        });
 
-      if (navigator.canShare?.({ files: [file] })) {
-        await navigator.share({
-        title: `${profile.petName || 'Pet'} Profile`,
-        text: `Check out this pet profile below.
+        // 4. Try native share
+        if (navigator.share) {
+          await navigator.share({
+            title: `${profile.petName || 'Pet'} Profile`,
+            files: [file]
+          });
+        } 
+        // 5. Fallback to download
+        else {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = file.name;
+          a.click();
+          setTimeout(() => URL.revokeObjectURL(url), 100);
+          alert('Image downloaded - share it manually!');
+        }
+      }, 'image/png', 0.9);
 
-        Name: ${profile.petName || 'N/A'}
-        Breed: ${profile.breed || 'N/A'}
-        Age: ${profile.age || 'N/A'}
-
-       🐾 Shared from Pet Health Tracker:
-        https://drkimogad.github.io/Pet-Health-Tracker/`,
-       files: [file]
-      });
-      } else {
-        // Fallback download
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = file.name;
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(() => {
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-        }, 100);
-      }        
     } catch (err) {
-  console.error("❌ Share failed:", err);
-  if (!err.message.includes('cancel') && !err.message.includes('AbortError')) {
-    alert("Could not generate shareable image. Please try again.");
-   }
+      // 6. User-friendly errors
+      if (!err.message.includes('cancel')) {
+        alert(`Couldn't share: ${err.message || 'Try saving instead'}`);
+      }
     } finally {
-      // 8. Cleanup
+      // 7. Cleanup
       loader.remove();
-      modal.style.pointerEvents = originalModalStyle.pointerEvents;
-      modal.style.transition = originalModalStyle.transition;
-      restoreButtons();
     }
   });
 }
 
 // 🖨 Print Card (Optimized)
+// ========== 🖨 PRINT CARD (FIXED) ========== //
 const printBtn = modal.querySelector('.print-card-btn');
 if (printBtn) {
   printBtn.addEventListener('click', async () => {
-    try {
-      await waitForImage();
-      hideButtonsTemporarily();
+    // 1. Create print-optimized clone
+    const printClone = modal.cloneNode(true);
+    printClone.style.cssText = `
+      visibility: hidden;
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+    `;
+    document.body.appendChild(printClone);
 
-      // 🔁 Optional: create a cleaner version if you want to strip interactive elements
-      const cloned = modal.cloneNode(true);
-      cloned.classList.add('print-clone');
-      cloned.style.visibility = 'hidden';
-      document.body.appendChild(cloned);
+    // 2. Remove interactive elements
+    printClone.querySelectorAll('.modal-actions, .close-modal').forEach(el => el.remove());
 
-      // 🔁 Wait for any images inside clone
-      await Promise.all(Array.from(cloned.querySelectorAll('img')).map(img => {
-        return img.complete ? Promise.resolve() : new Promise(res => {
-          img.onload = img.onerror = res;
-        });
-      }));
+    // 3. Wait for images to load
+    const images = printClone.querySelectorAll('img');
+    await Promise.all(Array.from(images).map(img => 
+      img.complete ? Promise.resolve() : new Promise(resolve => {
+        img.onload = img.onerror = resolve;
+      })
+    ));
 
-      // ✅ Build printable HTML
-const printStyles = `
-<style>
-  @media print {
-    body { 
-      margin: 0 !important;
-      padding: 0 !important;
-    }
-    .print-clone {
-      width: 100% !important;
-      max-width: 600px !important; /* Match modal size */
-      margin: 0 auto !important;
-      page-break-inside: avoid !important;
-      break-inside: avoid !important;
-    }
-    .detail-photo {
-      max-height: 150px !important; /* Fixed image size */
-      width: auto !important;
-      display: block !important;
-      margin: 5px auto 10px !important;
-    }
-    .modal-actions, 
-    .close-modal { 
-      display: none !important; 
-    }
-  }
-</style>
-`;
-      const printDoc = `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <title>${profile.petName || 'Pet Profile'}</title>
-            ${printStyles}
-          </head>
-          <body>
-            ${cloned.innerHTML}
-            <script>
-              window.onload = function() {
-                setTimeout(() => {
-                  window.print();
-                  window.onafterprint = () => window.close();
-                }, 300);
-              }
-            </script>
-          </body>
-        </html>
-      `;
+    // 4. Print styling
+    const printStyles = `
+      <style>
+        @page { margin: 0; size: auto; }
+        body { 
+          margin: 5mm !important; 
+          font-family: Arial !important;
+        }
+        .detail-photo {
+          max-height: 150px !important;
+          width: auto !important;
+          margin: 0 auto 10px !important;
+        }
+      </style>
+    `;
 
-      const printWin = window.open('', '_blank');
-      if (!printWin) throw new Error("Popup blocked. Allow popups to print.");
+    // 5. Open print window
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+      <html>
+        <head><title>${profile.petName || 'Pet'} Card</title>${printStyles}</head>
+        <body>${printClone.innerHTML}</body>
+      </html>
+    `);
+    printWindow.document.close();
 
-      printWin.document.write(printDoc);
-      printWin.document.close();
-
-    } catch (err) {
-      console.error("Print error:", err);
-      alert("Something went wrong while printing.");
-    } finally {
-      restoreButtons();
-    }
-  }); // closes evenlistner
-} // closes if print
+    // 6. Trigger print after content loads
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.onafterprint = () => printWindow.close();
+      printClone.remove();
+    }, 500);
+  });
+}
+    
 }, 50); // ✅ closes setTimeout
 } // Closes showdetails()
 
