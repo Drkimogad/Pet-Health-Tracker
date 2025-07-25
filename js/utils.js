@@ -99,66 +99,36 @@ function validateReminder(reminderData) {
 //=====================
 //  Modal Utilities, MODAL IS NOT STATIC HTML fixed version
 //==========================
-// 1. ShowModal ()
 function showModal(content) {
-  // 1. Remove any existing modal
+  // 1. Remove existing modal (keep this)
   const oldModal = document.getElementById('modal-overlay');
   if (oldModal) oldModal.remove();
 
-  // 2. Create fresh modal
+  // 2. Create modal (keep this)
   const overlay = document.createElement('div');
   overlay.id = 'modal-overlay';
   overlay.className = 'modal-overlay';
   
-  // 3. Set innerHTML (with close button)
+  // 3. Simplify innerHTML (remove action button references)
   overlay.innerHTML = `
     <div class="modal-content" id="pet-modal">
-      <button class="close-modal" onclick="window.hideModal()">&times;</button>
+      <button class="close-modal">&times;</button>
       ${content}
     </div>
   `;
 
-  // 4. Add to DOM
+  // 4. Add to DOM (keep this)
   document.body.appendChild(overlay);
   document.body.classList.add('modal-active');
 
-  // 5. Double-binding for safety
+  // 5. Simplified event binding (remove redundant onclick)
   overlay.querySelector('.close-modal').onclick = hideModal;
   overlay.onclick = (e) => e.target === overlay && hideModal();
 
-  // 6. Activate
+  // 6. Activate (keep this)
   overlay.classList.add('active');
   trapFocus(overlay.querySelector('.modal-content'));
 }
-
-// 2. HideModal()
-function hideModal() {
-  const overlay = document.getElementById('modal-overlay');
-  if (overlay) {
-    // 👇 Replace setTimeout with this
-    overlay.classList.remove('active');
-    overlay.addEventListener('transitionend', () => {
-      overlay.remove();
-      document.body.classList.remove('modal-active'); // 👈 Add this
-    }, { once: true });
-  }
-}
-// 3. TrapFocus()
-function trapFocus(modal) {
-  const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-  const first = focusable[0];
-  const last = focusable[focusable.length - 1];
-
-  modal.addEventListener('keydown', (e) => {
-    if (e.key !== 'Tab') return;
-    if (e.shiftKey && document.activeElement === first) {
-      last.focus(); e.preventDefault();
-    } else if (!e.shiftKey && document.activeElement === last) {
-      first.focus(); e.preventDefault();
-    }
-  });
-}
-
 
 //=================================
 // SW snippet 
