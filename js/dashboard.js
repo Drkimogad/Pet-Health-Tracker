@@ -729,12 +729,13 @@ try {
  const printBtn = modal.querySelector('.print-card-btn');
 if (printBtn) { 
 printBtn.addEventListener('click', async () => {
+let cloned; // ✅ Declare up here! 
   try {
     await waitForImage();
     hideButtonsTemporarily();
 
     // 1. Create clean clone (with enhanced device handling)
-    const cloned = modal.cloneNode(true);
+    const cloned = modal.cloneNode(true); // ✅ this assignment stays here
     cloned.classList.add('print-clone');
     cloned.style.visibility = 'hidden';
     document.body.appendChild(cloned);
