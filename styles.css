@@ -20,7 +20,7 @@
   --purple-dark: #5e35b1;
   --green: #43a047;
   --red: #e74c3c;
-  --darkred: #e63946;
+  --darkred: #8B0000; /* Or your preferred value */
 }
 
 
@@ -509,9 +509,10 @@ textarea:focus {
   margin-left: 10px;
 }
 
-.delete-btn {  /* keep em reversed*/
-  background-color: white;
-  color: var(--darkred);
+button.delete-btn {
+  background-color: white !important;
+  color: var(--darkred) !important;
+  border: 1px solid var(--darkred);
 }
 
 .details-btn {
