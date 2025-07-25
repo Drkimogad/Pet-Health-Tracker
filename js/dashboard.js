@@ -6,9 +6,6 @@ let currentProfile = null;
 // 👇 Add here
 let editingProfileId = null
 
-let isSaveListenerActive = false; // 👈 Add this at TOP of dashboard.js
-
-
 // 🌍 Load from localStorage and expose globally
 let petProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
 window.petProfiles = petProfiles;
@@ -531,211 +528,20 @@ console.log("👀 Attempting to unhide modal overlay...");
   // ✅ Inject modal into DOM
   showModal(detailsHtml);
     
-// ✅ SAFELY Attach Modal logics only after modal content is rendered
+// ✅ Simplified version - add this after showModal(detailsHtml)
 setTimeout(() => {
   const modal = document.querySelector('.modal-content');
-console.log("📦 Modal was created. InnerHTML length:", modal?.innerHTML?.length);
-
-  const photo = modal.querySelector('.detail-photo');
-  const actions = modal.querySelector('.modal-actions');
-
-  if (!modal || !actions) return;
-
-  const hideButtonsTemporarily = () => {
-    actions.style.visibility = 'hidden';
-    actions.style.position = 'absolute';
-  };
-
-  const restoreButtons = () => {
-    actions.style.visibility = '';
-    actions.style.position = '';
-  };
-
-  const waitForImage = () =>
-    new Promise((resolve) => {
-      if (!photo || photo.complete) return resolve();
-      photo.onload = () => resolve();
-      photo.onerror = () => resolve();
-    });
-
-  // ========== 💾 SAVE CARD (UPDATED) ========== //
-
-// Inside your setTimeout(() => { ... }, 50):
-const saveBtn = modal.querySelector('.save-card-btn');
-if (saveBtn && !isSaveListenerActive) {
-  saveBtn.addEventListener('click', async () => {
-    const modalContent = document.querySelector('.modal-content');
-    if (!modalContent) return;
-
-    // 1. Hide buttons
-    modalContent.querySelector('.modal-actions').style.display = 'none';
-    
-    // 2. Wait for image
-    const img = modalContent.querySelector('img');
-    if (img && !img.complete) {
-      await new Promise(resolve => {
-        img.onload = resolve;
-        img.onerror = resolve;
-      });
-    }
-
-    // 3. Generate image
-    try {
-      const canvas = await html2canvas(modalContent, {
-        backgroundColor: '#E6E6FA',
-        scale: 0.8,
-        useCORS: true
-      });
-      
-      // 4. Download
-      const link = document.createElement('a');
-      link.href = canvas.toDataURL('image/png');
-      link.download = 'PetCard.png';
-      link.click();
-    } catch (err) {
-      alert('Failed to save. Try again later.');
-    } finally {
-      // 5. Restore buttons
-      modalContent.querySelector('.modal-actions').style.display = '';
-    }
-  });
+  const photo = modal?.querySelector('.detail-photo');
   
-  isSaveListenerActive = true; // 👈 Prevent duplicates
-}
-
-// ========== 📤 SHARE CARD (FIXED) ========== //
-const shareBtn = modal.querySelector('.share-card-btn');
-if (shareBtn) {
-  shareBtn.addEventListener('click', async () => {
-    // 1. Show loader
-    const loader = document.createElement('div');
-    loader.innerHTML = '⏳ Preparing share...';
-    loader.style.cssText = `
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      padding: 10px 20px;
-      border-radius: 5px;
-      z-index: 9999;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-    `;
-    document.body.appendChild(loader);
-
-    try {
-      // 2. Capture modal (simplified)
-      const canvas = await html2canvas(modal, {
-        backgroundColor: '#ffffff',
-        scale: 1,
-        useCORS: true,
-        ignoreElements: (el) => el.classList.contains('modal-actions')
-      });
-
-      // 3. Convert to file
-      canvas.toBlob(async (blob) => {
-        if (!blob) throw new Error('Failed to create image');
-        
-        const file = new File([blob], `Pet_${profile.petName || 'Profile'}.png`, {
-          type: 'image/png'
-        });
-
-        // 4. Try native share
-        if (navigator.share) {
-          await navigator.share({
-            title: `${profile.petName || 'Pet'} Profile`,
-            files: [file]
-          });
-        } 
-        // 5. Fallback to download
-        else {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = file.name;
-          a.click();
-          setTimeout(() => URL.revokeObjectURL(url), 100);
-          alert('Image downloaded - share it manually!');
-        }
-      }, 'image/png', 0.9);
-
-    } catch (err) {
-      // 6. User-friendly errors
-      if (!err.message.includes('cancel')) {
-        alert(`Couldn't share: ${err.message || 'Try saving instead'}`);
-      }
-    } finally {
-      // 7. Cleanup
-      loader.remove();
-    }
-  });
-}
-
-// 🖨 Print Card (Optimized)
-// ========== 🖨 PRINT CARD (FIXED) ========== //
-const printBtn = modal.querySelector('.print-card-btn');
-if (printBtn) {
-  printBtn.addEventListener('click', async () => {
-    // 1. Create print-optimized clone
-    const printClone = modal.cloneNode(true);
-    printClone.style.cssText = `
-      visibility: hidden;
-      position: fixed;
-      left: 0;
-      top: 0;
-      width: 100%;
-      max-width: 600px;
-      margin: 0 auto;
-    `;
-    document.body.appendChild(printClone);
-
-    // 2. Remove interactive elements
-    printClone.querySelectorAll('.modal-actions, .close-modal').forEach(el => el.remove());
-
-    // 3. Wait for images to load
-    const images = printClone.querySelectorAll('img');
-    await Promise.all(Array.from(images).map(img => 
-      img.complete ? Promise.resolve() : new Promise(resolve => {
-        img.onload = img.onerror = resolve;
-      })
-    ));
-
-    // 4. Print styling
-    const printStyles = `
-      <style>
-        @page { margin: 0; size: auto; }
-        body { 
-          margin: 5mm !important; 
-          font-family: Arial !important;
-        }
-        .detail-photo {
-          max-height: 150px !important;
-          width: auto !important;
-          margin: 0 auto 10px !important;
-        }
-      </style>
-    `;
-
-    // 5. Open print window
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write(`
-      <html>
-        <head><title>${profile.petName || 'Pet'} Card</title>${printStyles}</head>
-        <body>${printClone.innerHTML}</body>
-      </html>
-    `);
-    printWindow.document.close();
-
-    // 6. Trigger print after content loads
-    setTimeout(() => {
-      printWindow.print();
-      printWindow.onafterprint = () => printWindow.close();
-      printClone.remove();
-    }, 500);
-  });
-}
+  // Optional: Log for debugging
+  console.log("🖼️ Modal ready. Photo loaded:", photo?.complete); 
+  
+  // Only keep image loading if needed for other logic
+  const waitForImage = () => photo && !photo.complete ? 
+    new Promise(resolve => { photo.onload = photo.onerror = resolve; }) : 
+    Promise.resolve();
     
-}, 50); // ✅ closes setTimeout
+}, 50);
 } // Closes showdetails()
 
 //=========================================
