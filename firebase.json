@@ -1,11 +1,10 @@
-﻿{
+{
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },
   "functions": {
-    "source": "functions"
-    "runtime": "nodejs18",
-    "predeploy": "npm --prefix functions run build"
+    "source": "functions",
+    "runtime": "nodejs18"
   }
 }
