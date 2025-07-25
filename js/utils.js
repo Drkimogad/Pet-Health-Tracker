@@ -99,6 +99,27 @@ function validateReminder(reminderData) {
 //=====================
 //  Modal Utilities, MODAL IS NOT STATIC HTML fixed version
 //==========================
+// 0. Add this if missing (ensure it's defined before showModal)
+function trapFocus(modal) {
+  const focusable = modal.querySelectorAll(
+    'button:not([disabled]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+  );
+  if (focusable.length === 0) return;
+
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+
+  modal.addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab') return;
+    if (e.shiftKey && document.activeElement === first) {
+      last.focus();
+      e.preventDefault();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      first.focus();
+      e.preventDefault();
+    }
+  });
+}
 function showModal(content) {
   // 1. Remove existing modal (keep this)
   const oldModal = document.getElementById('modal-overlay');
