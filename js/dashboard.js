@@ -726,131 +726,105 @@ try {
 }
 
 // 🖨 Print Card (Optimized)
- const printBtn = modal.querySelector('.print-card-btn');
+const printBtn = modal.querySelector('.print-card-btn');
 if (printBtn) { 
 printBtn.addEventListener('click', async () => {
-let cloned; // ✅ Declare up here! 
+  let cloned;
   try {
     await waitForImage();
     hideButtonsTemporarily();
 
-    // 1. Create clean clone (with enhanced device handling)
-    const cloned = modal.cloneNode(true); // ✅ this assignment stays here
+    // Create invisible clone
+    cloned = modal.cloneNode(true);
     cloned.classList.add('print-clone');
     cloned.style.visibility = 'hidden';
     document.body.appendChild(cloned);
 
-    // 2. Universal image loader (handles CORS/tablet delays)
-    const allImages = [
-      ...cloned.querySelectorAll('img'),
-      ...modal.querySelectorAll('img')
-    ];
+    // Wait for all images (modal + clone)
+    const images = [...modal.querySelectorAll('img'), ...cloned.querySelectorAll('img')];
+    await Promise.all(images.map(img => {
+      return img.complete ? Promise.resolve() : new Promise(res => {
+        img.onload = img.onerror = res;
+        img.src = img.src.split('?')[0] + '?t=' + Date.now(); // Bypass cache
+      });
+    }));
 
-    await Promise.all(allImages.map(img => {
-  if (img.complete) return Promise.resolve();
-
-  return new Promise((resolve) => {
-    img.src = img.src.split('?')[0] + '?t=' + Date.now();
-
-    const timer = setTimeout(resolve, 3000);
-    img.onload = img.onerror = () => {
-      clearTimeout(timer);
-      resolve();
-    };
-  });
-}));
-
-
-    // 3. Device-optimized print document
-    const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
-    const printDoc = `<!DOCTYPE html>
+    const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+    const printDoc = `
       <html>
         <head>
           <title>${profile.petName || 'Pet Profile'}</title>
-          ${isMobile ? '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">' : ''}
+          ${isMobile ? `<meta name="viewport" content="width=device-width, initial-scale=1">` : ''}
           <style>
             @media print {
-              body { 
-                margin: 0!important; 
-                padding: ${isMobile ? '5mm' : '10mm'}!important;
-                -webkit-print-color-adjust: exact !important;
+              body { margin: 0; padding: ${isMobile ? '5mm' : '10mm'}; }
+              .print-clone {
+                width: 100% !important;
+                page-break-inside: avoid !important;
               }
-              .print-clone { 
-                width: 100%!important; 
-                page-break-inside: avoid!important;
-                break-inside: avoid!important;
+              img {
+                max-height: ${isMobile ? '120px' : '150px'} !important;
+                width: auto !important;
+                display: block !important;
+                margin: 0 auto !important;
               }
-              img { 
-                max-height: ${isMobile ? '120px' : '150px'}!important; 
-                width: auto!important;
-                display: block!important;
-                margin: 0 auto!important;
+              .no-print, .modal-actions, .close-modal {
+                display: none !important;
               }
-              .no-print { display: none!important; }
+            }
           </style>
         </head>
         <body>
           ${cloned.innerHTML}
           <script>
-            // Universal print handler
-            function attemptPrint() {
+            window.onload = () => {
               try {
-                console.log("🖨 Attempting to print...");
                 window.print();
-                console.log("✅ Print triggered.");
-                setTimeout(() => window.close(), ${isMobile ? '500' : '100'});
-              } catch (e) {
-                console.error("❌ Print attempt failed:", e);
+                setTimeout(() => window.close(), ${isMobile ? 800 : 200});
+              } catch(e) {
                 window.close();
               }
-            }
-            
-            // Double-trigger system
-            window.addEventListener('load', () => {
-              setTimeout(attemptPrint, ${isMobile ? '1000' : '300'});
-            });
-            
-            // Safety net
-            setTimeout(() => {
-              if (!window.printExecuted) {
-                window.printExecuted = true;
-                attemptPrint();
-              }
-            }, 5000);
+            };
           </script>
         </body>
-      </html>`;
+      </html>
+    `;
 
-    // 4. Cross-browser window handling
-    const printWin = window.open('', '_blank');
-    if (!printWin) throw new Error("Please allow popups to print");
-    
-    printWin.document.write(printDoc);
-    printWin.document.close();
+    const win = window.open('', '_blank');
+    if (!win) throw new Error("Popup blocked. Please enable popups.");
 
-    // 5. Enhanced ready-state verification
-    await new Promise((resolve) => {
-      const verifyReady = () => {
-        if (printWin.document.readyState === 'complete') {
-          // Force layout calculation (Android fix)
-          printWin.document.body.offsetHeight;
-          resolve();
-        } else {
-          setTimeout(verifyReady, 50);
-        }
+    win.document.write(printDoc);
+    win.document.close();
+
+    // Optional: ready-state verification (minor enhancement)
+    await new Promise(res => {
+      const check = () => {
+        if (win.document.readyState === 'complete') res();
+        else setTimeout(check, 50);
       };
-      verifyReady();
+      check();
     });
 
   } catch (err) {
-    console.error("Print error:", err);
-    alert("Printing failed. Try saving as PDF instead.");
-    // Consider adding PDF fallback here
+    console.error("🛑 Print failed, saving PNG instead:", err);
+    // PNG fallback
+    const card = modal.querySelector('.pet-card');
+    if (card) {
+      const canvas = await html2canvas(card, { scale: 1 });
+      const link = document.createElement('a');
+      link.href = canvas.toDataURL();
+      link.download = 'pet-card.png';
+      link.click();
+      alert("🖼️ Modal saved as PNG. Try printing it manually.");
+    } else {
+      alert("Failed to save card as image.");
+    }
   } finally {
     cloned?.remove();
     restoreButtons();
-    } // closes finally
-  }); // closes evenlistner
+  }
+});
+
 } // closes if print
 }, 50); // ✅ closes setTimeout
 } // Closes showdetails()
