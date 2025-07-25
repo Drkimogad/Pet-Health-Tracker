@@ -833,11 +833,15 @@ printBtn.addEventListener('click', async () => {
 // Optional: ready-state verification (minor enhancement)
     await new Promise(res => {
       const check = () => {
-        if (win.document.readyState === 'complete') res();
-        else setTimeout(check, 50);
-      };
-      check();
-    });
+         if (printWin.document.readyState === 'complete') {
+    printWin.document.body.offsetHeight;
+    resolve();
+  } else {
+    setTimeout(check, 50);
+  }
+};
+ check(); // Start the loop
+});
 
   } catch (err) {
     console.error("🛑 Print failed, saving PNG instead:", err);
