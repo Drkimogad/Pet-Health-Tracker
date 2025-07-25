@@ -730,6 +730,7 @@ const printBtn = modal.querySelector('.print-card-btn');
 if (printBtn) { 
 printBtn.addEventListener('click', async () => {
   let cloned;
+    
   try {
     await waitForImage();
     hideButtonsTemporarily();
@@ -756,6 +757,17 @@ printBtn.addEventListener('click', async () => {
           <title>${profile.petName || 'Pet Profile'}</title>
           ${isMobile ? `<meta name="viewport" content="width=device-width, initial-scale=1">` : ''}
           <style>
+          @media print {
+             .modal,
+             .modal-overlay,
+             .modal-content {
+             display: none !important;
+              }
+               .print-wrapper {
+               display: block !important;
+                  }
+               }
+
             @media print {
               body { margin: 0; padding: ${isMobile ? '5mm' : '10mm'}; }
               .print-clone {
@@ -790,13 +802,35 @@ printBtn.addEventListener('click', async () => {
       </html>
     `;
 
-    const win = window.open('', '_blank');
-    if (!win) throw new Error("Popup blocked. Please enable popups.");
+  const isTablet = /Android|iPad/i.test(navigator.userAgent);
+   if (isTablet) {
+  // Print directly from current window
+  const printWrapper = document.createElement('div');
+  printWrapper.innerHTML = cloned.innerHTML;
+  printWrapper.className = 'print-wrapper';
 
-    win.document.write(printDoc);
-    win.document.close();
+  document.body.appendChild(printWrapper);
+  const originalContent = document.body.innerHTML;
 
-    // Optional: ready-state verification (minor enhancement)
+  // Wait then print
+  setTimeout(() => {
+    window.print();
+    // Restore original content after short delay
+    setTimeout(() => {
+      printWrapper.remove();
+    }, 1000);
+  }, 300);
+} else {
+       
+  // Desktop: proceed with popup print
+  const win = window.open('', '_blank');
+  if (!win) throw new Error("Popup blocked. Please enable popups.");
+
+  win.document.write(printDoc);
+  win.document.close();
+}
+      
+// Optional: ready-state verification (minor enhancement)
     await new Promise(res => {
       const check = () => {
         if (win.document.readyState === 'complete') res();
