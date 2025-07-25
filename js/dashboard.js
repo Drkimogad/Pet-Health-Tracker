@@ -726,6 +726,8 @@ try {
 }
 
 // 🖨 Print Card (Optimized)
+ const printBtn = modal.querySelector('.print-card-btn');
+if (printBtn) { 
 printBtn.addEventListener('click', async () => {
   try {
     await waitForImage();
@@ -843,8 +845,9 @@ printBtn.addEventListener('click', async () => {
   } finally {
     cloned?.remove();
     restoreButtons();
-  }
-});
+    } // closes finally
+  }); // closes evenlistner
+} // closes if print
 }, 50); // ✅ closes setTimeout
 } // Closes showdetails()
 
