@@ -727,142 +727,87 @@ try {
 
 // 🖨 Print Card (Optimized)
 const printBtn = modal.querySelector('.print-card-btn');
-if (printBtn) { 
-printBtn.addEventListener('click', async () => {
-  let cloned;
-    
-  try {
-    await waitForImage();
-    hideButtonsTemporarily();
+if (printBtn) {
+  printBtn.addEventListener('click', async () => {
+    try {
+      await waitForImage();
+      hideButtonsTemporarily();
 
-    // Create invisible clone
-    cloned = modal.cloneNode(true);
-    cloned.classList.add('print-clone');
-    cloned.style.visibility = 'hidden';
-    document.body.appendChild(cloned);
+      // 🔁 Optional: create a cleaner version if you want to strip interactive elements
+      const cloned = modal.cloneNode(true);
+      cloned.classList.add('print-clone');
+      cloned.style.visibility = 'hidden';
+      document.body.appendChild(cloned);
 
-    // Wait for all images (modal + clone)
-    const images = [...modal.querySelectorAll('img'), ...cloned.querySelectorAll('img')];
-    await Promise.all(images.map(img => {
-      return img.complete ? Promise.resolve() : new Promise(res => {
-        img.onload = img.onerror = res;
-        img.src = img.src.split('?')[0] + '?t=' + Date.now(); // Bypass cache
-      });
-    }));
+      // 🔁 Wait for any images inside clone
+      await Promise.all(Array.from(cloned.querySelectorAll('img')).map(img => {
+        return img.complete ? Promise.resolve() : new Promise(res => {
+          img.onload = img.onerror = res;
+        });
+      }));
 
-    const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
-    const printDoc = `
-      <html>
-        <head>
-          <title>${profile.petName || 'Pet Profile'}</title>
-          ${isMobile ? `<meta name="viewport" content="width=device-width, initial-scale=1">` : ''}
-          <style>
-          @media print {
-             .modal,
-             .modal-overlay,
-             .modal-content {
-             display: none !important;
-              }
-               .print-wrapper {
-               display: block !important;
-                  }
-               }
-
-            @media print {
-              body { margin: 0; padding: ${isMobile ? '5mm' : '10mm'}; }
-              .print-clone {
-                width: 100% !important;
-                page-break-inside: avoid !important;
-              }
-              img {
-                max-height: ${isMobile ? '120px' : '150px'} !important;
-                width: auto !important;
-                display: block !important;
-                margin: 0 auto !important;
-              }
-              .no-print, .modal-actions, .close-modal {
-                display: none !important;
-              }
-            }
-          </style>
-        </head>
-        <body>
-          ${cloned.innerHTML}
-          <script>
-            window.onload = () => {
-              try {
-                window.print();
-                setTimeout(() => window.close(), ${isMobile ? 800 : 200});
-              } catch(e) {
-                window.close();
-              }
-            };
-          </script>
-        </body>
-      </html>
-    `;
-
-  const isTablet = /Android|iPad/i.test(navigator.userAgent);
-   if (isTablet) {
-  // Print directly from current window
-  const printWrapper = document.createElement('div');
-  printWrapper.innerHTML = cloned.innerHTML;
-  printWrapper.className = 'print-wrapper';
-
-  document.body.appendChild(printWrapper);
-  const originalContent = document.body.innerHTML;
-
-  // Wait then print
-  setTimeout(() => {
-    window.print();
-    // Restore original content after short delay
-    setTimeout(() => {
-      printWrapper.remove();
-    }, 1000);
-  }, 300);
-} else {
-       
-  // Desktop: proceed with popup print
-  const win = window.open('', '_blank');
-  if (!win) throw new Error("Popup blocked. Please enable popups.");
-
-  win.document.write(printDoc);
-  win.document.close();
-}
-      
-// Optional: ready-state verification (minor enhancement)
-    await new Promise(res => {
-      const check = () => {
-         if (printWin.document.readyState === 'complete') {
-    printWin.document.body.offsetHeight;
-    resolve();
-  } else {
-    setTimeout(check, 50);
-  }
-};
- check(); // Start the loop
-});
-
-  } catch (err) {
-    console.error("🛑 Print failed, saving PNG instead:", err);
-    // PNG fallback
-    const card = modal.querySelector('.pet-card');
-    if (card) {
-      const canvas = await html2canvas(card, { scale: 1 });
-      const link = document.createElement('a');
-      link.href = canvas.toDataURL();
-      link.download = 'pet-card.png';
-      link.click();
-      alert("🖼️ Modal saved as PNG. Try printing it manually.");
-    } else {
-      alert("Failed to save card as image.");
+      // ✅ Build printable HTML
+const printStyles = `
+<style>
+  @media print {
+    body { 
+      margin: 0 !important;
+      padding: 0 !important;
     }
-  } finally {
-    cloned?.remove();
-    restoreButtons();
+    .print-clone {
+      width: 100% !important;
+      max-width: 600px !important; /* Match modal size */
+      margin: 0 auto !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .detail-photo {
+      max-height: 150px !important; /* Fixed image size */
+      width: auto !important;
+      display: block !important;
+      margin: 5px auto 10px !important;
+    }
+    .modal-actions, 
+    .close-modal { 
+      display: none !important; 
+    }
   }
-});
+</style>
+`;
+      const printDoc = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>${profile.petName || 'Pet Profile'}</title>
+            ${printStyles}
+          </head>
+          <body>
+            ${cloned.innerHTML}
+            <script>
+              window.onload = function() {
+                setTimeout(() => {
+                  window.print();
+                  window.onafterprint = () => window.close();
+                }, 300);
+              }
+            </script>
+          </body>
+        </html>
+      `;
 
+      const printWin = window.open('', '_blank');
+      if (!printWin) throw new Error("Popup blocked. Allow popups to print.");
+
+      printWin.document.write(printDoc);
+      printWin.document.close();
+
+    } catch (err) {
+      console.error("Print error:", err);
+      alert("Something went wrong while printing.");
+    } finally {
+      restoreButtons();
+    }
+  }); // closes evenlistner
 } // closes if print
 }, 50); // ✅ closes setTimeout
 } // Closes showdetails()
