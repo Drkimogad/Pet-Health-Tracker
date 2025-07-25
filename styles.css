@@ -618,7 +618,7 @@ body.modal-active {
   width: 90vw; /* modified*/
   height: 90vh; /*modified*/
   padding-bottom: 2rem; /* 👈 pushes the card up inside the overlay */  
-  background: rgba(0, 0, 0, 0.7); /* dark overlay */
+  background: rgba(0, 0, 0, 0.9); /* dark overlay */
   z-index: 9999; /* ensure it's above everything */
   display: flex;
   align-items: center;
@@ -637,7 +637,7 @@ body.modal-active {
 .modal-content {
   background: #fff;
   padding: 20px;
-  padding-top: 30px; /* ⬅️ Add this or increase if needed */
+  padding-top: 40px; /* ⬅️ Add this or increase if needed */
   max-width: 480px; /*modified*/
   width: 90%;
   max-height: 85vh;     /* 👈 Slightly reduced */
@@ -647,7 +647,10 @@ body.modal-active {
   box-shadow: 0 0 20px rgba(0,0,0,0.2);
   position: relative;
   margin-bottom: 3rem;  /* 👈 Adds visual gap from footer */
+  min-width: 320px; /* added*/
+  margin: auto;
 }
+
 /* blur card behind spinner during loading*/
 .modal-content.loading {
   backdrop-filter: blur(2px); /* 👈 New line - creates visual separation */
@@ -690,62 +693,6 @@ body.modal-active {
   margin-top: 1rem;
   font-weight: bold;
 }
-/* =======General PRINT STYLES MERGED AND OPTIMIZED =========*/
-@media print {
-  body {
-    font-size: 14pt;
-    background: white;
-    color: black;
-    padding: 0;
-  }
-
-  .pet-card {
-    border: none;
-    box-shadow: none;
-    margin-bottom: 1.5rem;
-  }
-
-  .detail-photo {
-    max-height: 200px !important;
-    width: auto !important;
-    page-break-inside: avoid !important;
-  }
-  
-  .modal-content {
-    page-break-after: avoid !important;
-    page-break-before: avoid !important;
-    max-width: 100%;
-    box-shadow: none;
-    border: none;
-    margin: 0;
-    padding-top: 4rem !important;
-  }
-
-  /* Hide modal buttons from print view */
-  .modal-actions,
-  .close-modal {
-    display: none !important;
-  }
-
-  /* Ensure only modal content prints */
-  .modal-overlay {
-    background: white !important;
-    padding: 0 !important;
-  }
-
-  /* Hide everything except the modal */
-  body > *:not(.modal-overlay) {
-    display: none !important;
-  }
-}
-
-/* Non-print styles (keep outside @media) */
-.modal-content {
-  width: 100%;
-  max-width: 600px;
-  min-width: 320px;
-  margin: auto;
-}
 
 /* === Modal Button Styles (including new Share) === */
 .modal-actions {
@@ -769,22 +716,7 @@ body.modal-active {
 }
 
 /* Specific Buttons */
-.save-card-btn {
-  background-color: var(--green, #4caf50);
-  color: white;
-}
-
-.print-card-btn {
-  background-color: var(--qr-blue, #1976d2);
-  color: white;
-}
-
 .close-btn {
-  background-color: var(--red, #e53935);
-  color: white;
-}
-
-.share-card-btn {
   background-color: var(--mustard, #fbc02d);
   color: black;
 }
