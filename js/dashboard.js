@@ -1638,10 +1638,10 @@ else if (btn.classList.contains('savePDF-btn')) {
   // Handle async without making parent function async
   saveProfilePDF(petId)
   .then(() => {
-    showNotification('PDF saved successfully!', true); // Success
+    showSuccessNotification('PDF saved successfully!', true); // Success
   })
   .catch((error) => {
-    showNotification('Failed to save PDF: ' + error.message, false); // Error
+    showErrorNotification('Failed to save PDF: ' + error.message, false); // Error
     console.error('PDF Save Error:', error);
   })
   .finally(() => {
