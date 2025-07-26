@@ -1621,26 +1621,28 @@ DOM.savedProfilesList?.addEventListener('click', (e) => {
   }
  // In your event delegation handler:
 else if (btn.classList.contains('savePDF-btn')) {
-  const petId = btn.dataset.petId;
   if (!petId) {
     showNotification('error', 'No pet ID found');
     return;
   }
-  
-  // Add visual feedback
+
+  // Visual feedback
   btn.disabled = true;
   const originalText = btn.textContent;
   btn.innerHTML = '<span class="pdf-loader-btn"></span> Saving...';
-  
-  try {
-    await saveProfilePDF(petId);
-  } catch (error) {
-    showNotification('error', 'Failed to save PDF');
-    console.error('PDF Save Error:', error);
-  } finally {
-    btn.disabled = false;
-    btn.textContent = originalText;
-  }
+
+  // Handle async without making parent function async
+  saveProfilePDF(petId)
+    .then(() => {
+      btn.disabled = false;
+      btn.textContent = originalText;
+    })
+    .catch((error) => {
+      showNotification('error', 'Failed to save PDF');
+      console.error('PDF Save Error:', error);
+      btn.disabled = false;
+      btn.textContent = originalText;
+    });
 }
  else if (btn.classList.contains('details-btn')) {
   if (petId) {
