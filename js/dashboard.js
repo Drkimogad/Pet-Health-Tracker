@@ -1131,10 +1131,10 @@ async function saveProfilePDF(petId) {
 
     doc.addImage(canvas, 'PNG', 0, 0, 210, 297);
     doc.save(`${cleanFilename(profile.petName)}_Profile.pdf`);
-    showNotification('success', 'PDF saved successfully!');
+    showSuccessNotification('success', 'PDF saved successfully!');
 
   } catch (error) {
-    showNotification('error', `PDF failed: ${error.message}`);
+    showErrorNotification('error', `PDF failed: ${error.message}`);
     console.error('PDF Generation Error:', error);
   
   } finally {
