@@ -957,9 +957,15 @@ async function saveProfilePDF(petId) {
   document.body.appendChild(loader);
 
   try {
-    // 1. GRAB THE *VISIBLE* PET CARD (LIKE IN loadSavedPetProfile)
-    const petCard = document.querySelector(`li.pet-card[data-pet-id="${petId}"]`);
-    if (!petCard) throw new Error("Pet card missing. Refresh and retry.");
+    // 1. 🔁 Ensure pet cards are rendered before proceeding
+    let petCard = document.querySelector(`li.pet-card[data-pet-id="${petId}"]`);
+   if (!petCard) {
+     await loadPets(); // Ensure DOM is populated
+     petCard = document.querySelector(`li.pet-card[data-pet-id="${petId}"]`);
+  }
+
+if (!petCard) throw new Error("Pet card still missing. Refresh and retry.");
+
 
     // 2. CLONE + SANITIZE (KEEP ONLY WHAT'S DISPLAYED)
     const pdfContainer = document.createElement('div');
