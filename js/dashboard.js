@@ -1141,10 +1141,13 @@ async function saveProfilePDF(petId) {
   // Always clean up DOM elements
   loader.remove();
   const pdfContainer = document.querySelector('.pdf-container');
-  if (pdfContainer && document.body.contains(pdfContainer)) {
-    pdfContainer.remove();
-  }
-}
+    if (pdfContainer?.isConnected) {
+    pdfContainer.remove();    
+    } // <-- closes if
+  } // <-- closes finally
+} // <-- closes saveProfilePDF() function
+
+
 
 // Helper functions remain the same as previous example
 
@@ -1611,31 +1614,30 @@ window.addEventListener('online', () => {
 // ======== EVENT DELEGATION (FIXED) ========
 // ✅ Keep this block to handle profile actions (WIRING) ALL THE BUTTONS IN LOADSAVEDPETPROFILES FUNCTION✅
 DOM.savedProfilesList?.addEventListener('click', (e) => {
-  if (!e.target?.closest('button')) return;
+  const btn = e.target?.closest('button');
+  if (!btn) return;
   
-  const btn = e.target.closest('button');
-  const petId = btn.dataset?.petId;
+  const petId = btn.dataset.petId;
   if (!petId) return;
 
+  // Unified indentation and brace style
   if (btn.classList.contains('edit-btn')) {
     editPetProfile(petId);
   }
   else if (btn.classList.contains('delete-btn')) {
     if (confirm('Delete this profile?')) deletePetProfile(petId);
- }   
- else if (btn.classList.contains('details-btn')) {
-  if (petId) {
+  }
+  else if (btn.classList.contains('details-btn')) {
     const profiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
     const profile = profiles.find(p => p.id === petId);
     if (profile) showPetDetails(profile);
     else showErrorToUser('Profile not found');
   }
-}
-else if (btn.classList.contains('inviteFriends-btn')) {
-  if (petId) inviteFriends(petId);
+  else if (btn.classList.contains('inviteFriends-btn')) {
+    inviteFriends(petId);
   }
   else if (btn.classList.contains('qr-btn')) {
-  if (petId) generateQRCode(petId);
+    generateQRCode(petId);
   }
 });
 
