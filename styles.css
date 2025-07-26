@@ -740,6 +740,60 @@ body.modal-active {
   100% { transform: rotate(360deg); }
 }
 
+/* ======PDF Container Styles =======*/
+.pdf-container {
+  font-family: 'Arial', sans-serif;
+  color: #333;
+  line-height: 1.5;
+}
+
+.pet-card-frame {
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  height: 100%;
+}
+
+.pet-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.pet-header h2 {
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.pet-photo {
+  max-width: 150px;
+  max-height: 150px;
+  border-radius: 8px;
+  margin: 0 auto;
+  display: block;
+}
+
+.pet-details {
+  margin: 20px 0;
+}
+
+.pet-details p {
+  margin: 8px 0;
+}
+
+.qr-section {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.share-link {
+  word-break: break-all;
+  font-size: 12px;
+  color: #7f8c8d;
+  margin-top: 10px;
+}
+
+/* Loader Styles (use your existing) */
+
 /* ========== COMMUNITY CHAT MODAL ========== */
 /*  community chat button styling*/
 .communityChat-btn {
