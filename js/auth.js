@@ -172,7 +172,7 @@ callback: async (response) => {
 // ====== Firebase Initialization ======
 function initializeFirebase() {
   const firebaseConfig = {
-    apiKey: "AIzaSyBk12mrSvAIX4ATFtciE1NyzQf-sX96Acc",
+    apiKey: "AIzaSyAy2ObF1WWPurBa3TZ_AbBb00o80ZmlLAo",
     authDomain: "pet-health-tracker-4ec31.firebaseapp.com",
     projectId: "pet-health-tracker-4ec31",
     storageBucket: "pet-health-tracker-4ec31.firebasestorage.app",
