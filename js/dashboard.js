@@ -951,174 +951,52 @@ function showShareFallback(message) {
 //==================
 // savedProfilePDF()
 //====================
-/**
- * Generates a professional PDF of pet profile with loader
- * @param {string} petId - ID of pet to save
- */
 async function saveProfilePDF(petId) {
-  // Show loader (using your existing CSS classes)
+  // Show loader
   const loader = document.createElement('div');
-  loader.className = 'loader pdf-loader'; // Added pdf-loader for specificity
+  loader.className = 'loader pdf-loader';
   document.body.appendChild(loader);
 
   try {
-    // Load data
-    const profile = await loadPets();
-    if (!profile) throw new Error('Profile not found');
+    // Find the existing pet card in DOM
+    const petCard = document.querySelector(`[data-pet-id="${petId}"]`);
+    if (!petCard) throw new Error('Pet card not found in DOM');
 
-    // Create PDF container
+    // Create PDF container and clone the pet card
     const pdfContainer = document.createElement('div');
     pdfContainer.className = 'pdf-container';
     pdfContainer.style.cssText = `
-        position: absolute;
-       left: -9999px;
-       width: 210mm; /* A4 width */
-       min-height: 100%; /* Flexible height */
-       padding: 15mm;
-       background: white;
+      position: absolute;
+      left: -9999px;
+      width: 210mm;
+      min-height: 100%;
+      padding: 15mm;
+      background: white;
       box-sizing: border-box;
-      overflow: visible !important; /* Allows content to expand */
-      z-index: 9999; /* Ensures proper rendering */
+      overflow: visible !important;
+      z-index: 9999;
     `;
-      
-   // Critical for font rendering ADDED RECENTLY
-   pdfContainer.setAttribute('data-html2canvas-ignore', 'false');
-      
-    // Build complete profile layout
-    pdfContainer.innerHTML = `
-      <div class="pet-profile-frame">
-        <div class="pet-profile-header">
-          <h2>${escapeHtml(profile.petName || 'Pet Profile')}</h2>
-          ${profile.petPhoto ? `
-            <img src="${profile.petPhoto}" 
-                 class="pet-profile-photo" 
-                 crossorigin="anonymous"
-                 onerror="this.style.display='none'">
-          ` : ''}
-        </div>
-
-    <div class="pet-profile-details">
-  <!-- Basic Info -->
-  <div class="detail-row">
-    <span class="detail-label">Breed:</span>
-    <span class="detail-value">${escapeHtml(profile.breed || 'N/A')}</span>
-  </div>
-  
-  <div class="detail-row">
-    <span class="detail-label">Age:</span>
-    <span class="detail-value">${escapeHtml(profile.age || 'N/A')}</span>
-  </div>
-  
-  <div class="detail-row">
-    <span class="detail-label">Weight:</span>
-    <span class="detail-value">${escapeHtml(profile.weight || 'N/A')}</span>
-  </div>
-  
-  <div class="detail-row">
-    <span class="detail-label">Type:</span>
-    <span class="detail-value">${escapeHtml(profile.type || 'N/A')}</span>
-  </div>
-  
-  <div class="detail-row">
-    <span class="detail-label">Gender:</span>
-    <span class="detail-value">${escapeHtml(profile.gender || 'N/A')}</span>
-  </div>
-  
-  <!-- Health Info -->
-  <div class="detail-row">
-    <span class="detail-label">Mood:</span>
-    <span class="detail-value">${escapeHtml(profile.mood || 'N/A')}</span>
-  </div>
-  
-  <div class="detail-row">
-    <span class="detail-label">Microchip ID:</span>
-    <span class="detail-value">${escapeHtml(profile.microchip?.id || 'N/A')}</span>
-  </div>
-  
-  <div class="detail-row">
-    <span class="detail-label">Microchip Date:</span>
-    <span class="detail-value">${escapeHtml(profile.microchip?.date || 'N/A')}</span>
-  </div>
-  
-  <div class="detail-row">
-    <span class="detail-label">Microchip Vendor:</span>
-    <span class="detail-value">${escapeHtml(profile.microchip?.vendor || 'N/A')}</span>
-  </div>
-  
-  <div class="detail-row">
-    <span class="detail-label">Allergies:</span>
-    <span class="detail-value">${escapeHtml(profile.allergies || 'None')}</span>
-  </div>
-  
-  <div class="detail-row">
-    <span class="detail-label">Medical History:</span>
-    <span class="detail-value">${escapeHtml(profile.medicalHistory || 'None')}</span>
-  </div>
-  
-  <div class="detail-row">
-    <span class="detail-label">Diet Plan:</span>
-    <span class="detail-value">${escapeHtml(profile.dietPlan || 'N/A')}</span>
-  </div>
-  
-  <!-- Emergency Contact -->
-  ${profile.emergencyContacts?.[0] ? `
-    <div class="detail-row">
-      <span class="detail-label">Emergency Contact:</span>
-      <span class="detail-value">
-        ${escapeHtml(profile.emergencyContacts[0].name || 'N/A')}
-        ${profile.emergencyContacts[0].relationship ? `(${escapeHtml(profile.emergencyContacts[0].relationship)})` : ''}
-        ${profile.emergencyContacts[0].phone ? `- ${escapeHtml(profile.emergencyContacts[0].phone)}` : ''}
-      </span>
-    </div>
-  ` : ''}
-  
-  <!-- Reminders -->
-  <div class="detail-row">
-    <span class="detail-label">Vaccinations Due:</span>
-    <span class="detail-value">${escapeHtml(profile.reminders?.vaccinations || 'None')}</span>
-  </div>
-  
-  <div class="detail-row">
-    <span class="detail-label">Checkups Due:</span>
-    <span class="detail-value">${escapeHtml(profile.reminders?.checkups || 'None')}</span>
-  </div>
-  
-  <div class="detail-row">
-    <span class="detail-label">Grooming Due:</span>
-    <span class="detail-value">${escapeHtml(profile.reminders?.grooming || 'None')}</span>
-  </div>
-</div>
-
-        ${profile.shareableUrl ? `
-          <div class="pet-profile-qr">
-            <div id="pdf-qrcode"></div>
-            <a href="${profile.shareableUrl}" class="pet-profile-link">
-              ${profile.shareableUrl}
-            </a>
-          </div>
-        ` : ''}
-      </div>
-    `;
-
+    pdfContainer.setAttribute('data-html2canvas-ignore', 'false');
+    
+    // Clone and modify the pet card for PDF
+    const cardClone = petCard.cloneNode(true);
+    
+    // Remove any interactive elements
+    cardClone.querySelectorAll('button').forEach(btn => btn.remove());
+    
+    // Add any additional PDF-specific styling
+    cardClone.style.width = '100%';
+    cardClone.style.boxShadow = 'none';
+    cardClone.style.border = '1px solid #ddd';
+    
+    pdfContainer.appendChild(cardClone);
     document.body.appendChild(pdfContainer);
 
     // Load dependencies
     await Promise.all([
       loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'),
-      loadScript('https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js')
+      loadScript('https://cdn.jsdelivr.net/npm/qrcode@1.5.1/qrcode.min.js')
     ]);
-
-    // Generate QR code
-    if (profile.shareableUrl) {
-      new QRCode(pdfContainer.querySelector('#pdf-qrcode'), {
-        text: profile.shareableUrl,
-        width: 120,
-        height: 120,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
-      });
-    }
 
     // Create PDF
     const { jsPDF } = window.jspdf;
@@ -1135,24 +1013,20 @@ async function saveProfilePDF(petId) {
     });
 
     doc.addImage(canvas, 'PNG', 0, 0, 210, 297);
-    doc.save(`${cleanFilename(profile.petName)}_Profile.pdf`);
+    doc.save(`${cleanFilename(petCard.querySelector('.pet-name')?.textContent || 'pet')}_Profile.pdf`);
     showSuccessNotification('success', 'PDF saved successfully!');
 
   } catch (error) {
     showErrorNotification('error', `PDF failed: ${error.message}`);
     console.error('PDF Generation Error:', error);
-  
   } finally {
-  // Always clean up DOM elements
-  loader.remove();
-  const pdfContainer = document.querySelector('.pdf-container');
+    loader.remove();
+    const pdfContainer = document.querySelector('.pdf-container');
     if (pdfContainer?.isConnected) {
-    pdfContainer.remove();    
-    } // <-- closes if
-  } // <-- closes finally
-} // <-- closes saveProfilePDF() function
-
-
+      pdfContainer.remove();
+    }
+  }
+}
 
 // Helper functions remain the same as previous example
 
