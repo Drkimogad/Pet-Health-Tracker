@@ -433,11 +433,12 @@ async function loadSavedPetProfile() {
      const actionsDiv = document.createElement('div');
      actionsDiv.className = 'pet-actions';
      actionsDiv.innerHTML = `
-              <button class="edit-btn" data-pet-id="${profile.id}">Edit</button>
-              <button class="delete-btn" data-pet-id="${profile.id}">Delete</button>
-              <button class="details-btn" data-pet-id="${profile.id}">Details</button>
+              <button class="edit-btn" data-pet-id="${profile.id}">Edit Profile</button>
+              <button class="delete-btn" data-pet-id="${profile.id}">Delete Profile</button>
+              <button class="details-btn" data-pet-id="${profile.id}">Petcard Details</button>
+              <button class="savePDF-btn" data-pet-id="${profile.id}">Save As PDF</button>
               <button id="exportAll-btn" class="exportAll-btn">📤 Export All Cards</button>
-              <button class="qr-btn" data-pet-id="${profile.id}">Qr</button>
+              <button class="qr-btn" data-pet-id="${profile.id}">Qr Generation</button>
               <button class="inviteFriends-btn" data-pet-id="${profile.id}">Invite Friends</button>
             `;   
     const communityChatBtn = createCommunityChatButton(profile.id);
@@ -947,6 +948,138 @@ function showShareFallback(message) {
   document.body.appendChild(shareContainer);
   shareContainer.querySelector('input').select();
 }
+//==================
+// savedProfilePDF()
+//====================
+/**
+ * Generates a clean one-page PDF of pet profile
+ * @param {string} petId - ID of pet to save
+ */
+async function saveProfilePDF(petId) {
+  // 1. Load pet data
+  const profile = await loadPetProfile(petId); // Your existing data loader
+  if (!profile) {
+    showNotification('error', 'Profile not found');
+    return;
+  }
+
+  // 2. Create PDF container
+  const pdfContainer = document.createElement('div');
+  pdfContainer.className = 'pdf-container';
+  pdfContainer.style.cssText = `
+    position: fixed;
+    left: -9999px;
+    width: 210mm; /* A4 width */
+    padding: 15mm;
+    background: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  `;
+
+  // 3. Build PDF content (using your perfect layout)
+  pdfContainer.innerHTML = `
+    <div class="pet-card-frame">
+      <div class="pet-header">
+        <h2>${escapeHtml(profile.petName) || 'Pet Profile'}</h2>
+        ${profile.petPhoto ? `
+          <img src="${profile.petPhoto}" 
+               class="pet-photo" 
+               crossorigin="anonymous"
+               onerror="this.style.display='none'">
+        ` : ''}
+      </div>
+
+      <div class="pet-details">
+        ${buildDetailRow('Breed', profile.breed)}
+        ${buildDetailRow('Age', profile.age)}
+        ${buildDetailRow('Microchip', profile.microchip?.id)}
+        ${buildDetailRow('Emergency Contact', 
+           formatEmergencyContact(profile.emergencyContacts?.[0]))}
+        <!-- Add other fields as needed -->
+      </div>
+
+      ${profile.shareableUrl ? `
+        <div class="qr-section">
+          <div id="qrcode"></div>
+          <p class="share-link">${profile.shareableUrl}</p>
+        </div>
+      ` : ''}
+    </div>
+  `;
+
+  // 4. Add to DOM and load dependencies
+  document.body.appendChild(pdfContainer);
+  await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+  await loadScript('https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js');
+
+  try {
+    // 5. Generate QR code if URL exists
+    if (profile.shareableUrl) {
+      new QRCode(pdfContainer.querySelector('#qrcode'), {
+        text: profile.shareableUrl,
+        width: 100,
+        height: 100,
+        colorDark: "#000000",
+        colorLight: "#ffffff"
+      });
+    }
+
+    // 6. Create PDF
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    });
+
+    // 7. Convert to canvas and add to PDF
+    const canvas = await html2canvas(pdfContainer, {
+      scale: 2,
+      logging: false,
+      useCORS: true,
+      allowTaint: true
+    });
+
+    doc.addImage(canvas, 'PNG', 0, 0, 210, 297); // A4 dimensions
+    doc.save(`${cleanFilename(profile.petName)}_Profile.pdf`);
+    showNotification('success', 'PDF saved successfully!');
+
+  } catch (error) {
+    showNotification('error', `Failed to generate PDF: ${error.message}`);
+  } finally {
+    pdfContainer.remove();
+  }
+}
+
+// Helper functions
+function buildDetailRow(label, value) {
+  return value ? `<p><strong>${label}:</strong> ${escapeHtml(value)}</p>` : '';
+}
+
+function formatEmergencyContact(contact) {
+  if (!contact) return '';
+  return [contact.name, contact.relationship, contact.phone]
+    .filter(Boolean).join(' - ');
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function cleanFilename(name) {
+  return (name || 'pet').replace(/[^a-z0-9]/gi, '_').substring(0, 50);
+}
+
+function loadScript(url) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = url;
+    script.onload = resolve;
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+}
 
 //=========================
 // Join Pet Community ()
@@ -1007,6 +1140,7 @@ async function getPetProfile(petId) {
   const localProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
   return localProfiles.find(p => p.id === petId) || {};
 }
+
 //=========================
 // Join Pet Community
 //=========================
@@ -1391,6 +1525,9 @@ DOM.savedProfilesList?.addEventListener('click', (e) => {
   else if (btn.classList.contains('delete-btn')) {
     if (confirm('Delete this profile?')) deletePetProfile(petId);
   }
+ else if (btn.classList.contains('savePDF-btn')) {
+  if (petId) saveProfilePDF(petId);
+ }
  else if (btn.classList.contains('details-btn')) {
   if (petId) {
     const profiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
