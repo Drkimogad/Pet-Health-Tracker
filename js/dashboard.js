@@ -952,6 +952,8 @@ function showShareFallback(message) {
 // savedProfilePDF()
 //====================
 async function saveProfilePDF(petId) {
+
+    try {
   // 1. CHECK PROFILE DATA FIRST (LIKE OTHER FUNCTIONS)
   const profile = window.petProfiles.find(p => p.id === petId);
   if (!profile) {
