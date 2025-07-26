@@ -274,11 +274,20 @@ function disableUI() {
     </h1>
   `;
 }
+//=================================
 // Showsuccessnotification
+//=================================
+// Keep existing success function (unchanged)
 function showSuccessNotification(message) {
   showErrorToUser(message, true);
 }
-window.showSuccessNotification = showSuccessNotification; //added recently
+window.showSuccessNotification = showSuccessNotification;
+
+// Fix error function (only corrected syntax)
+function showErrorNotification(message) {
+  showErrorToUser(message, false); // Removed stray 'isSuccess'
+}
+window.showErrorNotification = showErrorNotification;
 
 // Firebase accessors (optional to move)
 function getAuth() {
