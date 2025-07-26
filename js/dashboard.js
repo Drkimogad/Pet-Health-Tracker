@@ -1622,35 +1622,7 @@ DOM.savedProfilesList?.addEventListener('click', (e) => {
   }
   else if (btn.classList.contains('delete-btn')) {
     if (confirm('Delete this profile?')) deletePetProfile(petId);
-  }
- // In your event delegation handler:
-else if (btn.classList.contains('savePDF-btn')) {
-  if (!petId) {
-    showNotification('error', 'No pet ID found');
-    return;
-  }
-
-  // Visual feedback
-  btn.disabled = true;
-  const originalText = btn.textContent;
-  btn.innerHTML = '<span class="pdf-loader-btn"></span> Saving...';
-
-  // Handle async without making parent function async
-  saveProfilePDF(petId)
-  .then(() => {
-    showSuccessNotification('PDF saved successfully!', true); // Success
-  })
-  .catch((error) => {
-    showErrorNotification('Failed to save PDF: ' + error.message, false); // Error
-    console.error('PDF Save Error:', error);
-  })
-  .finally(() => {
-    if (btn && document.body.contains(btn)) {
-      btn.disabled = false;
-      btn.textContent = originalText;
-    }
-  });
-    
+ }   
  else if (btn.classList.contains('details-btn')) {
   if (petId) {
     const profiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
@@ -1667,6 +1639,36 @@ else if (btn.classList.contains('inviteFriends-btn')) {
   }
 });
 
+// ======== PDF SAVE BUTTON HANDLER ADDED RECENTLY ========
+DOM.savedProfilesList?.addEventListener('click', (e) => {
+  const btn = e.target?.closest('.savePDF-btn');
+  if (!btn) return; // Exit if not our button
+  
+  const petId = btn.dataset.petId;
+  if (!petId) {
+    showNotification('error', 'No pet ID found');
+    return;
+  }
+
+  // Visual feedback
+  btn.disabled = true;
+  const originalText = btn.textContent;
+  btn.innerHTML = '<span class="pdf-loader-btn"></span> Saving...';
+
+  saveProfilePDF(petId)
+    .then(() => showSuccessNotification('PDF saved successfully!', true))
+    .catch((error) => {
+      showErrorNotification('Failed to save PDF: ' + error.message, false);
+      console.error('PDF Save Error:', error);
+    })
+    .finally(() => {
+      if (btn?.isConnected) { // More modern check than document.body.contains
+        btn.disabled = false;
+        btn.textContent = originalText;
+      }
+    });
+});
+    
 // Add this to catch handled errors 
 window.onerror = (msg, url, line) => {
   alert(`Error: ${msg}\nLine: ${line}`);
