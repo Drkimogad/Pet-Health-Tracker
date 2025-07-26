@@ -951,27 +951,20 @@ function showShareFallback(message) {
 //==================
 // savedProfilePDF()
 //====================
-async function saveProfilePDF(petId) {  
- const loader = document.createElement('div');
-  loader.className = 'loader pdf-loader';
-  document.body.appendChild(loader);
-    
-  try {    
-    // 1. Try to load from Firestore if available
-    if (firebase.auth().currentUser) {
-      const pets = await loadPets();
-      profile = pets.find(p => p.id === petId);
-    }    
-    // 2. Fallback to localStorage
-    if (!profile) {
-      const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-      profile = savedProfiles.find(p => p.id === petId);
-    }
+async function saveProfilePDF(petId) {
+  // 1. CHECK PROFILE DATA FIRST (LIKE OTHER FUNCTIONS)
+  const profile = window.petProfiles.find(p => p.id === petId);
+  if (!profile) {
+    alert("Pet data not loaded. Try again in 2 seconds.");
+    return;
+  }
 
-    if (!profile) {
-      showErrorToUser("Profile not found");
-      return;
-    }
+  // 2. CHECK DOM (LIKE EXPORT FUNCTION)
+  const petCard = document.querySelector(`[data-pet-id="${petId}"]`);
+  if (!petCard) {
+    alert("Card not rendered. Wait or refresh.");
+    return;
+  }
 
     // 2. CLONE + SANITIZE (KEEP ONLY WHAT'S DISPLAYED)
     const pdfContainer = document.createElement('div');
