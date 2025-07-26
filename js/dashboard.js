@@ -957,60 +957,45 @@ async function saveProfilePDF(petId) {
   document.body.appendChild(loader);
 
   try {
-    // 1. Find the EXACT pet card (with error fallback)
+    // 1. DIRECTLY USE VISIBLE PET CARD
     const petCard = document.querySelector(`[data-pet-id="${petId}"]`);
-    if (!petCard) {
-      throw new Error('Pet card not found in DOM');
-    }
+    if (!petCard) throw new Error("Pet card not found - please refresh the page");
 
-    // 2. Create PDF container with SAFE cloning
+    // 2. CLONE VISIBLE CONTENT (no data dependencies)
     const pdfContainer = document.createElement('div');
     pdfContainer.className = 'pdf-container';
     pdfContainer.style.cssText = `
       position: absolute;
       left: -9999px;
       width: 210mm;
-      min-height: 100%;
-      padding: 15mm;
       background: white;
+      padding: 15mm;
       box-sizing: border-box;
-      overflow: visible !important;
     `;
 
-    // 3. DEEP CLONE with styles
     const cardClone = petCard.cloneNode(true);
     
-    // Remove interactive elements
-    cardClone.querySelectorAll('button, a').forEach(el => el.remove());
-    
-    // Force visible state
-    cardClone.style.opacity = '1';
-    cardClone.style.display = 'block';
-    
+    // Cleanup clone
+    cardClone.querySelectorAll('button, [onclick]').forEach(el => el.remove());
+    cardClone.style.width = '100%';
+    cardClone.style.margin = '0';
+
     pdfContainer.appendChild(cardClone);
     document.body.appendChild(pdfContainer);
 
-    // 4. SAFE dependency loading
+    // 3. LOAD DEPENDENCIES
     await Promise.all([
       loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'),
       loadScript('https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js')
     ]);
 
-    // 5. ERROR-PROOF rendering
+    // 4. RENDER TO PDF
     const canvas = await html2canvas(pdfContainer, {
       scale: 2,
-      logging: true,
       useCORS: true,
-      allowTaint: true,
-      onclone: (clonedDoc) => {
-        // Ensure cloned elements are visible
-        clonedDoc.querySelectorAll('img').forEach(img => {
-          img.style.display = 'block';
-        });
-      }
+      logging: true // Enable to debug rendering issues
     });
 
-    // 6. Generate PDF
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({
       orientation: 'portrait',
@@ -1020,25 +1005,21 @@ async function saveProfilePDF(petId) {
 
     doc.addImage(canvas, 'PNG', 0, 0, 210, 297);
     
-    // SAFE filename extraction
-    const petName = cardClone.querySelector('.pet-name')?.textContent || 'pet';
-    doc.save(`${cleanFilename(petName)}_Profile.pdf`);
+    // Get name from visible element or fallback
+    const petName = petCard.querySelector('.pet-name')?.textContent || 'pet_profile';
+    doc.save(`${cleanFilename(petName)}.pdf`);
 
   } catch (error) {
-    console.error('PDF Generation Failed:', error);
-    showErrorNotification(
-      'error',
-      typeof error.message === 'string' 
-        ? error.message.replace('Error:', '').trim()
-        : 'PDF generation failed. Please try again.'
+    console.error('PDF Error:', error);
+    showErrorNotification('error', 
+      error.message.includes('not found') 
+        ? "Couldn't find pet details. Refresh and try again."
+        : "PDF generation failed. Try again later."
     );
   } finally {
-    // GUARANTEED cleanup
     loader.remove();
     const pdfContainer = document.querySelector('.pdf-container');
-    if (pdfContainer?.isConnected) {
-      pdfContainer.remove();
-    }
+    if (pdfContainer) pdfContainer.remove();
   }
 }
 
