@@ -952,26 +952,26 @@ function showShareFallback(message) {
 // savedProfilePDF()
 //====================
 async function saveProfilePDF(petId) {  
-  const loader = document.createElement('div');
+ const loader = document.createElement('div');
   loader.className = 'loader pdf-loader';
   document.body.appendChild(loader);
+    
+  try {    
+    // 1. Try to load from Firestore if available
+    if (firebase.auth().currentUser) {
+      const pets = await loadPets();
+      profile = pets.find(p => p.id === petId);
+    }    
+    // 2. Fallback to localStorage
+    if (!profile) {
+      const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+      profile = savedProfiles.find(p => p.id === petId);
+    }
 
-//  try {
-    // 1. 🔁 Ensure pet cards are rendered before proceeding
-  //  let petCard = document.querySelector(`li.pet-card[data-pet-id="${petId}"]`);
-  // if (!petCard) {
- //    await loadPets(); // Ensure DOM is populated
-  //   petCard = document.querySelector(`li.pet-card[data-pet-id="${petId}"]`);
-//  }
-
-//if (!petCard) throw new Error("Pet card still missing. Refresh and retry.");
-  try {
-  const profile = window.petProfiles.find(p => p.id === petId);
-  await loadPets(); // Ensure DOM is populated
-  if (!profile) {
-    alert("Pet data not loaded yet. Try again later.");
-    return;
-  }
+    if (!profile) {
+      showErrorToUser("Profile not found");
+      return;
+    }
 
     // 2. CLONE + SANITIZE (KEEP ONLY WHAT'S DISPLAYED)
     const pdfContainer = document.createElement('div');
