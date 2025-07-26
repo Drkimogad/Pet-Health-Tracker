@@ -957,85 +957,53 @@ async function saveProfilePDF(petId) {
   document.body.appendChild(loader);
 
   try {
-    // 1. DIRECTLY SELECT THE PET CARD CONTAINER
-    const petCard = document.querySelector(`.pet-card[data-pet-id="${petId}"]`);
-    if (!petCard) throw new Error("Pet card not found - please refresh the page");
+    // 1. GRAB THE *VISIBLE* PET CARD (LIKE IN loadSavedPetProfile)
+    const petCard = document.querySelector(`li.pet-card[data-pet-id="${petId}"]`);
+    if (!petCard) throw new Error("Pet card missing. Refresh and retry.");
 
-    // 2. CREATE DEDICATED PDF CONTAINER
+    // 2. CLONE + SANITIZE (KEEP ONLY WHAT'S DISPLAYED)
     const pdfContainer = document.createElement('div');
     pdfContainer.className = 'pdf-export-container';
     pdfContainer.style.cssText = `
       position: absolute;
       left: -9999px;
       width: 210mm;
-      min-height: 297mm;
       background: white;
       padding: 15mm;
-      box-sizing: border-box;
     `;
 
-    // 3. DEEP CLONE WITH ALL CHILD ELEMENTS
     const cardClone = petCard.cloneNode(true);
-    
-    // Remove interactive elements
+    // REMOVE INTERACTIVE ELEMENTS (KEEP STYLING)
     cardClone.querySelectorAll('button, [onclick]').forEach(el => el.remove());
-    
-    // Force visible state
-    cardClone.style.display = 'block';
-    cardClone.style.opacity = '1';
-    cardClone.style.visibility = 'visible';
-    cardClone.style.width = '100%';
-
     pdfContainer.appendChild(cardClone);
     document.body.appendChild(pdfContainer);
 
-    // 4. WAIT FOR LAYOUT STABILIZATION
-    await new Promise(resolve => setTimeout(resolve, 300));
+    // 3. FORCE VISIBLE RENDERING
+    await new Promise(resolve => setTimeout(resolve, 500)); // Wait for fonts/images
 
-    // 5. RENDER WITH PROPER OPTIONS
+    // 4. CAPTURE EXACT LAYOUT (AS DISPLAYED)
     const canvas = await html2canvas(pdfContainer, {
       scale: 2,
       useCORS: true,
-      logging: true,
-      allowTaint: true,
-      backgroundColor: '#ffffff',
-      onclone: (clonedDoc) => {
-        // Ensure all elements are visible in clone
-        clonedDoc.querySelectorAll('*').forEach(el => {
-          el.style.display = '';
-          el.style.visibility = '';
-        });
-      }
+      logging: false,
+      backgroundColor: '#FFFFFF',
+      ignoreElements: (el) => el.classList.contains('hidden') // SKIP HIDDEN PARTS
     });
 
+    // 5. GENERATE PDF (A4 PORTRAIT)
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({
-      orientation: 'portrait',
-      unit: 'mm',
-      format: 'a4'
-    });
-
-    // Calculate proper dimensions
-    const imgProps = doc.getImageProperties(canvas);
-    const pdfWidth = doc.internal.pageSize.getWidth();
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-    
-    doc.addImage(canvas, 'PNG', 0, 0, pdfWidth, pdfHeight);
-    
-    // Generate filename
-    const petName = petCard.querySelector('.pet-header h3')?.textContent || 'pet_profile';
-    doc.save(`${petName.replace(/[^a-z0-9]/gi, '_')}.pdf`);
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    doc.addImage(canvas, 'PNG', 0, 0, 210, 297);
+    doc.save(`PetCard_${petId}.pdf`);
 
   } catch (error) {
-    console.error('PDF Error:', error);
-    alert(`PDF generation failed: ${error.message}`);
+    console.error("PDF FAILED:", error);
+    alert("PDF export failed. Ensure the pet card is fully loaded.");
   } finally {
     loader.remove();
-    const pdfContainer = document.querySelector('.pdf-export-container');
-    if (pdfContainer) pdfContainer.remove();
+    document.querySelector('.pdf-export-container')?.remove();
   }
 }
-
 
 // Helper functions remain the same as previous example
 
