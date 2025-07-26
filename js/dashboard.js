@@ -1619,9 +1619,29 @@ DOM.savedProfilesList?.addEventListener('click', (e) => {
   else if (btn.classList.contains('delete-btn')) {
     if (confirm('Delete this profile?')) deletePetProfile(petId);
   }
- else if (btn.classList.contains('savePDF-btn')) {
-  if (petId) saveProfilePDF(petId);
- }
+ // In your event delegation handler:
+else if (btn.classList.contains('savePDF-btn')) {
+  const petId = btn.dataset.petId;
+  if (!petId) {
+    showNotification('error', 'No pet ID found');
+    return;
+  }
+  
+  // Add visual feedback
+  btn.disabled = true;
+  const originalText = btn.textContent;
+  btn.innerHTML = '<span class="pdf-loader-btn"></span> Saving...';
+  
+  try {
+    await saveProfilePDF(petId);
+  } catch (error) {
+    showNotification('error', 'Failed to save PDF');
+    console.error('PDF Save Error:', error);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = originalText;
+  }
+}
  else if (btn.classList.contains('details-btn')) {
   if (petId) {
     const profiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
