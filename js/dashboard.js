@@ -1136,9 +1136,13 @@ async function saveProfilePDF(petId) {
   } catch (error) {
     showNotification('error', `PDF failed: ${error.message}`);
     console.error('PDF Generation Error:', error);
+  
   } finally {
-    loader.remove();
-    document.querySelector('.pdf-container')?.remove();
+  // Always clean up DOM elements
+  loader.remove();
+  const pdfContainer = document.querySelector('.pdf-container');
+  if (pdfContainer && document.body.contains(pdfContainer)) {
+    pdfContainer.remove();
   }
 }
 
@@ -1633,17 +1637,20 @@ else if (btn.classList.contains('savePDF-btn')) {
 
   // Handle async without making parent function async
   saveProfilePDF(petId)
-    .then(() => {
+  .then(() => {
+    showNotification('PDF saved successfully!', true); // Success
+  })
+  .catch((error) => {
+    showNotification('Failed to save PDF: ' + error.message, false); // Error
+    console.error('PDF Save Error:', error);
+  })
+  .finally(() => {
+    if (btn && document.body.contains(btn)) {
       btn.disabled = false;
       btn.textContent = originalText;
-    })
-    .catch((error) => {
-      showNotification('error', 'Failed to save PDF');
-      console.error('PDF Save Error:', error);
-      btn.disabled = false;
-      btn.textContent = originalText;
-    });
-}
+    }
+  });
+}    
  else if (btn.classList.contains('details-btn')) {
   if (petId) {
     const profiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
