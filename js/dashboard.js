@@ -970,15 +970,20 @@ async function saveProfilePDF(petId) {
     const pdfContainer = document.createElement('div');
     pdfContainer.className = 'pdf-container';
     pdfContainer.style.cssText = `
-      position: fixed;
-      left: -9999px;
-      width: 210mm;
-      height: 297mm;
-      padding: 15mm;
-      background: white;
+        position: absolute;
+       left: -9999px;
+       width: 210mm; /* A4 width */
+       min-height: 100%; /* Flexible height */
+       padding: 15mm;
+       background: white;
       box-sizing: border-box;
+      overflow: visible !important; /* Allows content to expand */
+      z-index: 9999; /* Ensures proper rendering */
     `;
-
+      
+   // Critical for font rendering ADDED RECENTLY
+   pdfContainer.setAttribute('data-html2canvas-ignore', 'false');
+      
     // Build complete profile layout
     pdfContainer.innerHTML = `
       <div class="pet-profile-frame">
