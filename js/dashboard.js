@@ -952,19 +952,26 @@ function showShareFallback(message) {
 // savedProfilePDF()
 //====================
 async function saveProfilePDF(petId) {
+    
+  const profile = window.petProfiles.find(p => p.id === petId);
+  if (!profile) {
+    alert("Pet data not loaded yet. Try again later.");
+    return;
+  }
+    
   const loader = document.createElement('div');
   loader.className = 'loader pdf-loader';
   document.body.appendChild(loader);
 
-  try {
+//  try {
     // 1. 🔁 Ensure pet cards are rendered before proceeding
-    let petCard = document.querySelector(`li.pet-card[data-pet-id="${petId}"]`);
-   if (!petCard) {
-     await loadPets(); // Ensure DOM is populated
-     petCard = document.querySelector(`li.pet-card[data-pet-id="${petId}"]`);
-  }
+  //  let petCard = document.querySelector(`li.pet-card[data-pet-id="${petId}"]`);
+  // if (!petCard) {
+ //    await loadPets(); // Ensure DOM is populated
+  //   petCard = document.querySelector(`li.pet-card[data-pet-id="${petId}"]`);
+//  }
 
-if (!petCard) throw new Error("Pet card still missing. Refresh and retry.");
+//if (!petCard) throw new Error("Pet card still missing. Refresh and retry.");
 
 
     // 2. CLONE + SANITIZE (KEEP ONLY WHAT'S DISPLAYED)
