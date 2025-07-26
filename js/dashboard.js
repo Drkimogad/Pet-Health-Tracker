@@ -952,78 +952,170 @@ function showShareFallback(message) {
 // savedProfilePDF()
 //====================
 /**
- * Generates a clean one-page PDF of pet profile
+ * Generates a professional PDF of pet profile with loader
  * @param {string} petId - ID of pet to save
  */
 async function saveProfilePDF(petId) {
-  // 1. Load pet data
-  const profile = await loadPetProfile(petId); // Your existing data loader
-  if (!profile) {
-    showNotification('error', 'Profile not found');
-    return;
-  }
-
-  // 2. Create PDF container
-  const pdfContainer = document.createElement('div');
-  pdfContainer.className = 'pdf-container';
-  pdfContainer.style.cssText = `
-    position: fixed;
-    left: -9999px;
-    width: 210mm; /* A4 width */
-    padding: 15mm;
-    background: white;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  `;
-
-  // 3. Build PDF content (using your perfect layout)
-  pdfContainer.innerHTML = `
-    <div class="pet-card-frame">
-      <div class="pet-header">
-        <h2>${escapeHtml(profile.petName) || 'Pet Profile'}</h2>
-        ${profile.petPhoto ? `
-          <img src="${profile.petPhoto}" 
-               class="pet-photo" 
-               crossorigin="anonymous"
-               onerror="this.style.display='none'">
-        ` : ''}
-      </div>
-
-      <div class="pet-details">
-        ${buildDetailRow('Breed', profile.breed)}
-        ${buildDetailRow('Age', profile.age)}
-        ${buildDetailRow('Microchip', profile.microchip?.id)}
-        ${buildDetailRow('Emergency Contact', 
-           formatEmergencyContact(profile.emergencyContacts?.[0]))}
-        <!-- Add other fields as needed -->
-      </div>
-
-      ${profile.shareableUrl ? `
-        <div class="qr-section">
-          <div id="qrcode"></div>
-          <p class="share-link">${profile.shareableUrl}</p>
-        </div>
-      ` : ''}
-    </div>
-  `;
-
-  // 4. Add to DOM and load dependencies
-  document.body.appendChild(pdfContainer);
-  await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
-  await loadScript('https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js');
+  // Show loader (using your existing CSS classes)
+  const loader = document.createElement('div');
+  loader.className = 'loader pdf-loader'; // Added pdf-loader for specificity
+  document.body.appendChild(loader);
 
   try {
-    // 5. Generate QR code if URL exists
+    // Load data
+    const profile = await loadPetProfile(petId);
+    if (!profile) throw new Error('Profile not found');
+
+    // Create PDF container
+    const pdfContainer = document.createElement('div');
+    pdfContainer.className = 'pdf-container';
+    pdfContainer.style.cssText = `
+      position: fixed;
+      left: -9999px;
+      width: 210mm;
+      height: 297mm;
+      padding: 15mm;
+      background: white;
+      box-sizing: border-box;
+    `;
+
+    // Build complete profile layout
+    pdfContainer.innerHTML = `
+      <div class="pet-profile-frame">
+        <div class="pet-profile-header">
+          <h2>${escapeHtml(profile.petName || 'Pet Profile')}</h2>
+          ${profile.petPhoto ? `
+            <img src="${profile.petPhoto}" 
+                 class="pet-profile-photo" 
+                 crossorigin="anonymous"
+                 onerror="this.style.display='none'">
+          ` : ''}
+        </div>
+
+    <div class="pet-profile-details">
+  <!-- Basic Info -->
+  <div class="detail-row">
+    <span class="detail-label">Breed:</span>
+    <span class="detail-value">${escapeHtml(profile.breed || 'N/A')}</span>
+  </div>
+  
+  <div class="detail-row">
+    <span class="detail-label">Age:</span>
+    <span class="detail-value">${escapeHtml(profile.age || 'N/A')}</span>
+  </div>
+  
+  <div class="detail-row">
+    <span class="detail-label">Weight:</span>
+    <span class="detail-value">${escapeHtml(profile.weight || 'N/A')}</span>
+  </div>
+  
+  <div class="detail-row">
+    <span class="detail-label">Type:</span>
+    <span class="detail-value">${escapeHtml(profile.type || 'N/A')}</span>
+  </div>
+  
+  <div class="detail-row">
+    <span class="detail-label">Gender:</span>
+    <span class="detail-value">${escapeHtml(profile.gender || 'N/A')}</span>
+  </div>
+  
+  <!-- Health Info -->
+  <div class="detail-row">
+    <span class="detail-label">Mood:</span>
+    <span class="detail-value">${escapeHtml(profile.mood || 'N/A')}</span>
+  </div>
+  
+  <div class="detail-row">
+    <span class="detail-label">Microchip ID:</span>
+    <span class="detail-value">${escapeHtml(profile.microchip?.id || 'N/A')}</span>
+  </div>
+  
+  <div class="detail-row">
+    <span class="detail-label">Microchip Date:</span>
+    <span class="detail-value">${escapeHtml(profile.microchip?.date || 'N/A')}</span>
+  </div>
+  
+  <div class="detail-row">
+    <span class="detail-label">Microchip Vendor:</span>
+    <span class="detail-value">${escapeHtml(profile.microchip?.vendor || 'N/A')}</span>
+  </div>
+  
+  <div class="detail-row">
+    <span class="detail-label">Allergies:</span>
+    <span class="detail-value">${escapeHtml(profile.allergies || 'None')}</span>
+  </div>
+  
+  <div class="detail-row">
+    <span class="detail-label">Medical History:</span>
+    <span class="detail-value">${escapeHtml(profile.medicalHistory || 'None')}</span>
+  </div>
+  
+  <div class="detail-row">
+    <span class="detail-label">Diet Plan:</span>
+    <span class="detail-value">${escapeHtml(profile.dietPlan || 'N/A')}</span>
+  </div>
+  
+  <!-- Emergency Contact -->
+  ${profile.emergencyContacts?.[0] ? `
+    <div class="detail-row">
+      <span class="detail-label">Emergency Contact:</span>
+      <span class="detail-value">
+        ${escapeHtml(profile.emergencyContacts[0].name || 'N/A')}
+        ${profile.emergencyContacts[0].relationship ? `(${escapeHtml(profile.emergencyContacts[0].relationship)})` : ''}
+        ${profile.emergencyContacts[0].phone ? `- ${escapeHtml(profile.emergencyContacts[0].phone)}` : ''}
+      </span>
+    </div>
+  ` : ''}
+  
+  <!-- Reminders -->
+  <div class="detail-row">
+    <span class="detail-label">Vaccinations Due:</span>
+    <span class="detail-value">${escapeHtml(profile.reminders?.vaccinations || 'None')}</span>
+  </div>
+  
+  <div class="detail-row">
+    <span class="detail-label">Checkups Due:</span>
+    <span class="detail-value">${escapeHtml(profile.reminders?.checkups || 'None')}</span>
+  </div>
+  
+  <div class="detail-row">
+    <span class="detail-label">Grooming Due:</span>
+    <span class="detail-value">${escapeHtml(profile.reminders?.grooming || 'None')}</span>
+  </div>
+</div>
+
+        ${profile.shareableUrl ? `
+          <div class="pet-profile-qr">
+            <div id="pdf-qrcode"></div>
+            <a href="${profile.shareableUrl}" class="pet-profile-link">
+              ${profile.shareableUrl}
+            </a>
+          </div>
+        ` : ''}
+      </div>
+    `;
+
+    document.body.appendChild(pdfContainer);
+
+    // Load dependencies
+    await Promise.all([
+      loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'),
+      loadScript('https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js')
+    ]);
+
+    // Generate QR code
     if (profile.shareableUrl) {
-      new QRCode(pdfContainer.querySelector('#qrcode'), {
+      new QRCode(pdfContainer.querySelector('#pdf-qrcode'), {
         text: profile.shareableUrl,
-        width: 100,
-        height: 100,
+        width: 120,
+        height: 120,
         colorDark: "#000000",
-        colorLight: "#ffffff"
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
       });
     }
 
-    // 6. Create PDF
+    // Create PDF
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({
       orientation: 'portrait',
@@ -1031,24 +1123,26 @@ async function saveProfilePDF(petId) {
       format: 'a4'
     });
 
-    // 7. Convert to canvas and add to PDF
     const canvas = await html2canvas(pdfContainer, {
       scale: 2,
       logging: false,
-      useCORS: true,
-      allowTaint: true
+      useCORS: true
     });
 
-    doc.addImage(canvas, 'PNG', 0, 0, 210, 297); // A4 dimensions
+    doc.addImage(canvas, 'PNG', 0, 0, 210, 297);
     doc.save(`${cleanFilename(profile.petName)}_Profile.pdf`);
     showNotification('success', 'PDF saved successfully!');
 
   } catch (error) {
-    showNotification('error', `Failed to generate PDF: ${error.message}`);
+    showNotification('error', `PDF failed: ${error.message}`);
+    console.error('PDF Generation Error:', error);
   } finally {
-    pdfContainer.remove();
+    loader.remove();
+    document.querySelector('.pdf-container')?.remove();
   }
 }
+
+// Helper functions remain the same as previous example
 
 // Helper functions
 function buildDetailRow(label, value) {
