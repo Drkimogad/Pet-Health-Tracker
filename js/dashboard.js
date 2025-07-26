@@ -1650,7 +1650,7 @@ else if (btn.classList.contains('savePDF-btn')) {
       btn.textContent = originalText;
     }
   });
-}    
+    
  else if (btn.classList.contains('details-btn')) {
   if (petId) {
     const profiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
