@@ -963,7 +963,7 @@ async function saveProfilePDF(petId) {
 
   try {
     // Load data
-    const profile = await loadPetProfile(petId);
+    const profile = await loadPets();
     if (!profile) throw new Error('Profile not found');
 
     // Create PDF container
