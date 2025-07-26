@@ -951,14 +951,7 @@ function showShareFallback(message) {
 //==================
 // savedProfilePDF()
 //====================
-async function saveProfilePDF(petId) {
-    
-  const profile = window.petProfiles.find(p => p.id === petId);
-  if (!profile) {
-    alert("Pet data not loaded yet. Try again later.");
-    return;
-  }
-    
+async function saveProfilePDF(petId) {  
   const loader = document.createElement('div');
   loader.className = 'loader pdf-loader';
   document.body.appendChild(loader);
@@ -972,7 +965,13 @@ async function saveProfilePDF(petId) {
 //  }
 
 //if (!petCard) throw new Error("Pet card still missing. Refresh and retry.");
-
+  try {
+  const profile = window.petProfiles.find(p => p.id === petId);
+  await loadPets(); // Ensure DOM is populated
+  if (!profile) {
+    alert("Pet data not loaded yet. Try again later.");
+    return;
+  }
 
     // 2. CLONE + SANITIZE (KEEP ONLY WHAT'S DISPLAYED)
     const pdfContainer = document.createElement('div');
