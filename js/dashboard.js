@@ -957,43 +957,55 @@ async function saveProfilePDF(petId) {
   document.body.appendChild(loader);
 
   try {
-    // 1. DIRECTLY USE VISIBLE PET CARD
-    const petCard = document.querySelector(`[data-pet-id="${petId}"]`);
+    // 1. DIRECTLY SELECT THE PET CARD CONTAINER
+    const petCard = document.querySelector(`.pet-card[data-pet-id="${petId}"]`);
     if (!petCard) throw new Error("Pet card not found - please refresh the page");
 
-    // 2. CLONE VISIBLE CONTENT (no data dependencies)
+    // 2. CREATE DEDICATED PDF CONTAINER
     const pdfContainer = document.createElement('div');
-    pdfContainer.className = 'pdf-container';
+    pdfContainer.className = 'pdf-export-container';
     pdfContainer.style.cssText = `
       position: absolute;
       left: -9999px;
       width: 210mm;
+      min-height: 297mm;
       background: white;
       padding: 15mm;
       box-sizing: border-box;
     `;
 
+    // 3. DEEP CLONE WITH ALL CHILD ELEMENTS
     const cardClone = petCard.cloneNode(true);
     
-    // Cleanup clone
+    // Remove interactive elements
     cardClone.querySelectorAll('button, [onclick]').forEach(el => el.remove());
+    
+    // Force visible state
+    cardClone.style.display = 'block';
+    cardClone.style.opacity = '1';
+    cardClone.style.visibility = 'visible';
     cardClone.style.width = '100%';
-    cardClone.style.margin = '0';
 
     pdfContainer.appendChild(cardClone);
     document.body.appendChild(pdfContainer);
 
-    // 3. LOAD DEPENDENCIES
-    await Promise.all([
-      loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'),
-      loadScript('https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js')
-    ]);
+    // 4. WAIT FOR LAYOUT STABILIZATION
+    await new Promise(resolve => setTimeout(resolve, 300));
 
-    // 4. RENDER TO PDF
+    // 5. RENDER WITH PROPER OPTIONS
     const canvas = await html2canvas(pdfContainer, {
       scale: 2,
       useCORS: true,
-      logging: true // Enable to debug rendering issues
+      logging: true,
+      allowTaint: true,
+      backgroundColor: '#ffffff',
+      onclone: (clonedDoc) => {
+        // Ensure all elements are visible in clone
+        clonedDoc.querySelectorAll('*').forEach(el => {
+          el.style.display = '';
+          el.style.visibility = '';
+        });
+      }
     });
 
     const { jsPDF } = window.jspdf;
@@ -1003,22 +1015,23 @@ async function saveProfilePDF(petId) {
       format: 'a4'
     });
 
-    doc.addImage(canvas, 'PNG', 0, 0, 210, 297);
+    // Calculate proper dimensions
+    const imgProps = doc.getImageProperties(canvas);
+    const pdfWidth = doc.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
     
-    // Get name from visible element or fallback
-    const petName = petCard.querySelector('.pet-name')?.textContent || 'pet_profile';
-    doc.save(`${cleanFilename(petName)}.pdf`);
+    doc.addImage(canvas, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    
+    // Generate filename
+    const petName = petCard.querySelector('.pet-header h3')?.textContent || 'pet_profile';
+    doc.save(`${petName.replace(/[^a-z0-9]/gi, '_')}.pdf`);
 
   } catch (error) {
     console.error('PDF Error:', error);
-    showErrorNotification('error', 
-      error.message.includes('not found') 
-        ? "Couldn't find pet details. Refresh and try again."
-        : "PDF generation failed. Try again later."
-    );
+    alert(`PDF generation failed: ${error.message}`);
   } finally {
     loader.remove();
-    const pdfContainer = document.querySelector('.pdf-container');
+    const pdfContainer = document.querySelector('.pdf-export-container');
     if (pdfContainer) pdfContainer.remove();
   }
 }
