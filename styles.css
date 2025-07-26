@@ -740,11 +740,28 @@ body.modal-active {
   100% { transform: rotate(360deg); }
 }
 
-/* ======PDF Container Styles =======*/
-/* PDF Specific Styles */
+/* ======PDF function Styles =======*/
+/* Loader Styles (using existing loader in my css) */
 .pdf-loader {
   /* Inherits all .loader styles */
   border-top-color: #4CAF50; /* Green instead of blue */
+}
+.pdf-loader-btn {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid var(--qr-blue);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* Disabled state */
+.savePDF-btn[disabled] {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 .pdf-container {
@@ -811,8 +828,6 @@ body.modal-active {
   display: block;
   margin-top: 10px;
 }
-
-/* Loader Styles (using existing loader) */
 
 /* ========== COMMUNITY CHAT MODAL ========== */
 /*  community chat button styling*/
