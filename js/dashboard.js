@@ -1003,7 +1003,8 @@ if (!petCard) throw new Error("Pet card still missing. Refresh and retry.");
     doc.save(`PetCard_${petId}.pdf`);
 
   } catch (error) {
-    console.error("PDF FAILED:", error);
+    console.error("📄 PDF FAILED:", error?.message || error);
+    console.error("🧠 Full stack:", error?.stack || error);
     alert("PDF export failed. Ensure the pet card is fully loaded.");
   } finally {
     loader.remove();
