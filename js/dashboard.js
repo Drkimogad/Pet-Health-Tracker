@@ -952,6 +952,12 @@ function showShareFallback(message) {
 // savedProfilePDF()
 //====================
 async function saveProfilePDF(petId) {
+    // Add auth check
+  const user = auth.currentUser;
+  if (!user) {
+    showErrorNotification('error', 'Please sign in to generate PDFs');
+    return;
+  }
   // Show loader
   const loader = document.createElement('div');
   loader.className = 'loader pdf-loader';
@@ -994,8 +1000,8 @@ async function saveProfilePDF(petId) {
 
     // Load dependencies
     await Promise.all([
-      loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'),
-      loadScript('https://cdn.jsdelivr.net/npm/qrcode@1.5.1/qrcode.min.js')
+    loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'),
+    loadScript('https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js') // ← Working alternative
     ]);
 
     // Create PDF
@@ -1015,17 +1021,29 @@ async function saveProfilePDF(petId) {
     doc.addImage(canvas, 'PNG', 0, 0, 210, 297);
     doc.save(`${cleanFilename(petCard.querySelector('.pet-name')?.textContent || 'pet')}_Profile.pdf`);
     showSuccessNotification('success', 'PDF saved successfully!');
-
-  } catch (error) {
-    showErrorNotification('error', `PDF failed: ${error.message}`);
-    console.error('PDF Generation Error:', error);
-  } finally {
-    loader.remove();
-    const pdfContainer = document.querySelector('.pdf-container');
-    if (pdfContainer?.isConnected) {
-      pdfContainer.remove();
-    }
+} catch (error) {
+  console.error('Full PDF error:', error);
+  
+  // User-friendly error messages
+  let errorMessage;
+  if (error.message.includes('Script load failed')) {
+    errorMessage = 'Failed to load PDF tools. Please refresh and try again.';
+  } else if (error.message.includes('Profile not found')) {
+    errorMessage = 'Pet profile data missing. Please check your data.';
+  } else {
+    errorMessage = `PDF failed: ${error.message.replace('Firebase: ', '')}`;
   }
+
+  showErrorNotification('error', errorMessage); 
+
+} finally {
+  // Cleanup - unchanged from your version
+  loader.remove();
+  const pdfContainer = document.querySelector('.pdf-container');
+  if (pdfContainer?.isConnected) {
+    pdfContainer.remove();
+  }
+ }
 }
 
 // Helper functions remain the same as previous example
@@ -1056,8 +1074,35 @@ function loadScript(url) {
     const script = document.createElement('script');
     script.src = url;
     script.onload = resolve;
-    script.onerror = reject;
+    script.onerror = () => {
+      console.error(`Failed to load script: ${url}`);
+      reject(new Error(`Script load failed: ${url}`));
+    };
     document.head.appendChild(script);
+  });
+}
+
+// fallbck option, retry mechanism
+function loadScriptWithRetry(url, maxRetries = 2, delayMs = 1000) {
+  return new Promise((resolve, reject) => {
+    let retries = 0;
+    
+    const attempt = () => {
+      const script = document.createElement('script');
+      script.src = url;
+      script.onload = resolve;
+      script.onerror = () => {
+        if (retries++ < maxRetries) {
+          console.warn(`Retry ${retries}/${maxRetries} for ${url}`);
+          setTimeout(attempt, delayMs);
+        } else {
+          reject(new Error(`Failed to load script after ${maxRetries} attempts: ${url}`));
+        }
+      };
+      document.head.appendChild(script);
+    };
+    
+    attempt();
   });
 }
 
