@@ -952,21 +952,26 @@ function showShareFallback(message) {
 // savedProfilePDF()
 //====================
 async function saveProfilePDF(petId) {
+  const loader = document.querySelector('.pdf-loader') || document.createElement('div');
+  loader.className = 'loader pdf-loader';
+  document.body.appendChild(loader);
 
-    try {
-  // 1. CHECK PROFILE DATA FIRST (LIKE OTHER FUNCTIONS)
-  const profile = window.petProfiles.find(p => p.id === petId);
-  if (!profile) {
-    alert("Pet data not loaded. Try again in 2 seconds.");
-    return;
-  }
-
-  // 2. CHECK DOM (LIKE EXPORT FUNCTION)
-  const petCard = document.querySelector(`[data-pet-id="${petId}"]`);
-  if (!petCard) {
-    alert("Card not rendered. Wait or refresh.");
-    return;
-  }
+  try {
+    // 1. WAIT FOR CARD TO EXIST (5-second timeout)
+    let petCard;
+    await new Promise((resolve, reject) => {
+      const interval = setInterval(() => {
+        petCard = document.querySelector(`[data-pet-id="${petId}"]`);
+        if (petCard) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 100);
+      setTimeout(() => {
+        clearInterval(interval);
+        reject(new Error("Card never loaded"));
+      }, 5000);
+    });
 
     // 2. CLONE + SANITIZE (KEEP ONLY WHAT'S DISPLAYED)
     const pdfContainer = document.createElement('div');
