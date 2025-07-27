@@ -517,6 +517,7 @@ const emergencyContact = profile.emergencyContacts?.[0] || {};
 
     <div class="modal-actions">
       <button class="close-btn" onclick="hideModal()">❌️ Close Card</button>
+      <button class="pdf-btn">💾 Save as PDF</button>
     </div>
   `;
     
@@ -525,20 +526,80 @@ console.log("👀 Attempting to unhide modal overlay...");
   // ✅ Inject modal into DOM
   showModal(detailsHtml);
     
-// ✅ Simplified version - add this after showModal(detailsHtml)
+// ✅ Simplified settime out - add this after showModal(detailsHtml)
 setTimeout(() => {
   const modal = document.querySelector('.modal-content');
   const photo = modal?.querySelector('.detail-photo');
   
-  // Optional: Log for debugging
   console.log("🖼️ Modal ready. Photo loaded:", photo?.complete); 
   
-  // Only keep image loading if needed for other logic
-  const waitForImage = () => photo && !photo.complete ? 
-    new Promise(resolve => { photo.onload = photo.onerror = resolve; }) : 
-    Promise.resolve();
-    
-}, 50);
+  // Refactored PDF saving logic specifically for the modal
+  async function saveModalAsPDF() {
+    const loader = document.createElement('div');
+    loader.className = 'loader pdf-loader';
+    document.body.appendChild(loader);
+
+    try {
+      // 1. Wait for modal to be fully rendered
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      // 2. Clone and sanitize modal content
+      const pdfContainer = document.createElement('div');
+      pdfContainer.className = 'pdf-export-container';
+      pdfContainer.style.cssText = `
+        position: absolute;
+        left: -9999px;
+        width: 210mm;
+        background: white;
+        padding: 15mm;
+      `;
+
+      const modalClone = modal.cloneNode(true);
+      // Remove interactive elements
+      modalClone.querySelectorAll('button, [onclick]').forEach(el => el.remove());
+      pdfContainer.appendChild(modalClone);
+      document.body.appendChild(pdfContainer);
+
+      // 3. Wait for final rendering
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      // 4. Capture as image
+      const canvas = await html2canvas(pdfContainer, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#FFFFFF'
+      });
+
+      // 5. Generate PDF
+      if (!window.jspdf) {
+        await loadScriptWithRetry('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+      }
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      doc.addImage(canvas, 'PNG', 0, 0, 210, 297);
+      doc.save(`PetProfile_${new Date().getTime()}.pdf`);
+
+    } catch (error) {
+      console.error("PDF generation failed:", error);
+      alert("Could not generate PDF. Please try again.");
+    } finally {
+      loader.remove();
+      document.querySelector('.pdf-export-container')?.remove();
+    }
+  }
+
+  // Make the function available globally
+  window.saveModalAsPDF = saveModalAsPDF;
+
+  // Update the PDF button to use our new function
+  const pdfBtn = modal?.querySelector('.pdf-btn');
+  if (pdfBtn) {
+    pdfBtn.onclick = saveModalAsPDF;
+  }
+
+}, 50); // closes settime out
 } // Closes showdetails()
 
 //=========================================
