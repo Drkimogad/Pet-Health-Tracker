@@ -1010,7 +1010,8 @@ async function saveProfilePDF(petId) {
 
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-    doc.addImage(canvas, 'PNG', 0, 0, 210, 297);
+    const pdfHeight = (imgProps.height * 210) / imgProps.width; // declare the height then add it under
+    doc.addImage(canvas, 'PNG', 0, 0, 210, pdfHeight);
      doc.save(`PetCard_${petId}.pdf`);
 
   } catch (error) {
