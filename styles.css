@@ -720,6 +720,10 @@ body.modal-active {
   background-color: var(--mustard, #fbc02d);
   color: black;
 }
+.pdf-btn {
+  background-color: var(--mustard, #fbc02d);
+  color: black;
+}
 
 /* ===== ERROR STATES ===== */
 .error-message {
@@ -740,93 +744,117 @@ body.modal-active {
   100% { transform: rotate(360deg); }
 }
 
-/* ======PDF function Styles =======*/
-/* Loader Styles (using existing loader in my css) */
+/* ====== PDF Export Specific Styles ======= */
+@media print, screen and (width: 210mm) {
+  /* PDF Container - Isolated from main UI */
+  .pdf-export-container {
+    width: 210mm !important;
+    height: 297mm !important;
+    padding: 15mm !important;
+    margin: 0 !important;
+    background: white !important;
+    font-family: Arial, sans-serif !important;
+    color: #333 !important;
+    line-height: 1.6 !important;
+    box-shadow: none !important;
+  }
+
+  /* Hide interactive elements */
+  .pdf-export-container button,
+  .pdf-export-container [onclick] {
+    display: none !important;
+  }
+
+  /* Pet Profile Frame */
+  .pdf-export-container .pet-profile-frame {
+    border: 1px solid #e0e0e0 !important;
+    border-radius: 8px !important;
+    padding: 20px !important;
+    height: auto !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Header & Photo */
+  .pdf-export-container .pet-profile-header {
+    text-align: center !important;
+    margin-bottom: 20px !important;
+  }
+
+  .pdf-export-container .pet-profile-photo {
+    max-width: 150px !important;
+    max-height: 150px !important;
+    border-radius: 8px !important;
+    margin: 10px auto !important;
+    display: block !important;
+  }
+
+  /* Details Section */
+  .pdf-export-container .pet-profile-details {
+    margin: 20px 0 !important;
+    border-top: 1px solid #eee !important;
+    border-bottom: 1px solid #eee !important;
+    padding: 15px 0 !important;
+    page-break-inside: avoid !important;
+  }
+
+  .pdf-export-container .detail-row {
+    display: flex !important;
+    margin: 10px 0 !important;
+    page-break-inside: avoid !important;
+  }
+
+  .pdf-export-container .detail-label {
+    font-weight: 600 !important;
+    width: 160px !important;
+    color: #555 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .pdf-export-container .detail-value {
+    flex: 1 !important;
+    word-break: break-word !important;
+  }
+
+  /* QR Code Section */
+  .pdf-export-container .pet-profile-qr {
+    text-align: center !important;
+    margin-top: 30px !important;
+    page-break-before: always !important;
+  }
+
+  .pdf-export-container .pet-profile-link {
+    word-break: break-all !important;
+    font-size: 12px !important;
+    color: #2c3e50 !important;
+    display: block !important;
+    margin-top: 10px !important;
+  }
+}
+
+/* Loader Styles (PDF-specific) */
 .pdf-loader {
-  /* Inherits all .loader styles */
-  border-top-color: #4CAF50; /* Green instead of blue */
+  border-top-color: #4CAF50 !important; /* Green instead of blue */
+  position: fixed !important;
+  z-index: 10000 !important;
 }
+
 .pdf-loader-btn {
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  border: 2px solid #f3f3f3;
-  border-top: 2px solid var(--qr-blue);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-right: 8px;
-  vertical-align: middle;
+  display: inline-block !important;
+  width: 16px !important;
+  height: 16px !important;
+  border: 2px solid #f3f3f3 !important;
+  border-top: 2px solid var(--qr-blue) !important;
+  border-radius: 50% !important;
+  animation: spin 1s linear infinite !important;
+  margin-right: 8px !important;
+  vertical-align: middle !important;
 }
 
-/* Disabled state */
+/* Disabled State for PDF Button */
 .savePDF-btn[disabled] {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.pdf-container {
-  font-family: Arial, sans-serif;
-  color: #333;
-  line-height: 1.6;
-}
-
-.pet-profile-frame {
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 20px;
-  height: calc(297mm - 30mm); /* Account for padding */
-}
-
-.pet-profile-header {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.pet-profile-photo {
-  max-width: 150px;
-  max-height: 150px;
-  border-radius: 8px;
-  margin: 10px auto;
-  display: block;
-}
-
-/* Details Section */
-.pet-profile-details {
-  margin: 20px 0;
-  border-top: 1px solid #eee;
-  border-bottom: 1px solid #eee;
-  padding: 15px 0;
-}
-
-.detail-row {
-  display: flex;
-  margin: 10px 0;
-  align-items: flex-start;
-}
-
-.detail-label {
-  font-weight: 600;
-  width: 160px;
-  color: #555;
-  flex-shrink: 0;
-}
-
-.detail-value {
-  flex: 1;
-  word-break: break-word;
-}
-
-.pet-profile-qr {
-  text-align: center;
-  margin-top: 30px;
-}
-
-.pet-profile-link {
-  word-break: break-all;
-  font-size: 12px;
-  color: #2c3e50;
-  display: block;
-  margin-top: 10px;
+  opacity: 0.7 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
 }
 
 /* ========== COMMUNITY CHAT MODAL ========== */
