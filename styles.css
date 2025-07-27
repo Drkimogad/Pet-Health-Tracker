@@ -746,112 +746,92 @@ body.modal-active {
 
 /* ====== PDF Export Specific Styles ======= */
 @media print, screen and (width: 210mm) {
-  /* PDF Container - Isolated from main UI */
+  /* Root PDF Container */
   .pdf-export-container {
-    width: 210mm !important;
-    height: 297mm !important;
-    padding: 15mm !important;
-    margin: 0 !important;
-    background: white !important;
-    font-family: Arial, sans-serif !important;
-    font-stretch: normal !important;
-    letter-spacing: normal !important;
-    color: #333 !important;
-    line-height: 1.4 !important;
-    box-shadow: none !important;
-  }
-  /* Text rendering optimization */
-  .pdf-export-container {
-    text-rendering: geometricPrecision !important;
-    -webkit-font-smoothing: antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
-  /* Hide interactive elements */
-  .pdf-export-container button,
-  .pdf-export-container [onclick] {
-    display: none !important;
-  }
-
-  /* Pet Profile Frame */
-  .pdf-export-container .pet-profile-frame {
-    border: 1px solid #e0e0e0 !important;
-    border-radius: 8px !important;
-    padding: 20px !important;
+    width: 190mm !important; /* Reduced from 210mm for safe margins */
     height: auto !important;
-    page-break-inside: avoid !important;
+    min-height: 277mm !important; /* Reduced from 297mm */
+    padding: 10mm 15mm !important; /* More balanced padding */
+    margin: 0 auto !important;
+    background: white !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
   }
-/* Reminders section fix */
-  .pdf-export-container .section-break + div {
-    display: block !important;
-    width: 100% !important;
-    page-break-inside: avoid !important;
-    margin-bottom: 8px !important;
+
+  /* Font Restoration */
+  .pdf-export-container * {
+    font-family: "Arial Narrow", Arial, sans-serif !important;
+    font-stretch: condensed !important;
+    letter-spacing: 0.01em !important;
+    line-height: 1.35 !important;
+    text-rendering: optimizeLegibility !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
-  /* Force full width content */
+
+  /* Content Structure */
+  .pdf-export-container .pet-profile-frame {
+    border: none !important;
+    padding: 5mm !important;
+    height: auto !important;
+    break-inside: avoid !important;
+  }
+
+  /* Grid Layout Fix */
+  .pdf-export-container .details-grid {
+    grid-template-columns: 1fr 1fr !important; /* Restored 2-column */
+    gap: 0.5rem 1.5rem !important;
+    font-size: 95% !important;
+  }
+
+  /* Section Spacing */
   .pdf-export-container .section-break {
-    grid-column: 1 !important;
-    margin-top: 1.2rem !important;
-    padding-bottom: 0.5rem !important;
-    border-bottom: 1px solid #eee !important;
+    grid-column: 1 / -1 !important;
+    margin: 1.5rem 0 0.5rem !important;
+    padding-bottom: 0.25rem !important;
+    border-bottom: 1px solid #ddd !important;
   }
-  /* Header & Photo */
-  .pdf-export-container .pet-profile-header {
+
+  /* QR Code Section (Added) */
+  .pdf-export-container .qr-code-container {
+    page-break-before: avoid !important;
+    margin: 1.5rem auto !important;
     text-align: center !important;
-    margin-bottom: 20px !important;
+    width: 60mm !important;
+    height: 60mm !important;
+    padding: 3mm !important;
+    border: 1px solid #eee !important;
   }
 
-  .pdf-export-container .pet-profile-photo {
-    max-width: 150px !important;
-    max-height: 150px !important;
-    border-radius: 8px !important;
-    margin: 10px auto !important;
-    display: block !important;
-  }
-
-  /* Details Section */
-  .pdf-export-container .pet-profile-details {
-    margin: 20px 0 !important;
-    border-top: 1px solid #eee !important;
-    border-bottom: 1px solid #eee !important;
-    padding: 15px 0 !important;
-    page-break-inside: avoid !important;
-  }
-
+  /* Field Preservation */
   .pdf-export-container .detail-row {
     display: flex !important;
-    margin: 10px 0 !important;
-    page-break-inside: avoid !important;
+    margin: 0.35rem 0 !important;
+    align-items: baseline !important;
   }
- /* Grid layout adjustment */
-  .pdf-export-container .details-grid {
-    grid-template-columns: 1fr !important;
-    gap: 0.3rem !important;
-  }
+
   .pdf-export-container .detail-label {
-    font-weight: 600 !important;
-    width: 160px !important;
-    color: #555 !important;
+    width: 45% !important; /* Adjusted for better fit */
     flex-shrink: 0 !important;
   }
 
   .pdf-export-container .detail-value {
-    flex: 1 !important;
-    word-break: break-word !important;
+    width: 55% !important;
   }
 
-  /* QR Code Section */
-  .pdf-export-container .pet-profile-qr {
-    text-align: center !important;
-    margin-top: 30px !important;
-    page-break-before: always !important;
+  /* Photo Scaling */
+  .pdf-export-container .pet-profile-photo {
+    max-width: 120px !important;
+    max-height: 120px !important;
+    margin: 5px auto 15px !important;
   }
+}
 
-  .pdf-export-container .pet-profile-link {
-    word-break: break-all !important;
-    font-size: 12px !important;
-    color: #2c3e50 !important;
-    display: block !important;
-    margin-top: 10px !important;
-  }
+/* Print-specific adjustments */
+@page {
+  size: A4 portrait;
+  margin: 15mm 10mm;
+  marks: crop;
 }
 
 /* Loader Styles (PDF-specific) */
