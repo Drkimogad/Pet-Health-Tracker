@@ -754,11 +754,17 @@ body.modal-active {
     margin: 0 !important;
     background: white !important;
     font-family: Arial, sans-serif !important;
+    font-stretch: normal !important;
+    letter-spacing: normal !important;
     color: #333 !important;
-    line-height: 1.6 !important;
+    line-height: 1.4 !important;
     box-shadow: none !important;
   }
-
+  /* Text rendering optimization */
+  .pdf-export-container {
+    text-rendering: geometricPrecision !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
   /* Hide interactive elements */
   .pdf-export-container button,
   .pdf-export-container [onclick] {
@@ -773,7 +779,20 @@ body.modal-active {
     height: auto !important;
     page-break-inside: avoid !important;
   }
-
+/* Reminders section fix */
+  .pdf-export-container .section-break + div {
+    display: block !important;
+    width: 100% !important;
+    page-break-inside: avoid !important;
+    margin-bottom: 8px !important;
+  }
+  /* Force full width content */
+  .pdf-export-container .section-break {
+    grid-column: 1 !important;
+    margin-top: 1.2rem !important;
+    padding-bottom: 0.5rem !important;
+    border-bottom: 1px solid #eee !important;
+  }
   /* Header & Photo */
   .pdf-export-container .pet-profile-header {
     text-align: center !important;
@@ -802,7 +821,11 @@ body.modal-active {
     margin: 10px 0 !important;
     page-break-inside: avoid !important;
   }
-
+ /* Grid layout adjustment */
+  .pdf-export-container .details-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.3rem !important;
+  }
   .pdf-export-container .detail-label {
     font-weight: 600 !important;
     width: 160px !important;
