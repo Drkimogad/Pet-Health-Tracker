@@ -563,6 +563,19 @@ setTimeout(() => {
       // 3. Wait for final rendering
       await new Promise(resolve => setTimeout(resolve, 500));
 
+
+      // Force full rendering
+    await new Promise(resolve => {
+     const checkRender = () => {
+      if (document.querySelector('.pdf-export-container .section-break:last-child')?.offsetHeight > 0) {
+      resolve();
+       } else {
+        requestAnimationFrame(checkRender);
+      }
+     };
+      checkRender();
+     });
+        
       // 4. Capture as image
       const canvas = await html2canvas(pdfContainer, {
         scale: 2,
