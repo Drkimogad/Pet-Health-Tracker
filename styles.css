@@ -746,79 +746,36 @@ body.modal-active {
 
 /* ====== PDF Export Specific Styles ======= */
 @media print, screen and (width: 210mm) {
-  /* Root PDF Container */
   .pdf-export-container {
-    width: 190mm !important; /* Reduced from 210mm for safe margins */
+    transform: scale(0.85) !important; /* ADJUST THIS VALUE (0.8-1.0) */
+    transform-origin: top left !important;
+    width: 210mm !important;
     height: auto !important;
-    min-height: 277mm !important; /* Reduced from 297mm */
-    padding: 10mm 15mm !important; /* More balanced padding */
-    margin: 0 auto !important;
+    padding: 5mm !important;
+    margin: 0 !important;
     background: white !important;
-    box-sizing: border-box !important;
     overflow: visible !important;
   }
 
-  /* Font Restoration */
+  /* Basic content preservation */
   .pdf-export-container * {
-    font-family: "Arial Narrow", Arial, sans-serif !important;
-    font-stretch: condensed !important;
-    letter-spacing: 0.01em !important;
-    line-height: 1.35 !important;
-    text-rendering: optimizeLegibility !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-
-  /* Content Structure */
-  .pdf-export-container .pet-profile-frame {
-    border: none !important;
-    padding: 5mm !important;
-    height: auto !important;
+    font-family: Arial, sans-serif !important;
+    line-height: 1.3 !important;
     break-inside: avoid !important;
   }
 
-  /* Grid Layout Fix */
+  /* Field containers */
   .pdf-export-container .details-grid {
-    grid-template-columns: 1fr 1fr !important; /* Restored 2-column */
-    gap: 0.5rem 1.5rem !important;
-    font-size: 95% !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.5rem !important;
   }
+}
 
-  /* Section Spacing */
-  .pdf-export-container .section-break {
-    grid-column: 1 / -1 !important;
-    margin: 1.5rem 0 0.5rem !important;
-    padding-bottom: 0.25rem !important;
-    border-bottom: 1px solid #ddd !important;
-  }
-
-  /* QR Code Section (Added) */
-  .pdf-export-container .qr-code-container {
-    page-break-before: avoid !important;
-    margin: 1.5rem auto !important;
-    text-align: center !important;
-    width: 60mm !important;
-    height: 60mm !important;
-    padding: 3mm !important;
-    border: 1px solid #eee !important;
-  }
-
-  /* Field Preservation */
-  .pdf-export-container .detail-row {
-    display: flex !important;
-    margin: 0.35rem 0 !important;
-    align-items: baseline !important;
-  }
-
-  .pdf-export-container .detail-label {
-    width: 45% !important; /* Adjusted for better fit */
-    flex-shrink: 0 !important;
-  }
-
-  .pdf-export-container .detail-value {
-    width: 55% !important;
-  }
-
+@page {
+  size: A4 portrait;
+  margin: 10mm;
+}
   /* Photo Scaling */
   .pdf-export-container .pet-profile-photo {
     max-width: 120px !important;
