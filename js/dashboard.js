@@ -582,7 +582,7 @@ await Promise.race([
         
       // 4. Capture as image
       const canvas = await html2canvas(pdfContainer, {
-        scale: 2,
+        scale: 1,
         useCORS: true,
         logging: false,
         backgroundColor: '#FFFFFF'
