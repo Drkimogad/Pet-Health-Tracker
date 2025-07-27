@@ -1,15 +1,3 @@
-//===========================================
-//Global scope or utils.js
-// Put this at the VERY TOP of your utils.js
-window.hideModal = function() {
-  const overlay = document.getElementById('modal-overlay');
-  if (overlay) {
-    overlay.classList.remove('active');
-    document.body.classList.remove('modal-active');
-    setTimeout(() => overlay.remove(), 300);
-  }
-};
-
 //🔄 Updated uploadToCloudinary()
 //==============================================
 async function uploadToCloudinary(file, userId, petProfileId) {
@@ -97,7 +85,7 @@ function validateReminder(reminderData) {
 }
 
 //=====================
-//  Modal Utilities, MODAL IS NOT STATIC HTML fixed version
+//  Modal Utilities with PDF Support. MODAL IS NOT STATIC HTML!
 //==========================
 // 0. Add this if missing (ensure it's defined before showModal)
 function trapFocus(modal) {
@@ -120,37 +108,146 @@ function trapFocus(modal) {
     }
   });
 }
+
+window.hideModal = function() {
+  const overlay = document.getElementById('modal-overlay');
+  if (overlay) {
+    overlay.classList.remove('active');
+    document.body.classList.remove('modal-active');
+    setTimeout(() => overlay.remove(), 300);
+  }
+};
+
 function showModal(content) {
-  // 1. Remove existing modal (keep this)
+  // 1. Remove existing modal
   const oldModal = document.getElementById('modal-overlay');
   if (oldModal) oldModal.remove();
 
-  // 2. Create modal (keep this)
+  // 2. Create modal
   const overlay = document.createElement('div');
   overlay.id = 'modal-overlay';
   overlay.className = 'modal-overlay';
   
-  // 3. Simplify innerHTML (remove action button references)
+  // 3. Create modal content with close button
   overlay.innerHTML = `
     <div class="modal-content" id="pet-modal">
-      <button class="close-modal">&times;</button>
+      <button class="close-modal" aria-label="Close modal">&times;</button>
       ${content}
     </div>
   `;
 
-  // 4. Add to DOM (keep this)
+  // 4. Add to DOM
   document.body.appendChild(overlay);
   document.body.classList.add('modal-active');
 
-  // 5. Simplified event binding (remove redundant onclick)
+  // 5. Event binding
   overlay.querySelector('.close-modal').onclick = hideModal;
   overlay.onclick = (e) => e.target === overlay && hideModal();
 
-  // 6. Activate (keep this)
+  // 6. Activate modal
   overlay.classList.add('active');
   trapFocus(overlay.querySelector('.modal-content'));
+
+  // 7. Initialize PDF support if html2canvas is available
+  if (typeof html2canvas !== 'undefined') {
+    setTimeout(() => {
+      const modalContent = overlay.querySelector('.modal-content');
+      if (modalContent) {
+        // Attach PDF handler to any existing PDF button
+        const pdfBtn = modalContent.querySelector('.pdf-btn');
+        if (pdfBtn) {
+          pdfBtn.onclick = () => generateModalPDF(modalContent);
+        }
+      }
+    }, 100);
+  }
 }
 
+// PDF Generation Utility (self-contained)
+async function generateModalPDF(modalElement) {
+  if (!modalElement) return;
+  
+  const loader = document.createElement('div');
+  loader.className = 'pdf-loader';
+  document.body.appendChild(loader);
+
+  try {
+    // 1. Create PDF container
+    const pdfContainer = document.createElement('div');
+    pdfContainer.className = 'pdf-export-container';
+    pdfContainer.style.cssText = `
+      position: absolute;
+      left: -9999px;
+      width: 210mm;
+      background: white;
+      padding: 15mm;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    `;
+
+    // 2. Clone and sanitize modal content
+    const modalClone = modalElement.cloneNode(true);
+    modalClone.querySelectorAll('button, [onclick]').forEach(el => el.remove());
+    pdfContainer.appendChild(modalClone);
+    document.body.appendChild(pdfContainer);
+
+    // 3. Wait for rendering
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    // 4. Generate PDF
+    const canvas = await html2canvas(pdfContainer, {
+      scale: 2,
+      useCORS: true,
+      logging: true,
+      backgroundColor: '#FFFFFF'
+    });
+
+    if (!window.jspdf) {
+      await loadScriptWithRetry('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ 
+      orientation: 'portrait', 
+      unit: 'mm', 
+      format: 'a4',
+      hotfixes: ['px_scaling'] 
+    });
+    
+    doc.addImage(canvas, 'PNG', 0, 0, 210, 297);
+    doc.save(`PetProfile_${new Date().toISOString().slice(0,10)}.pdf`);
+
+  } catch (error) {
+    console.error("PDF generation failed:", error);
+    alert("Could not generate PDF. Please ensure all content has loaded.");
+  } finally {
+    loader.remove();
+    document.querySelector('.pdf-export-container')?.remove();
+  }
+}
+
+// Helper function (keep existing implementation)
+function loadScriptWithRetry(url, maxRetries = 2, delayMs = 1000) {
+  return new Promise((resolve, reject) => {
+    let retries = 0;
+    
+    const attempt = () => {
+      const script = document.createElement('script');
+      script.src = url;
+      script.onload = resolve;
+      script.onerror = () => {
+        if (retries++ < maxRetries) {
+          console.warn(`Retry ${retries}/${maxRetries} for ${url}`);
+          setTimeout(attempt, delayMs);
+        } else {
+          reject(new Error(`Failed to load script after ${maxRetries} attempts: ${url}`));
+        }
+      };
+      document.head.appendChild(script);
+    };
+    
+    attempt();
+  });
+}
 //=================================
 // SW snippet 
 if ('serviceWorker' in navigator) {
