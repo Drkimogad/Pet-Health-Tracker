@@ -435,10 +435,9 @@ async function loadSavedPetProfile() {
      actionsDiv.innerHTML = `
               <button class="edit-btn" data-pet-id="${profile.id}">Edit Profile</button>
               <button class="delete-btn" data-pet-id="${profile.id}">Delete Profile</button>
-              <button class="details-btn" data-pet-id="${profile.id}">Petcard Details</button>
-              <button class="savePDF-btn" data-pet-id="${profile.id}">Save As PDF</button>
-              <button id="exportAll-btn" class="exportAll-btn">📤 Export All Cards</button>
-              <button class="qr-btn" data-pet-id="${profile.id}">Qr Generation</button>
+              <button class="details-btn" data-pet-id="${profile.id}">Profile Details</button>
+              <button id="exportAll-btn" class="exportAll-btn">📤 Save All Cards</button>
+              <button class="qr-btn" data-pet-id="${profile.id}">Generate Qr Code</button>
               <button class="inviteFriends-btn" data-pet-id="${profile.id}">Invite Friends</button>
             `;   
     const communityChatBtn = createCommunityChatButton(profile.id);
