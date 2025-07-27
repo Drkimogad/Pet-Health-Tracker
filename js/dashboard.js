@@ -519,11 +519,6 @@ const emergencyContact = profile.emergencyContacts?.[0] || {};
       <button class="close-btn" onclick="hideModal()">❌️ Close Card</button>
       <button class="pdf-btn">💾 Save as PDF</button>
     </div>
-     <!-- Add QR Code Here -->
-    <div class="qr-code-container">
-     <img src="[YOUR_QR_CODE_IMAGE_URL]" alt="Pet Profile QR Code">
-     <p class="pet-profile-link">[SHAREABLE_URL]</p>
-    </div>
   `;
     
 console.log("👀 Attempting to unhide modal overlay...");
