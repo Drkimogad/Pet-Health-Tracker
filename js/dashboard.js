@@ -1003,10 +1003,15 @@ async function saveProfilePDF(petId) {
     });
 
     // 5. GENERATE PDF (A4 PORTRAIT)
+   // ✅ Ensure jsPDF is available
+    if (!window.jspdf) {
+    await loadScriptWithRetry('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+     }
+
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     doc.addImage(canvas, 'PNG', 0, 0, 210, 297);
-    doc.save(`PetCard_${petId}.pdf`);
+     doc.save(`PetCard_${petId}.pdf`);
 
   } catch (error) {
     console.error("📄 PDF FAILED:", error?.message || error);
