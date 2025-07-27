@@ -564,17 +564,21 @@ setTimeout(() => {
       await new Promise(resolve => setTimeout(resolve, 500));
 
 
-      // Force full rendering
-    await new Promise(resolve => {
-     const checkRender = () => {
-      if (document.querySelector('.pdf-export-container .section-break:last-child')?.offsetHeight > 0) {
-      resolve();
-       } else {
+    // for more reliability Force full rendering with timeout fallback
+await Promise.race([
+  new Promise(resolve => {
+    const checkRender = () => {
+      const lastElement = document.querySelector('.pdf-export-container .section-break:last-child + div');
+      if (lastElement?.offsetHeight > 0) {
+        resolve();
+      } else {
         requestAnimationFrame(checkRender);
       }
-     };
-      checkRender();
-     });
+    };
+    checkRender();
+  }),
+  new Promise(resolve => setTimeout(resolve, 1000)) // Fallback after 1sec
+]);
         
       // 4. Capture as image
       const canvas = await html2canvas(pdfContainer, {
