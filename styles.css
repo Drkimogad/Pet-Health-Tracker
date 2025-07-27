@@ -750,13 +750,12 @@ body.modal-active {
   .pdf-export-container {
     width: 190mm !important;
     height: auto !important;
-    min-height: 277mm !important;
+    min-height: auto !important;
     padding: 5mm 10mm !important;
     margin: 0 auto !important;
     background: white !important;
     box-sizing: border-box !important;
     overflow: visible !important;
-    transform: none !important; /* Disables scaling */
   }
 
   /* Font & Text Baseline */
@@ -768,14 +767,16 @@ body.modal-active {
     color: #333 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+    display: block !important;
+    contain: none !important;
+    break-inside: avoid !important;
   }
 
   /* Adaptive Grid Layout */
   .pdf-export-container .details-grid {
     display: grid !important;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) !important;
-    gap: 0.5rem 1.5rem !important;
-    align-items: start !important;
+    grid-template-columns: 1fr !important; /* Single column */
+    gap: 0.3rem !important;
   }
 
   /* Section Headers */
@@ -788,23 +789,24 @@ body.modal-active {
     page-break-after: avoid !important;
   }
 
-  /* Field Rows */
+  /* Ensure fields render */
   .pdf-export-container .detail-row {
-    display: flex !important;
-    margin: 0.15rem 0 !important;
+    display: flex !important; /* ✅ Keep flex for alignment */
+    flex-wrap: wrap !important; /* Allows line breaks if needed */
+    min-height: 0 !important; /* Disables flex minimum height */
+    overflow: visible !important; /* Prevents clipping */
     page-break-inside: avoid !important;
+    margin: 0.1rem 0 !important; /* Tighter spacing */
   }
 
-  .pdf-export-container .detail-label {
-    min-width: 90px !important;
-    flex-shrink: 0 !important;
-    font-weight: 600 !important;
+    .pdf-export-container .detail-label {
+    flex: 0 0 90px !important; /* Fixed width, won't shrink */
     color: #555 !important;
   }
 
-  .pdf-export-container .detail-value {
+    .pdf-export-container .detail-value {
     flex: 1 !important;
-    word-break: break-word !important;
+    min-width: 0 !important; /* Allows text compression */
   }
 
   /* Media Elements */
