@@ -1389,16 +1389,19 @@ async function generateQRCode(petId) {
                 ${emergency.phone ? `- ${emergency.phone}` : ''}
               </p>
             ` : ''}
+            '<p><strong>Vaccinations:</strong> ' + escapeHTML(profile.reminders?.vaccinations || 'N/A') + '</p>' +
+            '<p><strong>Checkups:</strong> ' + escapeHTML(profile.reminders?.checkups || 'N/A') + '</p>' +
+            '<p><strong>Grooming:</strong> ' + escapeHTML(profile.reminders?.grooming || 'N/A') + '</p>' +
           </div>
-
+          
+          '<div class="share-link">' +
+          '<strong>Access full profile:</strong><br>' +
+          '<a href="https://drkimogad.github.io/Pet-Health-Tracker/" target="_blank">' +
+          'https://drkimogad.github.io/Pet-Health-Tracker/' +
+          '</a>' +
+          '</div>'
+        
           <div id="qrcode"></div>
-
-          ${profile.shareableUrl ? `
-            <div class="share-link">
-              <strong>Access full profile:</strong><br>
-              <a href="${profile.shareableUrl}" target="_blank">${profile.shareableUrl}</a>
-            </div>
-          ` : ''}
 
           <div class="actions">
             <button onclick="window.print()">Print</button>
@@ -1422,6 +1425,11 @@ async function generateQRCode(petId) {
     'Emergency Contact: ' + escapeHTML(emergency.name || 'N/A') + ' ' +
     (emergency.relationship ? '(' + escapeHTML(emergency.relationship) + ') ' : '') +
     (emergency.phone ? '- ' + escapeHTML(emergency.phone) : '') + '\\n\\n' +
+    'Vaccinations: ' + escapeHTML(profile.reminders?.vaccinations || 'N/A') + '\\n' +
+    'Checkups: ' + escapeHTML(profile.reminders?.checkups || 'N/A') + '\\n' +
+    'Grooming: ' + escapeHTML(profile.reminders?.grooming || 'N/A') + '\\n\\n' +
+    
+    '👉 Access profile: https://drkimogad.github.io/Pet-Health-Tracker/';
     '👉 Try our app: https://drkimogad.github.io/Pet-Health-Tracker/\\n' +
     '📧 Contact developer: dr_kimogad@yahoo.com';
 
