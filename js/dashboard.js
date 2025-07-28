@@ -1295,7 +1295,13 @@ async function generateQRCode(petId) {
       return;
     }
 
-    // 5. Build the layout with your requested structure
+// 🔐 SAFELY BUILD emergency contact HTML outside the template, sensitive area
+      // 📍Sensitive area: This prevents syntax errors inside your large string literal.
+const emergencyHTML = (emergency.name || emergency.phone)
+  ? `<p><strong>Emergency Contact:</strong> ${emergency.name || ''} ${emergency.relationship ? '(' + emergency.relationship + ')' : ''} ${emergency.phone ? '- ' + emergency.phone : ''}</p>`
+  : '';
+
+    // 5. then Build the layout with your desired structure
     qrWindow.document.write(`
       <!DOCTYPE html>
       <html>
@@ -1372,7 +1378,10 @@ async function generateQRCode(petId) {
             ${profile.allergies ? `<p><strong>Allergies:</strong> ${profile.allergies}</p>` : ''}
             ${profile.medicalHistory ? `<p><strong>Medical History:</strong> ${profile.medicalHistory}</p>` : ''}
             ${profile.dietPlan ? `<p><strong>Diet Plan:</strong> ${profile.dietPlan}</p>` : ''}
-            ${(emergency.name || emergency.phone) ? `<p><strong>Emergency Contact:</strong> ${emergency.name || ''} ${emergency.relationship ? '(' + emergency.relationship + ')' : ''} ${emergency.phone ? '- ' + emergency.phone : ''}</p>` : ''}
+            ${emergencyHTML}
+            <p><strong>Vaccinations:</strong> ${profile.reminders?.vaccinations || 'N/A'}</p>
+            <p><strong>Checkups:</strong> ${profile.reminders?.checkups || 'N/A'}</p>
+            <p><strong>Grooming:</strong> ${profile.reminders?.grooming || 'N/A'}</p>
           </div>
           
           <div id="qrcode"></div>
@@ -1400,6 +1409,10 @@ Diet Plan: ${profile.dietPlan || 'N/A'}
 Emergency Contact: ${emergency.name || 'N/A'} 
 ${emergency.relationship ? `(${emergency.relationship})` : ''} 
 ${emergency.phone ? `- ${emergency.phone}` : ''}
+      
+Vaccinations: ${profile.reminders?.vaccinations || 'N/A'}
+Checkups: ${profile.reminders?.checkups || 'N/A'}
+Grooming: ${profile.reminders?.grooming || 'N/A'}
 
 👉 Try our app: https://drkimogad.github.io/Pet-Health-Tracker/
 📧 Contact developer: dr_kimogad@yahoo.com
