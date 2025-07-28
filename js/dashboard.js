@@ -1395,30 +1395,27 @@ async function generateQRCode(petId) {
             <button onclick="downloadQR()">Download QR</button>
           </div>
 
-                    <script>
-  // Generate custom QR message with pet info
-  const qrMessage = `
-📋 Meet ${profile.petName || 'a lovely pet'}!
+<script>
+  // Build QR message safely with string concatenation
+  const qrMessage = 
+    '📋 Meet ' + escapeHTML(profile.petName || 'a lovely pet') + '!\\n\\n' +
+    'Breed: ' + escapeHTML(profile.breed || 'N/A') + '\\n' +
+    'Age: ' + escapeHTML(profile.age || 'N/A') + '\\n' +
+    'Weight: ' + escapeHTML(profile.weight || 'N/A') + '\\n' +
+    'Type: ' + escapeHTML(profile.type || 'N/A') + '\\n' +
+    'Gender: ' + escapeHTML(profile.gender || 'N/A') + '\\n' +
+    'Mood: ' + escapeHTML(profile.mood || 'N/A') + '\\n' +
+    'Microchip: ' + escapeHTML(profile.microchip?.id || 'N/A') + '\\n' +
+    'Allergies: ' + escapeHTML(profile.allergies || 'None') + '\\n' +
+    'Medical History: ' + escapeHTML(profile.medicalHistory || 'N/A') + '\\n' +
+    'Diet Plan: ' + escapeHTML(profile.dietPlan || 'N/A') + '\\n\\n' +
+    'Emergency Contact: ' + escapeHTML(emergency.name || 'N/A') + ' ' +
+    (emergency.relationship ? '(' + escapeHTML(emergency.relationship) + ') ' : '') +
+    (emergency.phone ? '- ' + escapeHTML(emergency.phone) : '') + '\\n\\n' +
+    '👉 Try our app: https://drkimogad.github.io/Pet-Health-Tracker/\\n' +
+    '📧 Contact developer: dr_kimogad@yahoo.com';
 
-Breed: ${profile.breed || 'N/A'}
-Age: ${profile.age || 'N/A'}
-Weight: ${profile.weight || 'N/A'}
-Type: ${profile.type || 'N/A'}
-Gender: ${profile.gender || 'N/A'}
-Mood: ${profile.mood || 'N/A'}
-Microchip: ${profile.microchip?.id || 'N/A'}
-Allergies: ${profile.allergies || 'None'}
-Medical History: ${profile.medicalHistory || 'N/A'}
-Diet Plan: ${profile.dietPlan || 'N/A'}
-
-Emergency Contact: ${emergency.name || 'N/A'} 
-${emergency.relationship ? `(${emergency.relationship})` : ''} 
-${emergency.phone ? `- ${emergency.phone}` : ''}
-
-👉 Try our app: https://drkimogad.github.io/Pet-Health-Tracker/
-📧 Contact developer: dr_kimogad@yahoo.com
-  `.trim();
-
+  // Initialize QR code
   new QRCode(document.getElementById("qrcode"), {
     text: qrMessage,
     width: 200,
@@ -1428,14 +1425,26 @@ ${emergency.phone ? `- ${emergency.phone}` : ''}
     correctLevel: QRCode.CorrectLevel.H
   });
 
+  // Download function
   function downloadQR() {
     const canvas = document.querySelector("#qrcode canvas");
     if (canvas) {
       const link = document.createElement("a");
-      link.download = "${safePetName}_QR.png";
+      link.download = "' + safePetName + '_QR.png";
       link.href = canvas.toDataURL("image/png");
       link.click();
     }
+  }
+
+  // Helper to escape special chars
+  function escapeHTML(str) {
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;")
+      .replace(/`/g, "&#096;");
   }
 </script>
 
