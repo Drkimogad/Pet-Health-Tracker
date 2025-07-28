@@ -1372,15 +1372,9 @@ async function generateQRCode(petId) {
             ${profile.allergies ? `<p><strong>Allergies:</strong> ${profile.allergies}</p>` : ''}
             ${profile.medicalHistory ? `<p><strong>Medical History:</strong> ${profile.medicalHistory}</p>` : ''}
             ${profile.dietPlan ? `<p><strong>Diet Plan:</strong> ${profile.dietPlan}</p>` : ''}
-            ${(emergency.name || emergency.phone) ? (
-            `<p><strong>Emergency Contact:</strong> 
-            ${emergency.name || ''} 
-            ${emergency.relationship ? '(' + emergency.relationship + ')' : ''} 
-            ${emergency.phone ? '- ' + emergency.phone : ''}
-            </p>`
-            ) : ''}
-
+            ${(emergency.name || emergency.phone) ? `<p><strong>Emergency Contact:</strong> ${emergency.name || ''} ${emergency.relationship ? '(' + emergency.relationship + ')' : ''} ${emergency.phone ? '- ' + emergency.phone : ''}</p>` : ''}
           </div>
+          
           <div id="qrcode"></div>
           <div class="actions">
             <button onclick="window.print()">Print</button>
