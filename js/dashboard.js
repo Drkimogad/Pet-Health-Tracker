@@ -1272,8 +1272,6 @@ async function openCommunityChatModal(petId) {
 //=======================================================
 //  QR CODE GENERATION BUTTON FUNCTION 
 //=================================================
-//  QR CODE GENERATION BUTTON FUNCTION 
-//=================================================
 async function generateQRCode(petId) {
   try {
     // 1. Load profile data
@@ -1381,12 +1379,9 @@ async function generateQRCode(petId) {
                 ${emergency.phone ? `- ${emergency.phone}` : ''}
               </p>
             ` : ''}
-            ${profile.reminders ? `
-        <p><strong>Vaccinations:</strong> ${profile.reminders.vaccinations || 'N/A'}</p>
-  <p><strong>Checkups:</strong> ${profile.reminders.checkups || 'N/A'}</p>
-  <p><strong>Grooming:</strong> ${profile.reminders.grooming || 'N/A'}</p>
-` : ''}
-
+            <p><strong>Vaccinations:</strong> ${profile.reminders?.vaccinations || 'N/A'}</p>
+            <p><strong>Checkups:</strong> ${profile.reminders?.checkups || 'N/A'}</p>
+            <p><strong>Grooming:</strong> ${profile.reminders?.grooming || 'N/A'}</p>
           </div>
 
           <div id="qrcode"></div>
