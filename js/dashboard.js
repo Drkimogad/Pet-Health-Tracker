@@ -1282,22 +1282,6 @@ async function generateQRCode(petId) {
       return;
     }
 
-      // After const profile = profiles.find(...)
-const remindersHTML = profile.reminders ? `
-  <p><strong>Vaccinations:</strong> ${escapeHTML(profile.reminders.vaccinations || 'N/A')}</p>
-  <p><strong>Checkups:</strong> ${escapeHTML(profile.reminders.checkups || 'N/A')}</p>
-  <p><strong>Grooming:</strong> ${escapeHTML(profile.reminders.grooming || 'N/A')}</p>
-` : '<p>No reminders found</p>';
-
-// Add this helper function (put it at the top of your file)
-function escapeHTML(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
     // 2. Get emergency contact
     const emergency = profile.emergencyContacts?.[0] || {};
 
@@ -1395,7 +1379,9 @@ function escapeHTML(str) {
                 ${emergency.phone ? `- ${emergency.phone}` : ''}
               </p>
             ` : ''}
-              ${remindersHTML}
+              <p><strong>Vaccinations:</strong> <span id="vaccinations">N/A</span></p>
+              <p><strong>Checkups:</strong> <span id="checkups">N/A</span></p>
+              <p><strong>Grooming:</strong> <span id="grooming">N/A</span></p>
           </div>
 
           <div id="qrcode"></div>
@@ -1454,7 +1440,15 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
         </body>
       </html>
     `);
-    qrWindow.document.close();
+// Set reminders safely through DOM (no template literal issues) before qrWindow.document.close();
+
+if (profile.reminders) {
+  qrWindow.document.getElementById('vaccinations').textContent = profile.reminders.vaccinations || 'N/A';
+  qrWindow.document.getElementById('checkups').textContent = profile.reminders.checkups || 'N/A';
+  qrWindow.document.getElementById('grooming').textContent = profile.reminders.grooming || 'N/A';
+} 
+      
+qrWindow.document.close();
 
   } catch (error) {
     console.error("QR generation failed:", error);
