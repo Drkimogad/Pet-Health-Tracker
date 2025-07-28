@@ -1389,18 +1389,18 @@ async function generateQRCode(petId) {
                 ${emergency.phone ? `- ${emergency.phone}` : ''}
               </p>
             ` : ''}
-            // After emergency contact in your document.write():
-'<p><strong>Vaccinations:</strong> ' + (profile.reminders?.vaccinations || 'N/A') + '</p>' +
-'<p><strong>Checkups:</strong> ' + (profile.reminders?.checkups || 'N/A') + '</p>' +
-'<p><strong>Grooming:</strong> ' + (profile.reminders?.grooming || 'N/A') + '</p>' +
+            
+'<p><strong>Vaccinations:</strong> ' + escapeHTML(profile.reminders?.vaccinations || 'N/A') + '</p>' +
+'<p><strong>Checkups:</strong> ' + escapeHTML(profile.reminders?.checkups || 'N/A') + '</p>' +
+'<p><strong>Grooming:</strong> ' + escapeHTML(profile.reminders?.grooming || 'N/A') + '</p>' +
 
 '<div id="qrcode"></div>' +
 
 '<div class="share-link">' +
-  '<strong>Access full profile:</strong><br>' +
-  '<a href="https://drkimogad.github.io/Pet-Health-Tracker/" target="_blank">' +
+  '<p><strong>Access full profile:</strong></p>' +
+  '<p><a href="https://drkimogad.github.io/Pet-Health-Tracker/" target="_blank">' +
     'https://drkimogad.github.io/Pet-Health-Tracker/' +
-  '</a>' +
+  '</a></p>' +
 '</div>' +
 
 '<div class="actions">' +
