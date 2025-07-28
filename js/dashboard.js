@@ -1272,6 +1272,16 @@ async function openCommunityChatModal(petId) {
 //=======================================================
 //  QR CODE GENERATION BUTTON FUNCTION 
 //=================================================
+  // Helper to escape special chars
+  function escapeHTML(str) {
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;")
+      .replace(/`/g, "&#096;");      
+ }
 async function generateQRCode(petId) {
   try {
     // 1. Load profile data
@@ -1435,20 +1445,8 @@ async function generateQRCode(petId) {
       link.click();
     }
   }
-
-  // Helper to escape special chars
-  function escapeHTML(str) {
-    return String(str)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;")
-      .replace(/`/g, "&#096;");
-  }
 </script>
-
-        </body>
+    </body>
       </html>
     `);
     qrWindow.document.close();
