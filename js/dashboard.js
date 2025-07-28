@@ -1298,7 +1298,9 @@ async function generateQRCode(petId) {
 // 🔐 SAFELY BUILD emergency contact HTML outside the template, sensitive area
       // 📍Sensitive area: This prevents syntax errors inside your large string literal.
 const emergencyHTML = (emergency.name || emergency.phone)
-  ? `<p><strong>Emergency Contact:</strong> ${emergency.name || ''} ${emergency.relationship ? '(' + emergency.relationship + ')' : ''} ${emergency.phone ? '- ' + emergency.phone : ''}</p>`
+  ? `<p><strong>Emergency Contact:</strong> ${emergency.name || ''} 
+  ${emergency.relationship ? '(' + emergency.relationship + ')' : ''} 
+  ${emergency.phone ? '- ' + emergency.phone : ''}</p>`
   : '';
     // Same for REMINDERS
   const remindersHTML = `
@@ -1387,7 +1389,7 @@ const emergencyHTML = (emergency.name || emergency.phone)
             ${profile.medicalHistory ? `<p><strong>Medical History:</strong> ${profile.medicalHistory}</p>` : ''}
             ${profile.dietPlan ? `<p><strong>Diet Plan:</strong> ${profile.dietPlan}</p>` : ''}
             ${emergencyHTML}
-           ${remindersHTML}
+            <p><strong>REMINDER PLACEHOLDER</strong></p>
           </div>
           
           <div id="qrcode"></div>
