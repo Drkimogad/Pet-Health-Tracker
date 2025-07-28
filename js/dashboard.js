@@ -1371,44 +1371,42 @@ async function generateQRCode(petId) {
             ${profile.petPhoto ? `<img src="${profile.petPhoto}" class="pet-photo" crossorigin="anonymous">` : ''}
           </div>
 
-// In your document.write() template:
-'<div class="pet-details">' +
-  '<p><strong>Breed:</strong> ' + escapeHTML(profile.breed || 'N/A') + '</p>' +
-  '<p><strong>Age:</strong> ' + escapeHTML(profile.age || 'N/A') + '</p>' +
-  '<p><strong>Weight:</strong> ' + escapeHTML(profile.weight || 'N/A') + '</p>' +
-  '<p><strong>Type:</strong> ' + escapeHTML(profile.type || 'N/A') + '</p>' +
-  '<p><strong>Gender:</strong> ' + escapeHTML(profile.gender || 'N/A') + '</p>' +
-  '<p><strong>Mood:</strong> ' + escapeHTML(profile.mood || 'N/A') + '</p>' +
-  '<p><strong>Microchip ID:</strong> ' + escapeHTML(profile.microchip?.id || 'N/A') + '</p>' +
-  '<p><strong>Allergies:</strong> ' + escapeHTML(profile.allergies || 'None') + '</p>' +
-  '<p><strong>Medical History:</strong> ' + escapeHTML(profile.medicalHistory || 'N/A') + '</p>' +
-  '<p><strong>Diet Plan:</strong> ' + escapeHTML(profile.dietPlan || 'N/A') + '</p>' +
-  '<p><strong>Emergency Contact:</strong> ' + 
-    escapeHTML(emergency.name || 'N/A') + ' ' +
-    (emergency.relationship ? '(' + escapeHTML(emergency.relationship) + ') ' : '') +
-    (emergency.phone ? '- ' + escapeHTML(emergency.phone) : '') +
-  '</p>' +
-  '<p><strong>Vaccinations:</strong> ' + escapeHTML(profile.reminders?.vaccinations || 'N/A') + '</p>' +
-  '<p><strong>Checkups:</strong> ' + escapeHTML(profile.reminders?.checkups || 'N/A') + '</p>' +
-  '<p><strong>Grooming:</strong> ' + escapeHTML(profile.reminders?.grooming || 'N/A') + '</p>' +
-'</div>' +
+          <div class="pet-details">
+            <p><strong>Breed:</strong> ${profile.breed || 'N/A'}</p>
+            <p><strong>Age:</strong> ${profile.age || 'N/A'}</p>
+            <p><strong>Weight:</strong> ${profile.weight || 'N/A'}</p>
+            ${profile.type ? `<p><strong>Type:</strong> ${profile.type}</p>` : ''}
+            ${profile.gender ? `<p><strong>Gender:</strong> ${profile.gender}</p>` : ''}
+            ${profile.mood ? `<p><strong>Mood:</strong> ${profile.mood}</p>` : ''}
+            ${profile.microchip?.id ? `<p><strong>Microchip:</strong> ${profile.microchip.id}</p>` : ''}
+            ${profile.allergies ? `<p><strong>Allergies:</strong> ${profile.allergies}</p>` : ''}
+            ${profile.medicalHistory ? `<p><strong>Medical History:</strong> ${profile.medicalHistory}</p>` : ''}
+            ${profile.dietPlan ? `<p><strong>Diet Plan:</strong> ${profile.dietPlan}</p>` : ''}
+            ${(emergency.name || emergency.phone) ? `
+              <p><strong>Emergency Contact:</strong> 
+                ${emergency.name || ''} 
+                ${emergency.relationship ? `(${emergency.relationship})` : ''}
+                ${emergency.phone ? `- ${emergency.phone}` : ''}
+              </p>
+            ` : ''}
+            '<p><strong>Vaccinations:</strong> ' + escapeHTML(profile.reminders?.vaccinations || 'N/A') + '</p>' +
+            '<p><strong>Checkups:</strong> ' + escapeHTML(profile.reminders?.checkups || 'N/A') + '</p>' +
+            '<p><strong>Grooming:</strong> ' + escapeHTML(profile.reminders?.grooming || 'N/A') + '</p>' +
+          </div>
+          
+          '<div class="share-link">' +
+          '<strong>Access full profile:</strong><br>' +
+          '<a href="https://drkimogad.github.io/Pet-Health-Tracker/" target="_blank">' +
+          'https://drkimogad.github.io/Pet-Health-Tracker/' +
+          '</a>' +
+          '</div>'
+        
+          <div id="qrcode"></div>
 
-'<!-- QR Code (centered) -->' +
-'<div id="qrcode" style="margin: 20px auto; text-align: center;"></div>' +
-
-'<!-- Static URL -->' +
-'<div class="share-link" style="margin: 20px 0; padding: 10px; background: #f0f0f0;">' +
-  '<strong>Access full profile:</strong><br>' +
-  '<a href="https://drkimogad.github.io/Pet-Health-Tracker/" target="_blank">' +
-    'https://drkimogad.github.io/Pet-Health-Tracker/' +
-  '</a>' +
-'</div>' +
-
-'<!-- Action Buttons -->' +
-'<div class="actions" style="text-align: center; margin-top: 20px;">' +
-  '<button onclick="window.print()" style="padding: 10px 15px; margin: 0 5px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">Print</button>' +
-  '<button onclick="downloadQR()" style="padding: 10px 15px; margin: 0 5px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">Download QR</button>' +
-'</div>'
+          <div class="actions">
+            <button onclick="window.print()">Print</button>
+            <button onclick="downloadQR()">Download QR</button>
+          </div>
 
 <script>
   // Build QR message safely with string concatenation
@@ -1430,8 +1428,10 @@ async function generateQRCode(petId) {
     'Vaccinations: ' + escapeHTML(profile.reminders?.vaccinations || 'N/A') + '\\n' +
     'Checkups: ' + escapeHTML(profile.reminders?.checkups || 'N/A') + '\\n' +
     'Grooming: ' + escapeHTML(profile.reminders?.grooming || 'N/A') + '\\n\\n' +
-    '👉 Access profile: https://drkimogad.github.io/Pet-Health-Tracker/\\n' +
-    '📧 Contact developer: dr_kimogad@yahoo.com';  // <-- Single semicolon only at the end
+    
+    '👉 Access profile: https://drkimogad.github.io/Pet-Health-Tracker/';
+    '👉 Try our app: https://drkimogad.github.io/Pet-Health-Tracker/\\n' +
+    '📧 Contact developer: dr_kimogad@yahoo.com';
 
   // Initialize QR code
   new QRCode(document.getElementById("qrcode"), {
@@ -1448,7 +1448,7 @@ async function generateQRCode(petId) {
     const canvas = document.querySelector("#qrcode canvas");
     if (canvas) {
       const link = document.createElement("a");
-      link.download = escapeHTML(safePetName) + "_QR.png";  // Fixed template literal issue
+      link.download = "' + safePetName + '_QR.png";
       link.href = canvas.toDataURL("image/png");
       link.click();
     }
@@ -1464,7 +1464,6 @@ async function generateQRCode(petId) {
     alert("Failed to generate QR code. Please try again.");
   }
 }
-
 
 // ======== EVENT DELEGATION (FIXED) ========
 // ✅ Keep this block to handle profile actions (WIRING) ALL THE BUTTONS IN LOADSAVEDPETPROFILES FUNCTION✅
