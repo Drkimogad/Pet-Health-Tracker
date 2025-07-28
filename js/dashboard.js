@@ -1379,9 +1379,11 @@ const emergencyHTML = (emergency.name || emergency.phone)
             ${profile.medicalHistory ? `<p><strong>Medical History:</strong> ${profile.medicalHistory}</p>` : ''}
             ${profile.dietPlan ? `<p><strong>Diet Plan:</strong> ${profile.dietPlan}</p>` : ''}
             ${emergencyHTML}
-            <p><strong>Vaccinations:</strong> ${profile.reminders?.vaccinations || 'N/A'}</p>
-            <p><strong>Checkups:</strong> ${profile.reminders?.checkups || 'N/A'}</p>
-            <p><strong>Grooming:</strong> ${profile.reminders?.grooming || 'N/A'}</p>
+            <p><strong>Reminders:</strong> 
+            Vaccinations: ${profile.reminders?.vaccinations || 'N/A'}, 
+            Checkups: ${profile.reminders?.checkups || 'N/A'}, 
+            Grooming: ${profile.reminders?.grooming || 'N/A'}
+           </p>
           </div>
           
           <div id="qrcode"></div>
