@@ -1272,6 +1272,8 @@ async function openCommunityChatModal(petId) {
 //=======================================================
 //  QR CODE GENERATION BUTTON FUNCTION 
 //=================================================
+//  QR CODE GENERATION BUTTON FUNCTION 
+//=================================================
 async function generateQRCode(petId) {
   try {
     // 1. Load profile data
@@ -1295,23 +1297,7 @@ async function generateQRCode(petId) {
       return;
     }
 
-// 🔐 SAFELY BUILD emergency contact HTML outside the template, sensitive area
-      // 📍Sensitive area: This prevents syntax errors inside your large string literal.
-const emergencyHTML = (emergency.name || emergency.phone)
-  ? `<p><strong>Emergency Contact:</strong> ${emergency.name || ''} 
-  ${emergency.relationship ? '(' + emergency.relationship + ')' : ''} 
-  ${emergency.phone ? '- ' + emergency.phone : ''}</p>`
-  : '';
-    // Same for REMINDERS
-  const remindersHTML = `
-  <p><strong>Reminders:</strong><br>
-    Vaccinations: ${profile.reminders?.vaccinations || 'N/A'}<br>
-    Checkups: ${profile.reminders?.checkups || 'N/A'}<br>
-    Grooming: ${profile.reminders?.grooming || 'N/A'}
-  </p>
-`;
-
-    // 5. then Build the layout with your desired structure
+    // 5. Build the layout with your requested structure
     qrWindow.document.write(`
       <!DOCTYPE html>
       <html>
@@ -1388,10 +1374,18 @@ const emergencyHTML = (emergency.name || emergency.phone)
             ${profile.allergies ? `<p><strong>Allergies:</strong> ${profile.allergies}</p>` : ''}
             ${profile.medicalHistory ? `<p><strong>Medical History:</strong> ${profile.medicalHistory}</p>` : ''}
             ${profile.dietPlan ? `<p><strong>Diet Plan:</strong> ${profile.dietPlan}</p>` : ''}
-            ${emergencyHTML}
-            <p><strong>REMINDER PLACEHOLDER</strong></p>
+            ${(emergency.name || emergency.phone) ? `
+              <p><strong>Emergency Contact:</strong> 
+                ${emergency.name || ''} 
+                ${emergency.relationship ? `(${emergency.relationship})` : ''}
+                ${emergency.phone ? `- ${emergency.phone}` : ''}
+              </p>
+            ` : ''}
+            <p><strong>Vaccinations:</strong> ${profile.reminders?.vaccinations || 'N/A'}</p>
+            <p><strong>Checkups:</strong> ${profile.reminders?.checkups || 'N/A'}</p>
+            <p><strong>Grooming:</strong> ${profile.reminders?.grooming || 'N/A'}</p>
           </div>
-          
+
           <div id="qrcode"></div>
           <div class="actions">
             <button onclick="window.print()">Print</button>
@@ -1445,7 +1439,6 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
     }
   }
 </script>
-
         </body>
       </html>
     `);
@@ -1456,37 +1449,6 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
     alert("Failed to generate QR code. Please try again.");
   }
 }
-    
-// =======================================
-// ==== AUTO LOGOUT AFTER INACTIVITY ====PRODUCTION READY
-// Keep it running befor listeners and initialization
-let inactivityTimer;
-const SESSION_TIMEOUT_MINUTES = 30;
-
-function resetInactivityTimer() {
-  clearTimeout(inactivityTimer);
-  inactivityTimer = setTimeout(() => {
-    alert("Session expired due to inactivity. Logging out.");
-    firebase.auth().signOut(); // Safe logout
-  }, SESSION_TIMEOUT_MINUTES * 60 * 1000);
-}
-
-// Monitor activity to reset timer
-['click', 'keydown', 'mousemove', 'scroll', 'touchstart'].forEach(evt =>
-  document.addEventListener(evt, resetInactivityTimer)
-);
-
-// Start timer
-resetInactivityTimer();
-
-// ===== NETWORK CONNECTIVITY AWARENESS =====
-window.addEventListener('offline', () => {
-  showErrorToUser("⚠️ You're offline. Changes will be saved locally.");
-});
-
-window.addEventListener('online', () => {
-  showSuccessNotification("✅ You're back online. Sync available.");
-});
 
 // ======== EVENT DELEGATION (FIXED) ========
 // ✅ Keep this block to handle profile actions (WIRING) ALL THE BUTTONS IN LOADSAVEDPETPROFILES FUNCTION✅
