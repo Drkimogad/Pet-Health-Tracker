@@ -1381,9 +1381,12 @@ async function generateQRCode(petId) {
                 ${emergency.phone ? `- ${emergency.phone}` : ''}
               </p>
             ` : ''}
-            <p><strong>Vaccinations:</strong> ${profile.reminders?.vaccinations || 'N/A'}</p>
-            <p><strong>Checkups:</strong> ${profile.reminders?.checkups || 'N/A'}</p>
-            <p><strong>Grooming:</strong> ${profile.reminders?.grooming || 'N/A'}</p>
+            ${profile.reminders ? `
+        <p><strong>Vaccinations:</strong> ${profile.reminders.vaccinations || 'N/A'}</p>
+  <p><strong>Checkups:</strong> ${profile.reminders.checkups || 'N/A'}</p>
+  <p><strong>Grooming:</strong> ${profile.reminders.grooming || 'N/A'}</p>
+` : ''}
+
           </div>
 
           <div id="qrcode"></div>
