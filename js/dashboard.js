@@ -1380,42 +1380,56 @@ async function generateQRCode(petId) {
               </p>
             ` : ''}
           </div>
-
           <div id="qrcode"></div>
-
-          ${profile.shareableUrl ? `
-            <div class="share-link">
-              <strong>Access full profile:</strong><br>
-              <a href="${profile.shareableUrl}" target="_blank">${profile.shareableUrl}</a>
-            </div>
-          ` : ''}
-
           <div class="actions">
             <button onclick="window.print()">Print</button>
             <button onclick="downloadQR()">Download QR</button>
           </div>
 
           <script>
-            // Generate QR code
-            new QRCode(document.getElementById("qrcode"), {
-              text: "${profile.shareableUrl || window.location.href}",
-              width: 200,
-              height: 200,
-              colorDark: "#000000",
-              colorLight: "#ffffff",
-              correctLevel: QRCode.CorrectLevel.H
-            });
+  // Generate custom QR message with pet info
+  const qrMessage = `
+📋 Meet ${profile.petName || 'a lovely pet'}!
 
-            function downloadQR() {
-              const canvas = document.querySelector("#qrcode canvas");
-              if (canvas) {
-                const link = document.createElement("a");
-                link.download = "${safePetName}_QR.png";
-                link.href = canvas.toDataURL("image/png");
-                link.click();
-              }
-            }
-          </script>
+Breed: ${profile.breed || 'N/A'}
+Age: ${profile.age || 'N/A'}
+Weight: ${profile.weight || 'N/A'}
+Type: ${profile.type || 'N/A'}
+Gender: ${profile.gender || 'N/A'}
+Mood: ${profile.mood || 'N/A'}
+Microchip: ${profile.microchip?.id || 'N/A'}
+Allergies: ${profile.allergies || 'None'}
+Medical History: ${profile.medicalHistory || 'N/A'}
+Diet Plan: ${profile.dietPlan || 'N/A'}
+
+Emergency Contact: ${emergency.name || 'N/A'} 
+${emergency.relationship ? `(${emergency.relationship})` : ''} 
+${emergency.phone ? `- ${emergency.phone}` : ''}
+
+👉 Try our app: https://drkimogad.github.io/Pet-Health-Tracker/
+📧 Contact developer: dr_kimogad@yahoo.com
+  `.trim();
+
+  new QRCode(document.getElementById("qrcode"), {
+    text: qrMessage,
+    width: 200,
+    height: 200,
+    colorDark: "#000000",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.H
+  });
+
+  function downloadQR() {
+    const canvas = document.querySelector("#qrcode canvas");
+    if (canvas) {
+      const link = document.createElement("a");
+      link.download = "${safePetName}_QR.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    }
+  }
+</script>
+
         </body>
       </html>
     `);
