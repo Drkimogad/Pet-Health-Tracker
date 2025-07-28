@@ -1389,24 +1389,24 @@ async function generateQRCode(petId) {
                 ${emergency.phone ? `- ${emergency.phone}` : ''}
               </p>
             ` : ''}
-            '<p><strong>Vaccinations:</strong> ' + escapeHTML(profile.reminders?.vaccinations || 'N/A') + '</p>' +
-            '<p><strong>Checkups:</strong> ' + escapeHTML(profile.reminders?.checkups || 'N/A') + '</p>' +
-            '<p><strong>Grooming:</strong> ' + escapeHTML(profile.reminders?.grooming || 'N/A') + '</p>' +
-          </div>
-          
-          '<div class="share-link">' +
-          '<strong>Access full profile:</strong><br>' +
-          '<a href="https://drkimogad.github.io/Pet-Health-Tracker/" target="_blank">' +
-          'https://drkimogad.github.io/Pet-Health-Tracker/' +
-          '</a>' +
-          '</div>'
-        
-          <div id="qrcode"></div>
+            // After emergency contact in your document.write():
+'<p><strong>Vaccinations:</strong> ' + (profile.reminders?.vaccinations || 'N/A') + '</p>' +
+'<p><strong>Checkups:</strong> ' + (profile.reminders?.checkups || 'N/A') + '</p>' +
+'<p><strong>Grooming:</strong> ' + (profile.reminders?.grooming || 'N/A') + '</p>' +
 
-          <div class="actions">
-            <button onclick="window.print()">Print</button>
-            <button onclick="downloadQR()">Download QR</button>
-          </div>
+'<div id="qrcode"></div>' +
+
+'<div class="share-link">' +
+  '<strong>Access full profile:</strong><br>' +
+  '<a href="https://drkimogad.github.io/Pet-Health-Tracker/" target="_blank">' +
+    'https://drkimogad.github.io/Pet-Health-Tracker/' +
+  '</a>' +
+'</div>' +
+
+'<div class="actions">' +
+  '<button onclick="window.print()">Print</button>' +
+  '<button onclick="downloadQR()">Download QR</button>' +
+'</div>'
 
 <script>
   // Build QR message safely with string concatenation
@@ -1428,9 +1428,7 @@ async function generateQRCode(petId) {
     'Vaccinations: ' + escapeHTML(profile.reminders?.vaccinations || 'N/A') + '\\n' +
     'Checkups: ' + escapeHTML(profile.reminders?.checkups || 'N/A') + '\\n' +
     'Grooming: ' + escapeHTML(profile.reminders?.grooming || 'N/A') + '\\n\\n' +
-    
-    '👉 Access profile: https://drkimogad.github.io/Pet-Health-Tracker/';
-    '👉 Try our app: https://drkimogad.github.io/Pet-Health-Tracker/\\n' +
+    '👉 Access profile: https://drkimogad.github.io/Pet-Health-Tracker/\\n' +
     '📧 Contact developer: dr_kimogad@yahoo.com';
 
   // Initialize QR code
@@ -1448,7 +1446,7 @@ async function generateQRCode(petId) {
     const canvas = document.querySelector("#qrcode canvas");
     if (canvas) {
       const link = document.createElement("a");
-      link.download = "' + safePetName + '_QR.png";
+      link.download = escapeHTML(safePetName) + "_QR.png";
       link.href = canvas.toDataURL("image/png");
       link.click();
     }
