@@ -1372,14 +1372,13 @@ async function generateQRCode(petId) {
             ${profile.allergies ? `<p><strong>Allergies:</strong> ${profile.allergies}</p>` : ''}
             ${profile.medicalHistory ? `<p><strong>Medical History:</strong> ${profile.medicalHistory}</p>` : ''}
             ${profile.dietPlan ? `<p><strong>Diet Plan:</strong> ${profile.dietPlan}</p>` : ''}
-            ${emergency.name || emergency.phone ? `
-  <p><strong>Emergency Contact:</strong> 
-    ${[emergency.name, emergency.relationship && `(${emergency.relationship})`, emergency.phone].filter(Boolean).join(' ')}
-  </p>
-` : ''}
-              <p><strong>Vaccinations:</strong> <span id="vaccinations">N/A</span></p>
-              <p><strong>Checkups:</strong> <span id="checkups">N/A</span></p>
-              <p><strong>Grooming:</strong> <span id="grooming">N/A</span></p>
+            ${(emergency.name || emergency.phone) ? `
+              <p><strong>Emergency Contact:</strong> 
+                ${emergency.name || ''} 
+                ${emergency.relationship ? `(${emergency.relationship})` : ''}
+                ${emergency.phone ? `- ${emergency.phone}` : ''}
+              </p>
+            ` : ''}
           </div>
 
           <div id="qrcode"></div>
@@ -1407,10 +1406,6 @@ Diet Plan: ${profile.dietPlan || 'N/A'}
 Emergency Contact: ${emergency.name || 'N/A'} 
 ${emergency.relationship ? `(${emergency.relationship})` : ''} 
 ${emergency.phone ? `- ${emergency.phone}` : ''}
-      
-Vaccinations: ${profile.reminders?.vaccinations || 'N/A'}
-Checkups: ${profile.reminders?.checkups || 'N/A'}
-Grooming: ${profile.reminders?.grooming || 'N/A'}
 
 👉 Try our app: https://drkimogad.github.io/Pet-Health-Tracker/
 📧 Contact developer: dr_kimogad@yahoo.com
@@ -1438,13 +1433,6 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
         </body>
       </html>
     `);
-// Set reminders safely through DOM (no template literal issues) before qrWindow.document.close();
-
-if (profile.reminders) {
-  qrWindow.document.getElementById('vaccinations').textContent = profile.reminders.vaccinations || 'N/A';
-  qrWindow.document.getElementById('checkups').textContent = profile.reminders.checkups || 'N/A';
-  qrWindow.document.getElementById('grooming').textContent = profile.reminders.grooming || 'N/A';
-} 
       
 qrWindow.document.close();
 
