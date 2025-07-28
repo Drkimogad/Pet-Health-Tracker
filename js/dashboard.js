@@ -1282,6 +1282,22 @@ async function generateQRCode(petId) {
       return;
     }
 
+      // After const profile = profiles.find(...)
+const remindersHTML = profile.reminders ? `
+  <p><strong>Vaccinations:</strong> ${escapeHTML(profile.reminders.vaccinations || 'N/A')}</p>
+  <p><strong>Checkups:</strong> ${escapeHTML(profile.reminders.checkups || 'N/A')}</p>
+  <p><strong>Grooming:</strong> ${escapeHTML(profile.reminders.grooming || 'N/A')}</p>
+` : '<p>No reminders found</p>';
+
+// Add this helper function (put it at the top of your file)
+function escapeHTML(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
     // 2. Get emergency contact
     const emergency = profile.emergencyContacts?.[0] || {};
 
@@ -1379,9 +1395,7 @@ async function generateQRCode(petId) {
                 ${emergency.phone ? `- ${emergency.phone}` : ''}
               </p>
             ` : ''}
-           <p><strong>Vaccinations:</strong> ${profile.reminders ? String(profile.reminders.vaccinations).replace(/</g, "&lt;") : 'N/A'}</p>
-           <p><strong>Checkups:</strong> ${profile.reminders ? String(profile.reminders.checkups).replace(/</g, "&lt;") : 'N/A'}</p>
-           <p><strong>Grooming:</strong> ${profile.reminders ? String(profile.reminders.grooming).replace(/</g, "&lt;") : 'N/A'}</p>
+              ${remindersHTML}
           </div>
 
           <div id="qrcode"></div>
