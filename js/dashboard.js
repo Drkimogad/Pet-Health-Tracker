@@ -1382,12 +1382,20 @@ async function generateQRCode(petId) {
           </div>
 
           <div id="qrcode"></div>
+
+          ${profile.shareableUrl ? `
+            <div class="share-link">
+              <strong>Access full profile:</strong><br>
+              <a href="${profile.shareableUrl}" target="_blank">${profile.shareableUrl}</a>
+            </div>
+          ` : ''}
+
           <div class="actions">
             <button onclick="window.print()">Print</button>
             <button onclick="downloadQR()">Download QR</button>
           </div>
 
-          <script>
+                    <script>
   // Generate custom QR message with pet info
   const qrMessage = `
 📋 Meet ${profile.petName || 'a lovely pet'}!
@@ -1430,17 +1438,18 @@ ${emergency.phone ? `- ${emergency.phone}` : ''}
     }
   }
 </script>
+
         </body>
       </html>
     `);
-      
-qrWindow.document.close();
+    qrWindow.document.close();
 
   } catch (error) {
     console.error("QR generation failed:", error);
     alert("Failed to generate QR code. Please try again.");
   }
 }
+
 
 // ======== EVENT DELEGATION (FIXED) ========
 // ✅ Keep this block to handle profile actions (WIRING) ALL THE BUTTONS IN LOADSAVEDPETPROFILES FUNCTION✅
