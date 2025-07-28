@@ -1300,6 +1300,14 @@ async function generateQRCode(petId) {
 const emergencyHTML = (emergency.name || emergency.phone)
   ? `<p><strong>Emergency Contact:</strong> ${emergency.name || ''} ${emergency.relationship ? '(' + emergency.relationship + ')' : ''} ${emergency.phone ? '- ' + emergency.phone : ''}</p>`
   : '';
+    // Same for REMINDERS
+  const remindersHTML = `
+  <p><strong>Reminders:</strong><br>
+    Vaccinations: ${profile.reminders?.vaccinations || 'N/A'}<br>
+    Checkups: ${profile.reminders?.checkups || 'N/A'}<br>
+    Grooming: ${profile.reminders?.grooming || 'N/A'}
+  </p>
+`;
 
     // 5. then Build the layout with your desired structure
     qrWindow.document.write(`
@@ -1379,11 +1387,7 @@ const emergencyHTML = (emergency.name || emergency.phone)
             ${profile.medicalHistory ? `<p><strong>Medical History:</strong> ${profile.medicalHistory}</p>` : ''}
             ${profile.dietPlan ? `<p><strong>Diet Plan:</strong> ${profile.dietPlan}</p>` : ''}
             ${emergencyHTML}
-            <p><strong>Reminders:</strong> 
-            Vaccinations: ${profile.reminders?.vaccinations || 'N/A'}, 
-            Checkups: ${profile.reminders?.checkups || 'N/A'}, 
-            Grooming: ${profile.reminders?.grooming || 'N/A'}
-           </p>
+           ${remindersHTML}
           </div>
           
           <div id="qrcode"></div>
