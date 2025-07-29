@@ -961,8 +961,9 @@ async function inviteFriends(petId) {
     alert("Pet data not loaded yet. Try again later.");
     return;
   }
-
-  const inviteMessage = `Meet ${profile.petName || 'my pet'}! 🐾
+    
+// the whole message is wrapped in backticks `...` as one full string.
+ const inviteMessage = `Meet ${profile.petName || 'my pet'}! 🐾
 
 I'm using this awesome app (Pet Health Tracker) to manage:
 📋 Basic Information  
@@ -972,10 +973,8 @@ I'm using this awesome app (Pet Health Tracker) to manage:
 📞 Emergency Contacts  
 ...and more!
 
-Get the app: https://drkimogad.github.io/Pet-Health-Tracker/`;
-📧 Contact developer: 'dr_kimogad@yahoo.com';
-
-
+Get the app: https://drkimogad.github.io/Pet-Health-Tracker/
+📧 Contact developer: dr_kimogad@yahoo.com`;
 
   const shareData = {
     title: "Pet Profile",
