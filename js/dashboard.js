@@ -1397,19 +1397,21 @@ async function generateQRCode(petId) {
             ${remindersHTML}
             </div>
             
-'<div id="qrcode"></div>' +
+<div id="qrcode"></div>
 
-'<div class="share-link">' +
-  '<p><strong>Access full profile:</strong></p>' +
-  '<p><a href="https://drkimogad.github.io/Pet-Health-Tracker/" target="_blank">' +
-    'https://drkimogad.github.io/Pet-Health-Tracker/' +
-  '</a></p>' +
-'</div>' +
+<div class="share-link">
+  <p><strong>Access full profile:</strong></p>
+  <p>
+    <a href="https://drkimogad.github.io/Pet-Health-Tracker/" target="_blank">
+      https://drkimogad.github.io/Pet-Health-Tracker/
+    </a>
+  </p>
+</div>
 
-'<div class="actions">' +
-  '<button onclick="window.print()">Print</button>' +
-  '<button onclick="downloadQR()">Download QR</button>' +
-'</div>'
+<div class="actions">
+  <button onclick="window.print()">Print</button>
+  <button onclick="downloadQR()">Download QR</button>
+</div>
 
 <script>
   // Build QR message safely with string concatenation
