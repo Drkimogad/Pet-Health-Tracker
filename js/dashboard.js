@@ -1459,7 +1459,7 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
 
 👉 Go to the app: https://drkimogad.github.io/Pet-Health-Tracker/
 📧 Contact developer: dr_kimogad@yahoo.com
-`.trim())};
+`.trim();
 
   const qrContainer = qrWindow.document.getElementById("qrcode");
     if (!qrContainer) {
