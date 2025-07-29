@@ -1431,6 +1431,7 @@ async function generateQRCode(petId) {
     return;
   }
     
+//Do not use JSON.stringify(...) inside this script.onload.    
   // ✅ Outside try block now
  qrWindow.onload = () => {
   const script = qrWindow.document.createElement("script");
@@ -1482,14 +1483,12 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
       const canvas = qrContainer.querySelector("canvas");
       if (canvas) {
         const link = qrWindow.document.createElement("a");
-        link.download = "${safePetName}_QR.png";
+        link.download = safePetName + "_QR.png"; // Fixed string concatenation
         link.href = canvas.toDataURL("image/png");
         link.click();
-      } else {
-        alert("QR code not ready yet.");
       }
     };
-  };  
+  };
     qrWindow.document.body.appendChild(script);
   }; // closes script.onload = () => { ...
 
