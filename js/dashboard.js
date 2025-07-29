@@ -1397,6 +1397,11 @@ async function generateQRCode(petId) {
             ${remindersHTML}
             </div>
             
+<div class="developer-info" style="margin-top: 15px; font-size: 14px; color: #333;">
+  <p><strong>👉 Go to the app:</strong> <a href="https://drkimogad.github.io/Pet-Health-Tracker/" target="_blank">https://drkimogad.github.io/Pet-Health-Tracker/</a></p>
+  <p><strong>📧 Contact developer:</strong> dr_kimogad@yahoo.com</p>
+</div>
+            
 <div id="qrcode"></div>
 
 <div class="share-link">
