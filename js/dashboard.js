@@ -1303,7 +1303,14 @@ async function generateQRCode(petId) {
       alert("Please allow popups to generate QR codes");
       return;
     }
+// Create reminders html outside 
+     const remindersHTML = `
+  <p><strong>Vaccinations:</strong> ${escapeHTML(profile.reminders?.vaccinations || 'N/A')}</p>
+  <p><strong>Checkups:</strong> ${escapeHTML(profile.reminders?.checkups || 'N/A')}</p>
+  <p><strong>Grooming:</strong> ${escapeHTML(profile.reminders?.grooming || 'N/A')}</p>
+`;
 
+      
     // 5. Build the layout with your requested structure
     qrWindow.document.write(`
       <!DOCTYPE html>
@@ -1388,11 +1395,9 @@ async function generateQRCode(petId) {
                 ${emergency.phone ? `- ${emergency.phone}` : ''}
               </p>
             ` : ''}
+            ${remindersHTML}
+            </div>
             
-'<p><strong>Vaccinations:</strong> ' + escapeHTML(profile.reminders?.vaccinations || 'N/A') + '</p>' +
-'<p><strong>Checkups:</strong> ' + escapeHTML(profile.reminders?.checkups || 'N/A') + '</p>' +
-'<p><strong>Grooming:</strong> ' + escapeHTML(profile.reminders?.grooming || 'N/A') + '</p>' +
-
 '<div id="qrcode"></div>' +
 
 '<div class="share-link">' +
@@ -1409,26 +1414,30 @@ async function generateQRCode(petId) {
 
 <script>
   // Build QR message safely with string concatenation
-  const qrMessage = 
-    '📋 Meet ' + escapeHTML(profile.petName || 'a lovely pet') + '!\\n\\n' +
-    'Breed: ' + escapeHTML(profile.breed || 'N/A') + '\\n' +
-    'Age: ' + escapeHTML(profile.age || 'N/A') + '\\n' +
-    'Weight: ' + escapeHTML(profile.weight || 'N/A') + '\\n' +
-    'Type: ' + escapeHTML(profile.type || 'N/A') + '\\n' +
-    'Gender: ' + escapeHTML(profile.gender || 'N/A') + '\\n' +
-    'Mood: ' + escapeHTML(profile.mood || 'N/A') + '\\n' +
-    'Microchip: ' + escapeHTML(profile.microchip?.id || 'N/A') + '\\n' +
-    'Allergies: ' + escapeHTML(profile.allergies || 'None') + '\\n' +
-    'Medical History: ' + escapeHTML(profile.medicalHistory || 'N/A') + '\\n' +
-    'Diet Plan: ' + escapeHTML(profile.dietPlan || 'N/A') + '\\n\\n' +
-    'Emergency Contact: ' + escapeHTML(emergency.name || 'N/A') + ' ' +
-    (emergency.relationship ? '(' + escapeHTML(emergency.relationship) + ') ' : '') +
-    (emergency.phone ? '- ' + escapeHTML(emergency.phone) : '') + '\\n\\n' +
-    'Vaccinations: ' + escapeHTML(profile.reminders?.vaccinations || 'N/A') + '\\n' +
-    'Checkups: ' + escapeHTML(profile.reminders?.checkups || 'N/A') + '\\n' +
-    'Grooming: ' + escapeHTML(profile.reminders?.grooming || 'N/A') + '\\n\\n' +
-    '👉 Go to th app: https://drkimogad.github.io/Pet-Health-Tracker/\\n' +
-    '📧 Contact developer: dr_kimogad@yahoo.com';
+  const qrMessage = ${JSON.stringify(`
+📋 Meet ${profile.petName || 'a lovely pet'}!
+
+Breed: ${profile.breed || 'N/A'}
+Age: ${profile.age || 'N/A'}
+Weight: ${profile.weight || 'N/A'}
+Type: ${profile.type || 'N/A'}
+Gender: ${profile.gender || 'N/A'}
+Mood: ${profile.mood || 'N/A'}
+Microchip: ${profile.microchip?.id || 'N/A'}
+Allergies: ${profile.allergies || 'None'}
+Medical History: ${profile.medicalHistory || 'N/A'}
+Diet Plan: ${profile.dietPlan || 'N/A'}
+
+Emergency Contact: ${emergency.name || 'N/A'} ${emergency.relationship ? '(' + emergency.relationship + ')' : ''} ${emergency.phone ? '- ' + emergency.phone : ''}
+
+Vaccinations: ${profile.reminders?.vaccinations || 'N/A'}
+Checkups: ${profile.reminders?.checkups || 'N/A'}
+Grooming: ${profile.reminders?.grooming || 'N/A'}
+
+👉 Go to the app: https://drkimogad.github.io/Pet-Health-Tracker/
+📧 Contact developer: dr_kimogad@yahoo.com
+`.trim())};
+
 
   // Initialize QR code
   new QRCode(document.getElementById("qrcode"), {
