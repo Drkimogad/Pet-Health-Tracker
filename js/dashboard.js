@@ -1303,8 +1303,14 @@ async function generateQRCode(petId) {
       alert("Please allow popups to generate QR codes");
       return;
     }
-          // 5. Build the QR message (YOUR ORIGINAL TEXT FORMAT)
-    const qrMessage = `📋 Meet ${profile.petName || 'a lovely pet'}!
+// 5. Create reminders html outside 
+     const remindersHTML = `
+  <p><strong>Vaccinations:</strong> ${escapeHTML(profile.reminders?.vaccinations || 'N/A')}</p>
+  <p><strong>Checkups:</strong> ${escapeHTML(profile.reminders?.checkups || 'N/A')}</p>
+  <p><strong>Grooming:</strong> ${escapeHTML(profile.reminders?.grooming || 'N/A')}</p>
+`;     
+// 6. Build the QR message (YOUR ORIGINAL TEXT FORMAT)
+const qrMessage = `📋 Meet ${profile.petName || 'a lovely pet'}!
 
 Breed: ${profile.breed || 'N/A'}
 Age: ${profile.age || 'N/A'}
@@ -1417,10 +1423,7 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
               </p>
             ` : ''}
             
-            <!-- NEW: Reminders Section -->
-            <p><strong>Vaccinations:</strong> ${escapeHTML(profile.reminders?.vaccinations || 'N/A')}</p>
-            <p><strong>Checkups:</strong> ${escapeHTML(profile.reminders?.checkups || 'N/A')}</p>
-            <p><strong>Grooming:</strong> ${escapeHTML(profile.reminders?.grooming || 'N/A')}</p>
+             ${remindersHTML}
           </div>
 
           <!-- NEW: Developer Info Section -->
