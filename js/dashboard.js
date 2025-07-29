@@ -1420,16 +1420,9 @@ async function generateQRCode(petId) {
  </body>
  </html>
 `);
-      
-
-    qrWindow.document.body.appendChild(script);
-    qrWindow.document.close(); // ✅ Finish writing
-      
-  } catch (error) {
-    console.error("QR generation failed:", error);
-    alert("Failed to generate QR code. Please try again.");
-    return;
-  }
+    
+qrWindow.document.body.appendChild(script);
+qrWindow.document.close(); // ✅ Finish writing
     
 //Do not use JSON.stringify(...) inside this script.onload.    
   // ✅ Outside try block now
@@ -1493,9 +1486,10 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
     qrWindow.document.body.appendChild(script);
     }; // ← closes qrWindow.onload
     
-} catch (error) {
+  } catch (error) {
     console.error("QR generation failed:", error);
     alert("Failed to generate QR code. Please try again.");
+    return;
   }
 } // ← closes generateQRCode function
 
