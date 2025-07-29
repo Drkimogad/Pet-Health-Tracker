@@ -1296,6 +1296,10 @@ async function generateQRCode(petId) {
 
     // 3. Create sanitized filename
     const safePetName = (profile.petName || 'PetProfile').replace(/[^a-z0-9]/gi, '_');
+      if (!qrWindow || qrWindow.closed) {
+    alert("Please disable popup blocking for this site!");
+    return;
+  }
 
     // 4. Open optimized window
     const qrWindow = window.open('', 'PetQR_' + petId, 'width=500,height=700');
@@ -1426,8 +1430,18 @@ qrWindow.document.close(); // ✅ Finish writing
 //Do not use JSON.stringify(...) inside this script.onload.    
   // ✅ Outside try block now
  qrWindow.onload = () => {
+ // Verify DOM exists
+  if (!qrWindow.document.body) {
+    console.error("Popup body not loaded");
+    return;
+  }
   const script = qrWindow.document.createElement("script");
   script.src = "https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js";
+     
+ script.onerror = () => {
+    qrWindow.document.getElementById('content').innerHTML = 
+      'Failed to load QR library. Please check your connection.';
+  };
 
   script.onload = () => {
 // Build QR message safely with string concatenation
