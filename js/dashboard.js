@@ -1282,6 +1282,7 @@ async function openCommunityChatModal(petId) {
  }
 async function generateQRCode(petId) {
   try {
+ // ... all your code inside the try block
     // 1. Load profile data
     const profiles = await loadPets();
     const profile = profiles.find(p => p.id === petId);
@@ -1420,7 +1421,18 @@ async function generateQRCode(petId) {
  </html>
 `);
       
-qrWindow.onload = () => {
+
+    qrWindow.document.body.appendChild(script);
+    qrWindow.document.close(); // ✅ Finish writing
+      
+  } catch (error) {
+    console.error("QR generation failed:", error);
+    alert("Failed to generate QR code. Please try again.");
+    return;
+  }
+    
+  // ✅ Outside try block now
+ qrWindow.onload = () => {
   const script = qrWindow.document.createElement("script");
   script.src = "https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js";
 
@@ -1475,10 +1487,10 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
         alert("QR code not ready yet.");
       }
     };
-  };
+  };  
     qrWindow.document.body.appendChild(script);
-    qrWindow.document.close();
-  };
+  }; // closes script.onload = () => { ...
+} // qrWindow.onload = () => { ... };
 
 // ======== EVENT DELEGATION (FIXED) ========
 // ✅ Keep this block to handle profile actions (WIRING) ALL THE BUTTONS IN LOADSAVEDPETPROFILES FUNCTION✅
