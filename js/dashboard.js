@@ -1438,8 +1438,7 @@ async function generateQRCode(petId) {
 
   script.onload = () => {
 // Build QR message safely with string concatenation
-const qrMessage = JSON.stringify(`
-📋 Meet ${profile.petName || 'a lovely pet'}!
+const qrMessage = `📋 Meet ${profile.petName || 'a lovely pet'}!
 
 Breed: ${profile.breed || 'N/A'}
 Age: ${profile.age || 'N/A'}
@@ -1463,7 +1462,10 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
 `.trim())};
 
   const qrContainer = qrWindow.document.getElementById("qrcode");
-  if (!qrContainer) return alert("QR container not found.");
+    if (!qrContainer) {
+      alert("QR container not found.");
+      return;
+    }
 
   // Initialize QR code
     new qrWindow.QRCode(qrWindow.document.getElementById("qrcode"), {
@@ -1477,7 +1479,7 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
 
     // 👇 Inject downloadQR into qrWindow context
     qrWindow.downloadQR = function () {
-      const canvas = qrWindow.document.querySelector("#qrcode canvas");
+      const canvas = qrContainer.querySelector("canvas");
       if (canvas) {
         const link = qrWindow.document.createElement("a");
         link.download = "${safePetName}_QR.png";
