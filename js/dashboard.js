@@ -1426,7 +1426,7 @@ qrWindow.onload = () => {
 
   script.onload = () => {
 // Build QR message safely with string concatenation
-const qrMessage = ${JSON.stringify(`
+const qrMessage = JSON.stringify(`
 📋 Meet ${profile.petName || 'a lovely pet'}!
 
 Breed: ${profile.breed || 'N/A'}
