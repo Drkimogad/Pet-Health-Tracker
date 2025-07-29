@@ -1435,10 +1435,9 @@ Vaccinations: ${profile.reminders?.vaccinations || 'N/A'}
 Checkups: ${profile.reminders?.checkups || 'N/A'}
 Grooming: ${profile.reminders?.grooming || 'N/A'}
 
-👉 Go to the app: https://drkimogad.github.io/Pet-Health-Tracker/
-📧 Contact developer: dr_kimogad@yahoo.com
-`.trim())};
-
+  '👉 Go to the app: https://drkimogad.github.io/Pet-Health-Tracker/\\n' +
+  '📧 Contact developer: dr_kimogad@yahoo.com'; // 👈 THIS LINE
+// no trimming 
 
   // Initialize QR code
   new QRCode(document.getElementById("qrcode"), {
@@ -1455,9 +1454,11 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
     const canvas = document.querySelector("#qrcode canvas");
     if (canvas) {
       const link = document.createElement("a");
-      link.download = escapeHTML(safePetName) + "_QR.png";
+      link.download = "${safePetName}_QR.png";
       link.href = canvas.toDataURL("image/png");
       link.click();
+    } else {
+      alert("QR code not ready yet. Try again shortly.");
     }
   }
 </script>
