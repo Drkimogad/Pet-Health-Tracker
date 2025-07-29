@@ -1421,7 +1421,6 @@ async function generateQRCode(petId) {
  </html>
 `);
     
-qrWindow.document.body.appendChild(script);
 qrWindow.document.close(); // ✅ Finish writing
     
 //Do not use JSON.stringify(...) inside this script.onload.    
