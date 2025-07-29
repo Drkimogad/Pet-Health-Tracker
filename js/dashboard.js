@@ -972,15 +972,14 @@ I'm using this awesome app (Pet Health Tracker) to manage:
 📞 Emergency Contacts  
 ...and more!
 
-View ${profile.petName ? profile.petName + "'s" : "my pet's"} profile:
-${profile.shareableUrl}
-
 Get the app: https://drkimogad.github.io/Pet-Health-Tracker/`;
+📧 Contact developer: 'dr_kimogad@yahoo.com';
+
+
 
   const shareData = {
     title: "Pet Profile",
     text: inviteMessage,
-    url: profile.shareableUrl
   };
 
   try {
@@ -1428,7 +1427,7 @@ async function generateQRCode(petId) {
     'Vaccinations: ' + escapeHTML(profile.reminders?.vaccinations || 'N/A') + '\\n' +
     'Checkups: ' + escapeHTML(profile.reminders?.checkups || 'N/A') + '\\n' +
     'Grooming: ' + escapeHTML(profile.reminders?.grooming || 'N/A') + '\\n\\n' +
-    '👉 Access profile: https://drkimogad.github.io/Pet-Health-Tracker/\\n' +
+    '👉 Go to th app: https://drkimogad.github.io/Pet-Health-Tracker/\\n' +
     '📧 Contact developer: dr_kimogad@yahoo.com';
 
   // Initialize QR code
