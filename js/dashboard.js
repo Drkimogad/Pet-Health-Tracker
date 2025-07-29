@@ -1397,7 +1397,7 @@ async function generateQRCode(petId) {
             ${remindersHTML}
             </div>
             
-<div class="developer-info" style="margin-top: 15px; font-size: 14px; color: #333;">
+<div class="developer-info">
   <p><strong>👉 Go to the app:</strong> <a href="https://drkimogad.github.io/Pet-Health-Tracker/" target="_blank">https://drkimogad.github.io/Pet-Health-Tracker/</a></p>
   <p><strong>📧 Contact developer:</strong> dr_kimogad@yahoo.com</p>
 </div>
@@ -1419,6 +1419,8 @@ async function generateQRCode(petId) {
 </div>
 
 <script>
+// Wait for the new window to finish rendering
+qrWindow.onload = () => {
 // Build QR message safely with string concatenation
 const qrMessage = ${JSON.stringify(`
 📋 Meet ${profile.petName || 'a lovely pet'}!
@@ -1444,6 +1446,9 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
 📧 Contact developer: dr_kimogad@yahoo.com
 `.trim())};
 
+  const qrContainer = qrWindow.document.getElementById("qrcode");
+  if (!qrContainer) return alert("QR container not found.");
+
   // Initialize QR code
   new QRCode(document.getElementById("qrcode"), {
     text: qrMessage,
@@ -1454,18 +1459,19 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
     correctLevel: QRCode.CorrectLevel.H
   });
 
-  // Download function
-  function downloadQR() {
-    const canvas = document.querySelector("#qrcode canvas");
+  // Update downloadQR function inside the child window
+  qrWindow.downloadQR = function () {
+    const canvas = qrWindow.document.querySelector("#qrcode canvas");
     if (canvas) {
-      const link = document.createElement("a");
+      const link = qrWindow.document.createElement("a");
       link.download = "${safePetName}_QR.png";
       link.href = canvas.toDataURL("image/png");
       link.click();
     } else {
       alert("QR code not ready yet. Try again shortly.");
     }
-  }
+  };
+}; // 👈 closes qrWindow.onload = () => {
 </script>
     </body>
       </html>
