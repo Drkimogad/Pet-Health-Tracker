@@ -574,6 +574,21 @@ button.delete-btn {
 #printQR {
   background: var(--qr-green);
 }
+.developer-info {
+  margin-top: 20px;
+  padding: 12px 15px;
+  background-color: #f4f4f4; /* Very light gray */
+  border-radius: 6px;
+  font-size: 14px;
+  color: #333;
+}
+.developer-info a {
+  color: #0077cc;
+  text-decoration: none;
+}
+.developer-info a:hover {
+  text-decoration: underline;
+}
 
 /* ======SHARING STYLE======= */
 #share-loader {
