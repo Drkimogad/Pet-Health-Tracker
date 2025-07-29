@@ -1280,9 +1280,9 @@ async function openCommunityChatModal(petId) {
       .replace(/'/g, "&#039;")
       .replace(/`/g, "&#096;");      
  }
+
 async function generateQRCode(petId) {
   try {
- // ... all your code inside the try block
     // 1. Load profile data
     const profiles = await loadPets();
     const profile = profiles.find(p => p.id === petId);
@@ -1296,10 +1296,6 @@ async function generateQRCode(petId) {
 
     // 3. Create sanitized filename
     const safePetName = (profile.petName || 'PetProfile').replace(/[^a-z0-9]/gi, '_');
-      if (!qrWindow || qrWindow.closed) {
-    alert("Please disable popup blocking for this site!");
-    return;
-  }
 
     // 4. Open optimized window
     const qrWindow = window.open('', 'PetQR_' + petId, 'width=500,height=700');
@@ -1307,20 +1303,37 @@ async function generateQRCode(petId) {
       alert("Please allow popups to generate QR codes");
       return;
     }
-// Create reminders html outside 
-     const remindersHTML = `
-  <p><strong>Vaccinations:</strong> ${escapeHTML(profile.reminders?.vaccinations || 'N/A')}</p>
-  <p><strong>Checkups:</strong> ${escapeHTML(profile.reminders?.checkups || 'N/A')}</p>
-  <p><strong>Grooming:</strong> ${escapeHTML(profile.reminders?.grooming || 'N/A')}</p>
-`;
+          // 5. Build the QR message (YOUR ORIGINAL TEXT FORMAT)
+    const qrMessage = `📋 Meet ${profile.petName || 'a lovely pet'}!
 
-      
-    // 5. Build the layout with your requested structure
+Breed: ${profile.breed || 'N/A'}
+Age: ${profile.age || 'N/A'}
+Weight: ${profile.weight || 'N/A'}
+Type: ${profile.type || 'N/A'}
+Gender: ${profile.gender || 'N/A'}
+Mood: ${profile.mood || 'N/A'}
+Microchip: ${profile.microchip?.id || 'N/A'}
+Allergies: ${profile.allergies || 'None'}
+Medical History: ${profile.medicalHistory || 'N/A'}
+Diet Plan: ${profile.dietPlan || 'N/A'}
+
+Emergency Contact: ${emergency.name || 'N/A'} ${emergency.relationship ? '(' + emergency.relationship + ')' : ''} ${emergency.phone ? '- ' + emergency.phone : ''}
+
+Vaccinations: ${profile.reminders?.vaccinations || 'N/A'}
+Checkups: ${profile.reminders?.checkups || 'N/A'}
+Grooming: ${profile.reminders?.grooming || 'N/A'}
+
+👉 Go to the app: https://drkimogad.github.io/Pet-Health-Tracker/
+📧 Contact developer: dr_kimogad@yahoo.com
+`.trim();
+
+    // 6. Build the layout with all enhancements
     qrWindow.document.write(`
       <!DOCTYPE html>
       <html>
         <head>
           <title>${safePetName} - Pet Profile</title>
+          <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
           <style>
             body { 
               font-family: Arial, sans-serif;
@@ -1372,6 +1385,11 @@ async function generateQRCode(petId) {
               border-radius: 4px;
               cursor: pointer;
             }
+            .developer-info {
+              margin-top: 20px;
+              font-size: 0.9em;
+              color: #666;
+            }
           </style>
         </head>
         <body>
@@ -1398,113 +1416,78 @@ async function generateQRCode(petId) {
                 ${emergency.phone ? `- ${emergency.phone}` : ''}
               </p>
             ` : ''}
-            ${remindersHTML}
-            </div>
             
-<div class="developer-info">
-  <p><strong>👉 Go to the app:</strong> <a href="https://drkimogad.github.io/Pet-Health-Tracker/" target="_blank">https://drkimogad.github.io/Pet-Health-Tracker/</a></p>
-  <p><strong>📧 Contact developer:</strong> dr_kimogad@yahoo.com</p>
-</div>
+            <!-- NEW: Reminders Section -->
+            <p><strong>Vaccinations:</strong> ${escapeHTML(profile.reminders?.vaccinations || 'N/A')}</p>
+            <p><strong>Checkups:</strong> ${escapeHTML(profile.reminders?.checkups || 'N/A')}</p>
+            <p><strong>Grooming:</strong> ${escapeHTML(profile.reminders?.grooming || 'N/A')}</p>
+          </div>
+
+          <!-- NEW: Developer Info Section -->
+          <div class="developer-info">
+            <p><strong>👉 Go to the app:</strong> <a href="https://drkimogad.github.io/Pet-Health-Tracker/" target="_blank">https://drkimogad.github.io/Pet-Health-Tracker/</a></p>
+            <p><strong>📧 Contact developer:</strong> dr_kimogad@yahoo.com</p>
+          </div>
+
+          <div id="qrcode"></div>
+
+          <!-- MODIFIED: Static Share Link -->
+          <div class="share-link">
+            <p><strong>Access full profile:</strong></p>
+            <p>
+              <a href="https://drkimogad.github.io/Pet-Health-Tracker/" target="_blank">
+                https://drkimogad.github.io/Pet-Health-Tracker/
+              </a>
+            </p>
+          </div>
+
+          <div class="actions">
+            <button onclick="window.print()">Print</button>
+            <button onclick="downloadQR()">Download QR</button>
+          </div>
+
+          <script>
+            // Generate QR code with static URL
+            new QRCode(document.getElementById("qrcode"), {
+              text: \`${qrMessage.replace(/`/g, '\\`')}\`,
+              width: 200,
+              height: 200,
+              colorDark: "#000000",
+              colorLight: "#ffffff",
+              correctLevel: QRCode.CorrectLevel.H
+            });
+
+            function downloadQR() {
+              const canvas = document.querySelector("#qrcode canvas");
+              if (canvas) {
+                const link = document.createElement("a");
+                link.download = "${safePetName}_QR.png";
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+              }
+            }
             
-<div id="qrcode"></div>
+            // Helper function for HTML escaping
+            function escapeHTML(str) {
+              return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;")
+                .replace(/`/g, "&#096;");
+            }
+          </script>
+        </body>
+      </html>
+    `);
+    qrWindow.document.close();
 
-<div class="share-link">
-  <p><strong>Access full profile:</strong></p>
-  <p>
-    <a href="https://drkimogad.github.io/Pet-Health-Tracker/" target="_blank">
-      https://drkimogad.github.io/Pet-Health-Tracker/
-    </a>
-  </p>
-</div>
-
-<div class="actions">
-  <button onclick="window.print()">Print</button>
-  <button onclick="downloadQR()">Download QR</button>
-</div>
- </body>
- </html>
-`);
-    
-qrWindow.document.close(); // ✅ Finish writing
-    
-//Do not use JSON.stringify(...) inside this script.onload.    
-  // ✅ Outside try block now
- qrWindow.onload = () => {
- // Verify DOM exists
-  if (!qrWindow.document.body) {
-    console.error("Popup body not loaded");
-    return;
-  }
-  const script = qrWindow.document.createElement("script");
-  script.src = "https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js";
-     
-// script.onerror = () => {
- //   qrWindow.document.getElementById('content').innerHTML = 
- //     'Failed to load QR library. Please check your connection.';
-//  };
-
-  script.onload = () => {
-// Build QR message safely with string concatenation
-const qrMessage = `📋 Meet ${profile.petName || 'a lovely pet'}!
-
-Breed: ${profile.breed || 'N/A'}
-Age: ${profile.age || 'N/A'}
-Weight: ${profile.weight || 'N/A'}
-Type: ${profile.type || 'N/A'}
-Gender: ${profile.gender || 'N/A'}
-Mood: ${profile.mood || 'N/A'}
-Microchip: ${profile.microchip?.id || 'N/A'}
-Allergies: ${profile.allergies || 'None'}
-Medical History: ${profile.medicalHistory || 'N/A'}
-Diet Plan: ${profile.dietPlan || 'N/A'}
-
-Emergency Contact: ${emergency.name || 'N/A'} ${emergency.relationship ? '(' + emergency.relationship + ')' : ''} ${emergency.phone ? '- ' + emergency.phone : ''}
-
-Vaccinations: ${profile.reminders?.vaccinations || 'N/A'}
-Checkups: ${profile.reminders?.checkups || 'N/A'}
-Grooming: ${profile.reminders?.grooming || 'N/A'}
-
-👉 Go to the app: https://drkimogad.github.io/Pet-Health-Tracker/
-📧 Contact developer: dr_kimogad@yahoo.com
-`.trim();
-
-  const qrContainer = qrWindow.document.getElementById("qrcode");
-    if (!qrContainer) {
-      alert("QR container not found.");
-      return;
-    }
-
-  // Initialize QR code
-    new qrWindow.QRCode(qrWindow.document.getElementById("qrcode"), {
-    text: qrMessage,
-    width: 200,
-    height: 200,
-    colorDark: "#000000",
-    colorLight: "#ffffff",
-    correctLevel: qrWindow.QRCode.CorrectLevel.H
-  });
-
-    // 👇 Inject downloadQR into qrWindow context
-    qrWindow.downloadQR = function () {
-      const canvas = qrContainer.querySelector("canvas");
-      if (canvas) {
-        const link = qrWindow.document.createElement("a");
-        link.download = safePetName + "_QR.png"; // Fixed string concatenation
-        link.href = canvas.toDataURL("image/png");
-        link.click();
-      }
-    };
-  }; // ← closes script.onload
-     
-    qrWindow.document.body.appendChild(script);
-    }; // ← closes qrWindow.onload
-    
   } catch (error) {
     console.error("QR generation failed:", error);
     alert("Failed to generate QR code. Please try again.");
-    return;
   }
-} // ← closes generateQRCode function
+} 
 
 // ======== EVENT DELEGATION (FIXED) ========
 // ✅ Keep this block to handle profile actions (WIRING) ALL THE BUTTONS IN LOADSAVEDPETPROFILES FUNCTION✅
