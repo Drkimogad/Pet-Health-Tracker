@@ -1415,29 +1415,30 @@ async function generateQRCode(petId) {
 
 <script>
 // Build QR message safely with string concatenation
-const qrMessage = JSON.stringify(`
-📋 Meet ${escapeHTML(profile.petName || 'a lovely pet')}!
+const qrMessage = ${JSON.stringify(`
+📋 Meet ${profile.petName || 'a lovely pet'}!
 
-Breed: ${escapeHTML(profile.breed || 'N/A')}
-Age: ${escapeHTML(profile.age || 'N/A')}
-Weight: ${escapeHTML(profile.weight || 'N/A')}
-Type: ${escapeHTML(profile.type || 'N/A')}
-Gender: ${escapeHTML(profile.gender || 'N/A')}
-Mood: ${escapeHTML(profile.mood || 'N/A')}
-Microchip: ${escapeHTML(profile.microchip?.id || 'N/A')}
-Allergies: ${escapeHTML(profile.allergies || 'None')}
-Medical History: ${escapeHTML(profile.medicalHistory || 'N/A')}
-Diet Plan: ${escapeHTML(profile.dietPlan || 'N/A')}
+Breed: ${profile.breed || 'N/A'}
+Age: ${profile.age || 'N/A'}
+Weight: ${profile.weight || 'N/A'}
+Type: ${profile.type || 'N/A'}
+Gender: ${profile.gender || 'N/A'}
+Mood: ${profile.mood || 'N/A'}
+Microchip: ${profile.microchip?.id || 'N/A'}
+Allergies: ${profile.allergies || 'None'}
+Medical History: ${profile.medicalHistory || 'N/A'}
+Diet Plan: ${profile.dietPlan || 'N/A'}
 
-Emergency Contact: ${escapeHTML(emergency.name || 'N/A')} ${emergency.relationship ? `(${escapeHTML(emergency.relationship)})` : ''} ${emergency.phone ? `- ${escapeHTML(emergency.phone)}` : ''}
+Emergency Contact: ${emergency.name || 'N/A'} ${emergency.relationship ? '(' + emergency.relationship + ')' : ''} ${emergency.phone ? '- ' + emergency.phone : ''}
 
-Vaccinations: ${escapeHTML(profile.reminders?.vaccinations || 'N/A')}
-Checkups: ${escapeHTML(profile.reminders?.checkups || 'N/A')}
-Grooming: ${escapeHTML(profile.reminders?.grooming || 'N/A')}
+Vaccinations: ${profile.reminders?.vaccinations || 'N/A'}
+Checkups: ${profile.reminders?.checkups || 'N/A'}
+Grooming: ${profile.reminders?.grooming || 'N/A'}
 
 👉 Go to the app: https://drkimogad.github.io/Pet-Health-Tracker/
 📧 Contact developer: dr_kimogad@yahoo.com
-`);
+`.trim())};
+
   // Initialize QR code
   new QRCode(document.getElementById("qrcode"), {
     text: qrMessage,
