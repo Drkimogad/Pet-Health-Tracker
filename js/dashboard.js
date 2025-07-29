@@ -1316,7 +1316,6 @@ async function generateQRCode(petId) {
       <html>
         <head>
           <title>${safePetName} - Pet Profile</title>
-          <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
           <style>
             body { 
               font-family: Arial, sans-serif;
@@ -1417,10 +1416,15 @@ async function generateQRCode(petId) {
   <button onclick="window.print()">Print</button>
   <button onclick="downloadQR()">Download QR</button>
 </div>
-
-<script>
-// Wait for the new window to finish rendering
+ </body>
+ </html>
+`);
+      
 qrWindow.onload = () => {
+  const script = qrWindow.document.createElement("script");
+  script.src = "https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js";
+
+  script.onload = () => {
 // Build QR message safely with string concatenation
 const qrMessage = ${JSON.stringify(`
 📋 Meet ${profile.petName || 'a lovely pet'}!
@@ -1450,39 +1454,31 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
   if (!qrContainer) return alert("QR container not found.");
 
   // Initialize QR code
-  new QRCode(document.getElementById("qrcode"), {
+    new qrWindow.QRCode(qrWindow.document.getElementById("qrcode"), {
     text: qrMessage,
     width: 200,
     height: 200,
     colorDark: "#000000",
     colorLight: "#ffffff",
-    correctLevel: QRCode.CorrectLevel.H
+    correctLevel: qrWindow.QRCode.CorrectLevel.H
   });
 
-  // Update downloadQR function inside the child window
-  qrWindow.downloadQR = function () {
-    const canvas = qrWindow.document.querySelector("#qrcode canvas");
-    if (canvas) {
-      const link = qrWindow.document.createElement("a");
-      link.download = "${safePetName}_QR.png";
-      link.href = canvas.toDataURL("image/png");
-      link.click();
-    } else {
-      alert("QR code not ready yet. Try again shortly.");
-    }
+    // 👇 Inject downloadQR into qrWindow context
+    qrWindow.downloadQR = function () {
+      const canvas = qrWindow.document.querySelector("#qrcode canvas");
+      if (canvas) {
+        const link = qrWindow.document.createElement("a");
+        link.download = "${safePetName}_QR.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      } else {
+        alert("QR code not ready yet.");
+      }
+    };
   };
-}; // 👈 closes qrWindow.onload = () => {
-</script>
-    </body>
-      </html>
-    `);
+    qrWindow.document.body.appendChild(script);
+  };
     qrWindow.document.close();
-
-  } catch (error) {
-    console.error("QR generation failed:", error);
-    alert("Failed to generate QR code. Please try again.");
-  }
-}
 
 // ======== EVENT DELEGATION (FIXED) ========
 // ✅ Keep this block to handle profile actions (WIRING) ALL THE BUTTONS IN LOADSAVEDPETPROFILES FUNCTION✅
