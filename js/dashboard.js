@@ -1490,7 +1490,6 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
   };  
     qrWindow.document.body.appendChild(script);
   }; // closes script.onload = () => { ...
-} // qrWindow.onload = () => { ... };
 
 // ======== EVENT DELEGATION (FIXED) ========
 // ✅ Keep this block to handle profile actions (WIRING) ALL THE BUTTONS IN LOADSAVEDPETPROFILES FUNCTION✅
