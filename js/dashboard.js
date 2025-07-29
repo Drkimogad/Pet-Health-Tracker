@@ -1438,10 +1438,10 @@ qrWindow.document.close(); // ✅ Finish writing
   const script = qrWindow.document.createElement("script");
   script.src = "https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js";
      
- script.onerror = () => {
-    qrWindow.document.getElementById('content').innerHTML = 
-      'Failed to load QR library. Please check your connection.';
-  };
+// script.onerror = () => {
+ //   qrWindow.document.getElementById('content').innerHTML = 
+ //     'Failed to load QR library. Please check your connection.';
+//  };
 
   script.onload = () => {
 // Build QR message safely with string concatenation
