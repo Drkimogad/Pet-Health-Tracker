@@ -1488,9 +1488,16 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
         link.click();
       }
     };
-  };
+  }; // ← closes script.onload
+     
     qrWindow.document.body.appendChild(script);
-  }; // closes script.onload = () => { ...
+    }; // ← closes qrWindow.onload
+    
+} catch (error) {
+    console.error("QR generation failed:", error);
+    alert("Failed to generate QR code. Please try again.");
+  }
+} // ← closes generateQRCode function
 
 // ======== EVENT DELEGATION (FIXED) ========
 // ✅ Keep this block to handle profile actions (WIRING) ALL THE BUTTONS IN LOADSAVEDPETPROFILES FUNCTION✅
