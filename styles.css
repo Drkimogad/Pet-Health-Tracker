@@ -789,7 +789,7 @@ body.modal-active {
 
   /* Adaptive Grid Layout */
   .pdf-export-container .details-grid {
-    display: block !important;
+    display: grid !important;
     grid-template-columns: 1fr !important; /* Single column */
     gap: 0.3rem !important;
   }
@@ -802,7 +802,6 @@ body.modal-active {
     border-bottom: 1px solid #eee !important;
     font-weight: bold !important;
     page-break-after: avoid !important;
-    page-break-inside: avoid;
   }
 
   /* Ensure fields render */
@@ -871,7 +870,6 @@ body.modal-active {
   cursor: not-allowed !important;
   pointer-events: none !important;
 }
-
 /* ========== COMMUNITY CHAT MODAL ========== */
 /*  community chat button styling*/
 .communityChat-btn {
