@@ -567,16 +567,28 @@ setTimeout(() => {
       pdfContainer.appendChild(modalClone);
       document.body.appendChild(pdfContainer);
 
-      // 3. Wait for final rendering
-      await new Promise(resolve => setTimeout(resolve, 500));
-
-
-    // for more reliability Force full rendering with timeout fallback
+   // 3. Wait for final rendering with reminders-specific checks
 await Promise.race([
   new Promise(resolve => {
+    // 3a. First force layout reflow for reminders
+    const remindersSection = pdfContainer.querySelector('.section-break:last-child');
+    if (remindersSection) {
+      remindersSection.scrollIntoView({ behavior: 'instant' });
+    }
+
+    // 3b. Then check ALL critical elements
     const checkRender = () => {
-      const lastElement = document.querySelector('.pdf-export-container .section-break:last-child + div');
-      if (lastElement?.offsetHeight > 0) {
+      const elementsToCheck = [
+        pdfContainer.querySelector('.detail-photo'),
+        pdfContainer.querySelector('.section-break:last-child + div') // Last reminder item
+      ];
+      
+      const allVisible = elementsToCheck.every(el => 
+        el && el.offsetHeight > 0 && window.getComputedStyle(el).opacity !== '0'
+      );
+      
+      if (allVisible) {
+        console.log('✅ All elements rendered');
         resolve();
       } else {
         requestAnimationFrame(checkRender);
@@ -584,21 +596,28 @@ await Promise.race([
     };
     checkRender();
   }),
-  new Promise(resolve => setTimeout(resolve, 1000)) // Fallback after 1sec
+  new Promise(resolve => setTimeout(resolve, 1500)) // Absolute fallback
 ]);
-        
-      // 4. Modified html2canvas config to Capture as image
-      const canvas = await html2canvas(pdfContainer, {
-        scale: 2,
-        useCORS: true,
-        logging: true, // Keep enabled for debugging
-        backgroundColor: '#FFFFFF',
-        scrollX: 0,
-        scrollY: 0,
-        windowWidth: pdfContainer.scrollWidth,
-        windowHeight: pdfContainer.scrollHeight
-      });
 
+// 4. Capture with enhanced config
+const canvas = await html2canvas(pdfContainer, {
+  scale: 2,
+  useCORS: true,
+  logging: true,
+  backgroundColor: '#FFFFFF',
+  scrollX: 0,
+  scrollY: 0,
+  windowWidth: pdfContainer.scrollWidth,
+  windowHeight: pdfContainer.scrollHeight,
+  onclone: (clonedDoc) => {
+    // Nuclear option for hidden elements
+    clonedDoc.querySelectorAll('*').forEach(el => {
+      el.style.opacity = '1';
+      el.style.visibility = 'visible';
+    });
+  }
+});
+        
       // 5. Generate PDF
       if (!window.jspdf) {
         await loadScriptWithRetry('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
