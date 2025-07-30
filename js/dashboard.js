@@ -585,20 +585,14 @@ await Promise.race([
 
 // 4. CAPTURE IMAGE - ONLY ADD THIS ONE FIX
 const canvas = await html2canvas(pdfContainer, {
-  scale: 2,
+  scale: 1.7,
   useCORS: true,
   logging: true,
   backgroundColor: '#FFFFFF',
   scrollX: 0,
   scrollY: 0,
   windowWidth: pdfContainer.scrollWidth,
-  windowHeight: pdfContainer.scrollHeight,
-  // ONLY NEW LINE NEEDED:
-  onclone: (clonedDoc) => {
-    clonedDoc.querySelectorAll('.section-break, .section-break + div').forEach(el => {
-      el.style.cssText = 'opacity:1 !important; visibility:visible !important;';
-    });
-  }
+  windowHeight: pdfContainer.scrollHeight
 });
         
       // 5. Generate PDF
