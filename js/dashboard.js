@@ -546,14 +546,21 @@ setTimeout(() => {
       // 2. Clone and sanitize modal content
       const pdfContainer = document.createElement('div');
       pdfContainer.className = 'pdf-export-container';
+      // Add responsive PDF container styling
       pdfContainer.style.cssText = `
         position: absolute;
         left: -9999px;
-        width: 210mm;
+        width: 100%;
+        max-width: 210mm;
         background: white;
         padding: 15mm;
-      `;
-
+        box-sizing: border-box;
+      `;   
+      // Force font scaling for PDF
+      modalClone.style.cssText = `
+     font-size: 16pt;
+     line-height: 1.5;
+     `;
       const modalClone = modal.cloneNode(true);
       // Remove interactive elements
       modalClone.querySelectorAll('button, [onclick]').forEach(el => el.remove());
@@ -580,12 +587,16 @@ await Promise.race([
   new Promise(resolve => setTimeout(resolve, 1000)) // Fallback after 1sec
 ]);
         
-      // 4. Capture as image
+      // 4. Modified html2canvas config to Capture as image
       const canvas = await html2canvas(pdfContainer, {
-        scale: 1,
+        scale: 2,
         useCORS: true,
-        logging: false,
-        backgroundColor: '#FFFFFF'
+        logging: true, // Keep enabled for debugging
+        backgroundColor: '#FFFFFF',
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: pdfContainer.scrollWidth,
+        windowHeight: pdfContainer.scrollHeight
       });
 
       // 5. Generate PDF
