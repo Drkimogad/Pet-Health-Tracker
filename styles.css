@@ -1195,6 +1195,21 @@ header, footer {
   gap: 0.4rem;
 }
 }
+
+/* ----- Desktop-Specific PDF Enhancements ----- */
+@media (min-width: 768px) {
+  .pdf-export-container .details-grid {
+    display: grid !important;                /* Force grid layout */
+    grid-template-columns: repeat(2, 1fr) !important; /* Two columns */
+    gap: 0.5rem !important;                 /* Consistent spacing */
+    align-items: start !important;          /* Prevent row stretching */
+  }
+
+  .pdf-export-container .section-break {
+    grid-column: span 2 !important;         /* Headers span both columns */
+  }
+}
+
 /* Desktop Chat Modal (≥1024px) */
 @media (min-width: 1024px) {
   .community-modal-content {
