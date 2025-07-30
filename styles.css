@@ -1199,21 +1199,27 @@ header, footer {
   .pdf-export-container .details-grid {
     display: grid !important;                /* Force grid layout */
     grid-template-columns: repeat(2, 1fr) !important; /* Two columns */
-    gap: 0.3rem !important; /* Tighter grid spacing */
+    gap: 0.35rem !important; /* Tighter grid spacing */
     align-items: start !important;          /* Prevent row stretching */
-    padding: 3mm 5mm !important; /* Reduced from 5mm 10mm */
-    margin-top: -5mm !important; /* Pull content upward */
+    padding: 5mm 10mm !important; /* Reduced from 5mm 10mm */
+    margin-top: -2mm !important; /* Pull content upward */
   }
-
+  /* Label/value alignment */
+  .pdf-export-container .detail-label {
+    flex: 0 0 95px !important;     /* Fixed width for alignment */
+    color: #444 !important;        /* Darker for better contrast */
+  }
   .pdf-export-container .section-break {
     grid-column: span 2 !important;         /* Headers span both columns */
   }
-
+  
+  /* Improved typography */
   .pdf-export-container * {
-    font-size: 9pt !important; /* Slightly smaller text */
-    line-height: 1.3 !important;
+    font-size: 10.5pt !important; /* Slightly smaller text */
+    line-height: 1.35 !important;
   }
 }
+
 /* Desktop Chat Modal (≥1024px) */
 @media (min-width: 1024px) {
   .community-modal-content {
