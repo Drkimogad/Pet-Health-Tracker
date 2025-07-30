@@ -570,25 +570,9 @@ setTimeout(() => {
    // 3. Wait for final rendering with reminders-specific checks
 await Promise.race([
   new Promise(resolve => {
-    // 3a. First force layout reflow for reminders
-    const remindersSection = pdfContainer.querySelector('.section-break:last-child');
-    if (remindersSection) {
-      remindersSection.scrollIntoView({ behavior: 'instant' });
-    }
-
-    // 3b. Then check ALL critical elements
     const checkRender = () => {
-      const elementsToCheck = [
-        pdfContainer.querySelector('.detail-photo'),
-        pdfContainer.querySelector('.section-break:last-child + div') // Last reminder item
-      ];
-      
-      const allVisible = elementsToCheck.every(el => 
-        el && el.offsetHeight > 0 && window.getComputedStyle(el).opacity !== '0'
-      );
-      
-      if (allVisible) {
-        console.log('✅ All elements rendered');
+      const lastElement = document.querySelector('.pdf-export-container .section-break:last-child + div');
+      if (lastElement?.offsetHeight > 0) {
         resolve();
       } else {
         requestAnimationFrame(checkRender);
@@ -596,10 +580,10 @@ await Promise.race([
     };
     checkRender();
   }),
-  new Promise(resolve => setTimeout(resolve, 1500)) // Absolute fallback
+  new Promise(resolve => setTimeout(resolve, 1000))
 ]);
 
-// 4. Capture with enhanced config
+// 4. CAPTURE IMAGE - ONLY ADD THIS ONE FIX
 const canvas = await html2canvas(pdfContainer, {
   scale: 2,
   useCORS: true,
@@ -609,11 +593,10 @@ const canvas = await html2canvas(pdfContainer, {
   scrollY: 0,
   windowWidth: pdfContainer.scrollWidth,
   windowHeight: pdfContainer.scrollHeight,
+  // ONLY NEW LINE NEEDED:
   onclone: (clonedDoc) => {
-    // Nuclear option for hidden elements
-    clonedDoc.querySelectorAll('*').forEach(el => {
-      el.style.opacity = '1';
-      el.style.visibility = 'visible';
+    clonedDoc.querySelectorAll('.section-break, .section-break + div').forEach(el => {
+      el.style.cssText = 'opacity:1 !important; visibility:visible !important;';
     });
   }
 });
