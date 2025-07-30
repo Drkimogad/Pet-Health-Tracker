@@ -1450,56 +1450,53 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
           </div>
 
 <script>
-  // Generate QR code with SHORTENED MESSAGE (while keeping full text for print)
-  function generateQR() {
-    const qrContainer = document.getElementById("qrcode");
-    if (!qrContainer) return;
+  (function() {
+    // 1. Safely extract profile data from DOM
+    const petName = '${profile.petName?.replace(/'/g, "\\'") || 'Unnamed Pet'}';
+    const breed = '${profile.breed?.replace(/'/g, "\\'") || 'N/A'}';
+    const age = '${profile.age || 'N/A'}';
+    const microchip = '${profile.microchip?.id || 'N/A'}';
+    const medical = '${(profile.medicalHistory || 'N/A').substring(0, 50).replace(/'/g, "\\'")}';
+    const emergencyName = '${emergency.name?.replace(/'/g, "\\'") || 'N/A'}';
+    const emergencyPhone = '${emergency.phone || ''}';
 
-    // Shortened QR content (customizable fields)
-    const shortQRMessage = `PET CARD
-Name: ${profile.petName || 'N/A'}
-Breed: ${profile.breed || 'N/A'}
-Age: ${profile.age || 'N/A'}
-Microchip: ${profile.microchip?.id || 'N/A'}
-Medical: ${profile.medicalHistory ? profile.medicalHistory.substring(0, 50) + (profile.medicalHistory.length > 50 ? '...' : '') : 'N/A'}
-Emergency: ${emergency.name || 'N/A'} ${emergency.phone || ''}
-
-Full Profile: https://drkimogad.github.io/Pet-Health-Tracker/`;
-
-    try {
-      new QRCode(qrContainer, {
-        text: shortQRMessage,
-        width: 200,
-        height: 200,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
-      });
-    } catch (e) {
-      qrContainer.innerHTML = '<p style="color:red">(Scan error - view online profile)</p>';
+    // 2. Generate QR when library loads
+    function generateQR() {
+      try {
+        new QRCode(document.getElementById("qrcode"), {
+          text: `PET CARD\nName: ${petName}\nBreed: ${breed}\nAge: ${age}\nMicrochip: ${microchip}\nMedical: ${medical}\nEmergency: ${emergencyName} ${emergencyPhone}\n\nFull Profile: https://drkimogad.github.io/Pet-Health-Tracker/`,
+          width: 200,
+          height: 200,
+          colorDark: "#000000",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H
+        });
+      } catch (e) {
+        document.getElementById("qrcode").innerHTML = '<p>Scan full profile online</p>';
+      }
     }
-  }
 
-  // Safely load QR library
-  if (typeof QRCode === 'undefined') {
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js';
-    script.onload = generateQR;
-    document.body.appendChild(script);
-  } else {
-    generateQR();
-  }
-
-  // Your original download function (unchanged)
-  function downloadQR() {
-    const canvas = document.querySelector("#qrcode canvas");
-    if (canvas) {
-      const link = document.createElement("a");
-      link.download = "${safePetName}_QR.png";
-      link.href = canvas.toDataURL("image/png");
-      link.click();
+    // 3. Load library safely
+    if (typeof QRCode === 'undefined') {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js';
+      script.onload = generateQR;
+      document.body.appendChild(script);
+    } else {
+      generateQR();
     }
-  }
+
+    // 4. Keep original download function
+    window.downloadQR = function() {
+      const canvas = document.querySelector("#qrcode canvas");
+      if (canvas) {
+        const link = document.createElement("a");
+        link.download = '${safePetName}_QR.png';
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      }
+    };
+  })();
 </script>
         </body>
       </html>
