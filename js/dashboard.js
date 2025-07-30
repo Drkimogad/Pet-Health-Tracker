@@ -1280,7 +1280,7 @@ async function openCommunityChatModal(petId) {
       .replace(/'/g, "&#039;")
       .replace(/`/g, "&#096;");      
  }
-
+ // QR FUNCTION 
 async function generateQRCode(petId) {
   try {
     // 1. Load profile data
@@ -1468,17 +1468,6 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
                 link.href = canvas.toDataURL("image/png");
                 link.click();
               }
-            }
-            
-            // Helper function for HTML escaping
-            function escapeHTML(str) {
-              return String(str)
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;")
-                .replace(/`/g, "&#096;");
             }
           </script>
         </body>
