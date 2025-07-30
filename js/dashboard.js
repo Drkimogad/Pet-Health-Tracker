@@ -1451,20 +1451,26 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
 
 <script>
   (function() {
-    // 1. Safely extract profile data from DOM
-    const petName = '${profile.petName?.replace(/'/g, "\\'") || 'Unnamed Pet'}';
-    const breed = '${profile.breed?.replace(/'/g, "\\'") || 'N/A'}';
-    const age = '${profile.age || 'N/A'}';
-    const microchip = '${profile.microchip?.id || 'N/A'}';
-    const medical = '${(profile.medicalHistory || 'N/A').substring(0, 50).replace(/'/g, "\\'")}';
-    const emergencyName = '${emergency.name?.replace(/'/g, "\\'") || 'N/A'}';
-    const emergencyPhone = '${emergency.phone || ''}';
+    // 1. Safely extract profile data (with proper escaping)
+    const petName = '${profile.petName ? profile.petName.replace(/'/g, "\\'") : "Unnamed Pet"}';
+    const breed = '${profile.breed ? profile.breed.replace(/'/g, "\\'") : "N/A"}';
+    const age = '${profile.age || "N/A"}';
+    const microchip = '${profile.microchip?.id || "N/A"}';
+    const medical = '${profile.medicalHistory ? profile.medicalHistory.substring(0, 50).replace(/'/g, "\\'") : "N/A"}';
+    const emergencyName = '${emergency.name ? emergency.name.replace(/'/g, "\\'") : "N/A"}';
+    const emergencyPhone = '${emergency.phone || ""}';
 
     // 2. Generate QR when library loads
     function generateQR() {
       try {
         new QRCode(document.getElementById("qrcode"), {
-          text: `PET CARD\nName: ${petName}\nBreed: ${breed}\nAge: ${age}\nMicrochip: ${microchip}\nMedical: ${medical}\nEmergency: ${emergencyName} ${emergencyPhone}\n\nFull Profile: https://drkimogad.github.io/Pet-Health-Tracker/`,
+          text: "PET CARD\\nName: " + petName + 
+                "\\nBreed: " + breed + 
+                "\\nAge: " + age + 
+                "\\nMicrochip: " + microchip + 
+                "\\nMedical: " + medical + 
+                "\\nEmergency: " + emergencyName + " " + emergencyPhone + 
+                "\\n\\nFull Profile: https://drkimogad.github.io/Pet-Health-Tracker/",
           width: 200,
           height: 200,
           colorDark: "#000000",
