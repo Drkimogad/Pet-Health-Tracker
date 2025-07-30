@@ -1445,31 +1445,62 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
           </div>
 
           <div class="actions">
-            <button onclick="window.print()">Print</button>
+            <button onclick="window.print()">Print Form</button>
             <button onclick="downloadQR()">Download QR</button>
           </div>
 
-          <script>
-            // Generate QR code with static URL
-            new QRCode(document.getElementById("qrcode"), {
-              text: \`${qrMessage.replace(/`/g, '\\`')}\`,
-              width: 200,
-              height: 200,
-              colorDark: "#000000",
-              colorLight: "#ffffff",
-              correctLevel: QRCode.CorrectLevel.H
-            });
+<script>
+  // Generate QR code with SHORTENED MESSAGE (while keeping full text for print)
+  function generateQR() {
+    const qrContainer = document.getElementById("qrcode");
+    if (!qrContainer) return;
 
-            function downloadQR() {
-              const canvas = document.querySelector("#qrcode canvas");
-              if (canvas) {
-                const link = document.createElement("a");
-                link.download = "${safePetName}_QR.png";
-                link.href = canvas.toDataURL("image/png");
-                link.click();
-              }
-            }
-          </script>
+    // Shortened QR content (customizable fields)
+    const shortQRMessage = `PET CARD
+Name: ${profile.petName || 'N/A'}
+Breed: ${profile.breed || 'N/A'}
+Age: ${profile.age || 'N/A'}
+Microchip: ${profile.microchip?.id || 'N/A'}
+Medical: ${profile.medicalHistory ? profile.medicalHistory.substring(0, 50) + (profile.medicalHistory.length > 50 ? '...' : '') : 'N/A'}
+Emergency: ${emergency.name || 'N/A'} ${emergency.phone || ''}
+
+Full Profile: https://drkimogad.github.io/Pet-Health-Tracker/`;
+
+    try {
+      new QRCode(qrContainer, {
+        text: shortQRMessage,
+        width: 200,
+        height: 200,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    } catch (e) {
+      qrContainer.innerHTML = '<p style="color:red">(Scan error - view online profile)</p>';
+    }
+  }
+
+  // Safely load QR library
+  if (typeof QRCode === 'undefined') {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js';
+    script.onload = generateQR;
+    document.body.appendChild(script);
+  } else {
+    generateQR();
+  }
+
+  // Your original download function (unchanged)
+  function downloadQR() {
+    const canvas = document.querySelector("#qrcode canvas");
+    if (canvas) {
+      const link = document.createElement("a");
+      link.download = "${safePetName}_QR.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    }
+  }
+</script>
         </body>
       </html>
     `);
