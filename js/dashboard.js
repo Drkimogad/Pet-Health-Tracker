@@ -778,6 +778,35 @@ function handleCancelEdit() {
    DOM.petList.scrollIntoView({ behavior: 'smooth' });
   }
 }
+//==============================
+// OPENCREATEFUNCTION RECENTLY IMPLEMENTED
+// It uses same canceledit i have
+//===============================================
+function openCreateForm() {
+  editingProfileId = null; // Not editing an existing profile
+  resetForm(); // Clear any existing form values
+
+  // Make sure pet photo preview is hidden
+  if (DOM.petPhotoPreview) {
+    DOM.petPhotoPreview.src = '';
+    DOM.petPhotoPreview.style.display = 'none';
+  }
+
+  // Show the form
+  DOM.petList.classList.remove("hidden");
+  DOM.savedProfilesList.classList.add("hidden");
+
+  // Reuse the existing Cancel button behavior
+  const cancelBtn = document.getElementById("cancelEdit");
+  if (cancelBtn) {
+    cancelBtn.onclick = handleCancelEdit;
+    cancelBtn.style.display = "inline-block"; // Ensure it's visible
+  }
+
+  // Scroll to the form
+  DOM.petList.scrollIntoView({ behavior: 'smooth' });
+}
+
 //=================================================
 // FUNCTION DELETE PROFILE (UPDATED FOR HYBRID STORAGE) PRODUCTION READY EXCEPT CLOUDINARY
 //======================================================
@@ -1465,6 +1494,7 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
     const microchip = '${profile.microchip?.id || "N/A"}';
     const medical = '${profile.medicalHistory ? profile.medicalHistory.substring(0, 50).replace(/'/g, "\\'") : "N/A"}';
     const emergencyName = '${emergency.name ? emergency.name.replace(/'/g, "\\'") : "N/A"}';
+    const emergencyRelationship = '${emergency.relationship ? emergency.relationship.replace(/'/g, "\\'") : ""}';
     const emergencyPhone = '${emergency.phone || ""}';
 
     // 2. Generate QR when library loads
