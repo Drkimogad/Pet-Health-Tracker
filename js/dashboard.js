@@ -49,6 +49,7 @@ const DOM = {
   emergencyContactName: document.getElementById('emergencyContactName'),
   emergencyContactPhone: document.getElementById('emergencyContactPhone'),
   emergencyContactRelationship: document.getElementById('emergencyContactRelationship'),
+  birthdayReminder: document.getElementById('birthdayReminder'), 
   vaccinationsAndDewormingReminder: document.getElementById('vaccinationsAndDewormingReminder'),
   medicalCheckupsReminder: document.getElementById('medicalCheckupsReminder'),
   groomingReminder: document.getElementById('groomingReminder')
@@ -60,17 +61,19 @@ if (!DOM.savedProfilesList || !DOM.petList) {
 }
 
 // =======REMINDERS🌟
-const REMINDER_THRESHOLD_DAYS = 5;
-const ALLOWED_REMINDER_TYPES = ['vaccination', 'checkup', 'grooming'];
+const REMINDER_THRESHOLD_DAYS = 3;
+const ALLOWED_REMINDER_TYPES = ['vaccination', 'checkup', 'grooming', 'birthdayReminder];
 const REMINDER_TYPE_MAP = {
   vaccinations: 'vaccination',
   checkups: 'checkup',
-  grooming: 'grooming'
+  grooming: 'grooming',
+  birthdayReminder: 'birthdayReminder'
 };
 const reminderFields = {
   vaccinations: 'Vaccinations/Deworming',
   checkups: 'Medical Check-ups',
-  grooming: 'Grooming'
+  grooming: 'Grooming',
+birthdayReminder:'Birthday Reminder'
 };
 //FUNCTION HIGHLIGHT REMINDERS UPDATED
 function highlightReminders(reminders, index) {
@@ -184,8 +187,8 @@ function getReminderClass(reminderDateString) {
       }
     });
   }
-// I NEED THIS TO BE USED TO GENERATE NEW PROFILES FOR FIRESTORE.
-// A. Generate Unique ID For Drives, i need this function to be modified to create new profiles in Firestore 
+//  TO GENERATE NEW PROFILES FOR FIRESTORE.
+// A. Generate Unique ID  
 // under "profiles" collection 
 function generateUniqueId() {
   return 'pet-' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
@@ -229,7 +232,8 @@ function getPetDataFromForm() {
 
     // === Reminders ===
     reminders: {
-      vaccinations: DOM.vaccinationsAndDewormingReminder.value,
+     birthdayReminder: DOM.BirthdayReminder.value, // maybe problematic 
+     vaccinations: DOM.vaccinationsAndDewormingReminder.value,
       checkups: DOM.medicalCheckupsReminder.value,
       grooming: DOM.groomingReminder.value
     }
@@ -367,7 +371,7 @@ async function loadSavedPetProfile() {
       remindersDiv.className = 'pet-reminders';
 
       const today = new Date();
-      const REMINDER_THRESHOLD_DAYS = 5;
+      const REMINDER_THRESHOLD_DAYS = 3;
 
       // ✅ Lottie animations
       const overdueAnimation = 'https://drkimogad.github.io/Pet-Health-Tracker/lottiefiles/overdue.json';
@@ -510,6 +514,7 @@ const emergencyContact = profile.emergencyContacts?.[0] || {};
 
 
       <div class="section-break"><strong>Reminders:</strong></div>
+      <div>BirthdayReminder: ${formatReminder(profile.reminders?.birthdayReminder)}</div>
       <div>Vaccinations: ${formatReminder(profile.reminders?.vaccinations)}</div>
       <div>Checkups: ${formatReminder(profile.reminders?.checkups)}</div>
       <div>Grooming: ${formatReminder(profile.reminders?.grooming)}</div>
@@ -685,6 +690,7 @@ async function editPetProfile(petId) {
     setValue('emergencyContactPhone', profile.emergencyContacts?.[0]?.phone);
     setValue('emergencyContactRelationship', profile.emergencyContacts?.[0]?.relationship);
       // Modified 
+      setValue('birthdayReminder', profile.reminders?.birthdayReminder);
     setValue('vaccinationsAndDewormingReminder', profile.reminders?.vaccinations);
     setValue('medicalCheckupsReminder', profile.reminders?.checkups);
     setValue('groomingReminder', profile.reminders?.grooming);
@@ -749,6 +755,7 @@ function handleCancelEdit() {
       setValue('emergencyContactRelationship', ec.relationship);
 
       // Reminders
+      setValue('birthdayReminder', originalProfile.birthdayReminder);
       setValue('vaccinationsAndDewormingReminder', originalProfile.vaccinationsAndDewormingReminder);
       setValue('medicalCheckupsReminder', originalProfile.medicalCheckupsReminder);
       setValue('groomingReminder', originalProfile.groomingReminder);
@@ -909,6 +916,7 @@ async function exportAllPetCards(asZip = false) {
           <p><strong>Medical History:</strong> ${profile.medicalHistory || 'N/A'}</p>
           <p><strong>Diet Plan:</strong> ${profile.dietPlan || 'N/A'}</p>
           <p><strong>Emergency:</strong> ${emergency.name || 'N/A'} (${emergency.relationship || 'N/A'}) - ${emergency.phone || 'N/A'}</p>
+          <p><strong>BirthdayReminder:</strong> ${profile.reminders?.BirthdayReminder || 'N/A'}</p>
           <p><strong>Vaccinations:</strong> ${profile.reminders?.vaccinations || 'N/A'}</p>
           <p><strong>Checkups:</strong> ${profile.reminders?.checkups || 'N/A'}</p>
           <p><strong>Grooming:</strong> ${profile.reminders?.grooming || 'N/A'}</p>
@@ -1003,7 +1011,7 @@ async function inviteFriends(petId) {
 
 I'm using this awesome app (Pet Health Tracker) to manage:
 📋 Basic Information  
-⏰ Reminders for Vaccinations, Checkups & Grooming  
+⏰ Reminders for Birthdays, Vaccinations, Checkups & Grooming  
 🩺 Medical History  
 🔎 Microchip Details  
 📞 Emergency Contacts  
@@ -1341,6 +1349,7 @@ async function generateQRCode(petId) {
     }
 // 5. Create reminders html outside 
      const remindersHTML = `
+  <p><strong>BirthdayReminder:</strong> ${escapeHTML(profile.reminders?.birthdayReminder|| 'N/A')}</p>
   <p><strong>Vaccinations:</strong> ${escapeHTML(profile.reminders?.vaccinations || 'N/A')}</p>
   <p><strong>Checkups:</strong> ${escapeHTML(profile.reminders?.checkups || 'N/A')}</p>
   <p><strong>Grooming:</strong> ${escapeHTML(profile.reminders?.grooming || 'N/A')}</p>
@@ -1361,6 +1370,7 @@ Diet Plan: ${profile.dietPlan || 'N/A'}
 
 Emergency Contact: ${emergency.name || 'N/A'} ${emergency.relationship ? '(' + emergency.relationship + ')' : ''} ${emergency.phone ? '- ' + emergency.phone : ''}
 
+BirthdayReminder: ${profile.reminders?.birthdayReminder || 'N/A'}
 Vaccinations: ${profile.reminders?.vaccinations || 'N/A'}
 Checkups: ${profile.reminders?.checkups || 'N/A'}
 Grooming: ${profile.reminders?.grooming || 'N/A'}
@@ -1647,6 +1657,7 @@ const petData = {
   }],
   mood: DOM.moodSelector?.value,
   reminders: {
+    birthdayReminder: DOM.birthdayReminder?.value,
     vaccinations: DOM.vaccinationsAndDewormingReminder?.value,
     checkups: DOM.medicalCheckupsReminder?.value,
     grooming: DOM.groomingReminder?.value
@@ -1802,7 +1813,9 @@ editingSessionKeys.forEach(key => {
   safeSetValue('emergencyContactName', ec.name);
   safeSetValue('emergencyContactPhone', ec.phone);
   safeSetValue('emergencyContactRelationship', ec.relationship);
+    
 
+  safeSetValue('birthdayReminder', originalProfile.birthdayReminder);
   safeSetValue('vaccinationsAndDewormingReminder', originalProfile.vaccinationsAndDewormingReminder);
   safeSetValue('medicalCheckupsReminder', originalProfile.medicalCheckupsReminder);
   safeSetValue('groomingReminder', originalProfile.groomingReminder);
