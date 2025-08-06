@@ -785,16 +785,13 @@ function handleCancelEdit() {
     sessionStorage.removeItem(`editingProfile_${editingProfileId}`);
     editingProfileId = null;
 
+    DOM.petPhotoPreview.style.display = 'none';
+    DOM.petPhotoInput.value = '';
+      // Optionally hide the button again
     const cancelButton = document.getElementById("cancelEdit");
     if (cancelButton) {
     cancelButton.style.display = 'none'; // it hides it not remove
     }
-
-    DOM.petPhotoPreview.style.display = 'none';
-    DOM.petPhotoInput.value = '';
-      // Optionally hide the button again
-  const cancelButton = document.getElementById("cancelEdit");
-  if (cancelButton) cancelButton.style.display = "none";
       
    DOM.petList.classList.add("hidden");
    DOM.savedProfilesList.classList.remove("hidden");
