@@ -533,8 +533,8 @@ button.delete-btn {
 #cancelEditBtn {
   background-color: var(--red);
   color: white;
-  margin-left: 200px; /* increased space to separate from Save button */
-  margin-top: 0px;
+  margin-left: auto; /* pushes it to the right */
+  margin-top: 50px;
   padding: 10px 20px;
   border-radius: 6px;
   font-size: 1rem;
