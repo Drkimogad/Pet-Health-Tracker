@@ -503,11 +503,6 @@ textarea:focus {
   background-color: var(--purple);
   color: white;
 }
-/* Cancel Buttons */
-#cancelEdit {
-  background-color: var(--red);
-  margin-left: 10px;
-}
 
 button.delete-btn {
   background-color: white !important;
@@ -533,6 +528,28 @@ button.delete-btn {
   background-color: var(--qr-blue);
   color: white;
 }
+
+/* Cancel Buttons */
+#cancelEditBtn {
+  background-color: var(--red);
+  color: white;
+  margin-left: 20px; /* increased space to separate from Save button */
+  margin-bottom: 15px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#cancelEditBtn:hover {
+  background-color: var(--red); /* consider using a darker red for hover effect */
+  border: none; /* removed invalid 'border: purple;' */
+}
+
 /* rest of the buttons are generated dynamically and inline styled */
 
 /*NEW HELPER FUNCTION FOR PET FIELDS*/
