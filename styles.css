@@ -23,10 +23,6 @@
   --darkred: #8B0000; /* Or your preferred value */
 }
 
-
-  --google-btn-size: 60px; /* New size (default was 44px) */
-}
-
 /* ===== AUTH SECTION VISIBILITY ===== */
 #authContainer {
   display: flex !important;
@@ -1121,16 +1117,12 @@ body.modal-active {
   background: rgba(210, 180, 140, 0.05);
 }
 
-/* ===== RESPONSIVE DESIGNS============== */
-
 /* ===== HEADER & FOOTER STYLING ===== */
 header {
   background-color: #967bb6;
   padding: 1.5rem 2rem;
   text-align: center;
-  margin-top: 2rem; /* adds spa*/
-
-  margin-bottom: 0.5rem; /* adds space below header it was 2 */
+  margin-bottom: 2rem; /* adds space below header */
 }
 
 header h1 {
@@ -1146,7 +1138,227 @@ footer {
   text-align: center;
   padding: 1rem 2rem;
   font-size: 0.9rem;
-  margin-top: 1rem; /* adds space above footer it was 2 */
+  margin-top: 2rem; /* adds space above footer */
   position: sticky;
   bottom: 0;
+  z-index: 10;
+}
+/* ===== RESPONSIVE DESIGNS============== */
+/* Prevent header/footer from shrinking on phones*/
+header, footer {
+  padding: 1rem;
+}
+@media (min-width: 768px) {
+  header h1 { font-size: 2.5rem; }
+  footer { padding: 1.5rem; }
+}
+
+
+/* ===== DESKTOP RESPONSIVE DESIGN ===== */
+/* Desktop (≥1024px) */
+@media (min-width: 1024px) {
+  .pet-card {
+    flex-direction: row; /* Side-by-side layout */
+    max-width: 800px;
+    margin: 0 auto 2rem;
+  }
+  .pet-photo {
+    width: 150px; /* Larger image on desktop */
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  .form-container, .reminders-container {
+    padding: 15px;
+  }
+
+  fieldset {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  button {
+    width: 100%;
+  }
+
+  .pet-card {
+    padding: 15px;
+  }
+
+  .qr-controls {
+    flex-direction: column;
+  }
+}
+@media (min-width: 1025px) {
+  .modal-content {
+    transform: scale(0.85);
+    transform-origin: top center;
+    font-size: 0.95rem; 
+    line-height: 1.3;
+  }
+  .details-grid {
+  gap: 0.4rem;
+}
+}
+
+/* ----- Desktop-Specific PDF Enhancements ----- */
+@media (min-width: 768px) {
+  .pdf-export-container .details-grid {
+    display: grid !important;                /* Force grid layout */
+    grid-template-columns: repeat(2, 1fr) !important; /* Two columns */
+    gap: 0.25rem !important; /* Tighter grid spacing */
+    align-items: start !important;          /* Prevent row stretching */
+    padding: 5mm 10mm !important; /* Reduced from 5mm 10mm */
+    margin-top: -3mm !important; /* Pull content upward */
+  }
+  /* Label/value alignment */
+  .pdf-export-container .detail-label {
+    flex: 0 0 95px !important;     /* Fixed width for alignment */
+    color: #444 !important;        /* Darker for better contrast */
+  }
+  .pdf-export-container .section-break {
+    grid-column: span 2 !important;         /* Headers span both columns */
+  }
+    /* Force all reminders to stay in view */
+  .pdf-export-container .section-break:last-child,
+  .pdf-export-container .section-break:last-child + div {
+    position: relative !important;
+    top: auto !important;
+  }
+    .pdf-export-container {
+    padding: 4mm 8mm 2mm 8mm !important; /* Top, Right, Bottom, Left */
+    margin-top: -3mm !important; /* Pull up further */
+  }
+  /* Improved typography */
+  .pdf-export-container * {
+    font-size: 10pt !important; /* Slightly smaller text */
+    line-height: 1.3 !important;
+  }
+}
+
+/* Desktop Chat Modal (≥1024px) */
+@media (min-width: 1024px) {
+  .community-modal-content {
+    max-width: 700px; /* Wider chat on desktop */
+    height: 60vh;
+  }
+  .details-grid {
+  gap: 0.4rem;
+  }
+}
+
+/* ========== Tablet Styles (Portrait & Landscape) ========== */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .modal-content {
+    max-width: 95%;
+    padding: 1.5rem;
+    font-size: 0.95rem;
+    line-height: 1.3;
+    transform: scale(0.9);
+    transform-origin: top center;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr; /* Stack details vertically */
+    gap: 0.4rem;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .detail-photo {
+    max-width: 160px;
+  }
+
+  .pet-card {
+    padding: 1rem;
+  }
+}
+
+/* ========== Mobile Styles (≤767px) ========== */
+@media (max-width: 767px) {
+  .modal-content {
+    padding: 1rem;
+    font-size: 0.9rem;
+    transform: scale(0.95);
+    transform-origin: top center;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .detail-photo {
+    max-width: 140px;
+    margin: 0 auto 0.5rem;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr; /* Fully stacked */
+    gap: 0.75rem;
+  }
+
+  .modal-actions button {
+    width: 100%;
+    font-size: 0.9rem;
+  }
+
+  .pet-card {
+    padding: 1rem;
+    margin-bottom: 2rem;
+  }
+}
+
+/* Phone (≤600px) */
+@media (max-width: 600px) {
+  .pet-card {
+    padding: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+  .pet-actions button {
+    min-width: 100%; /* Full-width buttons */
+    margin-bottom: 0.5rem;
+  }
+}
+/* Phone forms */
+@media (max-width: 600px) {
+  input[type="text"],
+  select,
+  textarea {
+    font-size: 14px; /* Larger touch targets */
+    padding: 12px;
+  }
+  #petList {
+    padding: 1rem;
+    margin: 1rem auto;
+  }
+}
+/* Phone modals */
+@media (max-width: 600px) {
+  .modal-content {
+    width: 95vw;
+    padding: 1rem;
+  }
+  .detail-photo {
+    max-width: 120px;
+  }
+}
+/* Mobile Chat Modal (≤600px) */
+@media (max-width: 600px) {
+  .community-modal-content {
+    width: 95vw;
+    height: 80vh; /* Fill most of the screen */
+    padding: 1rem;
+  }
+  #chatInput {
+    height: 80px; /* Larger input area for mobile */
+  }
 }
