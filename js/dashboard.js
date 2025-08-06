@@ -253,7 +253,6 @@ async function loadPets() {
 }
 // Ensure canceledit function recently added
 function ensureCancelEditButton() {
-  console.log("🧪 ensureCancelEditButton CALLED");
   let cancelButton = document.getElementById("cancelEdit");
 
   if (!cancelButton) {
@@ -797,7 +796,7 @@ function handleCancelEdit() {
 // It uses same canceledit i have
 //===============================================
 function openCreateForm() {
-console.log("🧪 savedProfilesList is", DOM.savedProfilesList);
+console.log("🧪 openCreateForm called");
   editingProfileId = null;
   resetForm();
 
@@ -809,7 +808,8 @@ console.log("🧪 savedProfilesList is", DOM.savedProfilesList);
     
  // ✅ Always ensure cancel button is ready
   ensureCancelEditButton();
-    
+    console.log("🧪 ensureCancelEditButton called");
+
   // Show form and hide saved list
   DOM.petList.classList.remove("hidden");
   DOM.savedProfilesList.classList.add("hidden");
