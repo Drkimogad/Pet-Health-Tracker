@@ -787,12 +787,13 @@ function handleCancelEdit() {
     // Cleanup
     sessionStorage.removeItem(`editingProfile_${editingProfileId}`);
     editingProfileId = null;
-
     DOM.petPhotoPreview.style.display = 'none';
     DOM.petPhotoInput.value = '';
       
+      // Hide form, show saved list  
    DOM.petList.classList.add("hidden");
    DOM.savedProfilesList.classList.remove("hidden");
+      
    DOM.petList.scrollIntoView({ behavior: 'smooth' });
 
     // Optionally hide the button again
@@ -809,23 +810,55 @@ function handleCancelEdit() {
 // It uses same canceledit i have
 //===============================================
 function openCreateForm() {
-  console.log("🟢 New Profile button clicked");
+  console.log("➕ Opening form to create new pet profile");
 
-  // Show the form first
-  DOM.petList.classList.remove("hidden");
+  // 1. RESET STATE
+  isEditing = false;
+  currentEditIndex = null;
+  uploadedImageUrls = [];
 
-  // Now inject Cancel button (form is now visible)
-  ensureCancelEditButton();
+  // 2. RESET FORM FIELDS
+  DOM.petList.reset(); // Clear basic inputs
 
-  // Hide saved profiles
-  DOM.savedProfilesList.classList.add("hidden");
+  // Manually clear optional fields if needed
+  const emergencyFields = ["emergencyName", "emergencyPhone", "emergencyRelationship", "microchipNumber"];
+  emergencyFields.forEach(id => {
+    const field = document.getElementById(id);
+    if (field) field.value = "";
+  });
 
-  // Scroll to form
-  DOM.petList.scrollIntoView({ behavior: 'smooth' });
+  // 3. CANCEL BUTTON LOGIC
+  if (!document.getElementById("cancelEditBtn")) {
+    const cancelBtn = document.createElement("button");
+    cancelBtn.id = "cancelEditBtn";
+    cancelBtn.type = "button";
+    cancelBtn.className = "button cancel-btn pill";
+    cancelBtn.innerHTML = '<i class="fas fa-times"></i> Cancel';
 
-  // Optional: reset the form
-  DOM.petList.reset();
+    cancelBtn.addEventListener("click", () => {
+      if (confirm("Discard this new profile?")) {
+        handleCancelEdit(); // Resets UI back
+      }
+    });
+
+    // Append next to submit button (if found)
+    const submitBtn = DOM.petList.querySelector('button[type="submit"]');
+    if (submitBtn) submitBtn.after(cancelBtn);
+    else DOM.petList.appendChild(cancelBtn);
+  } else {
+    document.getElementById("cancelEditBtn").style.display = "inline-block";
+  }
+
+  // 4. UPDATE UI
+  DOM.petList.classList.remove("hidden"); // show form
+  DOM.savedProfilesList.classList.add("hidden"); // hide saved list
+
+  // 5. Scroll to form
+  DOM.petList.scrollIntoView({ behavior: "smooth" });
+
+  console.log("✅ Create form ready for new profile");
 }
+
 
 
 //=================================================
@@ -1758,22 +1791,11 @@ if (DOM.addPetProfileBtn) {
   console.log("✅ addPetProfileBtn found:", DOM.addPetProfileBtn);
   DOM.addPetProfileBtn.addEventListener('click', () => {
     console.log("🟢 New Profile button clicked");
-    if (DOM.petList) {
-      DOM.petList.classList.remove('hidden');
-      console.log("✅ petList form revealed");
-    } else {
-      console.warn("⛔ petList not found in DOM");
-    }
+    openCreateForm(); // 🔁 REPLACED all manual toggling
   });
 } else {
   console.warn("⛔ addPetProfileBtn not found in DOM");
 }
-  // Check auth state
- // firebase.auth().onAuthStateChanged((user) => {
-  //  if (user) {
-  //    loadSavedPetProfile();
- //   }
-//  });
 }
 
 // Initialize when DOM is ready
