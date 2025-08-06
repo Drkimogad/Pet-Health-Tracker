@@ -790,19 +790,24 @@ function handleCancelEdit() {
     DOM.petPhotoPreview.style.display = 'none';
     DOM.petPhotoInput.value = '';
       
-      // Hide form, show saved list  
-   DOM.petList.classList.add("hidden");
-   DOM.savedProfilesList.classList.remove("hidden");
-      
-   DOM.petList.scrollIntoView({ behavior: 'smooth' });
+   // UPDATE UI
+    // 1. Hide the entire profile section (whether from create or edit)
+  if (DOM.profileSection) {
+    DOM.profileSection.classList.add("hidden");
+  }
 
-    // Optionally hide the button again
-    const cancelButton = document.getElementById("cancelEdit");
-    if (cancelButton) {
-    cancelButton.style.display = 'none'; 
-    }
-  // Optionally reset the form
-  DOM.petList.reset();
+  // 2. Optionally hide petList (if used in edit mode separately)
+  if (DOM.petList) {
+    DOM.petList.classList.add("hidden");
+  }
+
+  // 3. Show the dashboard view again
+  if (DOM.dashboard) {
+    DOM.dashboard.classList.remove("hidden");
+  }
+
+  // 4. Optional: scroll to top for clean UX
+  window.scrollTo(0, 0);
   }
 }
 //==============================
