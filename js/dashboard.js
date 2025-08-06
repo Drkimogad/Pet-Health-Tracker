@@ -804,11 +804,13 @@ function handleCancelEdit() {
       DOM.petPhotoInput.value = '';
     }
   }
-
+    resetForm();
   // 🔁 UI Reset for both create/edit
-  if (DOM.profileSection) DOM.profileSection.classList.add("hidden");
-  if (DOM.petList) DOM.petList.classList.add("hidden");
-  if (DOM.dashboard) DOM.dashboard.classList.remove("hidden");
+  //if (DOM.profileSection) DOM.profileSection.classList.add("hidden");
+ // if (DOM.petList) DOM.petList.classList.add("hidden");
+ // if (DOM.dashboard) DOM.dashboard.classList.remove("hidden");
+   DOM.petList.classList.add("hidden");
+   DOM.savedProfilesList.classList.remove("hidden");
   window.scrollTo(0, 0);
 }
 
