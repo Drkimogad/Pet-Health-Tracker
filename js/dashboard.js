@@ -733,17 +733,17 @@ function handleCancelEdit() {
   console.log("🔙 Cancel clicked — resetting view");
 
   if (editingProfileId !== null) {
-    // ✅ Retrieve original profile correctly
+    // ✅ Restore form fields from saved edit state
     const originalProfile = JSON.parse(
-      sessionStorage.getItem(`editingProfile_${editingProfileId}`) // Use getItem
+      sessionStorage.getItem(`editingProfile_${editingProfileId}`)
     );
 
     if (originalProfile) {
-      // ✅ Properly reset form fields
       const setValue = (field, value) => {
-      const el = DOM[field];
-     if (el) el.value = value || '';
-   };
+        const el = DOM[field];
+        if (el) el.value = value || '';
+      };
+
       // Basic Info
       setValue('petName', originalProfile.petName);
       setValue('breed', originalProfile.breed);
@@ -769,8 +769,7 @@ function handleCancelEdit() {
       setValue('emergencyContactPhone', ec.phone);
       setValue('emergencyContactRelationship', ec.relationship);
 
-      // Reminders N.B: STORED AT TOP-LEVEL FIELDS AND NOT AS AN OBJECT !!!
-    //   SO NEVER CHANGE IT TO THIS"setValue('birthdayReminder', originalProfile.reminders?.birthdayReminder);"
+      // Reminders (flat fields!)
       setValue('birthdayReminder', originalProfile.birthdayReminder);
       setValue('vaccinationsAndDewormingReminder', originalProfile.vaccinationsAndDewormingReminder);
       setValue('medicalCheckupsReminder', originalProfile.medicalCheckupsReminder);
@@ -782,34 +781,37 @@ function handleCancelEdit() {
         preview.src = originalProfile.petPhoto;
         preview.style.display = 'block';
       }
+
+      sessionStorage.removeItem(`editingProfile_${editingProfileId}`);
     }
 
-    // Cleanup
-    sessionStorage.removeItem(`editingProfile_${editingProfileId}`);
+    // Clear edit mode
     editingProfileId = null;
-    DOM.petPhotoPreview.style.display = 'none';
-    DOM.petPhotoInput.value = '';
-      
-   // UPDATE UI
-    // 1. Hide the entire profile section (whether from create or edit)
-  if (DOM.profileSection) {
-    DOM.profileSection.classList.add("hidden");
+  } else {
+    // 🆕 Handle Create Mode: just clear form fields
+    console.log("🆕 Cancelled new profile creation");
+
+    const form = DOM.petList;
+    if (form) form.reset(); // clear all fields
+
+    // Reset photo preview
+    if (DOM.petPhotoPreview) {
+      DOM.petPhotoPreview.src = '';
+      DOM.petPhotoPreview.style.display = 'none';
+    }
+
+    if (DOM.petPhotoInput) {
+      DOM.petPhotoInput.value = '';
+    }
   }
 
-  // 2. Optionally hide petList (if used in edit mode separately)
-  if (DOM.petList) {
-    DOM.petList.classList.add("hidden");
-  }
-
-  // 3. Show the dashboard view again
-  if (DOM.dashboard) {
-    DOM.dashboard.classList.remove("hidden");
-  }
-
-  // 4. Optional: scroll to top for clean UX
+  // 🔁 UI Reset for both create/edit
+  if (DOM.profileSection) DOM.profileSection.classList.add("hidden");
+  if (DOM.petList) DOM.petList.classList.add("hidden");
+  if (DOM.dashboard) DOM.dashboard.classList.remove("hidden");
   window.scrollTo(0, 0);
-  }
 }
+
 //==============================
 // OPENCREATEFUNCTION RECENTLY IMPLEMENTED
 // It uses same canceledit i have
