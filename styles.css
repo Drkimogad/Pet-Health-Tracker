@@ -27,34 +27,6 @@
   --google-btn-size: 60px; /* New size (default was 44px) */
 }
 
-/* ===== HEADER & FOOTER STYLING ===== */
-header {
-  background-color: #967bb6;
-  padding: 1.5rem 2rem;
-  text-align: center;
-  margin-top: 2rem; /* adds spa*/
-
-  margin-bottom: 0.5rem; /* adds space below header it was 2 */
-}
-
-header h1 {
-  color: #fff;
-  margin: 0;
-  font-size: 2rem;
-}
-
-/* Optional footer styles */
-footer {
-  background-color: #967bb6;
-  color: white;
-  text-align: center;
-  padding: 1rem 2rem;
-  font-size: 0.9rem;
-  margin-top: 1rem; /* adds space above footer it was 2 */
-  position: sticky;
-  bottom: 0;
-}
-
 /* ===== AUTH SECTION VISIBILITY ===== */
 #authContainer {
   display: flex !important;
@@ -1151,3 +1123,30 @@ body.modal-active {
 
 /* ===== RESPONSIVE DESIGNS============== */
 
+/* ===== HEADER & FOOTER STYLING ===== */
+header {
+  background-color: #967bb6;
+  padding: 1.5rem 2rem;
+  text-align: center;
+  margin-top: 2rem; /* adds spa*/
+
+  margin-bottom: 0.5rem; /* adds space below header it was 2 */
+}
+
+header h1 {
+  color: #fff;
+  margin: 0;
+  font-size: 2rem;
+}
+
+/* Optional footer styles */
+footer {
+  background-color: #967bb6;
+  color: white;
+  text-align: center;
+  padding: 1rem 2rem;
+  font-size: 0.9rem;
+  margin-top: 1rem; /* adds space above footer it was 2 */
+  position: sticky;
+  bottom: 0;
+}
