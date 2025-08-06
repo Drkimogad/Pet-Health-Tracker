@@ -714,8 +714,9 @@ async function editPetProfile(petId) {
     showErrorToUser('Failed to load profile for editing');
   }
 }
-
+//========================================
 // UPDATED CANCEL EDIT FUNCTION
+// UPDATED TO HIDE CANCEL BUTTON AND KEEPING IT IN DOM SO ONCE IT IS INJECTED IT WORKS FOR BOTH
 function handleCancelEdit() {
   if (editingProfileId !== null) {
     // ✅ Retrieve original profile correctly
@@ -775,7 +776,8 @@ function handleCancelEdit() {
 
     const cancelButton = document.getElementById("cancelEdit");
     if (cancelButton) {
-    cancelButton.remove(); // Cleanly remove it from DOM
+    // cancelButton.remove(); // Cleanly remove it from DOM
+    cancelButton.style.display = 'none'; // HIDE IT TO BE REUSED FOR OPENCREATEFORM ✅ NoT remove
     }
 
     DOM.petPhotoPreview.style.display = 'none';
@@ -791,10 +793,10 @@ function handleCancelEdit() {
 // It uses same canceledit i have
 //===============================================
 function openCreateForm() {
-  editingProfileId = null; // Not editing an existing profile
-  resetForm(); // Clear any existing form values
+  editingProfileId = null;
+  resetForm();
 
-  // Make sure pet photo preview is hidden
+  // Hide pet photo preview
   if (DOM.petPhotoPreview) {
     DOM.petPhotoPreview.src = '';
     DOM.petPhotoPreview.style.display = 'none';
@@ -804,12 +806,19 @@ function openCreateForm() {
   DOM.petList.classList.remove("hidden");
   DOM.savedProfilesList.classList.add("hidden");
 
-  // Reuse the existing Cancel button behavior
-  const cancelBtn = document.getElementById("cancelEdit");
-  if (cancelBtn) {
-    cancelBtn.onclick = handleCancelEdit;
-    cancelBtn.style.display = "inline-block"; // Ensure it's visible
+  // ✅ Ensure Cancel button exists
+  let cancelBtn = document.getElementById("cancelEdit");
+  if (!cancelBtn) {
+    cancelBtn = document.createElement("button");
+    cancelBtn.id = "cancelEdit";
+    cancelBtn.textContent = "Cancel";
+    cancelBtn.className = "cancel-button"; // Add any styling class you want
+    DOM.petList.appendChild(cancelBtn); // Append only once
   }
+
+  // ✅ Wire up cancel behavior and show the button
+  cancelBtn.onclick = handleCancelEdit;
+  cancelBtn.style.display = "inline-block";
 
   // Scroll to the form
   DOM.petList.scrollIntoView({ behavior: 'smooth' });
