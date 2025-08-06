@@ -255,9 +255,9 @@ async function loadPets() {
 // Ensure canceledit function recently added
 //=========================================
 function ensureCancelEditButton() {
-  const form = document.querySelector("form");
+  const form = document.getElementById("petList");
   if (!form) {
-    console.warn("⚠️ Form not found. Cancel button not injected.");
+    console.warn("⚠️ Form element not found, cannot inject Cancel button.");
     return;
   }
 
@@ -268,15 +268,18 @@ function ensureCancelEditButton() {
     cancelButton.id = "cancelEdit";
     cancelButton.className = "cancel-btn";
     cancelButton.textContent = "Cancel";
+    cancelButton.type = "button"; // important to avoid form submission
+    cancelButton.style.marginTop = "10px";
     cancelButton.onclick = handleCancelEdit;
 
     form.appendChild(cancelButton);
-    console.log("✅ Cancel button injected.");
+    console.log("✅ Cancel button injected into form.");
   } else {
     cancelButton.style.display = "inline-block";
-    console.log("✅ Cancel button already exists, made visible.");
+    console.log("✅ Cancel button already exists, now visible.");
   }
 }
+
 
 // ======================
 // LOAD SAVED PET PROFILES 🌟🌟PRODUCTION READY
@@ -727,7 +730,7 @@ async function editPetProfile(petId) {
 // UPDATED CANCEL EDIT FUNCTION
 // UPDATED TO HIDE CANCEL BUTTON AND KEEPING IT IN DOM SO ONCE IT IS INJECTED IT WORKS FOR BOTH
 function handleCancelEdit() {
- console.log("🔙 Cancel button clicked");
+  console.log("🔙 Cancel clicked — resetting view");
 
   if (editingProfileId !== null) {
     // ✅ Retrieve original profile correctly
@@ -787,18 +790,18 @@ function handleCancelEdit() {
 
     DOM.petPhotoPreview.style.display = 'none';
     DOM.petPhotoInput.value = '';
-      // Optionally hide the button again
-    const cancelButton = document.getElementById("cancelEdit");
-    if (cancelButton) {
-    cancelButton.style.display = 'none'; // it hides it not remove
-    }
       
    DOM.petList.classList.add("hidden");
    DOM.savedProfilesList.classList.remove("hidden");
    DOM.petList.scrollIntoView({ behavior: 'smooth' });
-      
+
+    // Optionally hide the button again
+    const cancelButton = document.getElementById("cancelEdit");
+    if (cancelButton) {
+    cancelButton.style.display = 'none'; 
+    }
   // Optionally reset the form
-  document.querySelector("form").reset();
+  DOM.petList.reset();
   }
 }
 //==============================
@@ -808,18 +811,20 @@ function handleCancelEdit() {
 function openCreateForm() {
   console.log("🟢 New Profile button clicked");
 
-  // Show form, hide saved profiles
+  // Show the form first
   DOM.petList.classList.remove("hidden");
+
+  // Now inject Cancel button (form is now visible)
+  ensureCancelEditButton();
+
+  // Hide saved profiles
   DOM.savedProfilesList.classList.add("hidden");
 
   // Scroll to form
   DOM.petList.scrollIntoView({ behavior: 'smooth' });
 
-  // 🧠 Ensure cancel button is injected & visible
-  ensureCancelEditButton();
-
-  // Optional: Reset the form if needed
-  document.querySelector("form").reset();
+  // Optional: reset the form
+  DOM.petList.reset();
 }
 
 
