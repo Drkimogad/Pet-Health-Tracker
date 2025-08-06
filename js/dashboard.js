@@ -62,7 +62,7 @@ if (!DOM.savedProfilesList || !DOM.petList) {
 
 // =======REMINDERS🌟
 const REMINDER_THRESHOLD_DAYS = 3;
-const ALLOWED_REMINDER_TYPES = ['vaccination', 'checkup', 'grooming', 'birthdayReminder];
+const ALLOWED_REMINDER_TYPES = ['vaccination', 'checkup', 'grooming', 'birthdayReminder'];
 const REMINDER_TYPE_MAP = {
   vaccinations: 'vaccination',
   checkups: 'checkup',
@@ -73,7 +73,7 @@ const reminderFields = {
   vaccinations: 'Vaccinations/Deworming',
   checkups: 'Medical Check-ups',
   grooming: 'Grooming',
-birthdayReminder:'Birthday Reminder'
+  birthdayReminder:'Birthday Reminder'
 };
 //FUNCTION HIGHLIGHT REMINDERS UPDATED
 function highlightReminders(reminders, index) {
@@ -232,7 +232,7 @@ function getPetDataFromForm() {
 
     // === Reminders ===
     reminders: {
-     birthdayReminder: DOM.BirthdayReminder.value, // maybe problematic 
+     birthdayReminder: DOM.birthdayReminder.value, 
      vaccinations: DOM.vaccinationsAndDewormingReminder.value,
       checkups: DOM.medicalCheckupsReminder.value,
       grooming: DOM.groomingReminder.value
@@ -690,7 +690,7 @@ async function editPetProfile(petId) {
     setValue('emergencyContactPhone', profile.emergencyContacts?.[0]?.phone);
     setValue('emergencyContactRelationship', profile.emergencyContacts?.[0]?.relationship);
       // Modified 
-      setValue('birthdayReminder', profile.reminders?.birthdayReminder);
+    setValue('birthdayReminder', profile.reminders?.birthdayReminder);
     setValue('vaccinationsAndDewormingReminder', profile.reminders?.vaccinations);
     setValue('medicalCheckupsReminder', profile.reminders?.checkups);
     setValue('groomingReminder', profile.reminders?.grooming);
@@ -754,7 +754,8 @@ function handleCancelEdit() {
       setValue('emergencyContactPhone', ec.phone);
       setValue('emergencyContactRelationship', ec.relationship);
 
-      // Reminders
+      // Reminders N.B: STORED AT TOP-LEVEL FIELDS AND NOT AS AN OBJECT !!!
+    //   SO NEVER CHANGE IT TO THIS"setValue('birthdayReminder', originalProfile.reminders?.birthdayReminder);"
       setValue('birthdayReminder', originalProfile.birthdayReminder);
       setValue('vaccinationsAndDewormingReminder', originalProfile.vaccinationsAndDewormingReminder);
       setValue('medicalCheckupsReminder', originalProfile.medicalCheckupsReminder);
@@ -916,7 +917,7 @@ async function exportAllPetCards(asZip = false) {
           <p><strong>Medical History:</strong> ${profile.medicalHistory || 'N/A'}</p>
           <p><strong>Diet Plan:</strong> ${profile.dietPlan || 'N/A'}</p>
           <p><strong>Emergency:</strong> ${emergency.name || 'N/A'} (${emergency.relationship || 'N/A'}) - ${emergency.phone || 'N/A'}</p>
-          <p><strong>BirthdayReminder:</strong> ${profile.reminders?.BirthdayReminder || 'N/A'}</p>
+          <p><strong>Birthday Reminder:</strong> ${profile.reminders?.birthdayReminder || 'N/A'}</p>
           <p><strong>Vaccinations:</strong> ${profile.reminders?.vaccinations || 'N/A'}</p>
           <p><strong>Checkups:</strong> ${profile.reminders?.checkups || 'N/A'}</p>
           <p><strong>Grooming:</strong> ${profile.reminders?.grooming || 'N/A'}</p>
@@ -1067,10 +1068,7 @@ function showShareFallback(message) {
   document.body.appendChild(shareContainer);
   shareContainer.querySelector('input').select();
 }
-//==================
-// savedProfilePDF()
-//====================
-// removed, to be placed in show modal
+
 //=========================
 // Join Pet Community ()
 //============================
@@ -1349,7 +1347,7 @@ async function generateQRCode(petId) {
     }
 // 5. Create reminders html outside 
      const remindersHTML = `
-  <p><strong>BirthdayReminder:</strong> ${escapeHTML(profile.reminders?.birthdayReminder|| 'N/A')}</p>
+  <p><strong>Birthday Reminder:</strong> ${escapeHTML(profile.reminders?.birthdayReminder|| 'N/A')}</p> // to be revisited
   <p><strong>Vaccinations:</strong> ${escapeHTML(profile.reminders?.vaccinations || 'N/A')}</p>
   <p><strong>Checkups:</strong> ${escapeHTML(profile.reminders?.checkups || 'N/A')}</p>
   <p><strong>Grooming:</strong> ${escapeHTML(profile.reminders?.grooming || 'N/A')}</p>
@@ -1370,7 +1368,7 @@ Diet Plan: ${profile.dietPlan || 'N/A'}
 
 Emergency Contact: ${emergency.name || 'N/A'} ${emergency.relationship ? '(' + emergency.relationship + ')' : ''} ${emergency.phone ? '- ' + emergency.phone : ''}
 
-BirthdayReminder: ${profile.reminders?.birthdayReminder || 'N/A'}
+Birthday Reminder: ${profile.reminders?.birthdayReminder || 'N/A'}
 Vaccinations: ${profile.reminders?.vaccinations || 'N/A'}
 Checkups: ${profile.reminders?.checkups || 'N/A'}
 Grooming: ${profile.reminders?.grooming || 'N/A'}
