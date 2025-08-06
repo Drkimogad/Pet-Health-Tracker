@@ -797,6 +797,7 @@ function handleCancelEdit() {
 // It uses same canceledit i have
 //===============================================
 function openCreateForm() {
+console.log("🧪 savedProfilesList is", DOM.savedProfilesList);
   editingProfileId = null;
   resetForm();
 
