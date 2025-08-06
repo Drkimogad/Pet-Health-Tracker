@@ -853,7 +853,7 @@ function openCreateForm() {
     const cancelBtn = document.createElement("button");
     cancelBtn.id = "cancelEditBtn";
     cancelBtn.type = "button";
-    cancelBtn.className = "button cancel-btn pill";
+    cancelBtn.className = "button cancel-btn ";
     cancelBtn.innerHTML = '<i class="fas fa-times"></i> Cancel';
 
     cancelBtn.addEventListener("click", () => {
