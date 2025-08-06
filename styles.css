@@ -1150,14 +1150,21 @@ body.modal-active {
 
 /* ===== RESPONSIVE DESIGNS============== */
 /* Prevent header/footer from shrinking on phones*/
-header, footer {
+/*header, footer {
   padding: 1rem;
 }
 @media (min-width: 768px) {
   header h1 { font-size: 2.5rem; }
   footer { padding: 1.5rem; }
+} */
+header {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  position: relative !important; /* Reset positioning */
+  z-index: 1000 !important; /* Force above other elements */
+  border: 2px solid red !important; /* Visual confirmation */
 }
-
 
 /* ===== DESKTOP RESPONSIVE DESIGN ===== */
 /* Desktop (≥1024px) */
