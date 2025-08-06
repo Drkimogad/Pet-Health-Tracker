@@ -253,6 +253,7 @@ async function loadPets() {
 }
 // Ensure canceledit function recently added
 function ensureCancelEditButton() {
+  console.log("🧪 ensureCancelEditButton CALLED");
   let cancelButton = document.getElementById("cancelEdit");
 
   if (!cancelButton) {
