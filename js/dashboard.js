@@ -261,24 +261,36 @@ function ensureCancelEditButton() {
     return;
   }
 
-  let cancelButton = document.getElementById("cancelEdit");
+  let cancelButton = document.getElementById("cancelEditBtn");
 
   if (!cancelButton) {
     cancelButton = document.createElement("button");
-    cancelButton.id = "cancelEdit";
-    cancelButton.className = "cancel-btn";
-    cancelButton.textContent = "Cancel";
-    cancelButton.type = "button"; // important to avoid form submission
-    cancelButton.style.marginTop = "10px";
-    cancelButton.onclick = handleCancelEdit;
+    cancelButton.id = "cancelEditBtn";
+    cancelButton.className = "button cancel-btn pill";
+    cancelButton.type = "button";
+    cancelButton.innerHTML = '<i class="fas fa-times"></i> Cancel';
 
-    form.appendChild(cancelButton);
+    cancelButton.addEventListener("click", () => {
+      if (confirm("Discard changes to this profile?")) {
+        handleCancelEdit();
+      }
+    });
+
+    // Place it right after the submit button
+    const submitBtn = form.querySelector('button[type="submit"]');
+    if (submitBtn) {
+      submitBtn.after(cancelButton);
+    } else {
+      form.appendChild(cancelButton);
+    }
+
     console.log("✅ Cancel button injected into form.");
   } else {
     cancelButton.style.display = "inline-block";
     console.log("✅ Cancel button already exists, now visible.");
   }
 }
+
 
 
 // ======================
