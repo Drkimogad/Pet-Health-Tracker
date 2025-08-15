@@ -82,16 +82,38 @@
 
 /* Modified Google Sign-In Wrapper */
 #googleSignInBtnWrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  padding: 20px; /* Inner spacing */
-  border: 2px solid #D2B48C; /* Light brown border (adjust color/width) */
-  border-radius: 12px; /* Slightly rounded corners for the wrapper */
-  background: #FFF8F0; /* Optional: light cream background */
-  width: fit-content; /* Ensures wrapper hugs content */
-  margin: 0 auto; /* Centers the wrapper horizontally */
+  /* Floating card effect */
+  position: relative;
+  background: rgba(255,255,255,0.98);
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(106, 13, 173, 0.15);
+  border: 1px solid rgba(106, 13, 173, 0.1);
+  padding: 2rem;
+  margin-top: -20px; /* Overlaps banner */
+  z-index: 5;
+
+  /* ECG Top Border */
+  &::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    width: 80%;
+    height: 4px;
+    transform: translateX(-50%);
+    background: 
+      linear-gradient(90deg, 
+        transparent 0% 20%,
+        #6a0dad 20% 30%,
+        transparent 30% 50%,
+        #d4a017 50% 60%,
+        transparent 60% 100%);
+    animation: ecgSlide 4s linear infinite;
+  }
+}
+
+@keyframes ecgSlide {
+  100% { background-position: 400% 0; }
 }
 
 .google-btn {
@@ -157,13 +179,21 @@
 }
 
 /* ===== BANNER STYLES ===== */
+/* Reduce height and adjust spacing */
 #fullPageBanner.banner-wrapper {
-  width: 90vw;
-  height: 70vh;
-  margin: 0 auto;
-  position: relative;
-  overflow: hidden;
-  border-bottom: 3px solid #e1b12c;
+  height: 55vh; /* Reduced from 70vh */
+  margin-bottom: -30px; /* Pulls content upward */
+}
+
+/* Optional: Add soft gradient overlay */
+#fullPageBanner.banner-wrapper::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30%;
+  background: linear-gradient(to top, rgba(255,255,255,0.3), transparent);
 }
 
 #fullPageBanner .banner-image {
@@ -188,6 +218,27 @@
   max-width: 45%;
   text-align: right;
 }
+
+footer {
+  position: relative;
+  padding-top: 20px;
+  
+  &::before {
+    content: "⌇⌇⌇⌇⌇⌇";
+    display: block;
+    text-align: center;
+    font-size: 1.5rem;
+    letter-spacing: 8px;
+    color: rgba(106, 13, 173, 0.3);
+    animation: pulse 3s ease-in-out infinite;
+  }
+}
+
+@keyframes pulse {
+  50% { opacity: 0.6; letter-spacing: 12px; }
+}
+
+
 /* ===== DASHBOARD STYLES ===== */
 /* Pet Card Image Fix */
 #petPhotoPreview {
