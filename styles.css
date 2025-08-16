@@ -20,6 +20,17 @@
   --darkred: #8B0000;
 }
 
+/* ===== AUTH CONTAINER (Fixed Spacing) ===== */
+#authContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: calc(100vh - 80px); /* subtract header height */
+  padding: 2rem;
+  background: #b3b3cc;
+  padding-top: 80px; /* Space for fixed header */
+}
+
 /* ===== FIXED HEADER (Works Across All Pages) ===== */
 header {
   position: absolute; /* Changed from relative*/
@@ -31,18 +42,9 @@ header {
   box-shadow: 0 3px 10px rgba(0,0,0,0.2);
 }
 
-
-
-/* ===== AUTH CONTAINER (Fixed Spacing) ===== */
-#authContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: calc(100vh - 80px); /* subtract header height */
-  padding: 2rem;
-  background: #b3b3cc;
-  padding-top: 80px; /* Space for fixed header */
-}
+.hidden { display: none !important; }
+.visible { display: block !important; }
+#authContainer.hidden { display: none !important; }
 
 /* ===== WINDOW FRAME (Clean Layout) ===== */
 .window-frame {
