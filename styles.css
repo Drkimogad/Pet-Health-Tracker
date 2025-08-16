@@ -1,4 +1,4 @@
-/* ===== GLOBAL STYLES ===== */
+/* ===== GLOBAL STYLES (Preserved) ===== */
 :root {
   --primary-color: #3498db;
   --primary-dark: #2980b9;
@@ -20,163 +20,132 @@
   --darkred: #8B0000;
 }
 
-/* ===== CORE STRUCTURE ===== */
+/* ===== BASE STRUCTURE ===== */
 #authContainer {
-  display: flex !important;
-  flex-direction: column !important;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  min-height: 100vh !important;
+  min-height: 100vh;
   padding: 2rem;
-  box-sizing: border-box;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
   position: relative;
 }
 
 .hidden { display: none !important; }
 .visible { display: block !important; }
-#authContainer.hidden { display: none !important; }
 
-/* ===== HEADER & WELCOME AREA ===== */
-header h1 {
-  text-align: center;
-  font-size: 2.2rem;
-  color: var(--purple-dark);
-  margin: 0 0 1rem;
-  order: 1; /* Below welcome animation */
-}
-
+/* ===== WINDOW FRAME ===== */
 .window-frame {
   width: 90%;
-  max-width: 800px;
-  margin: 0 auto;
-  order: 0; /* Above header */
-}
-
-.pet-animation-container {
-  width: 100%;
-  margin: 0 auto;
-  aspect-ratio: 4/1;
-  background-color: transparent;
-  position: relative;
-}
-
-/* ===== AUTH WRAPPER ===== */
-#googleSignInBtnWrapper {
-  position: relative;
-  background: rgba(255,255,255,0.96);
-  border-radius: 16px;
-  padding: 2rem;
+  max-width: 500px;
   margin: 2rem auto;
-  width: 90%;
-  max-width: 400px;
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-  border: 2px solid var(--mustard);
-  z-index: 2;
-  order: 3;
+  position: relative;
+  overflow: hidden;
+}
+
+.window-frame::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: var(--purple);
+}
+
+/* ===== HEADER ===== */
+.auth-header h1 {
+  text-align: center;
+  color: white;
+  margin: 0;
+  padding: 0.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== PET PEEKING ===== */
+.pet-peek-container {
+  height: 200px;
+  position: relative;
+  margin: 1rem 0;
+}
+
+.pet-peek-container lottie-player {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* ===== FOOD BOWL AUTH ===== */
+#googleSignInBtnWrapper {
+  background: var(--mustard);
+  border-radius: 50% 50% 20px 20px;
+  padding: 2rem 1.5rem 1.5rem;
+  width: 80%;
+  max-width: 300px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  position: relative;
+  margin: 2rem auto;
 }
 
 #googleSignInBtnWrapper::before {
   content: "";
   position: absolute;
-  top: -10px;
+  top: 15px;
   left: 50%;
   transform: translateX(-50%);
-  width: 80%;
-  height: 4px;
-  background: linear-gradient(90deg, 
-    transparent 0% 20%,
-    var(--purple) 20% 30%,
-    transparent 30% 50%,
-    var(--mustard) 50% 60%,
-    transparent 60% 100%);
-  animation: ecgSlide 3s linear infinite;
+  width: 60%;
+  height: 3px;
+  background: var(--purple-dark);
+  animation: chew 2s infinite;
 }
 
-/* ===== BANNER & TREAT BOX ===== */
-#fullPageBanner.banner-wrapper {
-  height: 50vh;
-  width: 90%;
-  margin: 1rem auto;
-  position: relative;
-  order: 4;
+.google-btn {
+  background: white !important;
+  border: none !important;
+  border-radius: 20px !important;
+  color: var(--purple-dark) !important;
+  font-weight: bold !important;
 }
 
-.quote {
-  position: fixed;
-  bottom: 100px;
-  right: 20px;
-  width: 150px;
-  height: 150px;
-  background: var(--mustard);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 1rem;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-  animation: bounce 2s infinite alternate;
-  z-index: 3;
-}
-
-/* ===== FOOTER ===== */
+/* ===== FOOTER PAW PRINTS ===== */
 footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
+  margin-top: auto;
   padding: 1rem;
   text-align: center;
-  background: rgba(255,255,255,0.9);
-  z-index: 4;
-  order: 5;
+  position: relative;
+}
+
+footer::before {
+  content: "🐾 🐾 🐾";
+  display: block;
+  font-size: 1.5rem;
+  letter-spacing: 10px;
+  margin-bottom: 0.5rem;
 }
 
 /* ===== ANIMATIONS ===== */
-@keyframes ecgSlide {
-  100% { background-position: 400% 0; }
+@keyframes chew {
+  0%, 100% { transform: translateX(-50%) scaleX(1); }
+  50% { transform: translateX(-50%) scaleX(0.8); }
 }
 
-@keyframes bounce {
-  to { transform: translateY(-10px); }
+@keyframes peek {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
-/* ===== EXISTING COMPONENTS ===== */
-.google-btn {
-  background: #ffffff;
-  color: #444;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  padding: 12px 20px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 15px auto;
-  cursor: pointer;
-  transition: background 0.3s, box-shadow 0.3s;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  max-width: 250px;
-  font-weight: bold;
-  font-size: 16px;
+.pet-peek-container {
+  animation: peek 3s ease-in-out infinite;
 }
 
-.auth-message {
-  color: #333;
-  margin-top: 10px;
-  font-size: 1rem;
-}
-
-/* ===== RESPONSIVE BASE ===== */
-@media (max-width: 768px) {
-  .quote {
-    width: 120px;
-    height: 120px;
-    font-size: 0.9rem;
-    bottom: 80px;
-  }
-  
-  #googleSignInBtnWrapper {
-    padding: 1.5rem;
-  }
-}
 
 
 
