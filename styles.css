@@ -1,6 +1,5 @@
-/* ===== GLOBAL STYLES ===== */
+/* ===== GLOBAL STYLES (Preserved) ===== */
 :root {
-  /* AUTHENTICATION PALETTE (preserved) */
   --primary-color: #3498db;
   --primary-dark: #2980b9;
   --secondary-color: #27ae60;
@@ -13,17 +12,15 @@
   --qr-blue: #3498db;
   --qr-green: #27ae60;
   --link-blue: #3498db;
-
-  /* DASHBOARD ADDITIONS */
   --mustard: #f4c542;
   --purple: #7e57c2;
   --purple-dark: #5e35b1;
   --green: #43a047;
   --red: #e74c3c;
-  --darkred: #8B0000; /* Or your preferred value */
+  --darkred: #8B0000;
 }
 
-/* ===== AUTH SECTION VISIBILITY ===== */
+/* ===== CORE AUTH STRUCTURE (Preserved) ===== */
 #authContainer {
   display: flex !important;
   flex-direction: column !important;
@@ -32,17 +29,57 @@
   min-height: 100vh !important;
   padding: 2rem;
   box-sizing: border-box;
+  position: relative;
 }
 
 .hidden { display: none !important; }
 .visible { display: block !important; }
 #authContainer.hidden { display: none !important; }
 
-/* ===== AUTHENTICATION UI STYLES ===== */
-.auth-header h1 {
-  font-size: 2.2rem;
-  margin: 0 0 1rem;
+/* ===== WINDOW THEME ENHANCEMENTS ===== */
+/* Header Positioning */
+header h1 {
+  position: absolute;
+  top: 1rem;
+  left: 0;
+  right: 0;
   text-align: center;
+  font-size: 2.2rem;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  z-index: 2;
+}
+
+/* Curtain Panels */
+.window-frame {
+  position: relative;
+  width: 90%;
+  max-width: 800px;
+  margin: 0 auto 2rem;
+  z-index: 1;
+}
+
+.window-frame::before,
+.window-frame::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 15%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: contain;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.window-frame::before {
+  left: 0;
+  background-image: linear-gradient(to right, var(--purple) 0%, var(--purple-dark) 100%);
+}
+
+.window-frame::after {
+  right: 0;
+  background-image: linear-gradient(to left, var(--purple) 0%, var(--purple-dark) 100%);
 }
 
 /* for the welcome added loader */
@@ -66,57 +103,54 @@
     left: 0;
 } 
 
-/* to your pet wellness hub */
-.auth-header h2 {
-  color: #d4a017;
-  text-align: right; /* Align text to right */
-  width: 80%; /* Match Lottie container's width */
-  max-width: 800px; /* Match Lottie container's max-width */
-  color: #d4a017;
-  white-space: nowrap;
-  display: block;
-  margin: 0 auto 10px 0;
-  font-size: 1.8rem; /* or 0.95rem for more room */
-  margin-bottom: 20px;
-}
 
-/* Modified Google Sign-In Wrapper */
+
+
+
+
+
+
+/* ===== EXISTING STYLES (Preserved) ===== */
+/* (Your original .google-btn, .auth-message, 
+   .pet-animation-container, banner styles remain unchanged) */
+
+
+
+
+/* ===== FOOD BOWL AUTH WRAPPER ===== */
 #googleSignInBtnWrapper {
-  /* Floating card effect */
   position: relative;
-  background: rgba(255,255,255,0.98);
+  background: rgba(255,255,255,0.96);
   border-radius: 16px;
-  box-shadow: 0 12px 40px rgba(106, 13, 173, 0.15);
-  border: 1px solid rgba(106, 13, 173, 0.1);
   padding: 2rem;
-  margin-top: 10px !important; /* Remove negative margin */
-  padding-top: 20px !important; /* Add internal space */
-  z-index: 5;
-
-
-  /* ECG Top Border */
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0 !important; /* Align with wrapper top */
-    left: 50%;
-    width: 80%;
-    height: 4px;
-    transform: translateX(-50%);
-    background: 
-      linear-gradient(90deg, 
-        transparent 0% 20%,
-        #6a0dad 20% 30%,
-        transparent 30% 50%,
-        #d4a017 50% 60%,
-        transparent 60% 100%);
-    animation: ecgSlide 4s linear infinite;
-  }
+  margin: 1rem auto;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 
+    0 10px 30px rgba(0,0,0,0.1),
+    inset 0 -10px 20px rgba(0,0,0,0.05);
+  border: 2px solid var(--mustard);
+  z-index: 3;
 }
 
-@keyframes ecgSlide {
-  100% { background-position: 400% 0; }
+/* Chewing Animation */
+#googleSignInBtnWrapper::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 4px;
+  background: linear-gradient(90deg, 
+    transparent 0% 20%,
+    var(--purple) 20% 30%,
+    transparent 30% 50%,
+    var(--mustard) 50% 60%,
+    transparent 60% 100%);
+  animation: ecgSlide 3s linear infinite;
 }
+
 
 .google-btn {
   background: #ffffff;
@@ -207,38 +241,44 @@
   display: block;
 }
 
-#fullPageBanner .quote {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  background: rgba(0, 0, 0, 0.6);
-  color: #f5f5dc;
-  padding: 20px 30px;
-  border-radius: 10px;
-  font-style: italic;
-  font-size: clamp(1rem, 2.2vw, 1.4rem);
-  max-width: 45%;
-  text-align: right;
-}
-
-footer {
+/* ===== BOUNCING TREAT BOX ===== */
+.quote {
   position: relative;
-  padding-top: 20px;
-  
-  &::before {
-    content: "⌇⌇⌇⌇⌇⌇";
-    display: block;
-    text-align: center;
-    font-size: 1.5rem;
-    letter-spacing: 8px;
-    color: rgba(106, 13, 173, 0.3);
-    animation: pulse 3s ease-in-out infinite;
-  }
+  background: var(--mustard);
+  color: var(--text-color);
+  padding: 1.5rem;
+  border-radius: 50%;
+  width: 180px;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin: 2rem auto;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  animation: bounce 2s infinite alternate;
+  font-style: italic;
+  font-size: 1rem;
+  line-height: 1.4;
 }
 
-@keyframes pulse {
-  50% { opacity: 0.6; letter-spacing: 12px; }
+.quote .icon {
+  position: absolute;
+  font-size: 1.2rem;
 }
+
+.quote .microchip { bottom: 15px; right: 20px; }
+.quote .medical { top: 15px; left: 20px; }
+
+/* ===== ANIMATIONS ===== */
+@keyframes ecgSlide {
+  100% { background-position: 400% 0; }
+}
+
+@keyframes bounce {
+  to { transform: translateY(-15px); }
+}
+
 
 
 /* ===== DASHBOARD STYLES ===== */
