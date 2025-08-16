@@ -123,7 +123,7 @@ header.hidden {
   animation: peek 3s ease-in-out infinite;
 }
 
-..display-container {
+.display-container {
   position: fixed;
   bottom: 20px;     /* distance from bottom */
   right: 0px;      /* distance from right */
