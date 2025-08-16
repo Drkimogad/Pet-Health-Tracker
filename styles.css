@@ -35,6 +35,9 @@ header.hidden {
   display: none !important; /* Maintains your original hidden state */
 }
 
+.hidden {
+  display: none;
+}   
 /* ===== AUTH CONTAINER (Fixed Spacing) ===== */
 #authContainer {
   display: flex;
