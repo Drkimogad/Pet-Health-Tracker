@@ -95,9 +95,7 @@
         </div>
     </noscript>
     <div class="background-container">
-        <header>
-            <h1>Pet Health Tracker</h1>
-        </header>
+        
         <div id="processing-loader" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000;">
         <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center;">
     <!-- 🌀 Lottie Animation -->
@@ -114,6 +112,10 @@
 </div>      
     <!-- Auth Container -->
     <div id="authContainer">
+        <header>
+            <h1>Pet Health Tracker</h1>
+        </header>
+        <div class="window-frame">
         <!-- New Small Lottie Container -->
         <div class="pet-animation-container" style="width: 80%; margin: 20px auto; aspect-ratio: 4/1; max-width: 800px;">
         <lottie-player
@@ -124,7 +126,8 @@
             loop
             autoplay>
         </lottie-player>       
-        </div> 
+        </div>
+        </div>
         <div class="auth-header"> 
         <h2>to your pet wellness hub </h2> 
         </div>         
@@ -134,7 +137,11 @@
         </div>
         <div id="fullPageBanner" class="banner banner-wrapper">
            <img src="./banner/image.png" alt="Banner Image" class="banner-image">
-         <div class="quote">“Track your pet’s journey every step of the way.”</div>
+         <div class="quote">“Track your pet’s journey every step of the way."
+            <span class="icon microchip">📟</span>
+            <span class="icon medical">💊</span>
+                ... 
+             </div>
       </div>
     </div>
         
