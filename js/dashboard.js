@@ -1414,7 +1414,7 @@ async function generateQRCode(petId) {
     }
 // 5. Create reminders html outside 
      const remindersHTML = `
-  <p><strong>Birthday Reminder:</strong> ${escapeHTML(profile.reminders?.birthdayReminder|| 'N/A')}</p> // to be revisited
+  <p><strong>Birthday Reminder:</strong> ${escapeHTML(profile.reminders?.birthdayReminder|| 'N/A')}</p> 
   <p><strong>Vaccinations:</strong> ${escapeHTML(profile.reminders?.vaccinations || 'N/A')}</p>
   <p><strong>Checkups:</strong> ${escapeHTML(profile.reminders?.checkups || 'N/A')}</p>
   <p><strong>Grooming:</strong> ${escapeHTML(profile.reminders?.grooming || 'N/A')}</p>
