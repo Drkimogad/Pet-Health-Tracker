@@ -65,13 +65,7 @@
     top: 0;
     left: 0;
 } 
-/* Creates space between Lottie and auth wrapper */
-.lottie-spacer {
-  height: 40px; /* Adjust this value */
-  position: relative;
-  z-index: 2;
-  background: transparent;
-}
+
 /* to your pet wellness hub */
 .auth-header h2 {
   color: #d4a017;
@@ -95,8 +89,8 @@
   box-shadow: 0 12px 40px rgba(106, 13, 173, 0.15);
   border: 1px solid rgba(106, 13, 173, 0.1);
   padding: 2rem;
-  margin-top: 0 !important; /* Remove negative margin */
-  padding-top: 30px !important; /* Add internal space */
+  margin-top: 10px !important; /* Remove negative margin */
+  padding-top: 20px !important; /* Add internal space */
   z-index: 5;
 
 
