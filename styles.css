@@ -29,6 +29,7 @@
   padding: 2rem;
   background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
   position: relative;
+  padding-bottom: 100px; /* Prevents scroll space */
 }
 
 .hidden { display: none !important; }
@@ -39,6 +40,7 @@
   width: 90%;
   max-width: 500px;
   margin: 2rem auto;
+  margin-top: 3rem; /* Creates space for absolute header */
   padding: 2rem;
   background: white;
   border-radius: 12px;
@@ -55,6 +57,7 @@
   right: 0;
   height: 40px;
   background: var(--purple);
+  display: none; /* Removes duplicate purple */
 }
 
 /* ===== HEADER ===== */
@@ -68,38 +71,32 @@
 }
 
 
-/* ===== HEADER ENHANCEMENT ===== */
-.auth-header h1 {
-  position: relative;
-  display: inline-block;
-  padding: 0 2rem;
-}
-
-.auth-header h1::before,
-.auth-header h1::after {
-  content: "✨";
+/* ===== FIXED HEADER ===== */
+.auth-header {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  animation: sparkle 2s infinite;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: var(--purple);
+  color: white;
+  padding: 1.2rem;
+  text-align: center;
+  z-index: 10; /* Above other elements */
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
 }
 
-.auth-header h1::before { left: 0; }
-.auth-header h1::after { right: 0; }
-
-@keyframes sparkle {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+.auth-header h1 {
+  margin: 0;
+  font-size: 1.8rem;
 }
 
 
 /* ===== PET PEEKING ===== */
 .pet-peek-container {
-  height: 200px;
-  position: relative;
-  margin: 1rem 0;
+ position: relative;
+  margin-top: 1.5rem 0; /* Space below header */
+  height: 180px; /* Reduced height */
 }
-
 .pet-peek-container lottie-player {
   position: absolute;
   top: 0;
@@ -144,17 +141,18 @@
 /* ===== ENHANCED FOOTER TREAT BOX ===== */
 .footer-treat {
   position: fixed;
-  bottom: 80px;
+  bottom: 120px;
   right: 20px;
-  width: 160px;
-  height: 160px;
+  left: 20px;   /* Moved to left */
+  width: 180px; /* Slightly larger */
+  height: 180px; /* Slightly  higher*/
   background: var(--mustard);
   border-radius: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  padding: 1.2rem; /* More internal space */
   box-shadow: 0 10px 25px rgba(0,0,0,0.15);
   animation: float 3s ease-in-out infinite;
   z-index: 10;
@@ -166,20 +164,21 @@
   transform: scale(1.05);
 }
 
-.footer-treat::before {
-  content: "🐾";
-  position: absolute;
-  bottom: -20px;
-  font-size: 2rem;
-  animation: paws 2s infinite alternate;
-}
-
 .footer-treat-content {
   font-size: 0.85rem;
   text-align: center;
   overflow: hidden;
   max-height: 100%;
 }
+
+.footer-treat::before {
+  content: "🐾";
+  position: absolute;
+  bottom: -25px;
+  font-size: 2rem;
+  animation: paws 2s infinite alternate;
+}
+
 
 /* ===== ANIMATIONS ===== */
 @keyframes float {
@@ -207,8 +206,15 @@
   animation: peek 3s ease-in-out infinite;
 }
 
-
-
+/* converted it into a quote*/
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  padding: 1rem;
+  background: white;
+  z-index: 5;
+}
 
 /* ===== DASHBOARD STYLES ===== */
 /* Pet Card Image Fix */
