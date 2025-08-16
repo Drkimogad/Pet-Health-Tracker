@@ -81,19 +81,21 @@ header.hidden {
 }
 
 /* ===== TREAT BOX (Final Position) ===== */
+/* ===== TREAT BOX (Bottom-Left Corner with Animations) ===== */
 .footer-treat {
   position: fixed;
   bottom: 120px;
-  left: 0px; /* or 0 for absolute left */
-  transform: none;
+  left: 20px;              /* stick to left corner (adjust spacing if needed) */
   width: 200px;
   height: 200px;
   background: var(--mustard);
   border: 1px solid black;
   border-radius: 50%;
   padding: 1.5rem;
-  animation: float 3s ease-in-out infinite;
   z-index: 10;
+
+  /* Animations combined */
+  animation: float 3s ease-in-out infinite, paws 1.5s alternate infinite;
 }
 
 
@@ -123,18 +125,28 @@ header.hidden {
   animation: peek 3s ease-in-out infinite;
 }
 
-.display-container {
-  position: fixed;
-  bottom: 20px;     /* distance from bottom */
-  right: 0px;      /* distance from right */
-  width: 300px;
-  height: 400px;
-  background: white;
-  border: 1px solid black;
-  border-radius: 20px;
-  animation: float 3s ease-in-out infinite;
-  z-index: 10;
+/* ===== BONE INSIDE DISPLAY CONTAINER ===== */
+.display-container .bone {
+  font-size: 3rem;                /* size of the bone emoji 🦴 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  animation: bone-bounce 2s ease-in-out infinite,
+             bone-spin 6s linear infinite;
 }
+
+/* ===== ANIMATIONS ===== */
+@keyframes bone-bounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-15px); }
+}
+
+@keyframes bone-spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 
 
 /* ===== DASHBOARD STYLES ===== */
