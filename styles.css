@@ -27,7 +27,7 @@
   align-items: center;
   min-height: calc(100vh - 80px); /* subtract header height */
   padding: 2rem;
-  background: #b3b3cc;
+  background: black;
   padding-top: 80px; /* Space for fixed header */
 }
 
@@ -53,7 +53,7 @@ header {
   margin: 1rem auto;
   padding: 2rem;
   background: white;
-  border: 1px solid black;
+  border: 3px solid black;
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
