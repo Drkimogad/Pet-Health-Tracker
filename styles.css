@@ -126,17 +126,32 @@ header.hidden {
 }
 
 /* ===== BONE INSIDE DISPLAY CONTAINER ===== */
-.display-container .bone {
-  font-size: 3rem;                /* size of the bone emoji 🦴 */
+.display-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 300px;
+  height: 400px;
+  background: white;
+  border: 1px solid black;
+  border-radius: 20px;
+  z-index: 10;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  height: 100%;
+  justify-content: flex-end; /* bone sits at bottom */
+  overflow: hidden;
+}
+
+/* Bone styling + combined animation */
+.display-container .bone {
+  font-size: 3rem;
+  margin-bottom: 15px;
   animation: bone-bounce 2s ease-in-out infinite,
              bone-spin 6s linear infinite;
 }
 
-/* ===== ANIMATIONS ===== */
+/* Animations */
 @keyframes bone-bounce {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-15px); }
