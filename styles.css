@@ -27,7 +27,7 @@
   align-items: center;
   min-height: 100vh;
   padding: 2rem;
-  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+  background: #b3b3cc;
   position: relative;
   padding-bottom: 100px; /* Prevents scroll space */
 }
@@ -43,6 +43,8 @@
   margin-top: 3rem; /* Creates space for absolute header */
   padding: 2rem;
   background: white;
+  border: black;
+
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.1);
   position: relative;
@@ -144,15 +146,16 @@
   bottom: 120px;
   right: 20px;
   left: 20px;   /* Moved to left */
-  width: 180px; /* Slightly larger */
-  height: 180px; /* Slightly  higher*/
+  width: 200px; /* Slightly larger */
+  height: 200px; /* Slightly  higher*/
   background: var(--mustard);
+  border: black;
   border-radius: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 1.2rem; /* More internal space */
+  padding: 1.4rem; /* More internal space */
   box-shadow: 0 10px 25px rgba(0,0,0,0.15);
   animation: float 3s ease-in-out infinite;
   z-index: 10;
@@ -215,6 +218,41 @@
   background: white;
   z-index: 5;
 }
+
+.footer {
+  position: fixed;
+  top: 30px;
+  right: 40%;
+  left: 60%;   /* Moved to left */
+  width: 200px; /* Slightly larger */
+  height: 200px; /* Slightly  higher*/
+  background: white;
+  border: black;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.4rem; /* More internal space */
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  animation: float 3s ease-in-out infinite;
+  z-index: 5;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.footer:hover {
+  transform: scale(1.05);
+}
+
+.footer-content {
+  font-size: 0.85rem;
+  text-align: center;
+  overflow: hidden;
+  max-height: 100%;
+}
+
+
 
 /* ===== DASHBOARD STYLES ===== */
 /* Pet Card Image Fix */
