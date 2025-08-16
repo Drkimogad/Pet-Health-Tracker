@@ -1,4 +1,4 @@
-/* ===== GLOBAL STYLES (Preserved) ===== */
+/* ===== GLOBAL STYLES ===== */
 :root {
   --primary-color: #3498db;
   --primary-dark: #2980b9;
@@ -20,12 +20,11 @@
   --darkred: #8B0000;
 }
 
-/* ===== CORE AUTH STRUCTURE (Preserved) ===== */
+/* ===== CORE STRUCTURE ===== */
 #authContainer {
   display: flex !important;
   flex-direction: column !important;
   align-items: center;
-  justify-content: center;
   min-height: 100vh !important;
   padding: 2rem;
   box-sizing: border-box;
@@ -36,104 +35,45 @@
 .visible { display: block !important; }
 #authContainer.hidden { display: none !important; }
 
-/* ===== WINDOW THEME ENHANCEMENTS ===== */
-/* Header Positioning */
+/* ===== HEADER & WELCOME AREA ===== */
 header h1 {
-  position: absolute;
-  top: 1rem;
-  left: 0;
-  right: 0;
   text-align: center;
   font-size: 2.2rem;
-  color: white;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-  z-index: 2;
+  color: var(--purple-dark);
+  margin: 0 0 1rem;
+  order: 1; /* Below welcome animation */
 }
 
-/* Curtain Panels */
 .window-frame {
-  position: relative;
   width: 90%;
   max-width: 800px;
-  margin: 0 auto 2rem;
-  z-index: 1;
+  margin: 0 auto;
+  order: 0; /* Above header */
 }
 
-.window-frame::before,
-.window-frame::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  width: 15%;
-  height: 100%;
-  background-repeat: no-repeat;
-  background-size: contain;
-  z-index: -1;
-  pointer-events: none;
-}
-
-.window-frame::before {
-  left: 0;
-  background-image: linear-gradient(to right, var(--purple) 0%, var(--purple-dark) 100%);
-}
-
-.window-frame::after {
-  right: 0;
-  background-image: linear-gradient(to left, var(--purple) 0%, var(--purple-dark) 100%);
-}
-
-/* for the welcome added loader */
 .pet-animation-container {
-    width: 80%;
-    margin: 20px auto;
-    aspect-ratio: 4/1;
-    max-width: 800px;
-    background-color: #f8f9fa;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    overflow: hidden;
-    position: relative;
-    margin-bottom: 0px; /* adjust to reduce space below Lottie and h2 */
+  width: 100%;
+  margin: 0 auto;
+  aspect-ratio: 4/1;
+  background-color: transparent;
+  position: relative;
 }
-.pet-animation-container lottie-player {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-} 
 
-
-
-
-
-
-
-
-/* ===== EXISTING STYLES (Preserved) ===== */
-/* (Your original .google-btn, .auth-message, 
-   .pet-animation-container, banner styles remain unchanged) */
-
-
-
-
-/* ===== FOOD BOWL AUTH WRAPPER ===== */
+/* ===== AUTH WRAPPER ===== */
 #googleSignInBtnWrapper {
   position: relative;
   background: rgba(255,255,255,0.96);
   border-radius: 16px;
   padding: 2rem;
-  margin: 1rem auto;
+  margin: 2rem auto;
   width: 90%;
   max-width: 400px;
-  box-shadow: 
-    0 10px 30px rgba(0,0,0,0.1),
-    inset 0 -10px 20px rgba(0,0,0,0.05);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
   border: 2px solid var(--mustard);
-  z-index: 3;
+  z-index: 2;
+  order: 3;
 }
 
-/* Chewing Animation */
 #googleSignInBtnWrapper::before {
   content: "";
   position: absolute;
@@ -151,7 +91,55 @@ header h1 {
   animation: ecgSlide 3s linear infinite;
 }
 
+/* ===== BANNER & TREAT BOX ===== */
+#fullPageBanner.banner-wrapper {
+  height: 50vh;
+  width: 90%;
+  margin: 1rem auto;
+  position: relative;
+  order: 4;
+}
 
+.quote {
+  position: fixed;
+  bottom: 100px;
+  right: 20px;
+  width: 150px;
+  height: 150px;
+  background: var(--mustard);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1rem;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  animation: bounce 2s infinite alternate;
+  z-index: 3;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  padding: 1rem;
+  text-align: center;
+  background: rgba(255,255,255,0.9);
+  z-index: 4;
+  order: 5;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes ecgSlide {
+  100% { background-position: 400% 0; }
+}
+
+@keyframes bounce {
+  to { transform: translateY(-10px); }
+}
+
+/* ===== EXISTING COMPONENTS ===== */
 .google-btn {
   background: #ffffff;
   color: #444;
@@ -170,113 +158,24 @@ header h1 {
   font-size: 16px;
 }
 
-.google-btn:hover {
-  background: #f1f1f1;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
-}
-
-.google-btn img {
-  width: 20px;
-  height: 20px;
-}
-
 .auth-message {
   color: #333;
   margin-top: 10px;
   font-size: 1rem;
 }
-.auth-switch-btn {
-  background: none;
-  border: none;
-  color: #0066cc;
-  text-decoration: underline;
-  cursor: pointer;
-  padding: 10px 0;
-  font-size: 1rem;
-  margin-top: 15px;
-  display: block;
-  width: 100%;
-  text-align: center;
-}
 
-.auth-switch-btn:hover {
-  color: #004499;
-}
-
-.button[disabled] {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.success-message {
-  color: #28a745;
-  text-align: center;
-  margin: 15px 0;
-}
-
-/* ===== BANNER STYLES ===== */
-/* Reduce height and adjust spacing */
-#fullPageBanner.banner-wrapper {
-  height: 55vh; /* Reduced from 70vh */
-  margin-bottom: -30px; /* Pulls content upward */
-}
-
-/* Optional: Add soft gradient overlay */
-#fullPageBanner.banner-wrapper::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 30%;
-  background: linear-gradient(to top, rgba(255,255,255,0.3), transparent);
-}
-
-#fullPageBanner .banner-image {
-  width: 100%;
-  height: 100%;
-  margin: 20px auto;
-  object-fit: contain; /* shows the whole image */
-  object-position: center; /* Changed from "relative" */
-  display: block;
-}
-
-/* ===== BOUNCING TREAT BOX ===== */
-.quote {
-  position: relative;
-  background: var(--mustard);
-  color: var(--text-color);
-  padding: 1.5rem;
-  border-radius: 50%;
-  width: 180px;
-  height: 180px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  margin: 2rem auto;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-  animation: bounce 2s infinite alternate;
-  font-style: italic;
-  font-size: 1rem;
-  line-height: 1.4;
-}
-
-.quote .icon {
-  position: absolute;
-  font-size: 1.2rem;
-}
-
-.quote .microchip { bottom: 15px; right: 20px; }
-.quote .medical { top: 15px; left: 20px; }
-
-/* ===== ANIMATIONS ===== */
-@keyframes ecgSlide {
-  100% { background-position: 400% 0; }
-}
-
-@keyframes bounce {
-  to { transform: translateY(-15px); }
+/* ===== RESPONSIVE BASE ===== */
+@media (max-width: 768px) {
+  .quote {
+    width: 120px;
+    height: 120px;
+    font-size: 0.9rem;
+    bottom: 80px;
+  }
+  
+  #googleSignInBtnWrapper {
+    padding: 1.5rem;
+  }
 }
 
 
