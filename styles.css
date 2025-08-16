@@ -85,7 +85,7 @@ header.hidden {
 .footer-treat {
   position: fixed;
   bottom: 120px;
-  left: 20px;              /* stick to left corner (adjust spacing if needed) */
+  left: 40px;              /* stick to left corner (adjust spacing if needed) */
   width: 200px;
   height: 200px;
   background: var(--mustard);
@@ -128,8 +128,8 @@ header.hidden {
 /* ===== BONE INSIDE DISPLAY CONTAINER ===== */
 .display-container {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 80px;
+  right: 80px;
   width: 300px;
   height: 400px;
   background: white;
