@@ -123,6 +123,20 @@ header.hidden {
   animation: peek 3s ease-in-out infinite;
 }
 
+.display-container {
+  position: fixed;
+  bottom: 20px;
+  left: auto;
+  transform: translateX(-50%);
+  width: 300px;
+  height: 400px;
+  background: white;
+  border: 1px solid black;
+  border-radius: 20px;
+  margin-right: 20px;
+  animation: float 3s ease-in-out infinite;
+  z-index: 10;
+}
 
 
 /* ===== DASHBOARD STYLES ===== */
