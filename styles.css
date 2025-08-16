@@ -22,7 +22,7 @@
 
 /* ===== FIXED HEADER (Works Across All Pages) ===== */
 header {
-  position: relative; /* Changed from absolute */
+  position: absolute; /* Changed from relative*/
   background: var(--purple);
   color: white;
   padding: 1rem;
@@ -38,12 +38,13 @@ header.hidden {
 .hidden {
   display: none;
 }   
+
 /* ===== AUTH CONTAINER (Fixed Spacing) ===== */
 #authContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100vh;
+  min-height: calc(100vh - 80px); /* subtract header height */
   padding: 2rem;
   background: #b3b3cc;
   padding-top: 80px; /* Space for fixed header */
