@@ -1,34 +1,36 @@
 import * as functions from "firebase-functions";
 import cloudinary from "cloudinary";
 
-// ==============================
-// Cloudinary Configuration
-// ==============================
+// ---------------------------
+// Configure Cloudinary
+// ---------------------------
 cloudinary.v2.config({
-  cloud_name: functions.config().cloudinary.cloud_name || "",
-  api_key: functions.config().cloudinary.api_key || "",
-  api_secret: functions.config().cloudinary.api_secret || ""
+  cloud_name: functions.config().cloudinary?.cloud_name || "",
+  api_key: functions.config().cloudinary?.api_key || "",
+  api_secret: functions.config().cloudinary?.api_secret || ""
 });
 
-// ==============================
-// Test Cloudinary Connectivity
-// ==============================
+// ---------------------------
+// Test Cloudinary connectivity
+// ---------------------------
 export const testCloudinary = functions.https.onCall(async (_, context) => {
   try {
-    const connected = !!functions.config().cloudinary.cloud_name;
+    const envLoaded = !!functions.config().cloudinary?.cloud_name;
     return {
-      status: connected ? "Cloudinary environment loaded" : "Cloudinary environment missing",
-      env_loaded: connected
+      status: envLoaded
+        ? "Cloudinary environment loaded"
+        : "Cloudinary environment missing",
+      env_loaded: envLoaded
     };
   } catch (err) {
-    console.error("Error initializing Cloudinary:", err);
+    console.error("Cloudinary test error:", err);
     return { status: "error", message: err.message };
   }
 });
 
-// ==============================
-// Delete Cloudinary Image
-// ==============================
+// ---------------------------
+// Delete a Cloudinary image by public_id
+// ---------------------------
 export const deleteImage = functions.https.onCall(async (data, context) => {
   try {
     if (!data?.public_id) {
@@ -38,7 +40,7 @@ export const deleteImage = functions.https.onCall(async (data, context) => {
     const result = await cloudinary.v2.uploader.destroy(data.public_id);
 
     if (result.result !== "ok") {
-      console.warn("Cloudinary deletion result:", result);
+      console.warn("Cloudinary deletion warning:", result);
       return { status: "warning", message: "Image not fully deleted", result };
     }
 
@@ -48,8 +50,3 @@ export const deleteImage = functions.https.onCall(async (data, context) => {
     return { status: "error", message: err.message };
   }
 });
-
-// ==============================
-// Optional: Add more functions here
-// e.g., batch delete, image transformation, etc.
-// ==============================
