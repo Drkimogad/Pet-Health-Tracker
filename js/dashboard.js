@@ -1765,7 +1765,7 @@ if (editingProfileId !== null && !fileInput.files[0]) {
   }
 }
 
-2️⃣ In the new upload branch
+// 2️⃣ In the new image uploaded
 if (fileInput.files[0]) {
   try {
     const uploadResult = await uploadToCloudinary(
