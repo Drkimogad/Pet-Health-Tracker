@@ -232,9 +232,7 @@ textarea:focus {
   box-shadow: 0 0 0 2px rgba(244, 197, 66, 0.3);
   outline: none;
 }
-#savePetProfile {
-  background-color: var(--purple);
-}
+
 /* Form reminders section styling */
 #petList fieldset.reminders-section {
   border: 1px solid #ccc;
@@ -276,8 +274,9 @@ textarea:focus {
   margin-bottom: 15px;
   padding: 0 1.5rem;
 }
+/* controls, logout, add profile, save pet profile buttons*/
 .primary-action {
-  background-color: var(--purple);
+  background-color: var(--purple); /* Changed from purple to green */
   color: white;
   padding: 10px 20px;
   border-radius: 6px;
@@ -288,12 +287,57 @@ textarea:focus {
 }
 
 .primary-action:hover {
-  background-color: var(--purple);
+  background-color: var(--green);
 }
+
+/* follow priimary action styles/ this rule is no longer needed*/
+/*#savePetProfile {
+  background-color: var(--purple); */
 
 #logoutButton.primary-action {
   background-color: #FF0000; /* Override purple */
 }
+
+
+/* Add this new container style for cancel button styling to wrap submit and cancel button together  */
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  width: 100%;
+}
+
+/* Update cancel button - remove margin-top */
+#cancelEditBtn {
+  background-color: var(--red);
+  color: white;
+  margin-left: 0; 
+  margin-top: 0;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#cancelEditBtn:hover {
+  background-color: #bf0000; /* using a darker red now for hover effect */
+  border: black; 
+}
+
+/* Ensure submit button stays left-aligned */
+.form-actions button[type="submit"] {
+  margin-right: auto;
+}
+
+
+
+
 /* Pet Cards all styles SPLIT LAYOUT */
 ..pet-card {
   background: #ffffff;
@@ -497,29 +541,6 @@ button.delete-btn {
   background-color: var(--qr-blue);
   color: white;
 }
-
-/* Cancel Buttons */
-#cancelEditBtn {
-  background-color: var(--red);
-  color: white;
-  margin-left: auto; /* pushes it to the right */
-  margin-top: 50px;
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-size: 1rem;
-  cursor: pointer;
-  border: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-#cancelEditBtn:hover {
-  background-color: var(--red); /* consider using a darker red for hover effect */
-  border: none; /* removed invalid 'border: purple;' */
-}
-
-/* rest of the buttons are generated dynamically and inline styled */
 
 /*NEW HELPER FUNCTION FOR PET FIELDS*/
 .pet-field {
