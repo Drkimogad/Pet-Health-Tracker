@@ -891,17 +891,20 @@ function openCreateForm() {
 // This means deleted profiles may leave behind orphaned images in Cloudinary.
 // ✅ Add server-side function or cleanup mechanism later if needed.
 
+//=================================================
 async function deletePetProfile(petId) {
   try {
     const pets = await loadPets();
     const petToDelete = pets.find(p => p.id === petId);
+
+    if (!petToDelete) throw new Error('Pet profile not found');
 
     // 🔸 Delete from Firestore
     if (firebase.auth().currentUser) {
       await firebase.firestore().collection('profiles').doc(petId).delete();
     }
 
-    // 🔸 Optional: Remove from IndexedDB if still used
+    // 🔸 Optional: Remove from IndexedDB
     if (window.petDB) {
       const tx = petDB.transaction('pets', 'readwrite');
       tx.objectStore('pets').delete(petId);
@@ -918,6 +921,19 @@ async function deletePetProfile(petId) {
       localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
     }
 
+    // 🔸 NEW: Delete from Cloudinary
+    // Only call the server-side function if we have a public_id saved
+    if (petToDelete.cloudinaryPath) {
+      try {
+        const deleteFunc = firebase.functions().httpsCallable('deleteImage');
+        const result = await deleteFunc({ publicId: petToDelete.cloudinaryPath });
+        console.log('Cloudinary delete result:', result.data);
+      } catch (cloudErr) {
+        console.warn('Cloudinary deletion failed:', cloudErr.message);
+        // Do not block profile deletion if Cloudinary fails
+      }
+    }
+
     // 🔸 Update UI
     loadSavedPetProfile();
     showSuccessNotification('deleted', petName);
@@ -927,6 +943,8 @@ async function deletePetProfile(petId) {
     showErrorToUser('Failed to delete profile');
   }
 }
+
+
 //====================================
 // exportAllPetCards button functionality PRODUCTION READY
 //======================================
