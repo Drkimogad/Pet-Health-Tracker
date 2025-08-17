@@ -897,14 +897,25 @@ async function deletePetProfile(petId) {
     const pets = await loadPets();
     const petToDelete = pets.find(p => p.id === petId);
 
-    if (!petToDelete) throw new Error('Pet profile not found');
+    let petName = 'Unnamed Pet';
+
+    // 🔸 Cloud Function call for Cloudinary deletion (SURGICAL ADDITION)
+    if (petToDelete?.public_id && firebase.auth().currentUser) {
+      try {
+        const deleteFn = firebase.functions().httpsCallable('deleteImage');
+        const result = await deleteFn({ public_id: petToDelete.public_id });
+        console.log('Cloudinary delete result:', result.data);
+      } catch (err) {
+        console.warn('Failed to delete from Cloudinary:', err);
+      }
+    }
 
     // 🔸 Delete from Firestore
     if (firebase.auth().currentUser) {
       await firebase.firestore().collection('profiles').doc(petId).delete();
     }
 
-    // 🔸 Optional: Remove from IndexedDB
+    // 🔸 Optional: Remove from IndexedDB if still used
     if (window.petDB) {
       const tx = petDB.transaction('pets', 'readwrite');
       tx.objectStore('pets').delete(petId);
@@ -913,25 +924,11 @@ async function deletePetProfile(petId) {
     // 🔸 Remove from localStorage
     const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
     const localIndex = savedProfiles.findIndex(p => p.id === petId);
-    let petName = 'Unnamed Pet';
 
     if (localIndex !== -1) {
       petName = savedProfiles[localIndex].petName || 'Unnamed Pet';
       savedProfiles.splice(localIndex, 1);
       localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
-    }
-
-    // 🔸 NEW: Delete from Cloudinary
-    // Only call the server-side function if we have a public_id saved
-    if (petToDelete.cloudinaryPath) {
-      try {
-        const deleteFunc = firebase.functions().httpsCallable('deleteImage');
-        const result = await deleteFunc({ publicId: petToDelete.cloudinaryPath });
-        console.log('Cloudinary delete result:', result.data);
-      } catch (cloudErr) {
-        console.warn('Cloudinary deletion failed:', cloudErr.message);
-        // Do not block profile deletion if Cloudinary fails
-      }
     }
 
     // 🔸 Update UI
@@ -1761,10 +1758,14 @@ if (editingProfileId !== null && !fileInput.files[0]) {
     // 🔸 SURGICAL ADDITION: ensure cloudinaryPath is copied
     petData.cloudinaryPath = existingProfile.cloudinaryPath || '';
     petData.imageDimensions = existingProfile.imageDimensions || {};
+
+    // 🔸 NEW SURGICAL ADDITION: save public_id for delete function
+    // (This is exactly what your Cloud Function will look for)
+    petData.public_id = existingProfile.cloudinaryPath || '';
   }
 }
 
-// ✅ If new image was uploaded, use it instead
+2️⃣ In the new upload branch
 if (fileInput.files[0]) {
   try {
     const uploadResult = await uploadToCloudinary(
@@ -1775,8 +1776,9 @@ if (fileInput.files[0]) {
 
     petData.petPhoto = uploadResult.url.replace(/^http:\/\//, 'https://');
       
-    // 🔸 SURGICAL ADDITION: save public_id for deletion later  
-    petData.cloudinaryPath = uploadResult.path;
+    // 🔸 SURGICAL ADDITION: save Cloudinary path for deletion later  
+    petData.cloudinaryPath = uploadResult.public_id;   // existing usage
+    petData.public_id = uploadResult.public_id;        // ✅ NEW: add public_id explicitly
     petData.imageDimensions = {
       width: uploadResult.width,
       height: uploadResult.height
