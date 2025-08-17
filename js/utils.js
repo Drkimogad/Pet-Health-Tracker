@@ -44,7 +44,7 @@ async function uploadToCloudinary(file, userId, petProfileId) {
     const data = await response.json();
     return {
       url: data.secure_url, // Already HTTPS
-      path: data.public_id,
+      public_id: data.public_id,  // ✅ Keep this for deletion later renamed from path.
       width: data.width,
       height: data.height
     };
