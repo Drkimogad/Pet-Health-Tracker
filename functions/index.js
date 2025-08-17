@@ -1,18 +1,21 @@
 import * as functions from "firebase-functions";
 import cloudinary from "cloudinary";
 
-// Configure Cloudinary using environment variables
+// ==============================
+// Cloudinary Configuration
+// ==============================
 cloudinary.v2.config({
   cloud_name: functions.config().cloudinary.cloud_name || "",
   api_key: functions.config().cloudinary.api_key || "",
   api_secret: functions.config().cloudinary.api_secret || ""
 });
 
-// Test connectivity to Cloudinary
+// ==============================
+// Test Cloudinary Connectivity
+// ==============================
 export const testCloudinary = functions.https.onCall(async (_, context) => {
   try {
-    // Just check if env is loaded
-    const connected = !!process.env.CLOUDINARY_CLOUD_NAME;
+    const connected = !!functions.config().cloudinary.cloud_name;
     return {
       status: connected ? "Cloudinary environment loaded" : "Cloudinary environment missing",
       env_loaded: connected
@@ -23,7 +26,9 @@ export const testCloudinary = functions.https.onCall(async (_, context) => {
   }
 });
 
-// Delete a Cloudinary image by public_id
+// ==============================
+// Delete Cloudinary Image
+// ==============================
 export const deleteImage = functions.https.onCall(async (data, context) => {
   try {
     if (!data?.public_id) {
@@ -43,3 +48,8 @@ export const deleteImage = functions.https.onCall(async (data, context) => {
     return { status: "error", message: err.message };
   }
 });
+
+// ==============================
+// Optional: Add more functions here
+// e.g., batch delete, image transformation, etc.
+// ==============================
