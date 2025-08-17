@@ -1747,7 +1747,7 @@ const petData = {
   }
 };
 
- // photo handling      
+ // photo handling/Cloudinary section     
 const fileInput = DOM.petPhotoInput;
       
 // ✅ If editing and NO new image, reuse existing photo
@@ -1757,6 +1757,8 @@ if (editingProfileId !== null && !fileInput.files[0]) {
     
   if (existingProfile && existingProfile.petPhoto) {
     petData.petPhoto = existingProfile.petPhoto;
+      
+    // 🔸 SURGICAL ADDITION: ensure cloudinaryPath is copied
     petData.cloudinaryPath = existingProfile.cloudinaryPath || '';
     petData.imageDimensions = existingProfile.imageDimensions || {};
   }
@@ -1772,6 +1774,8 @@ if (fileInput.files[0]) {
     );
 
     petData.petPhoto = uploadResult.url.replace(/^http:\/\//, 'https://');
+      
+    // 🔸 SURGICAL ADDITION: save public_id for deletion later  
     petData.cloudinaryPath = uploadResult.path;
     petData.imageDimensions = {
       width: uploadResult.width,
