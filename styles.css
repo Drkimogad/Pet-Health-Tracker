@@ -266,7 +266,7 @@ textarea:focus {
   border-radius: 4px;
 }
 
-/* Dashboard Action Buttons including new profile and logoutbutton alignement with it */
+/* Dashboard Action Buttons including new profile and logout button alignement with it plus submit button */
 .dashboard-actions {
   display: flex;
   justify-content: space-between;
@@ -274,7 +274,8 @@ textarea:focus {
   margin-bottom: 15px;
   padding: 0 1.5rem;
 }
-/* controls, logout, add profile, save pet profile buttons*/
+
+/* primary actions class controls logout, add profile, save pet profile buttons*/
 .primary-action {
   background-color: var(--purple); /* Changed from purple to green */
   color: white;
@@ -290,16 +291,14 @@ textarea:focus {
   background-color: var(--green);
 }
 
-/* follow priimary action styles/ this rule is no longer needed*/
-/*#savePetProfile {
-  background-color: var(--purple); */
-
+/* separate rule for logout button for its colour red , targeting it by its id #*/
 #logoutButton.primary-action {
   background-color: #FF0000; /* Override purple */
 }
 
-
-/* Add this new container style for cancel button styling to wrap submit and cancel button together  */
+/* Add this new container(.form-actions class) for cancel button and submit button too
+  what's happening is the container targets the class form actions for the alignement and the wrapping of the two buttons.
+  the actual styles are targetting buttons by id for cancel button and class for submit button */
 .form-actions {
   display: flex;
   justify-content: space-between;
