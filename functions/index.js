@@ -1,6 +1,6 @@
 import * as functions from "firebase-functions";
 import cloudinary from "cloudinary";
-import "dotenv/config"; // loads .env locally
+// import "dotenv/config"; // loads .env locally deploymend succedded when it was commented out
 
 // ---------------------------
 // Helper: Load Cloudinary Config
@@ -71,3 +71,31 @@ export const deleteImage = functions.https.onCall(async (data, context) => {
     throw new functions.https.HttpsError("internal", err.message);
   }
 });
+
+
+
+
+// currently firebase is using this
+//const functions = require("firebase-functions");
+//const cloudinary = require("cloudinary").v2;
+
+//cloudinary.config({
+//  cloud_name: functions.config().cloudinary.cloud_name,
+//  api_key: functions.config().cloudinary.api_key,
+//  api_secret: functions.config().cloudinary.api_secret,
+//});
+//→ This pulls values from functions.config(). Works, but will die in 2026.
+
+
+//import * as functions from "firebase-functions";
+//import { v2 as cloudinary } from "cloudinary";
+
+//cloudinary.config({
+//  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+//  api_key: process.env.CLOUDINARY_API_KEY,
+//  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+//→ This pulls values from .env automatically (no need for dotenv/config import, the Firebase CLI now handles it).
+
+
+
