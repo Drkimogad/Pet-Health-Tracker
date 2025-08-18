@@ -32,19 +32,20 @@ export const testCloudinary = functions.https.onCall(async (_, context) => {
 // ---------------------------
 export const deleteImage = functions.https.onCall(async (data, context) => {
   try {
-    // --- Auth & Input Checks (Unchanged) ---
+    // --- Auth & Input Checks ---
     if (!context.auth) throw new functions.https.HttpsError("unauthenticated", "No user context.");
     if (!data?.public_id) throw new functions.https.HttpsError("invalid-argument", "Missing 'public_id'");
 
-    // --- Explicit Credential Check ---
-    const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
-    const apiKey = process.env.CLOUDINARY_API_KEY;
-    const apiSecret = process.env.CLOUDINARY_API_SECRET;
-    
+    // --- Dual-Source Credential Check (Production + .env Fallback) ---
+    const config = functions.config().cloudinary || {}; // Firebase Config (production)
+    const cloudName = config.cloud_name || process.env.CLOUDINARY_CLOUD_NAME;
+    const apiKey = config.api_key || process.env.CLOUDINARY_API_KEY;
+    const apiSecret = config.api_secret || process.env.CLOUDINARY_API_SECRET;
+
     if (!cloudName || !apiKey || !apiSecret) {
       throw new functions.https.HttpsError(
-        "failed-precondition", 
-        "Cloudinary credentials not configured. Check Firebase Environment Variables."
+        "failed-precondition",
+        "Cloudinary credentials missing in both Firebase Config and .env."
       );
     }
 
@@ -53,23 +54,15 @@ export const deleteImage = functions.https.onCall(async (data, context) => {
 
     // --- Delete Image ---
     const result = await cloudinary.v2.uploader.destroy(data.public_id);
-    console.log("Cloudinary deletion result:", result); // Log full response
+    console.log("Cloudinary deletion result:", result);
 
-    // --- Handle Response ---
     if (result.result === "ok") {
       return { status: "success", message: "Image deleted", result };
     } else {
-      throw new functions.https.HttpsError(
-        "internal", 
-        `Cloudinary error: ${result.result || "Unknown failure"}`,
-        result
-      );
+      throw new functions.https.HttpsError("internal", `Cloudinary error: ${result.result}`);
     }
   } catch (err) {
-    console.error("DELETE ERROR:", err); // Detailed log
-    throw new functions.https.HttpsError(
-      "internal", 
-      err.message || "Failed to delete image"
-    );
+    console.error("DELETE ERROR:", err);
+    throw new functions.https.HttpsError("internal", err.message);
   }
 });
