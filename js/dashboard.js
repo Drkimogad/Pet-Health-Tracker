@@ -902,9 +902,11 @@ async function deletePetProfile(petId) {
     // 🔸 Cloud Function call for Cloudinary deletion (SURGICAL ADDITION)
     if (petToDelete?.public_id && firebase.auth().currentUser) {
       try {
+          // delete function calls firebase cloud delete function
         const deleteFn = firebase.functions().httpsCallable('deleteImage');
         const result = await deleteFn({ public_id: petToDelete.public_id });
         console.log('Cloudinary delete result:', result.data);
+          
       } catch (err) {
         console.warn('Failed to delete from Cloudinary:', err);
       }
