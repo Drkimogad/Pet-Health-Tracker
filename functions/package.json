@@ -1,0 +1,21 @@
+{
+  "name": "functions",
+  "version": "1.0.0",
+  "description": "Firebase Functions for Pet Health Tracker",
+  "main": "index.js",
+  "type": "module",
+  "engines": {
+    "node": "20"
+  },
+  "scripts": {
+    "start": "firebase emulators:start --only functions",
+    "deploy": "firebase deploy --only functions"
+  },
+  "dependencies": {
+    "cloudinary": "^1.41.3",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "firebase-admin": "^13.4.0",
+    "firebase-functions": "^6.4.0"
+  }
+}
