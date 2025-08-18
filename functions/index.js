@@ -16,6 +16,8 @@ cloudinary.v2.config({
 export const testCloudinary = functions.https.onCall(async (_, context) => {
   try {
     const envLoaded = !!functions.config().cloudinary?.cloud_name;
+    
+    // ✅ Highlight: simple connectivity check with environment variables
     return {
       status: envLoaded
         ? "Cloudinary environment loaded"
@@ -33,18 +35,34 @@ export const testCloudinary = functions.https.onCall(async (_, context) => {
 // ---------------------------
 export const deleteImage = functions.https.onCall(async (data, context) => {
   try {
-    if (!data?.public_id) {
-      throw new Error("Missing 'public_id' in request data");
+    // 🔒 Highlight: check user authentication
+    if (!context.auth) {
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        "Request had no valid user context."
+      );
     }
 
+    // 🔑 Highlight: validate public_id is provided
+    if (!data?.public_id) {
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        "Missing 'public_id' in request data"
+      );
+    }
+
+    // 🔄 Highlight: call Cloudinary destroy API
     const result = await cloudinary.v2.uploader.destroy(data.public_id);
 
-    if (result.result !== "ok") {
+    // ✅ Highlight: robust handling of possible results
+    if (result.result === "ok") {
+      return { status: "success", message: "Image deleted successfully", result };
+    } else if (result.result === "not found") {
+      return { status: "warning", message: "Image already deleted", result };
+    } else {
       console.warn("Cloudinary deletion warning:", result);
       return { status: "warning", message: "Image not fully deleted", result };
     }
-
-    return { status: "success", message: "Image deleted successfully", result };
   } catch (err) {
     console.error("Cloudinary deletion error:", err);
     return { status: "error", message: err.message };
