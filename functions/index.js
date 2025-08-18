@@ -1,10 +1,10 @@
 import * as functions from "firebase-functions";
-import cloudinary from "cloudinary";
+import { v2 as cloudinaryV2 } from "cloudinary";
 
 // ---------------------------
 // Configure Cloudinary
 // ---------------------------
-cloudinary.v2.config({
+cloudinaryV2.config({
   cloud_name: functions.config().cloudinary?.cloud_name || "",
   api_key: functions.config().cloudinary?.api_key || "",
   api_secret: functions.config().cloudinary?.api_secret || ""
@@ -16,8 +16,6 @@ cloudinary.v2.config({
 export const testCloudinary = functions.https.onCall(async (_, context) => {
   try {
     const envLoaded = !!functions.config().cloudinary?.cloud_name;
-    
-    // ✅ Highlight: simple connectivity check with environment variables
     return {
       status: envLoaded
         ? "Cloudinary environment loaded"
@@ -35,7 +33,6 @@ export const testCloudinary = functions.https.onCall(async (_, context) => {
 // ---------------------------
 export const deleteImage = functions.https.onCall(async (data, context) => {
   try {
-    // 🔒 Highlight: check user authentication
     if (!context.auth) {
       throw new functions.https.HttpsError(
         "unauthenticated",
@@ -43,7 +40,6 @@ export const deleteImage = functions.https.onCall(async (data, context) => {
       );
     }
 
-    // 🔑 Highlight: validate public_id is provided
     if (!data?.public_id) {
       throw new functions.https.HttpsError(
         "invalid-argument",
@@ -51,10 +47,8 @@ export const deleteImage = functions.https.onCall(async (data, context) => {
       );
     }
 
-    // 🔄 Highlight: call Cloudinary destroy API
-    const result = await cloudinary.v2.uploader.destroy(data.public_id);
+    const result = await cloudinaryV2.uploader.destroy(data.public_id);
 
-    // ✅ Highlight: robust handling of possible results
     if (result.result === "ok") {
       return { status: "success", message: "Image deleted successfully", result };
     } else if (result.result === "not found") {
@@ -65,6 +59,6 @@ export const deleteImage = functions.https.onCall(async (data, context) => {
     }
   } catch (err) {
     console.error("Cloudinary deletion error:", err);
-    return { status: "error", message: err.message };
+    throw new functions.https.HttpsError("internal", err.message);
   }
 });
