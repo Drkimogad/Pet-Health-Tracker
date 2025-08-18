@@ -32,17 +32,21 @@ export const testCloudinary = functions.https.onCall(async (_, context) => {
 // ---------------------------
 export const deleteImage = functions.https.onCall(async (data, context) => {
   try {
-    // --- Auth & Input Checks ---
-    if (!context.auth) throw new functions.https.HttpsError("unauthenticated", "No user context.");
+    // --- Auth & Input Validation ---
+    if (!context.auth) throw new functions.https.HttpsError("unauthenticated", "Authentication required.");
     if (!data?.public_id) throw new functions.https.HttpsError("invalid-argument", "Missing 'public_id'");
 
-    // --- Dual-Source Credential Check (Production + .env Fallback) ---
-    const config = functions.config().cloudinary || {}; // Firebase Config (production)
-    const cloudName = config.cloud_name || process.env.CLOUDINARY_CLOUD_NAME;
-    const apiKey = config.api_key || process.env.CLOUDINARY_API_KEY;
-    const apiSecret = config.api_secret || process.env.CLOUDINARY_API_SECRET;
+    // --- Fail-Safe Credential Loading ---
+    const { cloud_name, api_key, api_secret } = {
+      // Priority 1: Firebase Config (production)
+      ...functions.config().cloudinary,
+      // Priority 2: .env (local/backup)
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET
+    };
 
-    if (!cloudName || !apiKey || !apiSecret) {
+    if (!cloud_name || !api_key || !api_secret) {
       throw new functions.https.HttpsError(
         "failed-precondition",
         "Cloudinary credentials missing in both Firebase Config and .env."
@@ -50,19 +54,15 @@ export const deleteImage = functions.https.onCall(async (data, context) => {
     }
 
     // --- Initialize Cloudinary ---
-    cloudinary.v2.config({ cloud_name: cloudName, api_key: apiKey, api_secret: apiSecret });
+    cloudinary.v2.config({ cloud_name, api_key, api_secret });
 
-    // --- Delete Image ---
+    // --- Execute Deletion ---
     const result = await cloudinary.v2.uploader.destroy(data.public_id);
-    console.log("Cloudinary deletion result:", result);
+    console.log("Deletion successful. Cloudinary response:", result);
 
-    if (result.result === "ok") {
-      return { status: "success", message: "Image deleted", result };
-    } else {
-      throw new functions.https.HttpsError("internal", `Cloudinary error: ${result.result}`);
-    }
+    return { status: "success", result };
   } catch (err) {
-    console.error("DELETE ERROR:", err);
+    console.error("Deletion failed:", err);
     throw new functions.https.HttpsError("internal", err.message);
   }
 });
