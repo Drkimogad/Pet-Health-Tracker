@@ -899,18 +899,20 @@ async function deletePetProfile(petId) {
 
     let petName = 'Unnamed Pet';
 
-    // 🔸 Cloud Function call for Cloudinary deletion (SURGICAL ADDITION)
-    if (petToDelete?.public_id && firebase.auth().currentUser) {
-      try {
-          // delete function calls firebase cloud delete function
-        const deleteFn = firebase.functions().httpsCallable('deleteImage');
-        const result = await deleteFn({ public_id: petToDelete.public_id });
-        console.log('Cloudinary delete result:', result.data);
-          
-      } catch (err) {
-        console.warn('Failed to delete from Cloudinary:', err);
-      }
+    // 🔸 Cloudinary image deletion via Firebase Function
+if (petToDelete?.public_id && firebase.auth().currentUser) {
+  try {
+    if (!window.deleteImageFn) {
+      console.error("❌ deleteImageFn not initialized. Cloudinary image not deleted.");
+    } else {
+      const result = await window.deleteImageFn({ public_id: petToDelete.public_id });
+      console.log("✅ Cloudinary delete result:", result.data);
     }
+  } catch (err) {
+    console.error("❌ Failed to delete image from Cloudinary:", err);
+  }
+}
+
 
     // 🔸 Delete from Firestore
     if (firebase.auth().currentUser) {
