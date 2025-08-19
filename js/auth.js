@@ -186,6 +186,9 @@ function initializeFirebase() {
   }
   return firebase.auth();
 }
+// After firebase.initializeApp(firebaseConfig) only once
+const functions = firebase.app().functions('us-central1'); // use your region
+window.deleteImageFn = functions.httpsCallable('deleteImage');
 
 // ====== Auth State Listener ======
 function initAuthListeners() {
