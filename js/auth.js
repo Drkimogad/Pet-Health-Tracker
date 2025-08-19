@@ -186,9 +186,22 @@ function initializeFirebase() {
   }
   return firebase.auth();
 }
-// After firebase.initializeApp(firebaseConfig) only once
-const functions = firebase.app().functions('us-central1'); // use your region
-window.deleteImageFn = functions.httpsCallable('deleteImage');
+
+// ======================
+// Firebase Functions Initialization
+// ======================
+if (firebase.apps.length === 0) {
+  firebase.initializeApp(firebaseConfig);
+}
+
+// Make functions callable globally
+try {
+  const functions = firebase.app().functions("us-central1"); // region must match your deployment
+  window.deleteImageFn = functions.httpsCallable("deleteImage");
+  console.log("✅ deleteImageFn initialized and ready.");
+} catch (err) {
+  console.error("❌ Failed to initialize deleteImageFn:", err);
+}
 
 // ====== Auth State Listener ======
 function initAuthListeners() {
