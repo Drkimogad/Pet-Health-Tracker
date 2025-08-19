@@ -192,7 +192,6 @@ function initializeFirebase() {
 // ======================
 if (firebase.apps.length === 0) {
   firebase.initializeApp(firebaseConfig);
-}
 
 // Make functions callable globally
 try {
@@ -201,6 +200,7 @@ try {
   console.log("✅ deleteImageFn initialized and ready.");
 } catch (err) {
   console.error("❌ Failed to initialize deleteImageFn:", err);
+}
 }
 
 // ====== Auth State Listener ======
