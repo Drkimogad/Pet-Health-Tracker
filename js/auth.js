@@ -188,7 +188,7 @@ function initializeFirebase() {
 }
 
 // ======================
-// Firebase Functions Initialization
+// Firebase ( delete )Functions Initialization
 // ======================
 if (firebase.apps.length === 0) {
   firebase.initializeApp(firebaseConfig);
