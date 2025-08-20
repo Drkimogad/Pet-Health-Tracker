@@ -122,7 +122,7 @@ export const deleteImage = functions.https.onRequest(async (request, response) =
 //  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
 //  api_key: process.env.CLOUDINARY_API_KEY,
 //  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+// });
 //→ This pulls values from .env automatically (no need for dotenv/config import, the Firebase CLI now handles it).
 
 
