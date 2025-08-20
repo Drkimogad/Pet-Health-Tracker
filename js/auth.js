@@ -186,7 +186,8 @@ function initializeFirebase() {
     firebase.initializeApp(firebaseConfig);
   }
 
-  // 🔹 Initialize Functions (deleteImage) - KEEP THIS!
+  // 🔹 REMOVE callable function initialization - COMMENT OUT OR DELETE
+  /*
   try {
     const functions = firebase.app().functions("us-central1");
     window.deleteImageFn = functions.httpsCallable("deleteImage");
@@ -194,6 +195,9 @@ function initializeFirebase() {
   } catch (err) {
     console.error("❌ Failed to initialize deleteImageFn:", err);
   }
+  */
+
+  console.log("✅ Firebase initialized (HTTP functions mode)");
 
   // Return auth instance for use elsewhere
   return firebase.auth();
