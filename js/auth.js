@@ -181,27 +181,24 @@ function initializeFirebase() {
     measurementId: "G-7YDDLF95KR"
   };
 
+  // 🔹 Initialize Firebase app if not already done
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }
+
+  // 🔹 Initialize Functions (deleteImage)
+  try {
+    const functions = firebase.app().functions("us-central1"); // region = your deployment
+    window.deleteImageFn = functions.httpsCallable("deleteImage");
+    console.log("✅ deleteImageFn initialized and ready.");
+  } catch (err) {
+    console.error("❌ Failed to initialize deleteImageFn:", err);
+  }
+
+  // Return auth instance for use elsewhere
   return firebase.auth();
 }
 
-// ======================
-// Firebase ( delete )Functions Initialization
-// ======================
-if (firebase.apps.length === 0) {
-  firebase.initializeApp(firebaseConfig);
-
-// Make functions callable globally
-try {
-  const functions = firebase.app().functions("us-central1"); // region must match your deployment
-  window.deleteImageFn = functions.httpsCallable("deleteImage");
-  console.log("✅ deleteImageFn initialized and ready.");
-} catch (err) {
-  console.error("❌ Failed to initialize deleteImageFn:", err);
-}
-}
 
 // ====== Auth State Listener ======
 function initAuthListeners() {
