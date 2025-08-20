@@ -1,6 +1,12 @@
 import * as functions from "firebase-functions";
 import cloudinary from "cloudinary";
+import cors from "cors"; // ADDED: Import cors
 // import "dotenv/config"; // loads .env locally deploymend succedded when it was commented out
+
+// ---------------------------
+// CORS handler setup
+// ---------------------------
+const corsHandler = cors({ origin: true }); // ADDED: CORS middleware
 
 // ---------------------------
 // Helper: Load Cloudinary Config
@@ -40,36 +46,41 @@ export const testCloudinary = functions.https.onCall(async () => {
 });
 
 // ---------------------------
-// Delete a Cloudinary image by public_id
+// Delete a Cloudinary image by public_id (WITH CORS)
 // ---------------------------
 export const deleteImage = functions.https.onCall(async (data, context) => {
-  try {
-    // --- Auth & Input Validation ---
-    if (!context.auth) {
-      throw new functions.https.HttpsError("unauthenticated", "Authentication required.");
-    }
-    if (!data?.public_id) {
-      throw new functions.https.HttpsError("invalid-argument", "Missing 'public_id'");
-    }
+  // ADDED: Wrap in CORS handler
+  return new Promise((resolve, reject) => {
+    corsHandler(context.rawRequest, context.rawResponse, async () => {
+      try {
+        // --- Auth & Input Validation ---
+        if (!context.auth) {
+          throw new functions.https.HttpsError("unauthenticated", "Authentication required.");
+        }
+        if (!data?.public_id) {
+          throw new functions.https.HttpsError("invalid-argument", "Missing 'public_id'");
+        }
 
-    // --- Config ---
-    loadCloudinaryConfig();
+        // --- Config ---
+        loadCloudinaryConfig();
 
-    // --- Execute Deletion ---
-    const result = await cloudinary.v2.uploader.destroy(data.public_id);
-    console.log("🗑️ Cloudinary deletion response:", result);
+        // --- Execute Deletion ---
+        const result = await cloudinary.v2.uploader.destroy(data.public_id);
+        console.log("🗑️ Cloudinary deletion response:", result);
 
-    if (result.result === "ok") {
-      return { status: "success", message: "Image deleted successfully", result };
-    } else if (result.result === "not found") {
-      return { status: "warning", message: "Image not found (already deleted?)", result };
-    } else {
-      return { status: "warning", message: "Unexpected response", result };
-    }
-  } catch (err) {
-    console.error("Deletion failed:", err);
-    throw new functions.https.HttpsError("internal", err.message);
-  }
+        if (result.result === "ok") {
+          resolve({ status: "success", message: "Image deleted successfully", result });
+        } else if (result.result === "not found") {
+          resolve({ status: "warning", message: "Image not found (already deleted?)", result });
+        } else {
+          resolve({ status: "warning", message: "Unexpected response", result });
+        }
+      } catch (err) {
+        console.error("Deletion failed:", err);
+        reject(new functions.https.HttpsError("internal", err.message));
+      }
+    });
+  });
 });
 
 
