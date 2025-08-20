@@ -897,21 +897,33 @@ async function deletePetProfile(petId) {
     const pets = await loadPets();
     const petToDelete = pets.find(p => p.id === petId);
 
-    let petName = 'Unnamed Pet';
-
-    // 🔸 Cloudinary image deletion via Firebase Function
+    // 🔸 Cloudinary image deletion via HTTP FUNCTION
     if (petToDelete?.public_id && firebase.auth().currentUser) {
       try {
-        if (!window.deleteImageFn) {
-          console.error("❌ deleteImageFn not initialized. Cloudinary image not deleted.");
-        } else {
-          const result = await window.deleteImageFn({ public_id: petToDelete.public_id });
-          console.log("✅ Cloudinary delete result:", result.data);
+        const user = firebase.auth().currentUser;
+        const token = await user.getIdToken();
+        
+        const response = await fetch('https://us-central1-pet-health-tracker-4ec31.cloudfunctions.net/deleteImage', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ public_id: petToDelete.public_id })
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
+
+        const result = await response.json();
+        console.log("✅ Cloudinary delete result:", result);
+
       } catch (err) {
         console.error("❌ Failed to delete image from Cloudinary:", err);
       }
     }
+
 
 
     // 🔸 Delete from Firestore
