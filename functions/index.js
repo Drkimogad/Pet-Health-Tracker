@@ -2,7 +2,6 @@ import * as functions from "firebase-functions";
 import cloudinary from "cloudinary";
 import cors from "cors";
 import * as admin from "firebase-admin";
-// import "dotenv/config"; // loads .env locally deploymend succedded when it was commented out
 
 // Initialize Firebase Admin if not already done
 if (!admin.apps.length) {
@@ -16,15 +15,12 @@ const corsHandler = cors({ origin: true });
 // ---------------------------
 function loadCloudinaryConfig() {
   const cfg = functions.config().cloudinary || {};
-
   const cloud_name = cfg.cloud_name || process.env.CLOUDINARY_CLOUD_NAME;
   const api_key = cfg.api_key || process.env.CLOUDINARY_API_KEY;
   const api_secret = cfg.api_secret || process.env.CLOUDINARY_API_SECRET;
 
   if (!cloud_name || !api_key || !api_secret) {
-    throw new Error(
-      "Cloudinary credentials missing. Set with `firebase functions:config:set cloudinary.cloud_name=XXX cloudinary.api_key=XXX cloudinary.api_secret=XXX`"
-    );
+    throw new Error("Cloudinary credentials missing");
   }
 
   cloudinary.v2.config({ cloud_name, api_key, api_secret });
@@ -32,23 +28,20 @@ function loadCloudinaryConfig() {
 }
 
 // ---------------------------
-// Test Cloudinary connectivity (keep as callable)
-// ---------------------------
-export const testCloudinary = functions.https.onCall(async () => {
-  try {
-    loadCloudinaryConfig();
-    return { status: "ok", message: "Cloudinary environment loaded" };
-  } catch (err) {
-    console.error("Cloudinary test error:", err);
-    return { status: "error", message: err.message };
-  }
-});
-
-// ---------------------------
-// DELETE IMAGE - NOW AS REGULAR HTTP FUNCTION (NOT CALLABLE)
+// DELETE IMAGE - WITH PROPER CORS HANDLING
 // ---------------------------
 export const deleteImage = functions.https.onRequest(async (request, response) => {
-  // Handle CORS first
+  // Handle OPTIONS request (preflight)
+  if (request.method === 'OPTIONS') {
+    response.set('Access-Control-Allow-Origin', 'https://drkimogad.github.io');
+    response.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    response.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    response.set('Access-Control-Max-Age', '3600');
+    response.status(204).send('');
+    return;
+  }
+
+  // Handle actual request
   corsHandler(request, response, async () => {
     try {
       // --- Auth Validation ---
@@ -59,8 +52,6 @@ export const deleteImage = functions.https.onRequest(async (request, response) =
       }
 
       const token = authHeader.split('Bearer ')[1];
-      
-      // Verify Firebase ID token
       const decodedToken = await admin.auth().verifyIdToken(token);
       const userId = decodedToken.uid;
 
@@ -71,31 +62,20 @@ export const deleteImage = functions.https.onRequest(async (request, response) =
         return;
       }
 
-      // --- Config ---
+      // --- Config & Deletion ---
       loadCloudinaryConfig();
-
-      // --- Execute Deletion ---
       const result = await cloudinary.v2.uploader.destroy(public_id);
       console.log("🗑️ Cloudinary deletion response:", result);
 
-      if (result.result === "ok") {
-        response.json({ status: "success", message: "Image deleted successfully", result });
-      } else if (result.result === "not found") {
-        response.json({ status: "warning", message: "Image not found (already deleted?)", result });
-      } else {
-        response.json({ status: "warning", message: "Unexpected response", result });
-      }
+      response.json({
+        status: "success",
+        message: "Image deleted successfully",
+        result
+      });
 
     } catch (err) {
       console.error("Deletion failed:", err);
-      
-      if (err.code === 'auth/id-token-expired') {
-        response.status(401).json({ error: "Token expired" });
-      } else if (err.code === 'auth/argument-error') {
-        response.status(401).json({ error: "Invalid token" });
-      } else {
-        response.status(500).json({ error: err.message });
-      }
+      response.status(500).json({ error: err.message });
     }
   });
 });
