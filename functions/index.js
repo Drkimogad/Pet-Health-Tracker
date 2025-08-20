@@ -6,7 +6,7 @@ import cors from "cors"; // ADDED: Import cors
 // ---------------------------
 // CORS handler setup
 // ---------------------------
-const corsHandler = cors({ origin: true }); // ADDED: CORS middleware
+const corsHandler = cors({ origin: true });
 
 // ---------------------------
 // Helper: Load Cloudinary Config
@@ -48,8 +48,7 @@ export const testCloudinary = functions.https.onCall(async () => {
 // ---------------------------
 // Delete a Cloudinary image by public_id (WITH CORS)
 // ---------------------------
-export const deleteImage = functions.https.onCall(async (data, context) => {
-  // ADDED: Wrap in CORS handler
+export const deleteImage = functions.https.onCall((data, context) => {
   return new Promise((resolve, reject) => {
     corsHandler(context.rawRequest, context.rawResponse, async () => {
       try {
