@@ -1,82 +1,71 @@
 import * as functions from "firebase-functions";
 import cloudinary from "cloudinary";
-import cors from "cors";
+import * as admin from "firebase-admin";
 
-// ---------------------------
-// CORS handler setup
-// ---------------------------
-const corsHandler = cors({ origin: true });
+if (!admin.apps.length) {
+  admin.initializeApp();
+}
 
 // ---------------------------
 // Helper: Load Cloudinary Config
 // ---------------------------
 function loadCloudinaryConfig() {
   const cfg = functions.config().cloudinary || {};
-
   const cloud_name = cfg.cloud_name || process.env.CLOUDINARY_CLOUD_NAME;
   const api_key = cfg.api_key || process.env.CLOUDINARY_API_KEY;
   const api_secret = cfg.api_secret || process.env.CLOUDINARY_API_SECRET;
 
   if (!cloud_name || !api_key || !api_secret) {
-    throw new Error(
-      "Cloudinary credentials missing. Set with `firebase functions:config:set cloudinary.cloud_name=XXX cloudinary.api_key=XXX cloudinary.api_secret=XXX`"
-    );
+    throw new Error("Cloudinary credentials missing");
   }
 
   cloudinary.v2.config({ cloud_name, api_key, api_secret });
-
-  console.log("✅ Cloudinary config loaded from", 
-    functions.config().cloudinary ? "Firebase config" : ".env");
-
   return { cloud_name, api_key };
 }
 
 // ---------------------------
-// Test Cloudinary connectivity
+// DELETE IMAGE - HTTP FUNCTION WITH MANUAL CORS
 // ---------------------------
-export const testCloudinary = functions.https.onCall(async () => {
-  try {
-    loadCloudinaryConfig();
-    return { status: "ok", message: "Cloudinary environment loaded" };
-  } catch (err) {
-    console.error("Cloudinary test error:", err);
-    return { status: "error", message: err.message };
+export const deleteImage = functions.https.onRequest(async (request, response) => {
+  // SET CORS HEADERS MANUALLY - THIS WILL WORK
+  response.set('Access-Control-Allow-Origin', 'https://drkimogad.github.io');
+  response.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  response.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  // Handle OPTIONS preflight
+  if (request.method === 'OPTIONS') {
+    response.status(200).send();
+    return;
   }
-});
 
-// ---------------------------
-// Delete a Cloudinary image by public_id (WITH CORS)
-// ---------------------------
-// ---------------------------
-// Delete a Cloudinary image by public_id (PROPER CALLABLE)
-// ---------------------------
-export const deleteImage = functions.https.onCall(async (data, context) => {
   try {
-    // --- Auth & Input Validation ---
-    if (!context.auth) {
-      throw new functions.https.HttpsError("unauthenticated", "Authentication required.");
-    }
-    if (!data?.public_id) {
-      throw new functions.https.HttpsError("invalid-argument", "Missing 'public_id'");
+    // --- Auth Validation ---
+    const authHeader = request.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      response.status(401).json({ error: "Authentication required" });
+      return;
     }
 
-    // --- Config ---
+    const token = authHeader.split('Bearer ')[1];
+    await admin.auth().verifyIdToken(token);
+
+    // --- Input Validation ---
+    const { public_id } = request.body;
+    if (!public_id) {
+      response.status(400).json({ error: "Missing public_id" });
+      return;
+    }
+
+    // --- Config & Deletion ---
     loadCloudinaryConfig();
-
-    // --- Execute Deletion ---
-    const result = await cloudinary.v2.uploader.destroy(data.public_id);
+    const result = await cloudinary.v2.uploader.destroy(public_id);
     console.log("🗑️ Cloudinary deletion response:", result);
 
-    if (result.result === "ok") {
-      return { status: "success", message: "Image deleted successfully", result };
-    } else if (result.result === "not found") {
-      return { status: "warning", message: "Image not found (already deleted?)", result };
-    } else {
-      return { status: "warning", message: "Unexpected response", result };
-    }
-  } catch (err) {
-    console.error("Deletion failed:", err);
-    throw new functions.https.HttpsError("internal", err.message);
+    response.json({ status: "success", result });
+
+  } catch (error) {
+    console.error("❌ Deletion failed:", error);
+    response.status(500).json({ error: error.message });
   }
 });
 
