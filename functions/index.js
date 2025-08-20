@@ -1,11 +1,14 @@
 import * as functions from "firebase-functions";
 import cloudinary from "cloudinary";
-import cors from "cors"; // ADDED: Import cors
+import cors from "cors";
+import * as admin from "firebase-admin";
 // import "dotenv/config"; // loads .env locally deploymend succedded when it was commented out
 
-// ---------------------------
-// CORS handler setup
-// ---------------------------
+// Initialize Firebase Admin if not already done
+if (!admin.apps.length) {
+  admin.initializeApp();
+}
+
 const corsHandler = cors({ origin: true });
 
 // ---------------------------
@@ -25,15 +28,11 @@ function loadCloudinaryConfig() {
   }
 
   cloudinary.v2.config({ cloud_name, api_key, api_secret });
-
-  console.log("✅ Cloudinary config loaded from", 
-    functions.config().cloudinary ? "Firebase config" : ".env");
-
   return { cloud_name, api_key };
 }
 
 // ---------------------------
-// Test Cloudinary connectivity
+// Test Cloudinary connectivity (keep as callable)
 // ---------------------------
 export const testCloudinary = functions.https.onCall(async () => {
   try {
@@ -46,39 +45,58 @@ export const testCloudinary = functions.https.onCall(async () => {
 });
 
 // ---------------------------
-// Delete a Cloudinary image by public_id (WITH CORS)
+// DELETE IMAGE - NOW AS REGULAR HTTP FUNCTION (NOT CALLABLE)
 // ---------------------------
-export const deleteImage = functions.https.onCall((data, context) => {
-  return new Promise((resolve, reject) => {
-    corsHandler(context.rawRequest, context.rawResponse, async () => {
-      try {
-        // --- Auth & Input Validation ---
-        if (!context.auth) {
-          throw new functions.https.HttpsError("unauthenticated", "Authentication required.");
-        }
-        if (!data?.public_id) {
-          throw new functions.https.HttpsError("invalid-argument", "Missing 'public_id'");
-        }
-
-        // --- Config ---
-        loadCloudinaryConfig();
-
-        // --- Execute Deletion ---
-        const result = await cloudinary.v2.uploader.destroy(data.public_id);
-        console.log("🗑️ Cloudinary deletion response:", result);
-
-        if (result.result === "ok") {
-          resolve({ status: "success", message: "Image deleted successfully", result });
-        } else if (result.result === "not found") {
-          resolve({ status: "warning", message: "Image not found (already deleted?)", result });
-        } else {
-          resolve({ status: "warning", message: "Unexpected response", result });
-        }
-      } catch (err) {
-        console.error("Deletion failed:", err);
-        reject(new functions.https.HttpsError("internal", err.message));
+export const deleteImage = functions.https.onRequest(async (request, response) => {
+  // Handle CORS first
+  corsHandler(request, response, async () => {
+    try {
+      // --- Auth Validation ---
+      const authHeader = request.headers.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        response.status(401).json({ error: "Authentication required" });
+        return;
       }
-    });
+
+      const token = authHeader.split('Bearer ')[1];
+      
+      // Verify Firebase ID token
+      const decodedToken = await admin.auth().verifyIdToken(token);
+      const userId = decodedToken.uid;
+
+      // --- Input Validation ---
+      const { public_id } = request.body;
+      if (!public_id) {
+        response.status(400).json({ error: "Missing 'public_id'" });
+        return;
+      }
+
+      // --- Config ---
+      loadCloudinaryConfig();
+
+      // --- Execute Deletion ---
+      const result = await cloudinary.v2.uploader.destroy(public_id);
+      console.log("🗑️ Cloudinary deletion response:", result);
+
+      if (result.result === "ok") {
+        response.json({ status: "success", message: "Image deleted successfully", result });
+      } else if (result.result === "not found") {
+        response.json({ status: "warning", message: "Image not found (already deleted?)", result });
+      } else {
+        response.json({ status: "warning", message: "Unexpected response", result });
+      }
+
+    } catch (err) {
+      console.error("Deletion failed:", err);
+      
+      if (err.code === 'auth/id-token-expired') {
+        response.status(401).json({ error: "Token expired" });
+      } else if (err.code === 'auth/argument-error') {
+        response.status(401).json({ error: "Invalid token" });
+      } else {
+        response.status(500).json({ error: err.message });
+      }
+    }
   });
 });
 
