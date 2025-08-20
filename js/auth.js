@@ -186,14 +186,9 @@ function initializeFirebase() {
     firebase.initializeApp(firebaseConfig);
   }
 
-  // 🔹 Initialize Functions (deleteImage)
-  try {
-    const functions = firebase.app().functions("us-central1"); // region = your deployment
-    window.deleteImageFn = functions.httpsCallable("deleteImage");
-    console.log("✅ deleteImageFn initialized and ready.");
-  } catch (err) {
-    console.error("❌ Failed to initialize deleteImageFn:", err);
-  }
+  // 🔹 REMOVED the callable function initialization
+  // We're using direct HTTP calls now, not callable functions
+  console.log("✅ Firebase initialized (HTTP functions mode)");
 
   // Return auth instance for use elsewhere
   return firebase.auth();
