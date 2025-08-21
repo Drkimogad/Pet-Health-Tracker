@@ -1,7 +1,33 @@
+import * as functions from "firebase-functions";
+import cloudinary from "cloudinary";
+import admin from "firebase-admin";
+
+// ✅ Safe Firebase initialization
+if (!admin.apps.length) {
+  admin.initializeApp();
+}
+
+// ---------------------------
+// Helper: Load Cloudinary Config
+// ---------------------------
+function loadCloudinaryConfig() {
+  const cfg = functions.config().cloudinary || {};
+  const cloud_name = cfg.cloud_name || process.env.CLOUDINARY_CLOUD_NAME;
+  const api_key = cfg.api_key || process.env.CLOUDINARY_API_KEY;
+  const api_secret = cfg.api_secret || process.env.CLOUDINARY_API_SECRET;
+
+  if (!cloud_name || !api_key || !api_secret) {
+    throw new Error("Cloudinary credentials missing");
+  }
+
+  cloudinary.v2.config({ cloud_name, api_key, api_secret });
+  return { cloud_name, api_key };
+}
+
+// ---------------------------
+// DELETE IMAGE - HTTPS FUNCTION
+// ---------------------------
 export const deleteImage = functions.https.onRequest(async (request, response) => {
-  // ---------------------------
-  // ✅ Always apply CORS headers
-  // ---------------------------
   const setCors = () => {
     response.set('Access-Control-Allow-Origin', 'https://drkimogad.github.io');
     response.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -10,7 +36,7 @@ export const deleteImage = functions.https.onRequest(async (request, response) =
 
   setCors();
 
-  // ✅ Handle preflight
+  // Handle preflight OPTIONS
   if (request.method === 'OPTIONS') {
     response.status(200).send();
     return;
@@ -20,7 +46,7 @@ export const deleteImage = functions.https.onRequest(async (request, response) =
     // --- Auth Validation ---
     const authHeader = request.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      setCors(); // ⭐ Enhancement: ensure headers before return
+      setCors();
       response.status(401).json({ error: "Authentication required" });
       return;
     }
@@ -31,25 +57,26 @@ export const deleteImage = functions.https.onRequest(async (request, response) =
     // --- Input Validation ---
     const { public_id } = request.body;
     if (!public_id) {
-      setCors(); // ⭐ Enhancement
+      setCors();
       response.status(400).json({ error: "Missing public_id" });
       return;
     }
 
-    // --- Config & Deletion ---
+    // --- Cloudinary deletion ---
     loadCloudinaryConfig();
     const result = await cloudinary.v2.uploader.destroy(public_id);
     console.log("🗑️ Cloudinary deletion response:", result);
 
-    setCors(); // ⭐ Enhancement
+    setCors();
     response.json({ status: "success", result });
 
   } catch (error) {
     console.error("❌ Deletion failed:", error);
-    setCors(); // ⭐ Enhancement
+    setCors();
     response.status(500).json({ error: error.message });
   }
 });
+
 
 
 
