@@ -1717,7 +1717,9 @@ function initializeDashboard() {
 // ======================
 DOM.petList.addEventListener('submit', async (e) => {
   e.preventDefault();
-  
+    
+showLoading(true); // 🔹 Show Lottie immediately
+
   try {
     // Get all form data (preserving your existing structure)
     // 🔑 Generate ID once
@@ -1833,19 +1835,21 @@ savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
     petData.petName || 'Unnamed Pet'
    );
 
-    // Reset and reload
-    loadSavedPetProfile(); // Fixed function name
-    resetForm();
-    editingProfileId = null; // Clear edit mode
-   // UPDATE UI
-   DOM.petList.classList.add("hidden");              // Hide the profile form
-   DOM.savedProfilesList.classList.remove("hidden"); // Show the profile cards
-
-  } catch (error) {
+    } catch (error) {
     console.error('Save error:', error);
     showErrorToUser('Failed to save profile. Please try again.');
-  }
-});
+  }} finally {
+    showLoading(false); // 🔹 Hide Lottie whether success or fail
+  }     
+    // Reset and Update UI
+    resetForm();
+    editingProfileId = null; // Clear edit mode
+   // UPDATE UI/For extra smoothness, you can wrap DOM updates in requestAnimationFrame:
+    requestAnimationFrame(() => {
+   DOM.petList.classList.add("hidden");              // Hide the profile form
+   DOM.savedProfilesList.classList.remove("hidden"); // Show the profile cards
+   loadSavedPetProfile(); //   // Update the list of profiles 
+ });
         
 // REST OF INITIALIZE DASHBOARD FUNCTION  
 if (DOM.addPetProfileBtn) {
@@ -1857,7 +1861,7 @@ if (DOM.addPetProfileBtn) {
 } else {
   console.warn("⛔ addPetProfileBtn not found in DOM");
 }
-}
+} // DOES THIS CLOSE THE FUNCTION?
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', initializeDashboard);
