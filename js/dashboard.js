@@ -1658,24 +1658,6 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
   }
 } 
 
-//=================================================================
-//2️⃣ Create helper functions in dashboard.js to show/hide this popup:
-//==================================================================
-function showProfileSavedAnimation(show = true, duration = 1500) {
-  const loader = document.getElementById('profile-success-loader');
-  if (!loader) return;
-
-  if (show) {
-    loader.style.display = 'block';
-    // Auto-hide after duration
-    setTimeout(() => {
-      loader.style.display = 'none';
-    }, duration);
-  } else {
-    loader.style.display = 'none';
-  }
-}
-
 
 // ======== EVENT DELEGATION (FIXED) ========
 // ✅ Keep this block to handle profile actions (WIRING) ALL THE BUTTONS IN LOADSAVEDPETPROFILES FUNCTION✅
