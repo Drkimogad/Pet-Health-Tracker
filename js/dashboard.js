@@ -1658,6 +1658,25 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
   }
 } 
 
+//=================================================================
+//2️⃣ Create helper functions in dashboard.js to show/hide this popup:
+//==================================================================
+function showProfileSavedAnimation(show = true, duration = 1500) {
+  const loader = document.getElementById('profile-success-loader');
+  if (!loader) return;
+
+  if (show) {
+    loader.style.display = 'block';
+    // Auto-hide after duration
+    setTimeout(() => {
+      loader.style.display = 'none';
+    }, duration);
+  } else {
+    loader.style.display = 'none';
+  }
+}
+
+
 // ======== EVENT DELEGATION (FIXED) ========
 // ✅ Keep this block to handle profile actions (WIRING) ALL THE BUTTONS IN LOADSAVEDPETPROFILES FUNCTION✅
 DOM.savedProfilesList?.addEventListener('click', (e) => {
@@ -1829,27 +1848,38 @@ savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
      }
       
       localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
-    // In the form submission success feedback:
-   showSuccessNotification(
-    editingProfileId !== null ? 'Profile updated' : 'Profile saved', // ✅ Fixed
-    petData.petName || 'Unnamed Pet'
-   );
+      
+    // AFTER SAVING IN LOCALSTORAGE AND FIRESTORE success feedback:
+try {
+  showLoader(true, "Saving profile...");
 
-    } catch (error) {
-    console.error('Save error:', error);
-    showErrorToUser('Failed to save profile. Please try again.');
-  }} finally {
-    showLoading(false); // 🔹 Hide Lottie whether success or fail
-  }     
-    // Reset and Update UI
-    resetForm();
-    editingProfileId = null; // Clear edit mode
-   // UPDATE UI/For extra smoothness, you can wrap DOM updates in requestAnimationFrame:
-    requestAnimationFrame(() => {
-   DOM.petList.classList.add("hidden");              // Hide the profile form
-   DOM.savedProfilesList.classList.remove("hidden"); // Show the profile cards
-   loadSavedPetProfile(); //   // Update the list of profiles 
- });
+  // Firestore & localStorage saving code here
+  if (firebase.auth().currentUser) {
+    const db = firebase.firestore();
+    await db.collection("profiles").doc(petData.id).set(petData);
+  }
+  localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+
+  // ✅ Profile saved
+  showLoader(true, editingProfileId !== null ? "Profile updated!" : "Profile saved!");
+  await new Promise(r => setTimeout(r, 1000)); // brief display for user
+  showLoader(false);
+
+  requestAnimationFrame(() => {
+    DOM.petList.classList.add("hidden");
+    DOM.savedProfilesList.classList.remove("hidden");
+  });
+  loadSavedPetProfile();
+  resetForm();
+  editingProfileId = null;
+} catch (error) {
+  console.error('Save error:', error);
+  showLoader(false);
+  showErrorToUser('Failed to save profile. Try again.');
+}
+
+    // Show the success Lottie animation
+showProfileSavedAnimation(true, 2000); // Shows for 2 seconds
         
 // REST OF INITIALIZE DASHBOARD FUNCTION  
 if (DOM.addPetProfileBtn) {
