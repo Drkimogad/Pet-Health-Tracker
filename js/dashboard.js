@@ -1855,9 +1855,10 @@ try {
 } finally {
   showLoader(false); // always hide loader
   showProfileSavedAnimation(true, 2000); // always show animation
-}
-
-        
+  }
+ } // closes first try
+}); // closes the listener 
+    
 // REST OF INITIALIZE DASHBOARD FUNCTION  
 if (DOM.addPetProfileBtn) {
   console.log("✅ addPetProfileBtn found:", DOM.addPetProfileBtn);
@@ -1868,8 +1869,6 @@ if (DOM.addPetProfileBtn) {
 } else {
   console.warn("⛔ addPetProfileBtn not found in DOM");
    }
-  } // closes 1st try
- }// closes the listener
 }  // closes initializeDashboard ()
 
 // Initialize when DOM is ready
