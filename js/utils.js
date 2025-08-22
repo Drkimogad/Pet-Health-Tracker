@@ -253,6 +253,55 @@ function loadScriptWithRetry(url, maxRetries = 2, delayMs = 1000) {
     attempt();
   });
 }
+
+//===================================
+// UI HELPERS
+//==========================
+// 1️⃣ Show or hide loader with optional message
+//===============================================
+function showLoader(show, message = "Loading...") {
+  const loader = document.getElementById('processing-loader');
+  const msg = document.getElementById('loader-message');
+  if (!loader || !msg) return;
+
+  msg.textContent = message;
+  loader.style.display = show ? "block" : "none";
+}
+
+// Quick success/error message (optional fallback to Lottie)
+function showTempMessage(message, isSuccess = true, duration = 2000) {
+  const tempDiv = document.createElement('div');
+  tempDiv.textContent = message;
+  tempDiv.className = isSuccess ? 'success-message' : 'auth-error';
+  tempDiv.style.position = 'fixed';
+  tempDiv.style.top = '20px';
+  tempDiv.style.left = '50%';
+  tempDiv.style.transform = 'translateX(-50%)';
+  tempDiv.style.padding = '10px 20px';
+  tempDiv.style.zIndex = '3000';
+  document.body.appendChild(tempDiv);
+
+  setTimeout(() => tempDiv.remove(), duration);
+}
+
+//=================================================================
+//2️⃣ Create helper functions in dashboard.js to show/hide this popup:
+//==================================================================
+function showProfileSavedAnimation(show = true, duration = 1500) {
+  const loader = document.getElementById('profile-success-loader');
+  if (!loader) return;
+
+  if (show) {
+    loader.style.display = 'block';
+    // Auto-hide after duration
+    setTimeout(() => {
+      loader.style.display = 'none';
+    }, duration);
+  } else {
+    loader.style.display = 'none';
+  }
+}
+
 //=================================
 // SW snippet 
 if ('serviceWorker' in navigator) {
