@@ -1867,8 +1867,10 @@ if (DOM.addPetProfileBtn) {
   });
 } else {
   console.warn("⛔ addPetProfileBtn not found in DOM");
-}
-} 
+   }
+  } // closes 1st try
+ }// closes the listener
+}  // closes initializeDashboard ()
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', initializeDashboard);
