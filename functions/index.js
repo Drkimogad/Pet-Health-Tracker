@@ -25,19 +25,39 @@ function loadCloudinaryConfig() {
 }
 
 // ---------------------------
+// CORS Helper
+// ---------------------------
+
+// ❌ OLD (commented out)
+// const setCors = () => {
+//   response.set('Access-Control-Allow-Origin', 'https://drkimogad.github.io');
+//   response.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+//   response.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+// };
+
+// ✅ NEW
+const allowedOrigins = [
+  "https://drkimogad.github.io",  // GitHub Pages
+  "http://localhost:5000"         // Local dev
+];
+
+function setCors(request, response) {
+  const origin = request.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    response.set("Access-Control-Allow-Origin", origin);
+  }
+  response.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  response.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+}
+
+// ---------------------------
 // DELETE IMAGE - HTTPS FUNCTION
 // ---------------------------
 export const deleteImage = functions.https.onRequest(async (request, response) => {
-  const setCors = () => {
-    response.set('Access-Control-Allow-Origin', 'https://drkimogad.github.io');
-    response.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    response.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  };
-
-  setCors();
+  setCors(request, response); // ✅ UPDATED
 
   // Handle preflight OPTIONS
-  if (request.method === 'OPTIONS') {
+  if (request.method === "OPTIONS") {
     response.status(200).send();
     return;
   }
@@ -45,19 +65,19 @@ export const deleteImage = functions.https.onRequest(async (request, response) =
   try {
     // --- Auth Validation ---
     const authHeader = request.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      setCors();
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      setCors(request, response); // ✅ UPDATED
       response.status(401).json({ error: "Authentication required" });
       return;
     }
 
-    const token = authHeader.split('Bearer ')[1];
+    const token = authHeader.split("Bearer ")[1];
     await admin.auth().verifyIdToken(token);
 
     // --- Input Validation ---
     const { public_id } = request.body;
     if (!public_id) {
-      setCors();
+      setCors(request, response); // ✅ UPDATED
       response.status(400).json({ error: "Missing public_id" });
       return;
     }
@@ -67,15 +87,16 @@ export const deleteImage = functions.https.onRequest(async (request, response) =
     const result = await cloudinary.v2.uploader.destroy(public_id);
     console.log("🗑️ Cloudinary deletion response:", result);
 
-    setCors();
+    setCors(request, response); // ✅ UPDATED
     response.json({ status: "success", result });
 
   } catch (error) {
     console.error("❌ Deletion failed:", error);
-    setCors();
+    setCors(request, response); // ✅ UPDATED
     response.status(500).json({ error: error.message });
   }
 });
+
 
 
 
