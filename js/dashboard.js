@@ -971,11 +971,12 @@ async function deletePetProfile(petId) {
  * @param {boolean} asZip - Set true to export as ZIP, false for individual downloads
  */
 async function exportAllPetCards(asZip = false) {
-  const loader = document.createElement('div');
-  loader.className = 'loader';
-  document.body.appendChild(loader);
+
 
   try {
+// At the very start of the try block, show the overlay with paws animation and a message
+showLoader(true, "exporting-loading", "paws");
+
     const profiles = await loadPets();
     if (!profiles.length) {
       alert("No pet profiles found.");
@@ -1072,21 +1073,39 @@ async function exportAllPetCards(asZip = false) {
       link.click();
       setTimeout(() => URL.revokeObjectURL(zipURL), 1000);
     }
+     // show success message
+      showLoader(true, "success-exporting", "paws");
+      // then hide the loader again 
+      setTimeout(() => showLoader(false), 2000);
 
-    alert(`✅ Successfully exported ${profiles.length} cards${asZip ? ' as ZIP' : ''}!`);
-  } catch (err) {
-    console.error("Export error:", err);
-    const errorEl = document.createElement('div');
-    errorEl.className = 'error-message';
-    errorEl.textContent = `Export failed: ${err.message}`;
-    errorEl.style.display = 'block';
-    loader.appendChild(errorEl);
-    setTimeout(() => errorEl.remove(), 3000);
-  } finally {
-    loader.remove();
-  if (typeof container !== 'undefined') container.remove();
+} catch (err) {
+  console.error("Export error:", err);
+
+  // Create or reuse an error message in the loader
+  const loaderEl = document.getElementById('processing-loader');
+  let errorMsg = document.getElementById('loader-error-export');
+  if (!errorMsg) {
+    errorMsg = document.createElement('p');
+    errorMsg.id = 'loader-error-export';
+    errorMsg.className = 'loader-text';
+    errorMsg.style.color = 'red';
+    errorMsg.style.display = 'none';
+    loaderEl.appendChild(errorMsg);
   }
-}
+
+  errorMsg.textContent = `❌ Export failed: ${err.message}`;
+
+  // Show loader overlay with paws animation and error message
+  showLoader(true, 'loader-error-export', 'paws');
+
+  // Hide after 3 seconds
+  setTimeout(() => showLoader(false), 3000);
+
+} finally {
+  // Remove temporary container if it exists
+  if (typeof container !== 'undefined') container.remove();
+ }
+} // closes the function 
 
 // Its Listener
 document.addEventListener('click', (e) => {
