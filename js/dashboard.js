@@ -1864,7 +1864,18 @@ try {
   showErrorToUser('Failed to save profile. Try again.');
   } // closes first try
  }); // closes the DOM.petList.addEventListener
- } // closes initializeDashboard()
+        
+// REST OF INITIALIZE DASHBOARD FUNCTION  
+if (DOM.addPetProfileBtn) {
+  console.log("✅ addPetProfileBtn found:", DOM.addPetProfileBtn);
+  DOM.addPetProfileBtn.addEventListener('click', () => {
+    console.log("🟢 New Profile button clicked");
+    openCreateForm(); // 🔁 REPLACED all manual toggling
+  });
+} else {
+  console.warn("⛔ addPetProfileBtn not found in DOM");
+}
+} // closes the function
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', initializeDashboard);
