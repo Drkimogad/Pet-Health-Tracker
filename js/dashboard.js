@@ -899,7 +899,7 @@ async function deletePetProfile(petId) {
     const petToDelete = pets.find(p => p.id === petId);
 
        // 🔹 Show paw animation while deleting
-     showLoading(true, "Deleting profile...", "loading");
+     showLoader(true, "loading", "paws"); // loading message + paws animation // start delete
 
     // 🔸 Cloudinary image deletion via HTTP FUNCTION
     if (petToDelete?.public_id && firebase.auth().currentUser) {
@@ -928,8 +928,6 @@ async function deletePetProfile(petId) {
       }
     }
 
-
-
     // 🔸 Delete from Firestore
     if (firebase.auth().currentUser) {
       await firebase.firestore().collection('profiles').doc(petId).delete();
@@ -954,7 +952,7 @@ async function deletePetProfile(petId) {
     // 🔸 UI update with requestAnimationFrame for smooth rendering
     requestAnimationFrame(() => {
     loadSavedPetProfile();
-    showLoader(true, `${petName} deleted successfully 🐾`, "success"); // show success
+    showLoader(true, "success-deleting", "paws"); // success with paws
     setTimeout(() => showLoader(false), 2000); // hide after 2 seconds
   });
 
