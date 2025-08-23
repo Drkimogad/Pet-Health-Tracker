@@ -899,7 +899,7 @@ async function deletePetProfile(petId) {
     const petToDelete = pets.find(p => p.id === petId);
 
        // 🔹 Show paw animation while deleting
-     showLoader(true, "Deleting profile...", "loading");
+     showLoading(true, "Deleting profile...", "loading");
 
     // 🔸 Cloudinary image deletion via HTTP FUNCTION
     if (petToDelete?.public_id && firebase.auth().currentUser) {
@@ -1726,7 +1726,7 @@ function initializeDashboard() {
   DOM.petList.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    showLoader(true); // 🔹 Show Lottie immediately
+    showLoading(true); // 🔹 Show Lottie immediately/ state
 
     try {
       // Get all form data (preserving your existing structure)
