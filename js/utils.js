@@ -284,7 +284,7 @@ function showTempMessage(message, isSuccess = true, duration = 2000) {
   setTimeout(() => tempDiv.remove(), duration);
 }
 
-//=================================================================
+/*  //=================================================================
 //2️⃣ Create helper functions in dashboard.js to show/hide this popup:
 //==================================================================
 function showProfileSavedAnimation(show = true, duration = 1500) {
@@ -301,7 +301,7 @@ function showProfileSavedAnimation(show = true, duration = 1500) {
     loader.style.display = 'none';
   }
 }
-
+*/
 //=================================
 // SW snippet 
 if ('serviceWorker' in navigator) {
