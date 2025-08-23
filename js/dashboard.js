@@ -1831,25 +1831,28 @@ function initializeDashboard() {
       
       localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
       
-      // AFTER SAVING IN LOCALSTORAGE AND FIRESTORE success feedback:
-      showLoader(true, editingProfileId !== null ? "Profile updated!" : "Profile saved!");
-      await new Promise(r => setTimeout(r, 1000)); // brief display for user
-      showLoader(false);
+      // AFTER SAVING IN LOCALSTORAGE AND FIRESTORE
+showLoader(true, editingProfileId !== null ? "Updating profile..." : "Saving profile...");
 
-      requestAnimationFrame(() => {
-        DOM.petList.classList.add("hidden");
-        DOM.savedProfilesList.classList.remove("hidden");
-      });
-      loadSavedPetProfile();
-      resetForm();
-      editingProfileId = null;
+// wait briefly to let user see saving/updating
+await new Promise(r => setTimeout(r, 800));
 
-      // ✅ keep animation INSIDE try after success
-      showProfileSavedAnimation(true, 2000); // Shows for 2 seconds
+// Update UI immediately
+requestAnimationFrame(() => {
+  DOM.petList.classList.add("hidden");
+  DOM.savedProfilesList.classList.remove("hidden");
+  loadSavedPetProfile();
+  resetForm();
+  editingProfileId = null;
+});
+
+// ✅ celebrate with Lottie animation without hiding loader separately
+showProfileSavedAnimation(true, 2000, editingProfileId !== null ? "Profile updated!" : "Profile saved!");
+showLoader(false); // hide loader after animation
+
 
     } catch (error) {
       console.error('Save error:', error);
-      showLoader(false);
       showErrorToUser('Failed to save profile. Try again.');
     }
   }); // closes the DOM.petList.addEventListener
