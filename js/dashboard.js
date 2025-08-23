@@ -1726,7 +1726,10 @@ function initializeDashboard() {
   DOM.petList.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    showLoading(true); // 🔹 Show Lottie immediately/ state
+   // showLoading(true); // 🔹 Show Lottie immediately/ state
+  showLoading(true, "Updating profile...", "Saving profile...", "loading");
+         //  showLoading(true, "Deleting profile...", "loading");
+
 
     try {
       // Get all form data (preserving your existing structure)
