@@ -898,6 +898,9 @@ async function deletePetProfile(petId) {
     const pets = await loadPets();
     const petToDelete = pets.find(p => p.id === petId);
 
+       // 🔹 Show paw animation while deleting
+     showLoader(true, "Deleting profile...", "loading");
+
     // 🔸 Cloudinary image deletion via HTTP FUNCTION
     if (petToDelete?.public_id && firebase.auth().currentUser) {
       try {
@@ -948,9 +951,12 @@ async function deletePetProfile(petId) {
       localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
     }
 
-    // 🔸 Update UI
+    // 🔸 UI update with requestAnimationFrame for smooth rendering
+    requestAnimationFrame(() => {
     loadSavedPetProfile();
-    showSuccessNotification('deleted', petName);
+    showLoader(true, `${petName} deleted successfully 🐾`, "success"); // show success
+    setTimeout(() => showLoader(false), 2000); // hide after 2 seconds
+  });
 
   } catch (error) {
     console.error('Delete error:', error);
@@ -1720,7 +1726,7 @@ function initializeDashboard() {
   DOM.petList.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    showLoading(true); // 🔹 Show Lottie immediately
+    showLoader(true); // 🔹 Show Lottie immediately
 
     try {
       // Get all form data (preserving your existing structure)
@@ -1848,8 +1854,8 @@ requestAnimationFrame(() => {
 });
 
 // ✅ celebrate with Lottie animation without hiding loader separately
-showProfileSavedAnimation(true, 2000, editingProfileId !== null ? "Profile updated!" : "Profile saved!");
-showLoader(false); // hide loader after animation
+showLoader(true, 2000, editingProfileId !== null ? "Profile updated!" : "Profile saved!");
+showLoader(false); // hide loader after animation , was removed outside the catch
 
 
     } catch (error) {
