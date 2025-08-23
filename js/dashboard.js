@@ -1726,10 +1726,7 @@ function initializeDashboard() {
   DOM.petList.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-   // showLoading(true); // 🔹 Show Lottie immediately/ state
-  showLoading(true, "Updating profile...", "Saving profile...", "loading");
-         //  showLoading(true, "Deleting profile...", "loading");
-
+   showLoader(true, "loading"); //✅️ while saving/updating
 
     try {
       // Get all form data (preserving your existing structure)
@@ -1842,10 +1839,8 @@ function initializeDashboard() {
       localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
       
       // AFTER SAVING IN LOCALSTORAGE AND FIRESTORE
-showLoader(true, editingProfileId !== null ? "Updating profile..." : "Saving profile...");
+await new Promise(r => setTimeout(r, 800)); //✅️ just abrief pause, 
 
-// wait briefly to let user see saving/updating
-await new Promise(r => setTimeout(r, 800));
 
 // Update UI immediately
 requestAnimationFrame(() => {
@@ -1855,11 +1850,15 @@ requestAnimationFrame(() => {
   resetForm();
   editingProfileId = null;
 });
-
-// ✅ celebrate with Lottie animation without hiding loader separately
-showLoader(true, 2000, editingProfileId !== null ? "Profile updated!" : "Profile saved!");
-showLoader(false); // hide loader after animation , was removed outside the catch
-
+        
+//✅️ loader success call
+if (editingProfileId !== null) {
+  showLoader(true, "success-updating");
+} else {
+  showLoader(true, "success-saving");
+}
+// hide loader after short delay (e.g. 2s)
+setTimeout(() => showLoader(false), 2000);
 
     } catch (error) {
       console.error('Save error:', error);
