@@ -1835,11 +1835,17 @@ savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
 try {
   showLoader(true, "Saving profile...");
 
+  // Firestore & localStorage saving code here
   if (firebase.auth().currentUser) {
     const db = firebase.firestore();
     await db.collection("profiles").doc(petData.id).set(petData);
   }
   localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+
+  // ✅ Profile saved
+  showLoader(true, editingProfileId !== null ? "Profile updated!" : "Profile saved!");
+  await new Promise(r => setTimeout(r, 1000)); // brief display for user
+  showLoader(false);
 
   requestAnimationFrame(() => {
     DOM.petList.classList.add("hidden");
@@ -1849,27 +1855,16 @@ try {
   resetForm();
   editingProfileId = null;
 
+  // ✅ keep animation INSIDE try after success
+  showProfileSavedAnimation(true, 2000); // Shows for 2 seconds
+
 } catch (error) {
   console.error('Save error:', error);
+  showLoader(false);
   showErrorToUser('Failed to save profile. Try again.');
-} finally {
-  showLoader(false); // always hide loader
-  showProfileSavedAnimation(true, 2000); // always show animation
-  }
- } // closes first try
-}); // closes the listener 
-    
-// REST OF INITIALIZE DASHBOARD FUNCTION  
-if (DOM.addPetProfileBtn) {
-  console.log("✅ addPetProfileBtn found:", DOM.addPetProfileBtn);
-  DOM.addPetProfileBtn.addEventListener('click', () => {
-    console.log("🟢 New Profile button clicked");
-    openCreateForm(); // 🔁 REPLACED all manual toggling
-  });
-} else {
-  console.warn("⛔ addPetProfileBtn not found in DOM");
-   }
-}  // closes initializeDashboard ()
+  } // closes first try
+ }); // closes the DOM.petList.addEventListener
+ } // closes initializeDashboard()
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', initializeDashboard);
