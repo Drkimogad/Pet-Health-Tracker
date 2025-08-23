@@ -257,12 +257,21 @@ function loadScriptWithRetry(url, maxRetries = 2, delayMs = 1000) {
 //===================================
 // ✅ Central helper for showing temporary UI feedback.
 //===============================================
-function showLoader(show, messageKey = "loading") {
+//===================================
+// ✅ Central helper for showing loader UI feedback.
+// - show: true/false (overlay visible?)
+// - messageKey: which message to show ("loading", "success-saving", "success-updating", "success-deleting")
+// - animChoice: which animation to show ("cat", "paws", or "none")
+//===================================
+function showLoader(show, messageKey = "loading", animChoice = "cat") {
   const loader = document.getElementById("processing-loader");
-  const allMessages = loader.querySelectorAll(".loader-text");
-  const successAnim = document.getElementById("loader-success-animation");
+  if (!loader) return;
 
-  if (!loader || !successAnim) return;
+  const allMessages = loader.querySelectorAll(".loader-text");
+  const catAnim = document.getElementById("loader-animation1");
+  const pawsAnim = document.getElementById("loader-animation2");
+
+  if (!catAnim || !pawsAnim) return;
 
   // Hide all messages first
   allMessages.forEach(el => (el.style.display = "none"));
@@ -271,15 +280,14 @@ function showLoader(show, messageKey = "loading") {
   const targetMsg = document.getElementById(`loader-${messageKey}`);
   if (targetMsg) targetMsg.style.display = "block";
 
-  // Toggle success animation
-  if (messageKey.startsWith("success")) {
-    successAnim.style.display = "block";
-  } else {
-    successAnim.style.display = "none";
-  }
+  // Toggle animations explicitly
+  catAnim.style.display = (animChoice === "cat") ? "block" : "none";
+  pawsAnim.style.display = (animChoice === "paws") ? "block" : "none";
 
+  // Show or hide overlay
   loader.style.display = show ? "block" : "none";
 }
+
 
 // Quick success/error message (optional fallback to Lottie)
 //safety fallback for quick success/error messages in case the Lottie-based loader fails
