@@ -259,16 +259,39 @@ function loadScriptWithRetry(url, maxRetries = 2, delayMs = 1000) {
 //==========================
 // 1️⃣ Show or hide loader with optional message
 //===============================================
-function showLoader(show, message = "Loading...") {
+//===================================
+// UI HELPERS
+//==========================
+// 1️⃣ Show or hide loader with optional message & state
+// state: "loading" (default) or "success"
+function showLoader(show, message = "Loading...", state = "loading") {
   const loader = document.getElementById('processing-loader');
   const msg = document.getElementById('loader-message');
-  if (!loader || !msg) return;
+  
+  // ✅ Added: success animation elements
+  const successAnim = document.getElementById('loader-success-animation');
+  const successMsg = document.getElementById('loader-success-message');
 
-  msg.textContent = message;
+  if (!loader || !msg || !successAnim || !successMsg) return;
+
+  if (state === "loading") {
+    msg.textContent = message;
+    msg.style.display = "block";
+    successMsg.style.display = "none";
+    successAnim.style.display = "none";
+  } else if (state === "success") {
+    successMsg.textContent = message;
+    successMsg.style.display = "block";
+    successAnim.style.display = "block";
+    msg.style.display = "none";
+  }
+
   loader.style.display = show ? "block" : "none";
 }
 
+
 // Quick success/error message (optional fallback to Lottie)
+//safety fallback for quick success/error messages in case the Lottie-based loader fails
 function showTempMessage(message, isSuccess = true, duration = 2000) {
   const tempDiv = document.createElement('div');
   tempDiv.textContent = message;
