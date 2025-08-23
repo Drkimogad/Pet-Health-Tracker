@@ -891,6 +891,7 @@ function openCreateForm() {
 // This means deleted profiles may leave behind orphaned images in Cloudinary.
 // ✅ Add server-side function or cleanup mechanism later if needed.
 
+
 //=================================================
 async function deletePetProfile(petId) {
   try {
