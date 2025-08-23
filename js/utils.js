@@ -255,14 +255,10 @@ function loadScriptWithRetry(url, maxRetries = 2, delayMs = 1000) {
 }
 
 //===================================
-// UI HELPERS
+// ✅ Central helper for showing temporary UI feedback.
 //==========================
 // 1️⃣ Show or hide loader with optional message
 //===============================================
-//===================================
-// UI HELPERS
-//==========================
-// 1️⃣ Show or hide loader with optional message & state
 // state: "loading" (default) or "success"
 function showLoader(show, message = "Loading...", state = "loading") {
   const loader = document.getElementById('processing-loader');
