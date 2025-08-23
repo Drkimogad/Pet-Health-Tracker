@@ -103,8 +103,7 @@
         </header>
        <div id="processing-loader" 
      style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000;">
-  <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center;">
-
+  <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center;">      
     <!-- 🌀 Default Cat Spinner -->
     <lottie-player
       id="loader-animation" 
@@ -115,6 +114,9 @@
       loop
       autoplay>
     </lottie-player>
+            <!-- Existing loading text -->
+   <p id="loader-message" class="loader-text">Loading...</p>
+      
 
     <!-- ✅ ADDED optional paws success animation (hidden by default) -->
     <lottie-player
@@ -126,10 +128,10 @@
       loop
       autoplay>
     </lottie-player>
-
-    <p id="loader-message" style="color:white; font-size: 1.2rem; margin-top: 1rem;">
-      Loading...
-    </p>
+      <!-- Different success states -->
+   <p id="loader-success-saving" class="loader-text" style="display:none;">Profile saved!</p>
+   <p id="loader-success-updating" class="loader-text" style="display:none;">Profile updated!</p>
+   <p id="loader-success-deleting" class="loader-text" style="display:none;">Profile deleted!</p>      
   </div>
 </div>
 
