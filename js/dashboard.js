@@ -1707,174 +1707,163 @@ document.addEventListener('click', (e) => {
   }
 });
 
-
 // ======================    
-// ITIALIZE DASHBOARD PRODUCTION READY
+// INITIALIZE DASHBOARD PRODUCTION READY
 // ======================    
 function initializeDashboard() {
   console.log("⚙️ Running initializeDashboard()");
-// ======================    
-// FORM SUBMISSION MOVED INSIDE INITIALIZEDASHBOARD FUNCTION 
-// ======================
-DOM.petList.addEventListener('submit', async (e) => {
-  e.preventDefault();
-    
-showLoading(true); // 🔹 Show Lottie immediately
-
-  try {
-    // Get all form data (preserving your existing structure)
-    // 🔑 Generate ID once
-const newId = editingProfileId || generateUniqueId();
-
-// 🐶 Full petData object
-const petData = {
-  id: newId,
-  ownerId: firebase.auth().currentUser?.uid || 'local-user',
-  lastUpdated: Date.now(),
-  createdAt: Date.now(),
-  shareableUrl: `https://${window.location.hostname}/view.html?petId=${newId}`,
   
-  // 🔁 Rest of your form fields here (no changes needed)
-  petName: DOM.petName?.value,
-  breed: DOM.breed?.value,
-  age: DOM.age?.value,
-  weight: DOM.weight?.value,
-  type: DOM.petType?.value || 'Unknown',
-  gender: DOM.petGender?.value || 'Unknown',
-  microchip: {
-    id: DOM.microchipId?.value,
-    date: DOM.microchipDate?.value,
-    vendor: DOM.microchipVendor?.value
-  },
-  allergies: DOM.allergies?.value,
-  medicalHistory: DOM.medicalHistory?.value,
-  dietPlan: DOM.dietPlan?.value,
-  emergencyContacts: [{
-    name: DOM.emergencyContactName?.value,
-    phone: DOM.emergencyContactPhone?.value,
-    relationship: DOM.emergencyContactRelationship?.value
-  }],
-  mood: DOM.moodSelector?.value,
-  reminders: {
-    birthdayReminder: DOM.birthdayReminder?.value,
-    vaccinations: DOM.vaccinationsAndDewormingReminder?.value,
-    checkups: DOM.medicalCheckupsReminder?.value,
-    grooming: DOM.groomingReminder?.value
-  }
-};
-
- // photo handling/Cloudinary section     
-const fileInput = DOM.petPhotoInput;
-      
-// ✅ If editing and NO new image, reuse existing photo
-if (editingProfileId !== null && !fileInput.files[0]) {
-  const existingProfiles = await loadPets(); // 🔄 Always get latest profiles
-  const existingProfile = existingProfiles.find(p => p.id === newId); 
+  // ======================    
+  // FORM SUBMISSION MOVED INSIDE INITIALIZEDASHBOARD FUNCTION 
+  // ======================
+  DOM.petList.addEventListener('submit', async (e) => {
+    e.preventDefault();
     
-  if (existingProfile && existingProfile.petPhoto) {
-    petData.petPhoto = existingProfile.petPhoto;
-      
-    // 🔸 SURGICAL ADDITION: ensure cloudinaryPath is copied
-    petData.cloudinaryPath = existingProfile.cloudinaryPath || '';
-    petData.imageDimensions = existingProfile.imageDimensions || {};
+    showLoading(true); // 🔹 Show Lottie immediately
 
-    // 🔸 NEW SURGICAL ADDITION: save public_id for delete function
-    // (This is exactly what your Cloud Function will look for)
-    petData.public_id = existingProfile.cloudinaryPath || '';
-  }
-}
+    try {
+      // Get all form data (preserving your existing structure)
+      // 🔑 Generate ID once
+      const newId = editingProfileId || generateUniqueId();
 
-// 2️⃣ In the new image uploaded
-if (fileInput.files[0]) {
-  try {
-    const uploadResult = await uploadToCloudinary(
-      fileInput.files[0],
-      firebase.auth().currentUser.uid,
-      petData.id
-    );
+      // 🐶 Full petData object
+      const petData = {
+        id: newId,
+        ownerId: firebase.auth().currentUser?.uid || 'local-user',
+        lastUpdated: Date.now(),
+        createdAt: Date.now(),
+        shareableUrl: `https://${window.location.hostname}/view.html?petId=${newId}`,
+        
+        // 🔁 Rest of your form fields here (no changes needed)
+        petName: DOM.petName?.value,
+        breed: DOM.breed?.value,
+        age: DOM.age?.value,
+        weight: DOM.weight?.value,
+        type: DOM.petType?.value || 'Unknown',
+        gender: DOM.petGender?.value || 'Unknown',
+        microchip: {
+          id: DOM.microchipId?.value,
+          date: DOM.microchipDate?.value,
+          vendor: DOM.microchipVendor?.value
+        },
+        allergies: DOM.allergies?.value,
+        medicalHistory: DOM.medicalHistory?.value,
+        dietPlan: DOM.dietPlan?.value,
+        emergencyContacts: [{
+          name: DOM.emergencyContactName?.value,
+          phone: DOM.emergencyContactPhone?.value,
+          relationship: DOM.emergencyContactRelationship?.value
+        }],
+        mood: DOM.moodSelector?.value,
+        reminders: {
+          birthdayReminder: DOM.birthdayReminder?.value,
+          vaccinations: DOM.vaccinationsAndDewormingReminder?.value,
+          checkups: DOM.medicalCheckupsReminder?.value,
+          grooming: DOM.groomingReminder?.value
+        }
+      };
 
-    petData.petPhoto = uploadResult.url.replace(/^http:\/\//, 'https://');
-      
-    // 🔸 SURGICAL ADDITION: save Cloudinary path for deletion later  
-    petData.cloudinaryPath = uploadResult.public_id;   // existing usage
-    petData.public_id = uploadResult.public_id;        // ✅ NEW: add public_id explicitly
-    petData.imageDimensions = {
-      width: uploadResult.width,
-      height: uploadResult.height
-    };
-  } catch (error) {
-    showErrorToUser("❌ Image upload failed. Try again.");
-    return;
-  }
-}
-console.log("🖼️ Using photo:", petData.petPhoto);
-    
-// firestore saving implementation
-    if (firebase.auth().currentUser) {
-  const db = firebase.firestore();
-  const profileRef = db.collection("profiles").doc(petData.id); // Use pet ID as document ID
-  await profileRef.set(petData);
-  console.log("📥 Profile saved to Firestore:", petData);
-}
-      
-// 2. Also update localStorage (for offline fallback)
-savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-// IF EDITING 
-      if (editingProfileId !== null) {
-      const index = savedProfiles.findIndex(p => p.id === editingProfileId);
-      if (index !== -1) {
-      savedProfiles[index] = petData;
+      // photo handling/Cloudinary section     
+      const fileInput = DOM.petPhotoInput;
+          
+      // ✅ If editing and NO new image, reuse existing photo
+      if (editingProfileId !== null && !fileInput.files[0]) {
+        const existingProfiles = await loadPets(); // 🔄 Always get latest profiles
+        const existingProfile = existingProfiles.find(p => p.id === newId); 
+          
+        if (existingProfile && existingProfile.petPhoto) {
+          petData.petPhoto = existingProfile.petPhoto;
+          
+          // 🔸 SURGICAL ADDITION: ensure cloudinaryPath is copied
+          petData.cloudinaryPath = existingProfile.cloudinaryPath || '';
+          petData.imageDimensions = existingProfile.imageDimensions || {};
+
+          // 🔸 NEW SURGICAL ADDITION: save public_id for delete function
+          // (This is exactly what your Cloud Function will look for)
+          petData.public_id = existingProfile.cloudinaryPath || '';
+        }
       }
-     } else {
+
+      // 2️⃣ In the new image uploaded
+      if (fileInput.files[0]) {
+        try {
+          const uploadResult = await uploadToCloudinary(
+            fileInput.files[0],
+            firebase.auth().currentUser.uid,
+            petData.id
+          );
+
+          petData.petPhoto = uploadResult.url.replace(/^http:\/\//, 'https://');
+          
+          // 🔸 SURGICAL ADDITION: save Cloudinary path for deletion later  
+          petData.cloudinaryPath = uploadResult.public_id;   // existing usage
+          petData.public_id = uploadResult.public_id;        // ✅ NEW: add public_id explicitly
+          petData.imageDimensions = {
+            width: uploadResult.width,
+            height: uploadResult.height
+          };
+        } catch (error) {
+          showErrorToUser("❌ Image upload failed. Try again.");
+          return;
+        }
+      }
+      console.log("🖼️ Using photo:", petData.petPhoto);
+      
+      // firestore saving implementation
+      if (firebase.auth().currentUser) {
+        const db = firebase.firestore();
+        const profileRef = db.collection("profiles").doc(petData.id); // Use pet ID as document ID
+        await profileRef.set(petData);
+        console.log("📥 Profile saved to Firestore:", petData);
+      }
+          
+      // 2. Also update localStorage (for offline fallback)
+      savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+      // IF EDITING 
+      if (editingProfileId !== null) {
+        const index = savedProfiles.findIndex(p => p.id === editingProfileId);
+        if (index !== -1) {
+          savedProfiles[index] = petData;
+        }
+      } else {
         savedProfiles.push(petData); // Add new profile
-     }
+      }
       
       localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
       
-    // AFTER SAVING IN LOCALSTORAGE AND FIRESTORE success feedback:
-try {
-  showLoader(true, "Saving profile...");
+      // AFTER SAVING IN LOCALSTORAGE AND FIRESTORE success feedback:
+      showLoader(true, editingProfileId !== null ? "Profile updated!" : "Profile saved!");
+      await new Promise(r => setTimeout(r, 1000)); // brief display for user
+      showLoader(false);
 
-  // Firestore & localStorage saving code here
-  if (firebase.auth().currentUser) {
-    const db = firebase.firestore();
-    await db.collection("profiles").doc(petData.id).set(petData);
+      requestAnimationFrame(() => {
+        DOM.petList.classList.add("hidden");
+        DOM.savedProfilesList.classList.remove("hidden");
+      });
+      loadSavedPetProfile();
+      resetForm();
+      editingProfileId = null;
+
+      // ✅ keep animation INSIDE try after success
+      showProfileSavedAnimation(true, 2000); // Shows for 2 seconds
+
+    } catch (error) {
+      console.error('Save error:', error);
+      showLoader(false);
+      showErrorToUser('Failed to save profile. Try again.');
+    }
+  }); // closes the DOM.petList.addEventListener
+
+  // REST OF INITIALIZE DASHBOARD FUNCTION  
+  if (DOM.addPetProfileBtn) {
+    console.log("✅ addPetProfileBtn found:", DOM.addPetProfileBtn);
+    DOM.addPetProfileBtn.addEventListener('click', () => {
+      console.log("🟢 New Profile button clicked");
+      openCreateForm(); // 🔁 REPLACED all manual toggling
+    });
+  } else {
+    console.warn("⛔ addPetProfileBtn not found in DOM");
   }
-  localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
-
-  // ✅ Profile saved
-  showLoader(true, editingProfileId !== null ? "Profile updated!" : "Profile saved!");
-  await new Promise(r => setTimeout(r, 1000)); // brief display for user
-  showLoader(false);
-
-  requestAnimationFrame(() => {
-    DOM.petList.classList.add("hidden");
-    DOM.savedProfilesList.classList.remove("hidden");
-  });
-  loadSavedPetProfile();
-  resetForm();
-  editingProfileId = null;
-
-  // ✅ keep animation INSIDE try after success
-  showProfileSavedAnimation(true, 2000); // Shows for 2 seconds
-
-} catch (error) {
-  console.error('Save error:', error);
-  showLoader(false);
-  showErrorToUser('Failed to save profile. Try again.');
-  } // closes first try
- }); // closes the DOM.petList.addEventListener
-        
-// REST OF INITIALIZE DASHBOARD FUNCTION  
-if (DOM.addPetProfileBtn) {
-  console.log("✅ addPetProfileBtn found:", DOM.addPetProfileBtn);
-  DOM.addPetProfileBtn.addEventListener('click', () => {
-    console.log("🟢 New Profile button clicked");
-    openCreateForm(); // 🔁 REPLACED all manual toggling
-  });
-} else {
-  console.warn("⛔ addPetProfileBtn not found in DOM");
-}
 } // closes the function
 
 // Initialize when DOM is ready
