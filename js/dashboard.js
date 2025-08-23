@@ -1726,7 +1726,7 @@ function initializeDashboard() {
   DOM.petList.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-   showLoader(true, "loading"); //✅️ while saving/updating
+   showLoader(true, "loading", "cat"); // start
 
     try {
       // Get all form data (preserving your existing structure)
@@ -1853,9 +1853,9 @@ requestAnimationFrame(() => {
         
 //✅️ loader success call
 if (editingProfileId !== null) {
-  showLoader(true, "success-updating");
+  showLoader(true, "success-updating", "cat"); // updated with cat
 } else {
-  showLoader(true, "success-saving");
+  showLoader(true, "success-saving", "cat");   // saved with cat
 }
 // hide loader after short delay (e.g. 2s)
 setTimeout(() => showLoader(false), 2000);
