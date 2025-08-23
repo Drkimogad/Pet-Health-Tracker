@@ -256,35 +256,30 @@ function loadScriptWithRetry(url, maxRetries = 2, delayMs = 1000) {
 
 //===================================
 // ✅ Central helper for showing temporary UI feedback.
-//==========================
-// 1️⃣ Show or hide loader with optional message
 //===============================================
-// state: "loading" (default) or "success"
-function showLoader(show, message = "Loading...", state = "loading") {
-  const loader = document.getElementById('processing-loader');
-  const msg = document.getElementById('loader-message');
-  
-  // ✅ Added: success animation elements
-  const successAnim = document.getElementById('loader-success-animation');
-  const successMsg = document.getElementById('loader-success-message');
+function showLoader(show, messageKey = "loading") {
+  const loader = document.getElementById("processing-loader");
+  const allMessages = loader.querySelectorAll(".loader-text");
+  const successAnim = document.getElementById("loader-success-animation");
 
-  if (!loader || !msg || !successAnim || !successMsg) return;
+  if (!loader || !successAnim) return;
 
-  if (state === "loading") {
-    msg.textContent = message;
-    msg.style.display = "block";
-    successMsg.style.display = "none";
-    successAnim.style.display = "none";
-  } else if (state === "success") {
-    successMsg.textContent = message;
-    successMsg.style.display = "block";
+  // Hide all messages first
+  allMessages.forEach(el => (el.style.display = "none"));
+
+  // Show the relevant one
+  const targetMsg = document.getElementById(`loader-${messageKey}`);
+  if (targetMsg) targetMsg.style.display = "block";
+
+  // Toggle success animation
+  if (messageKey.startsWith("success")) {
     successAnim.style.display = "block";
-    msg.style.display = "none";
+  } else {
+    successAnim.style.display = "none";
   }
 
   loader.style.display = show ? "block" : "none";
 }
-
 
 // Quick success/error message (optional fallback to Lottie)
 //safety fallback for quick success/error messages in case the Lottie-based loader fails
