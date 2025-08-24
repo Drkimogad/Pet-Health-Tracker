@@ -1309,7 +1309,7 @@ function setupAdminNotificationListener(petId) {
     });
 }
 
-// 3. Enhanced open chat window with approval system
+// 3. MODIFIED: open chat window using SINGLE DOCUMENT approach
 async function openCommunityChatModal(petId) {
   const user = firebase.auth().currentUser;
   if (!user) return alert("You must be signed in to access community chat.");
@@ -1318,7 +1318,7 @@ async function openCommunityChatModal(petId) {
   if (!pet) return alert("Pet profile not found.");
 
   // Check if user is admin
-  const isAdmin = user.email === 'YOUR_ADMIN_EMAIL@example.com'; // Replace with your admin check
+  const isAdmin = user.email === 'YOUR_ADMIN_EMAIL@example.com';
 
   // Remove existing modal
   const existingModal = document.getElementById('community-chat-modal');
@@ -1349,7 +1349,7 @@ async function openCommunityChatModal(petId) {
   document.body.appendChild(modal);
   setTimeout(() => modal.classList.add('active'), 50);
 
-  // Dark Mode Logic
+  // Dark Mode Logic (unchanged)
   const darkModeToggle = modal.querySelector('#darkModeToggle');
   if (darkModeToggle) {
     darkModeToggle.addEventListener('click', () => {
@@ -1362,82 +1362,66 @@ async function openCommunityChatModal(petId) {
     }
   }
 
-  // Toggle view button for admin (show all vs show only approved)
-  let adminViewingAll = false;
-  const toggleViewBtn = modal.querySelector('#toggleViewBtn');
-  if (toggleViewBtn && isAdmin) {
-    toggleViewBtn.addEventListener('click', () => {
-      adminViewingAll = !adminViewingAll;
-      toggleViewBtn.textContent = adminViewingAll ? '👁️ Show Approved Only' : '👁️ Show All Messages';
-      loadMessages(); // Reload messages with the new filter
-    });
-  }
+  // Get the single chat document reference
+  const chatDocRef = firebase.firestore().collection("Community_Chat").doc("feedback_thread");
 
-  // Close handler
-  modal.querySelector('.close-community-chat').addEventListener('click', () => {
-    modal.classList.remove('active');
-    setTimeout(() => modal.remove(), 300);
-  });
-
-  // Enhanced real-time listener with approval system
+  // Load messages from the single document
   function loadMessages() {
-    const chatMessagesDiv = modal.querySelector('#chatMessages');
-    
-    let query = firebase.firestore()
-      .collection("Community_Chat")
-      .where("petId", "==", petId);
-    
-    // For regular users, only show approved messages
-    // For admin, show based on toggle view setting
-    if (!isAdmin || !adminViewingAll) {
-      query = query.where("approved", "==", true);
-    }
-    
-    query = query.orderBy("timestamp", "asc");
-    
-    query.onSnapshot(snapshot => {
-      if (snapshot.empty) {
+    chatDocRef.onSnapshot(doc => {
+      const chatMessagesDiv = modal.querySelector('#chatMessages');
+      
+      if (!doc.exists) {
+        chatMessagesDiv.innerHTML = `<p class="no-messages">No feedback yet. Be the first to share!</p>`;
+        return;
+      }
+
+      const data = doc.data();
+      const messages = data.messages || [];
+      
+      // Filter messages based on approval and user status
+      const visibleMessages = isAdmin ? messages : messages.filter(msg => msg.approved);
+      
+      if (visibleMessages.length === 0) {
         chatMessagesDiv.innerHTML = `<p class="no-messages">No feedback yet. Be the first to share!</p>`;
         return;
       }
 
       chatMessagesDiv.innerHTML = '';
-      snapshot.forEach(doc => {
-        const data = doc.data();
+      visibleMessages.forEach((msg, index) => {
         const msgEl = document.createElement('div');
-        msgEl.className = `chat-message ${data.approved ? 'approved' : 'pending'}`;
-        msgEl.dataset.docId = doc.id;
+        msgEl.className = `chat-message ${msg.approved ? 'approved' : 'pending'}`;
+        msgEl.dataset.msgIndex = index;
         
         // Format message based on type
         let messageHtml = '';
-        if (data.type === 'admin') {
+        if (msg.type === 'admin') {
           // Admin message
           messageHtml = `
             <div class="message-header">
-              <strong>${data.userName || 'Admin'}</strong>
-              <small>${new Date(data.timestamp?.toDate()).toLocaleString()}</small>
+              <strong>${msg.userName || 'Admin'}</strong>
+              <small>${new Date(msg.timestamp?.toDate()).toLocaleString()}</small>
               ${isAdmin ? `<button class="delete-btn" title="Delete">🗑️</button>` : ''}
             </div>
-            <p class="message-content admin-message">${data.text}</p>
+            <p class="message-content admin-message">${msg.text}</p>
           `;
         } else {
           // User message
-          const canDelete = data.userId === user.uid && !data.approved;
+          const canDelete = msg.userId === user.uid && !msg.approved;
           
           messageHtml = `
             <div class="message-header">
-              <strong>${data.userName || 'User'}</strong>
-              <small>${new Date(data.timestamp?.toDate()).toLocaleString()}</small>
+              <strong>${msg.userName || 'User'}</strong>
+              <small>${new Date(msg.timestamp?.toDate()).toLocaleString()}</small>
               ${isAdmin ? `
                 <div class="admin-controls">
-                  ${!data.approved ? `<button class="approve-btn" title="Approve">✓</button>` : ''}
+                  ${!msg.approved ? `<button class="approve-btn" title="Approve">✓</button>` : ''}
                   <button class="delete-btn" title="Delete">🗑️</button>
                   <button class="reply-btn" title="Reply">↩️</button>
                 </div>
               ` : canDelete ? `<button class="delete-btn" title="Delete">🗑️</button>` : ''}
             </div>
-            <p class="message-content">${data.text}</p>
-            ${data.approved ? `<div class="approved-badge">✓ Approved</div>` : `<div class="pending-badge">⏳ Pending Approval</div>`}
+            <p class="message-content">${msg.text}</p>
+            ${msg.approved ? `<div class="approved-badge">✓ Approved</div>` : `<div class="pending-badge">⏳ Pending Approval</div>`}
           `;
         }
         
@@ -1451,25 +1435,30 @@ async function openCommunityChatModal(petId) {
   // Initial load
   loadMessages();
 
-  // Message actions handler
+  // Message actions handler - MODIFIED for array manipulation
   modal.querySelector('#chatMessages').addEventListener('click', async (e) => {
     const messageEl = e.target.closest('.chat-message');
     if (!messageEl) return;
     
-    const docId = messageEl.dataset.docId;
-    const docRef = firebase.firestore().collection("Community_Chat").doc(docId);
-    const docSnap = await docRef.get();
+    const msgIndex = parseInt(messageEl.dataset.msgIndex);
+    const docSnap = await chatDocRef.get();
     
     if (!docSnap.exists) return;
     
     const data = docSnap.data();
+    const messages = data.messages || [];
+    const message = messages[msgIndex];
+    
+    if (!message) return;
 
-    // Delete action (admin can delete any, users can delete their own unapproved messages)
+    // Delete action
     if (e.target.classList.contains('delete-btn')) {
-      const canDelete = isAdmin || (data.userId === user.uid && !data.approved);
+      const canDelete = isAdmin || (message.userId === user.uid && !message.approved);
       
       if (canDelete && confirm("Delete this message permanently?")) {
-        await docRef.delete();
+        // Remove the message from the array
+        messages.splice(msgIndex, 1);
+        await chatDocRef.update({ messages });
       } else if (!canDelete) {
         alert("You can only delete your own messages before they are approved.");
       }
@@ -1477,14 +1466,17 @@ async function openCommunityChatModal(petId) {
 
     // Approve action (admin only)
     if (e.target.classList.contains('approve-btn') && isAdmin) {
-      await docRef.update({ approved: true });
+      // Update the approval status in the array
+      messages[msgIndex].approved = true;
+      await chatDocRef.update({ messages });
       
       // Ask if admin wants to reply immediately
       if (confirm("Message approved. Would you like to reply now?")) {
-        const replyText = prompt(`Reply to ${data.userName}:`);
+        const replyText = prompt(`Reply to ${message.userName}:`);
         if (replyText) {
-          await firebase.firestore().collection("Community_Chat").add({
-            petId,
+          // Add admin reply to the messages array
+          messages.push({
+            id: "msg" + Date.now(),
             userId: user.uid,
             userName: "Admin",
             text: replyText,
@@ -1492,16 +1484,18 @@ async function openCommunityChatModal(petId) {
             approved: true,
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
           });
+          await chatDocRef.update({ messages });
         }
       }
     }
 
     // Reply action (admin only to approved messages)
-    if (e.target.classList.contains('reply-btn') && isAdmin && data.approved) {
-      const replyText = prompt(`Reply to ${data.userName}:`);
+    if (e.target.classList.contains('reply-btn') && isAdmin && message.approved) {
+      const replyText = prompt(`Reply to ${message.userName}:`);
       if (replyText) {
-        await firebase.firestore().collection("Community_Chat").add({
-          petId,
+        // Add admin reply to the messages array
+        messages.push({
+          id: "msg" + Date.now(),
           userId: user.uid,
           userName: "Admin",
           text: replyText,
@@ -1509,17 +1503,18 @@ async function openCommunityChatModal(petId) {
           approved: true,
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
         });
+        await chatDocRef.update({ messages });
       }
     }
   });
 
-  // Send logic with daily limit check
+  // Send logic with daily limit check - MODIFIED for array approach
   modal.querySelector('#sendChatBtn').addEventListener('click', async () => {
     const input = modal.querySelector('#chatInput');
     const status = modal.querySelector('#chatStatus');
-    const message = input.value.trim();
+    const messageText = input.value.trim();
 
-    if (!message) {
+    if (!messageText) {
       status.textContent = "⚠️ Feedback cannot be empty";
       status.style.color = "var(--error-color)";
       return;
@@ -1529,14 +1524,16 @@ async function openCommunityChatModal(petId) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
-    const userMessagesToday = await firebase.firestore()
-      .collection("Community_Chat")
-      .where("petId", "==", petId)
-      .where("userId", "==", user.uid)
-      .where("timestamp", ">=", firebase.firestore.Timestamp.fromDate(today))
-      .get();
+    const docSnap = await chatDocRef.get();
+    const messages = docSnap.exists ? docSnap.data().messages || [] : [];
+    
+    const userMessagesToday = messages.filter(msg => {
+      return msg.userId === user.uid && 
+             msg.timestamp && 
+             msg.timestamp.toDate() >= today;
+    });
 
-    if (!userMessagesToday.empty) {
+    if (userMessagesToday.length > 0) {
       status.textContent = "❌ You can only submit one feedback per day";
       status.style.color = "var(--error-color)";
       return;
@@ -1546,15 +1543,28 @@ async function openCommunityChatModal(petId) {
     status.style.color = "var(--text-color)";
 
     try {
-      await firebase.firestore().collection("Community_Chat").add({
-        petId,
+      // Create new message
+      const newMessage = {
+        id: "msg" + Date.now(),
         userId: user.uid,
         userName: user.displayName || user.email.split('@')[0],
-        text: message,
+        text: messageText,
         type: "user",
-        approved: false, // Messages require approval by default
+        approved: false,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      });
+      };
+
+      // Add to messages array in the single document
+      if (docSnap.exists) {
+        await chatDocRef.update({
+          messages: firebase.firestore.FieldValue.arrayUnion(newMessage)
+        });
+      } else {
+        await chatDocRef.set({
+          messages: [newMessage],
+          petId: petId
+        });
+      }
       
       input.value = '';
       status.textContent = "✓ Sent for approval!";
@@ -1563,6 +1573,12 @@ async function openCommunityChatModal(petId) {
       status.textContent = `❌ Error: ${err.message}`;
       status.style.color = "var(--error-color)";
     }
+  });
+
+  // Close handler
+  modal.querySelector('.close-community-chat').addEventListener('click', () => {
+    modal.classList.remove('active');
+    setTimeout(() => modal.remove(), 300);
   });
 }
 
