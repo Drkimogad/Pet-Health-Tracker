@@ -263,45 +263,51 @@ function loadScriptWithRetry(url, maxRetries = 2, delayMs = 1000) {
 function showDashboardLoader(show, messageKey = "loading") {
   const loader = document.getElementById("dashboard-loader");
   if (!loader) {
-    // If no loader exists, use temp message as fallback
-    if (!show && messageKey.includes("success")) {
-      const message = messageKey.includes("saving") ? "Profile saved successfully!" : 
-                     messageKey.includes("updating") ? "Profile updated successfully!" :
-                     messageKey.includes("deleting") ? "Profile deleted successfully!" : "Operation completed!";
+    // Fallback: use temp message if loader doesn't exist
+    if (messageKey.includes("success")) {
+      const message = getMessageText(messageKey);
       showTempMessage(message, true, 3000);
-    } else if (!show && messageKey.includes("error")) {
-      const message = messageKey.includes("saving") ? "Failed to save profile!" : 
-                     messageKey.includes("updating") ? "Failed to update profile!" :
-                     messageKey.includes("deleting") ? "Failed to delete profile!" : "Operation failed!";
+    } else if (messageKey.includes("error")) {
+      const message = getMessageText(messageKey);
       showTempMessage(message, false, 4000);
     }
     return;
   }
 
   const animation = document.getElementById("dashboard-loader-animation");
+  const cssSpinner = document.getElementById("css-spinner-fallback");
   
-  // All messages inside dashboard loader
+  // Hide ALL messages first
   const allMessages = loader.querySelectorAll(".loader-text");
-  allMessages.forEach(el => (el.style.display = "none"));
+  allMessages.forEach(el => el.style.display = "none");
+  
+  // Hide both spinners initially
+  if (animation) animation.style.display = "none";
+  if (cssSpinner) cssSpinner.style.display = "none";
 
-  // Show the target message
+  // Show the requested message
   const targetMsg = document.getElementById(`dashboard-${messageKey}`);
-  if (targetMsg) targetMsg.style.display = "block";
-
-  // Handle animation display
-  if (animation) {
-    if (show && !messageKey.includes("success") && !messageKey.includes("error")) {
-      animation.style.display = "block"; // Show animation only for loading states
-    } else {
-      animation.style.display = "none"; // Hide for success/error states
-    }
+  if (targetMsg) {
+    targetMsg.style.display = "block";
+    targetMsg.style.color = "brown"; // Ensure brown color
   }
 
-  // Show or hide overlay
   if (show) {
+    // Show loader
     loader.style.display = "block";
+    
+    // Try to show Lottie first
+    if (animation) {
+      animation.style.display = "block";
+    } 
+    // If Lottie fails, show CSS spinner after short delay
+    setTimeout(() => {
+      if (animation && animation.style.display === "none" && cssSpinner) {
+        cssSpinner.style.display = "block";
+      }
+    }, 100);
   } else {
-    // For success/error messages, keep visible for a bit longer
+    // For success/error messages, keep visible briefly
     if (messageKey.includes("success") || messageKey.includes("error")) {
       setTimeout(() => {
         loader.style.display = "none";
@@ -311,6 +317,26 @@ function showDashboardLoader(show, messageKey = "loading") {
     }
   }
 }
+
+// Helper function to get message text
+function getMessageText(messageKey) {
+  const messages = {
+    "success-saving": "Profile saved successfully!",
+    "success-updating": "Profile updated successfully!",
+    "success-deleting": "Profile deleted successfully!",
+    "success-exporting": "All pet cards exported successfully!",
+    "sharing-success": "Shared successfully!",
+    "sharing-copied": "Link copied to clipboard!",
+    "error-saving": "Failed to save profile. Please try again.",
+    "error-updating": "Failed to update profile. Please try again.",
+    "error-deleting": "Failed to delete profile. Please try again.",
+    "error-exporting": "Export failed. Please try again.",
+    "sharing-error": "Couldn't share. Please try again."
+  };
+  
+  return messages[messageKey] || "Operation completed";
+}
+    
 
 // Quick success/error message (optional fallback to Lottie)
 //safety fallback for quick success/error messages in case the Lottie-based loader fails
