@@ -1142,24 +1142,27 @@ Get the app: https://drkimogad.github.io/Pet-Health-Tracker/
   };
 
   try {
+     // ✅ Show "Sharing..." overlay at the start
+    showDashboardLoader(true, "sharing");
+      
     if (navigator.share) {
       await navigator.share(shareData);
-// Optional show paws when the share is successful
-   showLoader(true, 'loader-sharing-success', 'paws');
-   setTimeout(() => showLoader(false), 2000);
-   console.log("Shared successfully");
+   // ✅ Share successful
+      showDashboardLoader(true, "sharing-success");
+      setTimeout(() => showDashboardLoader(false), 2000);
+      console.log("Shared successfully");
 
     } else {
-       // Replace await navigator.share 
-      showLoader(true, 'loader-sharing-copied', 'paws');
-      setTimeout(() => showLoader(false), 2000);
+      // Fallback: copy link message
+      showDashboardLoader(true, "sharing-copied");
+      setTimeout(() => showDashboardLoader(false), 2000);
 
     }
   } catch (error) {
     if (error.name !== 'AbortError') {
   console.error("Sharing failed:", error);
-  showLoader(true, 'loader-sharing-error', 'paws');
-  setTimeout(() => showLoader(false), 3000);
+      showDashboardLoader(true, "sharing-error");
+      setTimeout(() => showDashboardLoader(false), 3000);
    }
   }
 } // <== This closes the async function
