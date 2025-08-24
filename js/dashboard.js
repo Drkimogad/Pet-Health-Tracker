@@ -1102,23 +1102,46 @@ showDashboardLoader(true, "exporting");
       link.click();
       setTimeout(() => URL.revokeObjectURL(zipURL), 1000);
     }
-     // show success message
-   showDashboardLoader(true, "success-exporting"); // ✅ Successfully exported all pet cards
-      // then hide the loader again 
-   setTimeout(() => showDashboardLoader(false), 2000); // hide overlay after 2s
 
-} catch (err) {
-  console.error("Export error:", err);
+    // show success message
+    showDashboardLoader(true, "success-exporting"); // ✅ Successfully exported all pet cards
+    
+    // Add success fallback
+    setTimeout(() => {
+      const loaderAnim = document.getElementById("dashboard-loader-animation");
+      if (loaderAnim && loaderAnim.style.display === "none") {
+        // Lottie failed, use temp message
+        showTempMessage("All pet cards exported successfully!", true, 3000);
+        showDashboardLoader(false); // Hide the loader
+      }
+    }, 500);
+    
+    setTimeout(() => showDashboardLoader(false), 2000); // hide overlay after 2s
 
-  // Show loader overlay with paws animation and error message
- showDashboardLoader(true, "error-exporting"); // ❌ Exporting failed
-  // Hide after 3 seconds
-  setTimeout(() => showDashboardLoader(false), 3000); // hide overlay after 3s
+  } catch (err) {
+    console.error("Export error:", err);
 
-} finally {
-  // Remove temporary container if it exists
-  if (typeof container !== 'undefined') container.remove();
- }
+    // Show loader overlay with paws animation and error message
+    showDashboardLoader(true, "error-exporting"); // ❌ Exporting failed
+    
+    // Add error fallback
+    setTimeout(() => {
+      const loaderAnim = document.getElementById("dashboard-loader-animation");
+      if (loaderAnim && loaderAnim.style.display === "none") {
+        // Lottie failed, use temp message
+        showTempMessage("Export failed. Please try again.", false, 4000);
+        showDashboardLoader(false); // Hide the loader
+      }
+    }, 500);
+
+    setTimeout(() => showDashboardLoader(false), 3000); // hide overlay after 3s
+
+  } finally {
+    // Remove temporary container if it exists
+    if (container && container.parentNode) {
+      container.remove();
+    }
+  }      
 } // closes the function 
 
 // Its Listener
