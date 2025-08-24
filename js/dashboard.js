@@ -899,7 +899,7 @@ async function deletePetProfile(petId) {
     const petToDelete = pets.find(p => p.id === petId);
 
        // 🔹 Show paw animation while deleting
-     showLoader(true, "loading", "paws"); // loading message + paws animation // start delete
+  showDashboardLoader(true, "deleting"); 
 
     // 🔸 Cloudinary image deletion via HTTP FUNCTION
     if (petToDelete?.public_id && firebase.auth().currentUser) {
@@ -952,17 +952,17 @@ async function deletePetProfile(petId) {
     // 🔸 UI update with requestAnimationFrame for smooth rendering
     requestAnimationFrame(() => {
     loadSavedPetProfile();
-    showLoader(true, "success-deleting", "paws"); // success with paws
-    setTimeout(() => showLoader(false), 2000); // hide after 2 seconds
+    showDashboardLoader(true, "success-deleting"); // success message
+    setTimeout(() => showDashboardLoader(false), 2000); // hide after 2s
   });
 
   } catch (error) {
     console.error('Delete error:', error);
     // ❌ Show paws + delete error message
-  showLoader(true, "error-deleting", "paws");
+  showDashboardLoader(true, "error-deleting");
 
   // Hide loader overlay after 3s
-  setTimeout(() => showLoader(false), 3000);
+  setTimeout(() => showDashboardLoader(false), 3000); // hide overlay after 3s
   }
 }
 
@@ -977,7 +977,8 @@ async function deletePetProfile(petId) {
 async function exportAllPetCards(asZip = false) {
   try {
     // ✅ Show loader overlay with paws animation and "exporting" message
-    showLoader(true, "exporting-loading", "paws");
+// Start export → show paws animation + "Exporting..." message
+showDashboardLoader(true, "exporting");
 
     // ✅ Ensure loader actually renders before starting heavy processing
     await new Promise(r => requestAnimationFrame(r));
@@ -1080,31 +1081,17 @@ async function exportAllPetCards(asZip = false) {
       setTimeout(() => URL.revokeObjectURL(zipURL), 1000);
     }
      // show success message
-      showLoader(true, "success-exporting", "paws");
+   showDashboardLoader(true, "success-exporting"); // ✅ Successfully exported all pet cards
       // then hide the loader again 
-      setTimeout(() => showLoader(false), 2000);
+   setTimeout(() => showDashboardLoader(false), 2000); // hide overlay after 2s
 
 } catch (err) {
   console.error("Export error:", err);
 
-  // Create or reuse an error message in the loader
-  const loaderEl = document.getElementById('processing-loader');
-  let errorMsg = document.getElementById('loader-error-exporting');
-  if (!errorMsg) {
-    errorMsg = document.createElement('p');
-    errorMsg.id = 'loader-error-export';
-    errorMsg.className = 'loader-text';
-    errorMsg.style.color = 'red';
-    errorMsg.style.display = 'none';
-    loaderEl.appendChild(errorMsg);
-  }
-
-  errorMsg.textContent = `❌ Exporting failed: ${err.message}`;
-
   // Show loader overlay with paws animation and error message
-  showLoader(true, 'loader-error-exporting', 'paws');
+ showDashboardLoader(true, "error-exporting"); // ❌ Exporting failed
   // Hide after 3 seconds
-  setTimeout(() => showLoader(false), 3000);
+  setTimeout(() => showDashboardLoader(false), 3000); // hide overlay after 3s
 
 } finally {
   // Remove temporary container if it exists
@@ -1755,9 +1742,13 @@ function initializeDashboard() {
   // ======================
   DOM.petList.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
-   showLoader(true, "loading", "cat"); // start
-
+      
+// ✅ Show dashboard loader immediately with correct initial message
+  if (editingProfileId !== null) {
+    showDashboardLoader(true, "updating"); // Editing an existing profile
+  } else {
+    showDashboardLoader(true, "saving");   // Creating a new profile
+  }
     try {
       // Get all form data (preserving your existing structure)
       // 🔑 Generate ID once
@@ -1883,23 +1874,24 @@ requestAnimationFrame(() => {
         
 //✅️ loader success call
 if (editingProfileId !== null) {
-  showLoader(true, "success-updating", "cat"); // updated with cat
+  showDashboardLoader(true, "success-updating"); // updated with cat
 } else {
-  showLoader(true, "success-saving", "cat");   // saved with cat
+showDashboardLoader(true, "success-saving");
 }
 // hide loader after short delay (e.g. 2s)
-setTimeout(() => showLoader(false), 2000);
+setTimeout(() => showDashboardLoader(false), 2000);
+        
 // the catch must stay as it is closing the try
  } catch (error) {
    console.error("❌ Error saving profile:", error);
   // ✅ Distinguish error between saving vs updating
   if (editingProfileId !== null) {
-    showLoader(true, "error-updating", "paws");
+    showLoader(true, "error-updating");
   } else {
-    showLoader(true, "error-saving", "paws");
+    showLoader(true, "error-saving");
   }
   // Hide loader overlay after 3s for errors
-  setTimeout(() => showLoader(false), 3000);
+setTimeout(() => showDashboardLoader(false), 3000);
 }
   }); // closes the DOM.petList.addEventListener
 
