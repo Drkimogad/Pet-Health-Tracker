@@ -597,8 +597,9 @@ button.delete-btn {
 }
 
 /* ======LOADER SPINNER======= */
-/* Loader styling it can be repurposed*/
-/*.loader {
+/* CSS spinner fallback */
+.css-spinner-fallback {
+  display: none;
   border: 3px solid #f3f3f3;
   border-top: 3px solid var(--qr-blue);
   border-radius: 50%;
@@ -610,9 +611,14 @@ button.delete-btn {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  z-index: 1000;
-}*/
+  z-index: 1001;
+}
 
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+/*=≈========================*/
 .loader-text {
   margin: 10px 0;
   font-weight: bold;
