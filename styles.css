@@ -1137,6 +1137,90 @@ body.modal-active {
   background: rgba(210, 180, 140, 0.05);
 }
 
+/* Notification badge */
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: #e74c3c;
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Message status badges */
+.approved-badge, .pending-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-top: 5px;
+}
+
+.approved-badge {
+  background-color: #2ecc71;
+  color: white;
+}
+
+.pending-badge {
+  background-color: #f39c12;
+  color: white;
+}
+
+/* Admin controls */
+.admin-controls {
+  display: inline-flex;
+  gap: 5px;
+  margin-left: 10px;
+}
+
+.admin-controls button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Message states */
+.chat-message.pending {
+  opacity: 0.8;
+  border-left: 3px solid #f39c12;
+}
+
+.chat-message.approved {
+  border-left: 3px solid #2ecc71;
+}
+
+.admin-message {
+  background-color: rgba(52, 152, 219, 0.1);
+  padding: 8px;
+  border-radius: 5px;
+}
+
+/* View toggle button */
+.view-toggle-btn {
+  background: #7f8c8d;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.daily-limit-note {
+  font-size: 0.8rem;
+  color: #7f8c8d;
+  margin-top: 10px;
+  text-align: center;
+}
+
+
+
 /* ===== HEADER & FOOTER STYLING ===== */
 header {
   background-color: #967bb6;
