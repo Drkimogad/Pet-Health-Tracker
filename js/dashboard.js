@@ -2023,7 +2023,7 @@ function initializeDashboard() {
       localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
       
       // AFTER SAVING IN LOCALSTORAGE AND FIRESTORE
-await new Promise(r => setTimeout(r, 800)); //✅️ just abrief pause, 
+await new Promise(r => setTimeout(r, 1000)); //✅️ just abrief pause, 
 
 
 // Update UI immediately
@@ -2037,7 +2037,7 @@ requestAnimationFrame(() => {
         
 //✅️ loader success call
 if (editingProfileId !== null) {
-  showDashboardLoader(true, "success-updating"); // updated with cat
+  showDashboardLoader(true, "success-updating"); 
 } else {
 showDashboardLoader(true, "success-saving");
 }
@@ -2049,9 +2049,9 @@ setTimeout(() => showDashboardLoader(false), 2000);
    console.error("❌ Error saving profile:", error);
   // ✅ Distinguish error between saving vs updating
   if (editingProfileId !== null) {
-    showLoader(true, "error-updating");
+    showDashboardLoader(true, "error-updating");
   } else {
-    showLoader(true, "error-saving");
+    showDashboardLoader(true, "error-saving");
   }
   // Hide loader overlay after 3s for errors
 setTimeout(() => showDashboardLoader(false), 3000);
