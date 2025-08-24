@@ -259,26 +259,45 @@ function loadScriptWithRetry(url, maxRetries = 2, delayMs = 1000) {
 // - show: true/false (overlay visible?)
 // - messageKey: which message to show ("loading", "success-saving", "success-updating", "success-deleting", etc.)
 //===================================
-function showDashboardLoader(show, messageKey = "loading") {
+function showDashboardLoader(show, messageKey = "loading", persistSuccess = true) {
   const loader = document.getElementById("dashboard-loader");
   if (!loader) return;
 
   const animation = document.getElementById("dashboard-loader-animation");
   if (!animation) return;
 
-  // All messages inside dashboard loader
+  // Hide all messages initially
   const allMessages = loader.querySelectorAll(".loader-text");
   allMessages.forEach(el => (el.style.display = "none"));
 
-  // Show the target message
-  const targetMsg = document.getElementById(`dashboard-${messageKey}`);
-  if (targetMsg) targetMsg.style.display = "block";
+  // Show the target message if provided
+  if (messageKey) {
+    const targetMsg = document.getElementById(`dashboard-${messageKey}`);
+    if (targetMsg) targetMsg.style.display = "block";
+  }
 
-  // Always show the paws animation for dashboard loader
-  animation.style.display = show ? "block" : "none";
-
-  // Show or hide overlay
-  loader.style.display = show ? "block" : "none";
+  // Handle animation and overlay visibility
+  if (show) {
+    // Show everything when loading
+    animation.style.display = "block";
+    loader.style.display = "block";
+    loader.style.background = "rgba(0,0,0,0.5)"; // Semi-transparent background
+  } else {
+    // Hide animation when done
+    animation.style.display = "none";
+    
+    // For success messages, keep message visible without background
+    if (persistSuccess && messageKey && messageKey.includes("success")) {
+      loader.style.background = "transparent";
+      // Auto-hide success message after 2 seconds
+      setTimeout(() => {
+        loader.style.display = "none";
+      }, 3000);
+    } else {
+      // Hide completely for other cases
+      loader.style.display = "none";
+    }
+  }
 }
 
 // Quick success/error message (optional fallback to Lottie)
