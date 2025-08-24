@@ -1889,16 +1889,18 @@ if (editingProfileId !== null) {
 }
 // hide loader after short delay (e.g. 2s)
 setTimeout(() => showLoader(false), 2000);
-
+// the catch must stay as it is closing the try
+ } catch (error) {
+   console.error("❌ Error saving profile:", error);
   // ✅ Distinguish error between saving vs updating
   if (editingProfileId !== null) {
     showLoader(true, "error-updating", "paws");
   } else {
     showLoader(true, "error-saving", "paws");
   }
-
   // Hide loader overlay after 3s for errors
   setTimeout(() => showLoader(false), 3000);
+}
   }); // closes the DOM.petList.addEventListener
 
   // REST OF INITIALIZE DASHBOARD FUNCTION  
