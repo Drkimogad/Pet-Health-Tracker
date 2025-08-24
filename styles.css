@@ -620,27 +620,25 @@ button.delete-btn {
 }
 /*=≈========================*/
 .loader-text {
-  margin: 10px 0;
+  color: brown !important; /* Force brown color */
   font-weight: bold;
   font-size: 18px;
+  margin: 10px 0;
 }
 
-#dashboard-loader {
-  transition: background-color 0.3s ease;
+#dashboard-loader div {
+  color: brown !important; /* Force brown color on all loader text */
 }
 
+/* Ensure temp messages keep their green/red styling */
 .success-message {
-  background-color: #4CAF50;
-  color: white;
-  border-radius: 4px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  background-color: #4CAF50 !important;
+  color: white !important;
 }
 
 .auth-error {
-  background-color: #f44336;
-  color: white;
-  border-radius: 4px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  background-color: #f44336 !important;
+  color: white !important;
 }
 
 /* =====Details Modal========== */
