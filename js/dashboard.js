@@ -1255,36 +1255,61 @@ async function getPetProfile(petId) {
 }
 
 //=========================
-// Join Pet Community
+// Join Pet Community - ENHANCED VERSION
 //=========================
-// 1. Create Community Chat Button (add this to your button generation logic)
+
+// 1. Create Community Chat Button with notification badge for admin
 function createCommunityChatButton(profileId) {
   const chatBtn = document.createElement('button');
   chatBtn.className = 'communityChat-btn pulse-animation';
   chatBtn.dataset.petId = profileId;
   chatBtn.innerHTML = `<i class="fas fa-comments"></i> Community Chat`;
   
-document.addEventListener('click', e => {
-  if (e.target.closest('.communityChat-btn')) {
-    const petId = e.target.closest('.communityChat-btn').dataset.petId;
-    openCommunityChatModal(petId);
+  // Add notification badge for admin (initially hidden)
+  const badge = document.createElement('span');
+  badge.className = 'notification-badge';
+  badge.id = 'community-chat-notification';
+  badge.style.display = 'none';
+  chatBtn.appendChild(badge);
+  
+  // Check if user is admin and set up notification listener
+  const user = firebase.auth().currentUser;
+  if (user && user.email === 'YOUR_ADMIN_EMAIL@example.com') { // Replace with your admin email check
+    // Listen for pending messages
+    setupAdminNotificationListener(profileId);
   }
-});
-  return chatBtn; // Moved inside function
+  
+  document.addEventListener('click', e => {
+    if (e.target.closest('.communityChat-btn')) {
+      const petId = e.target.closest('.communityChat-btn').dataset.petId;
+      openCommunityChatModal(petId);
+    }
+  });
+  
+  return chatBtn;
 }
-    
-// 2.function getpetprofile NEW (before openCommunityChatWindow)
-async function getPetProfile(petId) {
-        // Try Firestore first
-  if (firebase.auth().currentUser) {
-    const doc = await firebase.firestore().collection('profiles').doc(petId).get();
-    if (doc.exists) return doc.data();
-  }
-    // Fallback to localStorage
-  const localProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-  return localProfiles.find(p => p.id === petId) || {};
+
+// 2. Setup admin notification listener
+function setupAdminNotificationListener(petId) {
+  // Listen for unapproved messages
+  firebase.firestore()
+    .collection("Community_Chat")
+    .where("petId", "==", petId)
+    .where("approved", "==", false)
+    .onSnapshot(snapshot => {
+      const notificationBadge = document.getElementById('community-chat-notification');
+      if (notificationBadge) {
+        if (!snapshot.empty) {
+          notificationBadge.textContent = snapshot.size;
+          notificationBadge.style.display = 'inline-block';
+        } else {
+          notificationBadge.style.display = 'none';
+        }
+      }
+    });
 }
-//3.open chat window
+
+// 3. Enhanced open chat window with approval system
 async function openCommunityChatModal(petId) {
   const user = firebase.auth().currentUser;
   if (!user) return alert("You must be signed in to access community chat.");
@@ -1292,57 +1317,87 @@ async function openCommunityChatModal(petId) {
   const pet = await getPetProfile(petId);
   if (!pet) return alert("Pet profile not found.");
 
-  // 🔄 Remove existing modal (preserved original)
+  // Check if user is admin
+  const isAdmin = user.email === 'YOUR_ADMIN_EMAIL@example.com'; // Replace with your admin check
+
+  // Remove existing modal
   const existingModal = document.getElementById('community-chat-modal');
   if (existingModal) existingModal.remove();
 
-  // ✅ Build modal with dark mode toggle (NEW)
+  // Build modal
   const modal = document.createElement('div');
   modal.id = 'community-chat-modal';
   modal.className = 'community-modal-overlay';
   modal.innerHTML = `
     <div class="community-modal-content">
       <button class="close-community-chat">&times;</button>
-      <h2>💬 ${pet.petName || 'Pet'} Community</h2>
+      <h2>💬 ${pet.petName || 'Pet'} Community Feedback</h2>
       <div class="chat-header">
         <button id="darkModeToggle" class="dark-mode-btn">🌙 Dark Mode</button>
+        ${isAdmin ? '<button id="toggleViewBtn" class="view-toggle-btn">👁️ Show All Messages</button>' : ''}
       </div>
       <div class="chat-messages" id="chatMessages">Loading messages...</div>
-      <textarea id="chatInput" placeholder="Ask or share something..."></textarea>
-      <button id="sendChatBtn">Send</button>
+      <div class="chat-input-area">
+        <textarea id="chatInput" placeholder="Share your feedback..."></textarea>
+        <button id="sendChatBtn">Send Feedback</button>
+      </div>
       <p id="chatStatus" class="chat-status"></p>
+      <p class="daily-limit-note">Note: You can only submit one feedback per day.</p>
     </div>
   `;
 
   document.body.appendChild(modal);
   setTimeout(() => modal.classList.add('active'), 50);
 
-  // ✅ Dark Mode Logic (NEW)
+  // Dark Mode Logic
   const darkModeToggle = modal.querySelector('#darkModeToggle');
-  darkModeToggle.addEventListener('click', () => {
-    document.querySelector('.community-modal-content').classList.toggle('dark-mode');
-    localStorage.setItem('chatDarkMode', 
-      document.querySelector('.community-modal-content').classList.contains('dark-mode'));
-  });
-  if (localStorage.getItem('chatDarkMode') === 'true') {
-    document.querySelector('.community-modal-content').classList.add('dark-mode');
+  if (darkModeToggle) {
+    darkModeToggle.addEventListener('click', () => {
+      document.querySelector('.community-modal-content').classList.toggle('dark-mode');
+      localStorage.setItem('chatDarkMode', 
+        document.querySelector('.community-modal-content').classList.contains('dark-mode'));
+    });
+    if (localStorage.getItem('chatDarkMode') === 'true') {
+      document.querySelector('.community-modal-content').classList.add('dark-mode');
+    }
   }
 
-  // ✅ Close handler (preserved original)
+  // Toggle view button for admin (show all vs show only approved)
+  let adminViewingAll = false;
+  const toggleViewBtn = modal.querySelector('#toggleViewBtn');
+  if (toggleViewBtn && isAdmin) {
+    toggleViewBtn.addEventListener('click', () => {
+      adminViewingAll = !adminViewingAll;
+      toggleViewBtn.textContent = adminViewingAll ? '👁️ Show Approved Only' : '👁️ Show All Messages';
+      loadMessages(); // Reload messages with the new filter
+    });
+  }
+
+  // Close handler
   modal.querySelector('.close-community-chat').addEventListener('click', () => {
     modal.classList.remove('active');
     setTimeout(() => modal.remove(), 300);
   });
 
-  // ✅ Enhanced real-time listener (MODIFIED)
-  const chatMessagesDiv = modal.querySelector('#chatMessages');
-  firebase.firestore()
-    .collection("Community_Chat")
-    .where("petId", "==", petId)
-    .orderBy("timestamp", "asc")
-    .onSnapshot(snapshot => {
+  // Enhanced real-time listener with approval system
+  function loadMessages() {
+    const chatMessagesDiv = modal.querySelector('#chatMessages');
+    
+    let query = firebase.firestore()
+      .collection("Community_Chat")
+      .where("petId", "==", petId);
+    
+    // For regular users, only show approved messages
+    // For admin, show based on toggle view setting
+    if (!isAdmin || !adminViewingAll) {
+      query = query.where("approved", "==", true);
+    }
+    
+    query = query.orderBy("timestamp", "asc");
+    
+    query.onSnapshot(snapshot => {
       if (snapshot.empty) {
-        chatMessagesDiv.innerHTML = `<p class="no-messages">No messages yet. Start the conversation!</p>`;
+        chatMessagesDiv.innerHTML = `<p class="no-messages">No feedback yet. Be the first to share!</p>`;
         return;
       }
 
@@ -1350,64 +1405,139 @@ async function openCommunityChatModal(petId) {
       snapshot.forEach(doc => {
         const data = doc.data();
         const msgEl = document.createElement('div');
-        msgEl.className = 'chat-message';
-        msgEl.dataset.docId = doc.id; // For deletion
+        msgEl.className = `chat-message ${data.approved ? 'approved' : 'pending'}`;
+        msgEl.dataset.docId = doc.id;
         
-        // 🆕 Enhanced message display with actions
-        msgEl.innerHTML = `
-          <div class="message-header">
-            <strong>${data.petName || data.userEmail.split('@')[0]}</strong>
-            ${data.userId === user.uid ? '<button class="delete-btn" title="Delete">🗑️</button>' : ''}
-            <button class="reply-btn" title="Reply">↩️</button>
-            <small>${new Date(data.timestamp?.toDate()).toLocaleTimeString()}</small>
-          </div>
-          <p class="message-content">${data.message}</p>
-          ${data.replyTo ? `<div class="reply-context">↪ Replying to ${data.replyTo}</div>` : ''}
-        `;
+        // Format message based on type
+        let messageHtml = '';
+        if (data.type === 'admin') {
+          // Admin message
+          messageHtml = `
+            <div class="message-header">
+              <strong>${data.userName || 'Admin'}</strong>
+              <small>${new Date(data.timestamp?.toDate()).toLocaleString()}</small>
+              ${isAdmin ? `<button class="delete-btn" title="Delete">🗑️</button>` : ''}
+            </div>
+            <p class="message-content admin-message">${data.text}</p>
+          `;
+        } else {
+          // User message
+          const canDelete = data.userId === user.uid && !data.approved;
+          
+          messageHtml = `
+            <div class="message-header">
+              <strong>${data.userName || 'User'}</strong>
+              <small>${new Date(data.timestamp?.toDate()).toLocaleString()}</small>
+              ${isAdmin ? `
+                <div class="admin-controls">
+                  ${!data.approved ? `<button class="approve-btn" title="Approve">✓</button>` : ''}
+                  <button class="delete-btn" title="Delete">🗑️</button>
+                  <button class="reply-btn" title="Reply">↩️</button>
+                </div>
+              ` : canDelete ? `<button class="delete-btn" title="Delete">🗑️</button>` : ''}
+            </div>
+            <p class="message-content">${data.text}</p>
+            ${data.approved ? `<div class="approved-badge">✓ Approved</div>` : `<div class="pending-badge">⏳ Pending Approval</div>`}
+          `;
+        }
+        
+        msgEl.innerHTML = messageHtml;
         chatMessagesDiv.appendChild(msgEl);
       });
       chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
     });
+  }
 
-  // 🆕 Message actions handler (NEW)
-  chatMessagesDiv.addEventListener('click', async (e) => {
+  // Initial load
+  loadMessages();
+
+  // Message actions handler
+  modal.querySelector('#chatMessages').addEventListener('click', async (e) => {
     const messageEl = e.target.closest('.chat-message');
     if (!messageEl) return;
+    
+    const docId = messageEl.dataset.docId;
+    const docRef = firebase.firestore().collection("Community_Chat").doc(docId);
+    const docSnap = await docRef.get();
+    
+    if (!docSnap.exists) return;
+    
+    const data = docSnap.data();
 
-    // Delete action
+    // Delete action (admin can delete any, users can delete their own unapproved messages)
     if (e.target.classList.contains('delete-btn')) {
-      if (confirm("Delete this message permanently?")) {
-        await firebase.firestore().collection("Community_Chat")
-          .doc(messageEl.dataset.docId).delete();
+      const canDelete = isAdmin || (data.userId === user.uid && !data.approved);
+      
+      if (canDelete && confirm("Delete this message permanently?")) {
+        await docRef.delete();
+      } else if (!canDelete) {
+        alert("You can only delete your own messages before they are approved.");
       }
     }
 
-    // Reply action
-    if (e.target.classList.contains('reply-btn')) {
-      const originalSender = messageEl.querySelector('strong').textContent;
-      const replyText = prompt(`Reply to ${originalSender}:`);
+    // Approve action (admin only)
+    if (e.target.classList.contains('approve-btn') && isAdmin) {
+      await docRef.update({ approved: true });
+      
+      // Ask if admin wants to reply immediately
+      if (confirm("Message approved. Would you like to reply now?")) {
+        const replyText = prompt(`Reply to ${data.userName}:`);
+        if (replyText) {
+          await firebase.firestore().collection("Community_Chat").add({
+            petId,
+            userId: user.uid,
+            userName: "Admin",
+            text: replyText,
+            type: "admin",
+            approved: true,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        }
+      }
+    }
+
+    // Reply action (admin only to approved messages)
+    if (e.target.classList.contains('reply-btn') && isAdmin && data.approved) {
+      const replyText = prompt(`Reply to ${data.userName}:`);
       if (replyText) {
         await firebase.firestore().collection("Community_Chat").add({
           petId,
-          petName: pet.petName,
           userId: user.uid,
-          userEmail: user.email,
-          message: replyText,
-          replyTo: originalSender,
+          userName: "Admin",
+          text: replyText,
+          type: "admin",
+          approved: true,
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
         });
       }
     }
   });
 
-  // ✅ Send logic (preserved original with improved status)
+  // Send logic with daily limit check
   modal.querySelector('#sendChatBtn').addEventListener('click', async () => {
     const input = modal.querySelector('#chatInput');
     const status = modal.querySelector('#chatStatus');
     const message = input.value.trim();
 
     if (!message) {
-      status.textContent = "⚠️ Message cannot be empty";
+      status.textContent = "⚠️ Feedback cannot be empty";
+      status.style.color = "var(--error-color)";
+      return;
+    }
+
+    // Check daily limit
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const userMessagesToday = await firebase.firestore()
+      .collection("Community_Chat")
+      .where("petId", "==", petId)
+      .where("userId", "==", user.uid)
+      .where("timestamp", ">=", firebase.firestore.Timestamp.fromDate(today))
+      .get();
+
+    if (!userMessagesToday.empty) {
+      status.textContent = "❌ You can only submit one feedback per day";
       status.style.color = "var(--error-color)";
       return;
     }
@@ -1418,20 +1548,34 @@ async function openCommunityChatModal(petId) {
     try {
       await firebase.firestore().collection("Community_Chat").add({
         petId,
-        petName: pet.petName,
         userId: user.uid,
-        userEmail: user.email,
-        message,
+        userName: user.displayName || user.email.split('@')[0],
+        text: message,
+        type: "user",
+        approved: false, // Messages require approval by default
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
       });
+      
       input.value = '';
-      status.textContent = "✓ Sent!";
+      status.textContent = "✓ Sent for approval!";
       status.style.color = "var(--secondary-color)";
     } catch (err) {
       status.textContent = `❌ Error: ${err.message}`;
       status.style.color = "var(--error-color)";
     }
   });
+}
+
+// Helper function to get pet profile (unchanged)
+async function getPetProfile(petId) {
+  // Try Firestore first
+  if (firebase.auth().currentUser) {
+    const doc = await firebase.firestore().collection('profiles').doc(petId).get();
+    if (doc.exists) return doc.data();
+  }
+  // Fallback to localStorage
+  const localProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+  return localProfiles.find(p => p.id === petId) || {};
 }
 
 //=======================================================
