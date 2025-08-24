@@ -255,39 +255,31 @@ function loadScriptWithRetry(url, maxRetries = 2, delayMs = 1000) {
 }
 
 //===================================
-// ✅ Central helper for showing temporary UI feedback.
-//===============================================
-//===================================
-// ✅ Central helper for showing loader UI feedback.
+// ✅ Dashboard-specific loader helper
 // - show: true/false (overlay visible?)
-// - messageKey: which message to show ("loading", "success-saving", "success-updating", "success-deleting")
-// - animChoice: which animation to show ("cat", "paws", or "none")
+// - messageKey: which message to show ("loading", "success-saving", "success-updating", "success-deleting", etc.)
 //===================================
-function showLoader(show, messageKey = "loading", animChoice = "cat") {
-  const loader = document.getElementById("processing-loader");
+function showDashboardLoader(show, messageKey = "loading") {
+  const loader = document.getElementById("dashboard-loader");
   if (!loader) return;
 
+  const animation = document.getElementById("dashboard-loader-animation");
+  if (!animation) return;
+
+  // All messages inside dashboard loader
   const allMessages = loader.querySelectorAll(".loader-text");
-  const catAnim = document.getElementById("loader-animation1");
-  const pawsAnim = document.getElementById("loader-animation2");
-
-  if (!catAnim || !pawsAnim) return;
-
-  // Hide all messages first
   allMessages.forEach(el => (el.style.display = "none"));
 
-  // Show the relevant one
-  const targetMsg = document.getElementById(`loader-${messageKey}`);
+  // Show the target message
+  const targetMsg = document.getElementById(`dashboard-${messageKey}`);
   if (targetMsg) targetMsg.style.display = "block";
 
-  // Toggle animations explicitly
-  catAnim.style.display = (animChoice === "cat") ? "block" : "none";
-  pawsAnim.style.display = (animChoice === "paws") ? "block" : "none";
+  // Always show the paws animation for dashboard loader
+  animation.style.display = show ? "block" : "none";
 
   // Show or hide overlay
   loader.style.display = show ? "block" : "none";
 }
-
 
 // Quick success/error message (optional fallback to Lottie)
 //safety fallback for quick success/error messages in case the Lottie-based loader fails
