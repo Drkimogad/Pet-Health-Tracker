@@ -74,3 +74,38 @@ Open Pull Request
 
 License
 Proprietary License © 2024
+
+
+#processing-loader  (overlay div)
+│
+├─ loader-animation1  → 🌀 Cat spinner (for loading, saving, updating)
+│    style="display:none;" initially
+│
+├─ loader-animation2  → 🐾 Paws animation (for light/success feedback)
+│    style="display:none;" initially
+│
+├─ loader-message           → Default loading text
+│    style="display:block;" or "none" controlled by helper
+│
+├─ loader-success-saving    → "Profile saved!" message
+│    style="display:none;" initially
+│
+├─ loader-success-updating  → "Profile updated!" message
+│    style="display:none;" initially
+│
+├─ loader-success-deleting  → "Profile deleted!" message
+│    style="display:none;" initially
+│
+├─ loader-error-export      → "Export failed" message
+│    style="display:none;" initially
+│
+├─ loader-share-copied      → "Link copied to clipboard!" message
+│    style="display:none;" initially
+│
+├─ loader-share-success     → "Shared successfully!" message
+│    style="display:none;" initially
+│
+└─ loader-share-error       → "Couldn't share" message
+     style="display:none;" initially
+
+
