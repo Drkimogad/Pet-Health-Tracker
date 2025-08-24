@@ -971,14 +971,16 @@ async function deletePetProfile(petId) {
  * @param {boolean} asZip - Set true to export as ZIP, false for individual downloads
  */
 async function exportAllPetCards(asZip = false) {
-
-
   try {
-// At the very start of the try block, show the overlay with paws animation and a message
-showLoader(true, "exporting-loading", "paws");
+    // ✅ Show loader overlay with paws animation and "exporting" message
+    showLoader(true, "exporting-loading", "paws");
+
+    // ✅ Ensure loader actually renders before starting heavy processing
+    await new Promise(r => requestAnimationFrame(r));
 
     const profiles = await loadPets();
     if (!profiles.length) {
+      showLoader(false); // hide loader if nothing to export
       alert("No pet profiles found.");
       return;
     }
@@ -1093,11 +1095,10 @@ showLoader(true, "exporting-loading", "paws");
     loaderEl.appendChild(errorMsg);
   }
 
-  errorMsg.textContent = `❌ Export failed: ${err.message}`;
+  errorMsg.textContent = `❌ Exporting failed: ${err.message}`;
 
   // Show loader overlay with paws animation and error message
-  showLoader(true, 'loader-error-export', 'paws');
-
+  showLoader(true, 'loader-error-exporting', 'paws');
   // Hide after 3 seconds
   setTimeout(() => showLoader(false), 3000);
 
