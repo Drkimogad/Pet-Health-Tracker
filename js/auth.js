@@ -141,10 +141,8 @@ showLoading(true, "Signing you in...");
   } catch (error) {
     console.error("Google Sign-In failed:", error);
    showErrorToUser("Google Sign-In failed. Please try again."); // From utils.js
-
-  } finally {
-    showLoading(false);
-  }
+   showLoading(false); // moved inside the catch for smoother UI
+  } 
 }
     }); 
 // Render button if container exists
@@ -227,6 +225,8 @@ function initAuthListeners() {
        if (typeof showDashboard === 'function') {
         showDashboard(); // now dashboard sees data
        }
+        // ✅ Hide loader only after dashboard is fully set up
+        showLoading(false);
         
       } catch (error) {
         console.error("Profile load error:", error);
