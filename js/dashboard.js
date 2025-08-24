@@ -1160,6 +1160,9 @@ document.addEventListener('click', (e) => {
 //============================================
 // Invite Friends (UPDATED)
 //===========================================
+//============================================
+// Invite Friends (UPDATED)
+//============================================
 async function inviteFriends(petId) {
   const profile = window.petProfiles.find(p => p.id === petId);
   if (!profile) {
@@ -1194,25 +1197,58 @@ Get the app: https://drkimogad.github.io/Pet-Health-Tracker/
       await navigator.share(shareData);
    // ✅ Share successful
       showDashboardLoader(true, "sharing-success");
+      
+      // Add success fallback
+      setTimeout(() => {
+        const loaderAnim = document.getElementById("dashboard-loader-animation");
+        if (loaderAnim && loaderAnim.style.display === "none") {
+          // Lottie failed, use temp message
+          showTempMessage("Shared successfully!", true, 3000);
+          showDashboardLoader(false); // Hide the loader
+        }
+      }, 500);
+      
       setTimeout(() => showDashboardLoader(false), 2000);
       console.log("Shared successfully");
 
     } else {
       // Fallback: copy link message
       showDashboardLoader(true, "sharing-copied");
+      
+      // Add fallback for copy message
+      setTimeout(() => {
+        const loaderAnim = document.getElementById("dashboard-loader-animation");
+        if (loaderAnim && loaderAnim.style.display === "none") {
+          // Lottie failed, use temp message
+          showTempMessage("Link copied to clipboard!", true, 3000);
+          showDashboardLoader(false); // Hide the loader
+        }
+      }, 500);
+      
       setTimeout(() => showDashboardLoader(false), 2000);
 
     }
   } catch (error) {
     if (error.name !== 'AbortError') {
-  console.error("Sharing failed:", error);
+      console.error("Sharing failed:", error);
       showDashboardLoader(true, "sharing-error");
+      
+      // Add error fallback
+      setTimeout(() => {
+        const loaderAnim = document.getElementById("dashboard-loader-animation");
+        if (loaderAnim && loaderAnim.style.display === "none") {
+          // Lottie failed, use temp message
+          showTempMessage("Couldn't share. Please try again.", false, 4000);
+          showDashboardLoader(false); // Hide the loader
+        }
+      }, 500);
+      
       setTimeout(() => showDashboardLoader(false), 3000);
    }
   }
 } // <== This closes the async function
 
-// Helper for fallback sharing
+// Helper for fallback sharing (unchanged)
 function showShareFallback(message) {
   const shareContainer = document.createElement('div');
   shareContainer.style.position = 'fixed';
@@ -1238,6 +1274,7 @@ function showShareFallback(message) {
   document.body.appendChild(shareContainer);
   shareContainer.querySelector('input').select();
 }
+    
 
 //=========================
 // Join Pet Community - ENHANCED VERSION
