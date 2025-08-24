@@ -259,42 +259,54 @@ function loadScriptWithRetry(url, maxRetries = 2, delayMs = 1000) {
 // - show: true/false (overlay visible?)
 // - messageKey: which message to show ("loading", "success-saving", "success-updating", "success-deleting", etc.)
 //===================================
-function showDashboardLoader(show, messageKey = "loading", persistSuccess = true) {
+// Enhanced dashboard loader with fallback detection
+function showDashboardLoader(show, messageKey = "loading") {
   const loader = document.getElementById("dashboard-loader");
-  if (!loader) return;
+  if (!loader) {
+    // If no loader exists, use temp message as fallback
+    if (!show && messageKey.includes("success")) {
+      const message = messageKey.includes("saving") ? "Profile saved successfully!" : 
+                     messageKey.includes("updating") ? "Profile updated successfully!" :
+                     messageKey.includes("deleting") ? "Profile deleted successfully!" : "Operation completed!";
+      showTempMessage(message, true, 3000);
+    } else if (!show && messageKey.includes("error")) {
+      const message = messageKey.includes("saving") ? "Failed to save profile!" : 
+                     messageKey.includes("updating") ? "Failed to update profile!" :
+                     messageKey.includes("deleting") ? "Failed to delete profile!" : "Operation failed!";
+      showTempMessage(message, false, 4000);
+    }
+    return;
+  }
 
   const animation = document.getElementById("dashboard-loader-animation");
-  if (!animation) return;
-
-  // Hide all messages initially
+  
+  // All messages inside dashboard loader
   const allMessages = loader.querySelectorAll(".loader-text");
   allMessages.forEach(el => (el.style.display = "none"));
 
-  // Show the target message if provided
-  if (messageKey) {
-    const targetMsg = document.getElementById(`dashboard-${messageKey}`);
-    if (targetMsg) targetMsg.style.display = "block";
+  // Show the target message
+  const targetMsg = document.getElementById(`dashboard-${messageKey}`);
+  if (targetMsg) targetMsg.style.display = "block";
+
+  // Handle animation display
+  if (animation) {
+    if (show && !messageKey.includes("success") && !messageKey.includes("error")) {
+      animation.style.display = "block"; // Show animation only for loading states
+    } else {
+      animation.style.display = "none"; // Hide for success/error states
+    }
   }
 
-  // Handle animation and overlay visibility
+  // Show or hide overlay
   if (show) {
-    // Show everything when loading
-    animation.style.display = "block";
     loader.style.display = "block";
-    loader.style.background = "rgba(0,0,0,0.5)"; // Semi-transparent background
   } else {
-    // Hide animation when done
-    animation.style.display = "none";
-    
-    // For success messages, keep message visible without background
-    if (persistSuccess && messageKey && messageKey.includes("success")) {
-      loader.style.background = "transparent";
-      // Auto-hide success message after 2 seconds
+    // For success/error messages, keep visible for a bit longer
+    if (messageKey.includes("success") || messageKey.includes("error")) {
       setTimeout(() => {
         loader.style.display = "none";
-      }, 3000);
+      }, messageKey.includes("success") ? 3000 : 4000);
     } else {
-      // Hide completely for other cases
       loader.style.display = "none";
     }
   }
