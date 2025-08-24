@@ -109,3 +109,43 @@ Proprietary License © 2024
      style="display:none;" initially
 
 
+here’s a flow example for exportAllPetCards() showing how the loader + paws animation + messages work in sequence:
+User clicks "Export All" button
+          │
+          ▼
+showLoader(true, "export-loading", "paws")
+  → #processing-loader becomes visible
+  → loader-animation2 (paws) shows
+  → loader-export-loading message shows
+          │
+          ▼
+Browser paints overlay & paws animation
+          │
+          ▼
+Heavy processing starts:
+  - loadPets()
+  - html2canvas rendering
+  - ZIP or individual downloads
+          │
+          ▼
+Success? ────────────────┐
+   Yes                  │
+   showLoader(true, "success-export", "paws")
+   → paws animation continues
+   → success message shows
+   → stays visible 2s
+                         │
+   After 2s:             ▼
+   showLoader(false) → hides overlay and animation/messages
+                         │
+   Done export           ▼
+                         END
+          │
+          └ No (error)
+             showLoader(true, "loader-error-export", "paws")
+             → paws animation shows
+             → error message visible
+             → stays visible 3s
+             After 3s: showLoader(false)
+             END
+
