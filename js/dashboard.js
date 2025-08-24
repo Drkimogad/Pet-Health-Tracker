@@ -985,7 +985,7 @@ showDashboardLoader(true, "exporting");
 
     const profiles = await loadPets();
     if (!profiles.length) {
-      showLoader(false); // hide loader if nothing to export
+      showDasboardLoader(false); // hide loader if nothing to export
       alert("No pet profiles found.");
       return;
     }
