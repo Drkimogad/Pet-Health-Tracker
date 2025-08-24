@@ -1980,12 +1980,11 @@ function initializeDashboard() {
       } else {
         savedProfiles.push(petData); // Add new profile
       }
+            
+localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
       
-      localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
-      
-      // AFTER SAVING IN LOCALSTORAGE AND FIRESTORE
-await new Promise(r => setTimeout(r, 1000)); //✅️ just abrief pause, 
-
+// AFTER SAVING IN LOCALSTORAGE AND FIRESTORE
+await new Promise(r => setTimeout(r, 1000)); //✅️ just a brief pause
 
 // Update UI immediately
 requestAnimationFrame(() => {
@@ -2000,22 +1999,52 @@ requestAnimationFrame(() => {
 if (editingProfileId !== null) {
   showDashboardLoader(true, "success-updating"); 
 } else {
-showDashboardLoader(true, "success-saving");
+  showDashboardLoader(true, "success-saving");
 }
+
+// Add simple fallback check - if loader animation isn't visible after 500ms, use temp message
+setTimeout(() => {
+  const loaderAnim = document.getElementById("dashboard-loader-animation");
+  if (loaderAnim && loaderAnim.style.display === "none") {
+    // Lottie failed, use temp message
+    if (editingProfileId !== null) {
+      showTempMessage("Profile updated successfully!", true, 3000);
+    } else {
+      showTempMessage("Profile saved successfully!", true, 3000);
+    }
+    showDashboardLoader(false); // Hide the loader
+  }
+}, 500);
+
 // hide loader after short delay (e.g. 2s)
 setTimeout(() => showDashboardLoader(false), 2000);
         
 // the catch must stay as it is closing the try
- } catch (error) {
-   console.error("❌ Error saving profile:", error);
+} catch (error) {
+  console.error("❌ Error saving profile:", error);
   // ✅ Distinguish error between saving vs updating
   if (editingProfileId !== null) {
     showDashboardLoader(true, "error-updating");
   } else {
     showDashboardLoader(true, "error-saving");
   }
+  
+  // Add error fallback
+  setTimeout(() => {
+    const loaderAnim = document.getElementById("dashboard-loader-animation");
+    if (loaderAnim && loaderAnim.style.display === "none") {
+      // Lottie failed, use temp message
+      if (editingProfileId !== null) {
+        showTempMessage("Failed to update profile. Please try again.", false, 4000);
+      } else {
+        showTempMessage("Failed to save profile. Please try again.", false, 4000);
+      }
+      showDashboardLoader(false); // Hide the loader
+    }
+  }, 500);
+  
   // Hide loader overlay after 3s for errors
-setTimeout(() => showDashboardLoader(false), 3000);
+  setTimeout(() => showDashboardLoader(false), 3000);
 }
   }); // closes the DOM.petList.addEventListener
 
