@@ -958,7 +958,11 @@ async function deletePetProfile(petId) {
 
   } catch (error) {
     console.error('Delete error:', error);
-    showErrorToUser('Failed to delete profile');
+    // ❌ Show paws + delete error message
+  showLoader(true, "error-deleting", "paws");
+
+  // Hide loader overlay after 3s
+  setTimeout(() => showLoader(false), 3000);
   }
 }
 
@@ -1085,7 +1089,7 @@ async function exportAllPetCards(asZip = false) {
 
   // Create or reuse an error message in the loader
   const loaderEl = document.getElementById('processing-loader');
-  let errorMsg = document.getElementById('loader-error-export');
+  let errorMsg = document.getElementById('loader-error-exporting');
   if (!errorMsg) {
     errorMsg = document.createElement('p');
     errorMsg.id = 'loader-error-export';
@@ -1154,20 +1158,20 @@ Get the app: https://drkimogad.github.io/Pet-Health-Tracker/
     if (navigator.share) {
       await navigator.share(shareData);
 // Optional show paws when the share is successful
-   showLoader(true, 'loader-share-success', 'paws');
+   showLoader(true, 'loader-sharing-success', 'paws');
    setTimeout(() => showLoader(false), 2000);
    console.log("Shared successfully");
 
     } else {
        // Replace await navigator.share 
-      showLoader(true, 'loader-share-copied', 'paws');
+      showLoader(true, 'loader-sharing-copied', 'paws');
       setTimeout(() => showLoader(false), 2000);
 
     }
   } catch (error) {
     if (error.name !== 'AbortError') {
   console.error("Sharing failed:", error);
-  showLoader(true, 'loader-share-error', 'paws');
+  showLoader(true, 'loader-sharing-error', 'paws');
   setTimeout(() => showLoader(false), 3000);
    }
   }
@@ -1886,10 +1890,15 @@ if (editingProfileId !== null) {
 // hide loader after short delay (e.g. 2s)
 setTimeout(() => showLoader(false), 2000);
 
-    } catch (error) {
-      console.error('Save error:', error);
-      showErrorToUser('Failed to save profile. Try again.');
-    }
+  // ✅ Distinguish error between saving vs updating
+  if (editingProfileId !== null) {
+    showLoader(true, "error-updating", "paws");
+  } else {
+    showLoader(true, "error-saving", "paws");
+  }
+
+  // Hide loader overlay after 3s for errors
+  setTimeout(() => showLoader(false), 3000);
   }); // closes the DOM.petList.addEventListener
 
   // REST OF INITIALIZE DASHBOARD FUNCTION  
