@@ -50,18 +50,17 @@ function initDOMReferences() {
   return true;
 }
 
-// show loading function
-function showLoading(show) {
- const loader = auth_DOM.processingLoader;
-  if (!loader) {
-    console.warn("⛔ 'processing-loader' element not found.");
-    return;
-  }
+// show loading function only for authentication
+function showLoading(show, message = "Loading...") {
+  const loader = auth_DOM.processingLoader;
+  const msgEl = document.getElementById("auth-loader-message");
+
+  if (!loader) return;
+
   if (show) {
-    loader.classList.remove("hidden");
     loader.style.display = "block";
+    if (msgEl) msgEl.textContent = message;
   } else {
-    loader.classList.add("hidden");
     loader.style.display = "none";
   }
 }
@@ -131,7 +130,7 @@ function setupGoogleLoginButton() {
     google.accounts.id.initialize({
       client_id: CLIENT_ID,
 callback: async (response) => {
-  showLoading(true);
+showLoading(true, "Signing you in...");
   
   try {
     const credential = firebase.auth.GoogleAuthProvider.credential(response.credential);
