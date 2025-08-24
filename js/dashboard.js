@@ -1151,16 +1151,23 @@ Get the app: https://drkimogad.github.io/Pet-Health-Tracker/
   try {
     if (navigator.share) {
       await navigator.share(shareData);
-      console.log("Shared successfully");
+// Optional show paws when the share is successful
+   showLoader(true, 'loader-share-success', 'paws');
+   setTimeout(() => showLoader(false), 2000);
+   console.log("Shared successfully");
+
     } else {
-      await navigator.clipboard.writeText(profile.shareableUrl);
-      alert("Link copied to clipboard!");
+       // Replace await navigator.share 
+      showLoader(true, 'loader-share-copied', 'paws');
+      setTimeout(() => showLoader(false), 2000);
+
     }
   } catch (error) {
     if (error.name !== 'AbortError') {
-      console.error("Sharing failed:", error);
-      alert("Couldn't share. Please try again.");
-    }
+  console.error("Sharing failed:", error);
+  showLoader(true, 'loader-share-error', 'paws');
+  setTimeout(() => showLoader(false), 3000);
+   }
   }
 } // <== This closes the async function
 
