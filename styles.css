@@ -596,14 +596,9 @@ button.delete-btn {
   text-decoration: underline;
 }
 
-/* ======SHARING STYLE======= */
-#share-loader {
-  z-index: 9999;
-  transform: translate(-50%, -50%);
-  transition: opacity 0.1s ease-out; /* Smooth disappear */
-}
-/* Loader styling used in invite friends logic*/
-.loader {
+/* ======LOADER SPINNER======= */
+/* Loader styling it can be repurposed*/
+/*.loader {
   border: 3px solid #f3f3f3;
   border-top: 3px solid var(--qr-blue);
   border-radius: 50%;
@@ -616,13 +611,32 @@ button.delete-btn {
   top: 50%;
   transform: translate(-50%, -50%);
   z-index: 1000;
+}*/
+
+.loader-text {
+  margin: 10px 0;
+  font-weight: bold;
+  font-size: 18px;
 }
 
-@keyframes highlight {
-    0% { background: rgba(255,235,59,0.3); }
-    100% { background: transparent; }
+#dashboard-loader {
+  transition: background-color 0.3s ease;
 }
-  
+
+.success-message {
+  background-color: #4CAF50;
+  color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.auth-error {
+  background-color: #f44336;
+  color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
 /* =====Details Modal========== */
 /* Modal Styles */
 /* 👇 Add this new rule */  
