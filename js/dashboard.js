@@ -985,7 +985,7 @@ showDashboardLoader(true, "exporting");
 
     const profiles = await loadPets();
     if (!profiles.length) {
-      showDasboardLoader(false); // hide loader if nothing to export
+      setTimeout(() => showDashboardLoader(false), 1000); // hide loader if nothing to export
       alert("No pet profiles found.");
       return;
     }
@@ -1195,11 +1195,10 @@ function showShareFallback(message) {
 }
 
 //=========================
-// Join Pet Community ()
-//============================
-// Create Community Chat Button (add this to your button generation logic)
+// Join Pet Community - ENHANCED VERSION
+//=========================
+// 1. Create Community Chat Button with notification badge for admin
 function createCommunityChatButton(profileId) {
-    
   // 1. Input Validation (First line of defense)
   if (!profileId) {
     console.error('Cannot create chat button: Missing profileId');
@@ -1210,35 +1209,41 @@ function createCommunityChatButton(profileId) {
   }
     
  console.log('Creating chat button for profile:', profileId);
-    
-  const chatBtn = document.createElement('button');
-  chatBtn.className = 'communityChat-btn pulse-animation';
-  chatBtn.dataset.petId = profileId;
-  chatBtn.innerHTML = `
-    <i class="fas fa-comments"></i> Community Chat
-  `;
-    
-  // 2. SAFE EVENT LISTENER  
-  chatBtn.addEventListener('click', (e) => {
-  console.log("Chat button clicked for profile:", profileId); // Debug line     
-  e.stopPropagation(); // Prevent event bubbling
-      
-// Secondary validation
+
+    // Secondary validation
     if (!profileId) {
       console.warn('Click detected but profileId is missing!');
       alert('⚠️ Chat feature not available for this pet');
       return; // This is valid - exits the callback without returning a value
     }
-      
- try {
-      openCommunityChatWindow(profileId);
-    } catch (err) {
-      console.error('Chat failed to open:', err);
-      alert('Failed to open chat. Please try again.');
+    
+  const chatBtn = document.createElement('button');
+  chatBtn.className = 'communityChat-btn pulse-animation';
+  chatBtn.dataset.petId = profileId;
+  chatBtn.innerHTML = `<i class="fas fa-comments"></i> Community Chat`;
+  
+  // Add notification badge for admin (initially hidden)
+  const badge = document.createElement('span');
+  badge.className = 'notification-badge';
+  badge.id = 'community-chat-notification';
+  badge.style.display = 'none';
+  chatBtn.appendChild(badge);
+  
+  // Check if user is admin and set up notification listener
+  const user = firebase.auth().currentUser;
+  if (user && user.email === 'drkimogad@gmail.com') { // Replace with your admin email check
+    // Listen for pending messages
+    setupAdminNotificationListener(profileId);
+  }
+  
+  document.addEventListener('click', e => {
+    if (e.target.closest('.communityChat-btn')) {
+      const petId = e.target.closest('.communityChat-btn').dataset.petId;
+      openCommunityChatModal(petId);
     }
   });
-    
-  return chatBtn; // This returns the button element from the main function
+  
+  return chatBtn;
 }
 
 // function getpetprofile NEW (before openCommunityChatWindow)
@@ -1254,40 +1259,6 @@ async function getPetProfile(petId) {
   return localProfiles.find(p => p.id === petId) || {};
 }
 
-//=========================
-// Join Pet Community - ENHANCED VERSION
-//=========================
-
-// 1. Create Community Chat Button with notification badge for admin
-function createCommunityChatButton(profileId) {
-  const chatBtn = document.createElement('button');
-  chatBtn.className = 'communityChat-btn pulse-animation';
-  chatBtn.dataset.petId = profileId;
-  chatBtn.innerHTML = `<i class="fas fa-comments"></i> Community Chat`;
-  
-  // Add notification badge for admin (initially hidden)
-  const badge = document.createElement('span');
-  badge.className = 'notification-badge';
-  badge.id = 'community-chat-notification';
-  badge.style.display = 'none';
-  chatBtn.appendChild(badge);
-  
-  // Check if user is admin and set up notification listener
-  const user = firebase.auth().currentUser;
-  if (user && user.email === 'YOUR_ADMIN_EMAIL@example.com') { // Replace with your admin email check
-    // Listen for pending messages
-    setupAdminNotificationListener(profileId);
-  }
-  
-  document.addEventListener('click', e => {
-    if (e.target.closest('.communityChat-btn')) {
-      const petId = e.target.closest('.communityChat-btn').dataset.petId;
-      openCommunityChatModal(petId);
-    }
-  });
-  
-  return chatBtn;
-}
 
 // 2. Setup admin notification listener
 function setupAdminNotificationListener(petId) {
@@ -1318,7 +1289,7 @@ async function openCommunityChatModal(petId) {
   if (!pet) return alert("Pet profile not found.");
 
   // Check if user is admin
-  const isAdmin = user.email === 'YOUR_ADMIN_EMAIL@example.com';
+  const isAdmin = user.email === 'drkimogad@gmail.com';
 
   // Remove existing modal
   const existingModal = document.getElementById('community-chat-modal');
@@ -1582,17 +1553,7 @@ async function openCommunityChatModal(petId) {
   });
 }
 
-// Helper function to get pet profile (unchanged)
-async function getPetProfile(petId) {
-  // Try Firestore first
-  if (firebase.auth().currentUser) {
-    const doc = await firebase.firestore().collection('profiles').doc(petId).get();
-    if (doc.exists) return doc.data();
-  }
-  // Fallback to localStorage
-  const localProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-  return localProfiles.find(p => p.id === petId) || {};
-}
+
 
 //=======================================================
 //  QR CODE GENERATION BUTTON FUNCTION 
