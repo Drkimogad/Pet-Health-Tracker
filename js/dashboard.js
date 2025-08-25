@@ -491,14 +491,14 @@ function showPetDetails(profile) {
   // 1. Verify profile exists in current data
   const currentData = JSON.parse(localStorage.getItem('petProfiles')) || [];
   if (!currentData.some(p => p.id === profile.id)) {
-    console.error('Profile not found in current data');
-    return hideModal(); // Don't proceed if data was cleared
+  showErrorNotification("Profile data not found.");
+  return hideModal(); // Don't proceed if data was cleared
   }
 
   // 2. Verify auth state
   if (typeof firebase !== 'undefined' && firebase.auth().currentUser === null) {
-    console.error('No authenticated user');
-    return hideModal(); // Prevent auth popup flash
+  showErrorNotification("Please sign in to view details.");
+  return hideModal(); // Prevent auth popup flash
   }
     
 console.log("🔍 showPetDetails() triggered", profile); // added   
@@ -633,10 +633,12 @@ const canvas = await html2canvas(pdfContainer, {
       const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
       doc.addImage(canvas, 'PNG', 0, 0, 210, 297);
       doc.save(`PetProfile_${new Date().getTime()}.pdf`);
-
+     showSuccessNotification("PDF saved successfully! 📄");
+        
     } catch (error) {
       console.error("PDF generation failed:", error);
-      alert("Could not generate PDF. Please try again.");
+      showErrorNotification("Failed to save PDF. Please try again.");  
+        
     } finally {
       loader.remove();
       document.querySelector('.pdf-export-container')?.remove();
