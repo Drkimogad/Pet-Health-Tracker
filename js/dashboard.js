@@ -1563,6 +1563,8 @@ async function openCommunityChatModal(petId) {
  // QR FUNCTION 
 async function generateQRCode(petId) {
   try {
+      showDashboardLoader(true, "generating"); // “Generating QR…”
+      
     // 1. Load profile data
     const profiles = await loadPets();
     const profile = profiles.find(p => p.id === petId);
@@ -1774,7 +1776,9 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
     } else {
       generateQR();
     }
-
+    
+ showDashboardLoader(false, "success-generating"); // “QR successfully generated”
+ 
     // 4. Keep original download function
     window.downloadQR = function() {
       const canvas = document.querySelector("#qrcode canvas");
@@ -1794,7 +1798,7 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
 
   } catch (error) {
     console.error("QR generation failed:", error);
-    alert("Failed to generate QR code. Please try again.");
+  showDashboardLoader(false, "error-generating"); // “Failed to generate QR code”
   }
 } 
 
