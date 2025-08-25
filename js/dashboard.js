@@ -1116,6 +1116,9 @@ document.addEventListener('click', (e) => {
 //============================================
 // Invite Friends (UPDATED)
 //============================================
+//============================================
+// Invite Friends (UPDATED)
+//============================================
 async function inviteFriends(petId) {
   const profile = window.petProfiles.find(p => p.id === petId);
   if (!profile) {
@@ -1143,48 +1146,50 @@ Get the app: https://drkimogad.github.io/Pet-Health-Tracker/
   };
 
   try {
-     // ✅ Show "Sharing..." overlay at the start
-    showDashboardLoader(true, "sharing");
-      
     if (navigator.share) {
       await navigator.share(shareData);
-   // ✅ Share successful
-      showDashboardLoader(false, "success-sharing");
-      console.log("Shared successfully");
-      // fallback handled by helper
-
+      // ✅ REPLACED: Use success notification instead of console.log
+      showSuccessNotification("Shared successfully! 🎉");
     } else {
-      // Fallback: copy link message
-      showDashboardLoader(false, "sharing-copied");
+      // ✅ REPLACED: Use success notification instead of alert
+      await navigator.clipboard.writeText(inviteMessage); // Fixed to use inviteMessage
+      showSuccessNotification("Link copied to clipboard! 📋");
+      showShareFallback(inviteMessage);
     }
   } catch (error) {
     if (error.name !== 'AbortError') {
       console.error("Sharing failed:", error);
-      showDashboardLoader(false, "error-sharing");
-   }
+      // ✅ REPLACED: Use error notification instead of alert
+      showErrorNotification("Couldn't share. Please try again.");
+    }
   }
 } // <== This closes the async function
 
-// Helper for fallback sharing (unchanged)
-function showShareFallback(message) {
+// Helper for fallback sharing
+function showShareFallback(inviteMessage) {
   const shareContainer = document.createElement('div');
-  shareContainer.className = 'share-fallback'; // ✅ Use a CSS class
-
+  shareContainer.style.position = 'fixed';
+  shareContainer.style.bottom = '20px';
+  shareContainer.style.left = '10px';
+  shareContainer.style.right = '10px';
+  shareContainer.style.padding = '15px';
+  shareContainer.style.background = 'white';
+  shareContainer.style.borderRadius = '10px';
+  shareContainer.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+  shareContainer.style.zIndex = '1000';
+  
   shareContainer.innerHTML = `
-    <p>Share this link:</p>
-    <input type="text" value="${message}" readonly class="share-input">
-    <button class="share-done-btn">Done</button>
+    <p style="margin-top:0">Share this link:</p>
+    <input type="text" value="${message}" readonly 
+           style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #ddd; border-radius:4px">
+    <button onclick="this.parentElement.remove()" 
+            style="padding:8px 15px; background:#4CAF50; color:white; border:none; border-radius:4px">
+      Done
+    </button>
   `;
-
+  
   document.body.appendChild(shareContainer);
-
-  // Select input for easy copy
   shareContainer.querySelector('input').select();
-
-  // Handle button click
-  shareContainer.querySelector('.share-done-btn').addEventListener('click', () => {
-   setTimeout(() => shareContainer.remove(), 3000); // to automatically hide the container
-  });
 }
     
 //=========================
