@@ -277,8 +277,7 @@ function showDashboardLoader(show, messageKey = "loading") {
   // Hide all text first
   loader.querySelectorAll(".loader-text").forEach(el => el.style.display = "none");
 
-  // Pick the right message element
-  // the targeted message id has to match HTML TO WORK
+  // Pick the right message element (ID must match HTML)
   const targetMsg = document.getElementById(`dashboard-loader-${messageKey}`);
   if (targetMsg) {
     targetMsg.style.display = "block";
@@ -286,30 +285,41 @@ function showDashboardLoader(show, messageKey = "loading") {
   }
 
   if (show) {
-    // Show loader + spinners
     loader.style.display = "block";
     if (animation) animation.style.display = "block";
 
+    // Show CSS spinner fallback only if Lottie fails
     setTimeout(() => {
       if (animation && animation.style.display === "none" && cssSpinner) {
         cssSpinner.style.display = "block";
       }
     }, 150);
   } else {
-    // keep success/error messages on screen briefly
+    // For success/error messages, keep visible briefly
     if (messageKey.includes("success") || messageKey.includes("error")) {
       loader.style.display = "block"; // stay visible for a moment
       if (animation) animation.style.display = "none";
       if (cssSpinner) cssSpinner.style.display = "none";
 
+      // Delay hiding overlay to let user see success message
+      const displayTime = messageKey.includes("success") ? 3000 : 4000;
       setTimeout(() => {
         loader.style.display = "none";
-      }, messageKey.includes("success") ? 3000 : 4000);
+      }, displayTime);
+
+      // 🔹 Fallback only triggers if the target message never appeared
+      setTimeout(() => {
+        if (targetMsg && targetMsg.style.display === "none") {
+          const tempMsg = getMessageText(messageKey);
+          showTempMessage(tempMsg, !messageKey.includes("error"), displayTime);
+        }
+      }, 200); // small delay to check if message appeared TED IF NEED
     } else {
-      loader.style.display = "none"; // default immediate hide
+      loader.style.display = "none"; // immediate hide for other messages
     }
   }
 }
+
 
 
 // Helper function to get message text
