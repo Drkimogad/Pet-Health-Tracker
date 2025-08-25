@@ -278,7 +278,8 @@ function showDashboardLoader(show, messageKey = "loading") {
   loader.querySelectorAll(".loader-text").forEach(el => el.style.display = "none");
 
   // Pick the right message element
-  const targetMsg = document.getElementById(`dashboard-${messageKey}`);
+  // the targeted message id has to match HTML TO WORK
+  const targetMsg = document.getElementById(`dashboard-loader-${messageKey}`);
   if (targetMsg) {
     targetMsg.style.display = "block";
     targetMsg.style.color = messageKey.includes("error") ? "red" : "brown";
