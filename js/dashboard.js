@@ -1948,7 +1948,12 @@ function initializeDashboard() {
   // ======================
   DOM.petList.addEventListener('submit', async (e) => {
     e.preventDefault();
-      
+
+/*✅ The corrected mental model
+Think of the function like this:
+showDashboardLoader(true, "xxx") → “start operation” (overlay + spinner + message).
+showDashboardLoader(false, "success-xxx") → “stop operation but show success message briefly”.
+showDashboardLoader(false, "error-xxx") → “stop operation but show error message briefly”.*/      
 // ✅ Show dashboard loader immediately with correct initial message
   if (editingProfileId !== null) {
     showDashboardLoader(true, "updating"); // Editing an existing profile
@@ -2079,14 +2084,15 @@ requestAnimationFrame(() => {
         
 //✅️ loader success call
 if (editingProfileId !== null) {
-  showDashboardLoader(true, "success-updating"); 
+  showDashboardLoader(false, "success-updating"); // hides loader+keeping message visible
 } else {
-  showDashboardLoader(true, "success-saving");
+  showDashboardLoader(false, "success-saving");
 }
-
+        
 // Add simple fallback check - if loader animation isn't visible after 500ms, use temp message
 setTimeout(() => {
   const loaderAnim = document.getElementById("dashboard-loader-animation");
+    
   if (loaderAnim && loaderAnim.style.display === "none") {
     // Lottie failed, use temp message
     if (editingProfileId !== null) {
@@ -2097,21 +2103,18 @@ setTimeout(() => {
     showDashboardLoader(false); // Hide the loader
   }
 }, 500);
-
-// hide loader after short delay (e.g. 2s)
-setTimeout(() => showDashboardLoader(false), 2000);
         
 // the catch must stay as it is closing the try
 } catch (error) {
   console.error("❌ Error saving profile:", error);
+        
   // ✅ Distinguish error between saving vs updating
   if (editingProfileId !== null) {
-    showDashboardLoader(true, "error-updating");
+    showDashboardLoader(false, "error-updating");
   } else {
-    showDashboardLoader(true, "error-saving");
+    showDashboardLoader(false, "error-saving");
   }
-  
-  // Add error fallback
+  // Add error fallback to tempmessage GREEN
   setTimeout(() => {
     const loaderAnim = document.getElementById("dashboard-loader-animation");
     if (loaderAnim && loaderAnim.style.display === "none") {
@@ -2124,9 +2127,6 @@ setTimeout(() => showDashboardLoader(false), 2000);
       showDashboardLoader(false); // Hide the loader
     }
   }, 500);
-  
-  // Hide loader overlay after 3s for errors
-  setTimeout(() => showDashboardLoader(false), 3000);
 }
   }); // closes the DOM.petList.addEventListener
 
