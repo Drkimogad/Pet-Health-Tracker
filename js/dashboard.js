@@ -555,8 +555,8 @@ console.log("👀 Attempting to unhide modal overlay...");
   // ✅ Inject modal into DOM
   showModal(detailsHtml);
     
-// ✅ Simplified settime out - add this after showModal(detailsHtml)
-setTimeout(() => {
+// ✅ Use requestAnimationFrame instead of setTimeout for smooth injection
+requestAnimationFrame(() => {
   const modal = document.querySelector('.modal-content');
   const photo = modal?.querySelector('.detail-photo');
   
@@ -652,7 +652,7 @@ const canvas = await html2canvas(pdfContainer, {
     pdfBtn.onclick = saveModalAsPDF;
   }
 
-}, 50); // closes settime out
+}); // closes request animation frame
 } // Closes showdetails()
 
 //=========================================
@@ -735,7 +735,8 @@ async function editPetProfile(petId) {
 
   } catch (error) {
     console.error('Edit error:', error);
-    showErrorToUser('Failed to load profile for editing');
+  //  showErrorToUser('Failed to load profile for editing');
+  // handled by UI in form submission
   }
 }
 //========================================
