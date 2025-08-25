@@ -51,7 +51,7 @@ function initDOMReferences() {
 }
 
 // show loading function only for authentication
-function showLoading(show, message = "Loading...") {
+function showLoading(show, message = "Loading your app") {
   const loader = auth_DOM.processingLoader;
   const msgEl = document.getElementById("auth-loader-message");
 
@@ -130,7 +130,7 @@ function setupGoogleLoginButton() {
     google.accounts.id.initialize({
       client_id: CLIENT_ID,
 callback: async (response) => {
-showLoading(true, "Signing you in...");
+showLoading(true, "Loading your app");
   
   try {
     const credential = firebase.auth.GoogleAuthProvider.credential(response.credential);
