@@ -894,6 +894,61 @@ body.modal-active {
   cursor: not-allowed !important;
   pointer-events: none !important;
 }
+/*==================
+  SHARING STYLE
+==================*/
+/* Sharing Container */
+.share-fallback {
+  position: fixed;
+  bottom: 20px;
+  left: 10px;
+  right: 10px;
+  padding: 15px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Paragraph */
+.share-fallback p {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+/* Input */
+.share-fallback .share-input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* Button */
+.share-fallback .share-done-btn {
+  padding: 8px 15px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.share-fallback .share-done-btn:hover {
+  background: #45a049;
+}
+
+/* Optional fade-in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+
 /* ========== COMMUNITY CHAT MODAL ========== */
 /*  community chat button styling*/
 .communityChat-btn {
