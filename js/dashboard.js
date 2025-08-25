@@ -2071,7 +2071,7 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
 localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
       
 // AFTER SAVING IN LOCALSTORAGE AND FIRESTORE
-await new Promise(r => setTimeout(r, 1000)); //✅️ just a brief pause
+await new Promise(r => setTimeout(r, 7000)); //✅️ just a brief pause
 
 // Update UI immediately
 requestAnimationFrame(() => {
@@ -2096,9 +2096,9 @@ setTimeout(() => {
   if (loaderAnim && loaderAnim.style.display === "none") {
     // Lottie failed, use temp message
     if (editingProfileId !== null) {
-      showTempMessage("Profile updated successfully!", true, 3000);
+      showTempMessage("Profile updated successfully!", true, 5000);
     } else {
-      showTempMessage("Profile saved successfully!", true, 3000);
+      showTempMessage("Profile saved successfully!", true, 5000);
     }
     showDashboardLoader(false); // Hide the loader
   }
@@ -2120,9 +2120,9 @@ setTimeout(() => {
     if (loaderAnim && loaderAnim.style.display === "none") {
       // Lottie failed, use temp message
       if (editingProfileId !== null) {
-        showTempMessage("Failed to update profile. Please try again.", false, 4000);
+        showTempMessage("Failed to update profile. Please try again.", false, 5000);
       } else {
-        showTempMessage("Failed to save profile. Please try again.", false, 4000);
+        showTempMessage("Failed to save profile. Please try again.", false, 5000);
       }
       showDashboardLoader(false); // Hide the loader
     }
