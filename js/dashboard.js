@@ -1167,28 +1167,23 @@ Get the app: https://drkimogad.github.io/Pet-Health-Tracker/
 // Helper for fallback sharing (unchanged)
 function showShareFallback(message) {
   const shareContainer = document.createElement('div');
-  shareContainer.style.position = 'fixed';
-  shareContainer.style.bottom = '20px';
-  shareContainer.style.left = '10px';
-  shareContainer.style.right = '10px';
-  shareContainer.style.padding = '15px';
-  shareContainer.style.background = 'white';
-  shareContainer.style.borderRadius = '10px';
-  shareContainer.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
-  shareContainer.style.zIndex = '1000';
-  
+  shareContainer.className = 'share-fallback'; // ✅ Use a CSS class
+
   shareContainer.innerHTML = `
-    <p style="margin-top:0">Share this link:</p>
-    <input type="text" value="${message}" readonly 
-           style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #ddd; border-radius:4px">
-    <button onclick="this.parentElement.remove()" 
-            style="padding:8px 15px; background:#4CAF50; color:white; border:none; border-radius:4px">
-      Done
-    </button>
+    <p>Share this link:</p>
+    <input type="text" value="${message}" readonly class="share-input">
+    <button class="share-done-btn">Done</button>
   `;
-  
+
   document.body.appendChild(shareContainer);
+
+  // Select input for easy copy
   shareContainer.querySelector('input').select();
+
+  // Handle button click
+  shareContainer.querySelector('.share-done-btn').addEventListener('click', () => {
+    shareContainer.remove();
+  });
 }
     
 
