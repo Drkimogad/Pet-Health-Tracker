@@ -852,34 +852,31 @@ function openCreateForm() {
   });
 
 // 3. CANCEL BUTTON LOGIC
-if (!document.getElementById("cancelEditBtn")) {
-    const cancelBtn = document.createElement("button");
+let cancelBtn = document.getElementById("cancelEditBtn");
+
+if (!cancelBtn) {
+    // Create new button
+    cancelBtn = document.createElement("button");
     cancelBtn.id = "cancelEditBtn";
     cancelBtn.type = "button";
     cancelBtn.className = "button cancel-btn";
-    cancelBtn.innerHTML = '<i class="fas fa-times"></i> Cancel Edit'; // ✅ Updated text
-
+    
     cancelBtn.addEventListener("click", () => {
         if (confirm("Discard this new profile?")) {
             handleCancelEdit();
         }
     });
 
-    // ✅ Append to form actions container (NOT petList)
+    // Append to form actions
     const formActions = document.querySelector('.form-actions');
     if (formActions) {
         formActions.appendChild(cancelBtn);
-    } else {
-        // Fallback: try to find submit button in form
-        const submitBtn = document.querySelector('#petForm button[type="submit"]');
-        if (submitBtn) submitBtn.after(cancelBtn);
     }
-} else {
-    // ✅ Update existing button text AND show it
-    const cancelBtn = document.getElementById("cancelEditBtn");
-    cancelBtn.innerHTML = '<i class="fas fa-times"></i> Cancel Edit'; // ✅ Update text
-    cancelBtn.style.display = "inline-block";
 }
+
+// ✅ CRITICAL: ALWAYS set the text to "Cancel Edit" (whether new or existing)
+cancelBtn.innerHTML = '<i class="fas fa-times"></i> Cancel Edit';
+cancelBtn.style.display = "inline-block"; // Ensure it's visible
 
   // 4. UPDATE UI
   DOM.petList.classList.remove("hidden"); // show form
