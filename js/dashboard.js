@@ -973,9 +973,12 @@ requestAnimationFrame(() => {
  * @param {boolean} asZip - Set true to export as ZIP, false for individual downloads
  */
 async function exportAllPetCards(asZip = false) {
+// ✅ move container declaration outside try to avoid undefined in finally block
+  let container = null; 
+    
   try {
+      
     // ✅ Show loader overlay with paws animation and "exporting" message
-// Start export → show paws animation + "Exporting..." message
 showDashboardLoader(true, "exporting");
 
     // ✅ Ensure loader actually renders before starting heavy processing
@@ -1080,40 +1083,17 @@ showDashboardLoader(true, "exporting");
     }
 
     // show success message
-    showDashboardLoader(true, "success-exporting"); // ✅ Successfully exported all pet cards
-    
-    // Add success fallback
-    setTimeout(() => {
-      const loaderAnim = document.getElementById("dashboard-loader-animation");
-      if (loaderAnim && loaderAnim.style.display === "none") {
-        // Lottie failed, use temp message
-        showTempMessage("All pet cards exported successfully!", true, 3000);
-        showDashboardLoader(false); // Hide the loader
-      }
-    }, 500);
-    
-    setTimeout(() => showDashboardLoader(false), 2000); // hide overlay after 2s
-
+    showDashboardLoader(false, "success-exporting"); // ✅ Successfully exported all pet cards
+    // fallback is handled by helper in utils.js
+      
   } catch (err) {
     console.error("Export error:", err);
-
     // Show loader overlay with paws animation and error message
-    showDashboardLoader(true, "error-exporting"); // ❌ Exporting failed
-    
-    // Add error fallback
-    setTimeout(() => {
-      const loaderAnim = document.getElementById("dashboard-loader-animation");
-      if (loaderAnim && loaderAnim.style.display === "none") {
-        // Lottie failed, use temp message
-        showTempMessage("Export failed. Please try again.", false, 4000);
-        showDashboardLoader(false); // Hide the loader
-      }
-    }, 500);
-
-    setTimeout(() => showDashboardLoader(false), 3000); // hide overlay after 3s
+    showDashboardLoader(false, "error-exporting"); // ❌ Exporting failed
+   // fallback the same
 
   } finally {
-    // Remove temporary container if it exists
+    // ✅ safe now, container always exists (or is null)/so no undefined error
     if (container && container.parentNode) {
       container.remove();
     }
