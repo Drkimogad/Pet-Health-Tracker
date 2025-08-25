@@ -1779,17 +1779,22 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
     }
 
   // ✅ 3.5 Show success once QR canvas is ready
-  const waitForQR = () => {
-  const qrCanvas = document.querySelector("#qrcode canvas");
+const waitForQR = () => {
+  if (!qrWindow || qrWindow.closed) {
+    // QR window closed before generation, stop loader
+    showDashboardLoader(false, "error-generating"); // optional: mark as cancelled
+    return;
+  }
+
+  const qrCanvas = qrWindow.document.querySelector("#qrcode canvas");
   if (qrCanvas) {
     showDashboardLoader(false, "success-generating"); // QR successfully generated
-    // setTimeout(() => showDashboardLoader(false), 2000); // hide after 2s
   } else {
     requestAnimationFrame(waitForQR);
   }
 };
 waitForQR();
-     
+   
     // 4. Keep original download function
     window.downloadQR = function() {
       const canvas = document.querySelector("#qrcode canvas");
