@@ -1182,11 +1182,10 @@ function showShareFallback(message) {
 
   // Handle button click
   shareContainer.querySelector('.share-done-btn').addEventListener('click', () => {
-    shareContainer.remove();
+   setTimeout(() => shareContainer.remove(), 4000); // to automatically hide the container
   });
 }
     
-
 //=========================
 // Join Pet Community - ENHANCED VERSION
 //=========================
