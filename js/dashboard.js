@@ -1575,8 +1575,8 @@ async function generateQRCode(petId) {
     const profiles = await loadPets();
     const profile = profiles.find(p => p.id === petId);
     if (!profile) {
-      alert("Profile not found!");
-      return;
+    showErrorNotification("❌ Profile not found!");
+    return;
     }
 
     // 2. Get emergency contact
@@ -1588,9 +1588,10 @@ async function generateQRCode(petId) {
     // 4. Open optimized window
     const qrWindow = window.open('', 'PetQR_' + petId, 'width=500,height=700');
     if (!qrWindow) {
-      alert("Please allow popups to generate QR codes");
-      return;
+   showErrorNotification("❌ Please allow popups to generate QR codes");
+    return;
     }
+      
 // 5. Create reminders html outside 
      const remindersHTML = `
   <p><strong>Birthday Reminder:</strong> ${escapeHTML(profile.reminders?.birthdayReminder|| 'N/A')}</p> 
@@ -1799,12 +1800,12 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
       </html>
     `);
       
-    showDashboardLoader(false, "success-generating");
     qrWindow.document.close();
+    showSuccessNotification("✅ QR Code generated successfully!");
 
   } catch (error) {
     console.error("QR generation failed:", error);
-  showDashboardLoader(false, "error-generating"); // “Failed to generate QR code”
+showErrorNotification("❌ Failed to generate QR code. Please try again.")
   }
 } 
 
