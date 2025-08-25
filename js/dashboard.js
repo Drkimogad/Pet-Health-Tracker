@@ -1155,12 +1155,12 @@ Get the app: https://drkimogad.github.io/Pet-Health-Tracker/
 
     } else {
       // Fallback: copy link message
-      showDashboardLoader(true, "sharing-copied");
+      showDashboardLoader(false, "sharing-copied");
     }
   } catch (error) {
     if (error.name !== 'AbortError') {
       console.error("Sharing failed:", error);
-      showDashboardLoader(false, "sharing-error");
+      showDashboardLoader(false, "error-sharing");
    }
   }
 } // <== This closes the async function
@@ -1183,7 +1183,7 @@ function showShareFallback(message) {
 
   // Handle button click
   shareContainer.querySelector('.share-done-btn').addEventListener('click', () => {
-   setTimeout(() => shareContainer.remove(), 4000); // to automatically hide the container
+   setTimeout(() => shareContainer.remove(), 3000); // to automatically hide the container
   });
 }
     
