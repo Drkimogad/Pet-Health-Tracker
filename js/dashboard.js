@@ -2071,7 +2071,7 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
 localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
       
 // AFTER SAVING IN LOCALSTORAGE AND FIRESTORE
-await new Promise(r => setTimeout(r, 7000)); //✅️ just a brief pause
+await new Promise(r => setTimeout(r, 3000)); //✅️ adjust this for faster or slower saving or updating display 
 
 // Update UI immediately
 requestAnimationFrame(() => {
@@ -2088,21 +2088,7 @@ if (editingProfileId !== null) {
 } else {
   showDashboardLoader(false, "success-saving");
 }
-        
-// Add simple fallback check - if loader animation isn't visible after 500ms, use temp message
-setTimeout(() => {
-  const loaderAnim = document.getElementById("dashboard-loader-animation");
-    
-  if (loaderAnim && loaderAnim.style.display === "none") {
-    // Lottie failed, use temp message
-    if (editingProfileId !== null) {
-      showTempMessage("Profile updated successfully!", true, 5000);
-    } else {
-      showTempMessage("Profile saved successfully!", true, 5000);
-    }
-    showDashboardLoader(false); // Hide the loader
-  }
-}, 500);
+// No need for extra fallback here — helper now handles:        
         
 // the catch must stay as it is closing the try
 } catch (error) {
@@ -2114,21 +2100,9 @@ setTimeout(() => {
   } else {
     showDashboardLoader(false, "error-saving");
   }
-  // Add error fallback to tempmessage GREEN
-  setTimeout(() => {
-    const loaderAnim = document.getElementById("dashboard-loader-animation");
-    if (loaderAnim && loaderAnim.style.display === "none") {
-      // Lottie failed, use temp message
-      if (editingProfileId !== null) {
-        showTempMessage("Failed to update profile. Please try again.", false, 5000);
-      } else {
-        showTempMessage("Failed to save profile. Please try again.", false, 5000);
-      }
-      showDashboardLoader(false); // Hide the loader
-    }
-  }, 500);
-}
-  }); // closes the DOM.petList.addEventListener
+// No need for extra fallback here — helper now handles:        
+ }
+}); // closes the DOM.petList.addEventListener
 
   // REST OF INITIALIZE DASHBOARD FUNCTION  
   if (DOM.addPetProfileBtn) {
