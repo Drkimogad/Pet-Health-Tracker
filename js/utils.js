@@ -281,7 +281,7 @@ function showDashboardLoader(show, messageKey = "loading") {
   const targetMsg = document.getElementById(`dashboard-loader-${messageKey}`);
   if (targetMsg) {
     targetMsg.style.display = "block";
-    targetMsg.style.color = messageKey.includes("error") ? "red" : "brown";
+    targetMsg.style.color = messageKey.includes("error") ? "red" : "green";
   }
 
   if (show) {
