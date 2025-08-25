@@ -263,60 +263,53 @@ function loadScriptWithRetry(url, maxRetries = 2, delayMs = 1000) {
 function showDashboardLoader(show, messageKey = "loading") {
   const loader = document.getElementById("dashboard-loader");
   if (!loader) {
-    // Fallback: use temp message if loader doesn't exist
-    if (messageKey.includes("success")) {
-      const message = getMessageText(messageKey);
-      showTempMessage(message, true, 3000);
-    } else if (messageKey.includes("error")) {
-      const message = getMessageText(messageKey);
-      showTempMessage(message, false, 4000);
+    // fallback if loader missing
+    if (messageKey.includes("success") || messageKey.includes("error")) {
+      const msg = getMessageText(messageKey);
+      showTempMessage(msg, !messageKey.includes("error"), messageKey.includes("success") ? 3000 : 4000);
     }
     return;
   }
 
   const animation = document.getElementById("dashboard-loader-animation");
   const cssSpinner = document.getElementById("css-spinner-fallback");
-  
-  // Hide ALL messages first
-  const allMessages = loader.querySelectorAll(".loader-text");
-  allMessages.forEach(el => el.style.display = "none");
-  
-  // Hide both spinners initially
-  if (animation) animation.style.display = "none";
-  if (cssSpinner) cssSpinner.style.display = "none";
 
-  // Show the requested message
+  // Hide all text first
+  loader.querySelectorAll(".loader-text").forEach(el => el.style.display = "none");
+
+  // Pick the right message element
   const targetMsg = document.getElementById(`dashboard-${messageKey}`);
   if (targetMsg) {
     targetMsg.style.display = "block";
-    targetMsg.style.color = "brown"; // Ensure brown color
+    targetMsg.style.color = messageKey.includes("error") ? "red" : "brown";
   }
 
   if (show) {
-    // Show loader
+    // Show loader + spinners
     loader.style.display = "block";
-    
-    // Try to show Lottie first
-    if (animation) {
-      animation.style.display = "block";
-    } 
-    // If Lottie fails, show CSS spinner after short delay
+    if (animation) animation.style.display = "block";
+
     setTimeout(() => {
       if (animation && animation.style.display === "none" && cssSpinner) {
         cssSpinner.style.display = "block";
       }
-    }, 100);
+    }, 150);
   } else {
-    // For success/error messages, keep visible briefly
+    // keep success/error messages on screen briefly
     if (messageKey.includes("success") || messageKey.includes("error")) {
+      loader.style.display = "block"; // stay visible for a moment
+      if (animation) animation.style.display = "none";
+      if (cssSpinner) cssSpinner.style.display = "none";
+
       setTimeout(() => {
         loader.style.display = "none";
       }, messageKey.includes("success") ? 3000 : 4000);
     } else {
-      loader.style.display = "none";
+      loader.style.display = "none"; // default immediate hide
     }
   }
 }
+
 
 // Helper function to get message text
 function getMessageText(messageKey) {
