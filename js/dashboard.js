@@ -742,7 +742,7 @@ async function editPetProfile(petId) {
 // UPDATED CANCEL EDIT FUNCTION
 // UPDATED TO HIDE CANCEL BUTTON AND KEEPING IT IN DOM SO ONCE IT IS INJECTED IT WORKS FOR BOTH
 function handleCancelEdit() {
-  console.log("🔙 Cancel clicked — resetting view");
+  console.log("🔙 Cancel Edit clicked — resetting view");
 
   if (editingProfileId !== null) {
     // ✅ Restore form fields from saved edit state
@@ -854,7 +854,7 @@ function openCreateForm() {
     cancelBtn.id = "cancelEditBtn";
     cancelBtn.type = "button";
     cancelBtn.className = "button cancel-btn ";
-    cancelBtn.innerHTML = '<i class="fas fa-times"></i> Cancel';
+    cancelBtn.innerHTML = '<i class="fas fa-times"></i> Cancel Edit';
 
     cancelBtn.addEventListener("click", () => {
       if (confirm("Discard this new profile?")) {
