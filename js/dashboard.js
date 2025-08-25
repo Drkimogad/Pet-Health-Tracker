@@ -1986,7 +1986,7 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
 localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
       
 // AFTER SAVING IN LOCALSTORAGE AND FIRESTORE
-await new Promise(r => setTimeout(r, 3000)); //✅️ adjust this for faster or slower saving or updating display 
+await new Promise(r => setTimeout(r, 2000)); //✅️ adjust this for faster or slower saving or updating display 
 
 // Update UI immediately
 requestAnimationFrame(() => {
