@@ -1112,10 +1112,6 @@ document.addEventListener('click', (e) => {
   }
 });
 
-
-//============================================
-// Invite Friends (UPDATED)
-//===========================================
 //============================================
 // Invite Friends (UPDATED)
 //============================================
@@ -1152,54 +1148,18 @@ Get the app: https://drkimogad.github.io/Pet-Health-Tracker/
     if (navigator.share) {
       await navigator.share(shareData);
    // ✅ Share successful
-      showDashboardLoader(true, "sharing-success");
-      
-      // Add success fallback
-      setTimeout(() => {
-        const loaderAnim = document.getElementById("dashboard-loader-animation");
-        if (loaderAnim && loaderAnim.style.display === "none") {
-          // Lottie failed, use temp message
-          showTempMessage("Shared successfully!", true, 3000);
-          showDashboardLoader(false); // Hide the loader
-        }
-      }, 500);
-      
-      setTimeout(() => showDashboardLoader(false), 2000);
+      showDashboardLoader(false, "success-sharing");
       console.log("Shared successfully");
+      // fallback handled by helper
 
     } else {
       // Fallback: copy link message
       showDashboardLoader(true, "sharing-copied");
-      
-      // Add fallback for copy message
-      setTimeout(() => {
-        const loaderAnim = document.getElementById("dashboard-loader-animation");
-        if (loaderAnim && loaderAnim.style.display === "none") {
-          // Lottie failed, use temp message
-          showTempMessage("Link copied to clipboard!", true, 3000);
-          showDashboardLoader(false); // Hide the loader
-        }
-      }, 500);
-      
-      setTimeout(() => showDashboardLoader(false), 2000);
-
     }
   } catch (error) {
     if (error.name !== 'AbortError') {
       console.error("Sharing failed:", error);
-      showDashboardLoader(true, "sharing-error");
-      
-      // Add error fallback
-      setTimeout(() => {
-        const loaderAnim = document.getElementById("dashboard-loader-animation");
-        if (loaderAnim && loaderAnim.style.display === "none") {
-          // Lottie failed, use temp message
-          showTempMessage("Couldn't share. Please try again.", false, 4000);
-          showDashboardLoader(false); // Hide the loader
-        }
-      }, 500);
-      
-      setTimeout(() => showDashboardLoader(false), 3000);
+      showDashboardLoader(false, "sharing-error");
    }
   }
 } // <== This closes the async function
