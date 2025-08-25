@@ -1564,7 +1564,6 @@ async function openCommunityChatModal(petId) {
  // QR FUNCTION 
 async function generateQRCode(petId) {
   try {
-      showDashboardLoader(true, "generating"); // “Generating QR…”
       
     // 1. Load profile data
     const profiles = await loadPets();
@@ -1749,6 +1748,8 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
     // 2. Generate QR when library loads
     function generateQR() {
       try {
+        showDashboardLoader(true, "generating"); // “Generating QR…”
+        
         new QRCode(document.getElementById("qrcode"), {
           text: "PET CARD\\nName: " + petName + 
                 "\\nBreed: " + breed + 
@@ -1777,24 +1778,7 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
     } else {
       generateQR();
     }
-
-  // ✅ 3.5 Show success once QR canvas is ready
-const waitForQR = () => {
-  if (!qrWindow || qrWindow.closed) {
-    // QR window closed before generation, stop loader
-    showDashboardLoader(false, "error-generating"); // optional: mark as cancelled
-    return;
-  }
-
-  const qrCanvas = qrWindow.document.querySelector("#qrcode canvas");
-  if (qrCanvas) {
-    showDashboardLoader(false, "success-generating"); // QR successfully generated
-  } else {
-    requestAnimationFrame(waitForQR);
-  }
-};
-waitForQR();
-   
+    
     // 4. Keep original download function
     window.downloadQR = function() {
       const canvas = document.querySelector("#qrcode canvas");
@@ -1811,6 +1795,7 @@ waitForQR();
       </html>
     `);
     qrWindow.document.close();
+showDashboardLoader(false, "error-generating"); // optional: mark as cancelled
 
   } catch (error) {
     console.error("QR generation failed:", error);
