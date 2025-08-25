@@ -1779,6 +1779,7 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
     }
     
  showDashboardLoader(false, "success-generating"); // “QR successfully generated”
+ setTimeout(() => showDashboardLoader(false), 2000); // hide after 2s
  
     // 4. Keep original download function
     window.downloadQR = function() {
