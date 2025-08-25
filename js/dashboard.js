@@ -851,37 +851,35 @@ function openCreateForm() {
     if (field) field.value = "";
   });
 
-  // 3. CANCEL BUTTON LOGIC
-let cancelBtn = document.getElementById("cancelEditBtn");
-if (!cancelBtn) {
-    // Create the button if it doesn't exist
-    cancelBtn = document.createElement("button");
+// 3. CANCEL BUTTON LOGIC
+if (!document.getElementById("cancelEditBtn")) {
+    const cancelBtn = document.createElement("button");
     cancelBtn.id = "cancelEditBtn";
     cancelBtn.type = "button";
     cancelBtn.className = "button cancel-btn";
-    
-    // Append to form actions
-    const formActions = document.querySelector('.form-actions');
-    if (formActions) {
-        formActions.appendChild(cancelBtn);
-    }
-    
+    cancelBtn.innerHTML = '<i class="fas fa-times"></i> Cancel Edit'; // ✅ Updated text
+
     cancelBtn.addEventListener("click", () => {
         if (confirm("Discard this new profile?")) {
             handleCancelEdit();
         }
     });
-}
-// ✅ ALWAYS update the innerHTML (whether newly created or existing)
-cancelBtn.innerHTML = '<i class="fas fa-times"></i> Cancel Edit';
 
-    // Append next to submit button (if found)
-    const submitBtn = DOM.petList.querySelector('button[type="submit"]');
-    if (submitBtn) submitBtn.after(cancelBtn);
-    else DOM.petList.appendChild(cancelBtn);
-  } else {
-    document.getElementById("cancelEditBtn").style.display = "inline-block";
-  }
+    // ✅ Append to form actions container (NOT petList)
+    const formActions = document.querySelector('.form-actions');
+    if (formActions) {
+        formActions.appendChild(cancelBtn);
+    } else {
+        // Fallback: try to find submit button in form
+        const submitBtn = document.querySelector('#petForm button[type="submit"]');
+        if (submitBtn) submitBtn.after(cancelBtn);
+    }
+} else {
+    // ✅ Update existing button text AND show it
+    const cancelBtn = document.getElementById("cancelEditBtn");
+    cancelBtn.innerHTML = '<i class="fas fa-times"></i> Cancel Edit'; // ✅ Update text
+    cancelBtn.style.display = "inline-block";
+}
 
   // 4. UPDATE UI
   DOM.petList.classList.remove("hidden"); // show form
