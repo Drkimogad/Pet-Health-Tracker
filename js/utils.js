@@ -266,7 +266,7 @@ function showDashboardLoader(show, messageKey = "loading") {
     // fallback if loader missing
     if (messageKey.includes("success") || messageKey.includes("error")) {
       const msg = getMessageText(messageKey);
-      showTempMessage(msg, !messageKey.includes("error"), messageKey.includes("success") ? 3000 : 4000);
+      showTempMessage(msg, !messageKey.includes("error"), messageKey.includes("success") ? 2000 : 3000);
     }
     return;
   }
@@ -302,7 +302,7 @@ function showDashboardLoader(show, messageKey = "loading") {
       if (cssSpinner) cssSpinner.style.display = "none";
 
       // Delay hiding overlay to let user see success message
-      const displayTime = messageKey.includes("success") ? 3000 : 4000;
+      const displayTime = messageKey.includes("success") ? 2000 : 3000;
       setTimeout(() => {
         loader.style.display = "none";
       }, displayTime);
