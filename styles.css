@@ -620,14 +620,14 @@ button.delete-btn {
 }
 /*=≈========================*/
 .loader-text {
-  color: brown !important; /* Force brown color */
+  color: green !important; /* Force brown color */
   font-weight: bold;
   font-size: 18px;
   margin: 10px 0;
 }
 
 #dashboard-loader div {
-  color: brown !important; /* Force brown color on all loader text */
+  color: green !important; /* Force brown color on all loader text */
 }
 
 /* Ensure temp messages keep their green/red styling */
