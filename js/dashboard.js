@@ -1375,7 +1375,7 @@ async function openCommunityChatModal(petId) {
           messageHtml = `
             <div class="message-header">
               <strong>${msg.userName || 'Admin'}</strong>
-              <small>${new Date(msg.timestamp?.toDate()).toLocaleString()}</small>
+              <small>${msg.timestamp ? new Date(msg.timestamp.toDate ? msg.timestamp.toDate() : msg.timestamp).toLocaleString() : 'Date unavailable'}</small>
               ${isAdmin ? `<button class="delete-btn" title="Delete">🗑️</button>` : ''}
             </div>
             <p class="message-content admin-message">${msg.text}</p>
@@ -1426,6 +1426,8 @@ async function openCommunityChatModal(petId) {
     const message = messages[msgIndex];
     
     if (!message) return;
+
+      
 
     // Delete action
     if (e.target.classList.contains('delete-btn')) {
@@ -1527,13 +1529,13 @@ async function openCommunityChatModal(petId) {
         text: messageText,
         type: "user",
         approved: false,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        timestamp: new Date()  // Use client-side timestamp temporarily
       };
 
       // Add to messages array in the single document
       if (docSnap.exists) {
         await chatDocRef.update({
-          messages: firebase.firestore.FieldValue.arrayUnion(newMessage)
+      [`messages.${messages.length - 1}.timestamp`]: firebase.firestore.FieldValue.serverTimestamp()
         });
       } else {
         await chatDocRef.set({
