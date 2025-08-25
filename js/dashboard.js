@@ -1777,10 +1777,19 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
     } else {
       generateQR();
     }
-    
- showDashboardLoader(false, "success-generating"); // “QR successfully generated”
- setTimeout(() => showDashboardLoader(false), 2000); // hide after 2s
- 
+
+  // ✅ 3.5 Show success once QR canvas is ready
+  const waitForQR = () => {
+  const qrCanvas = document.querySelector("#qrcode canvas");
+  if (qrCanvas) {
+    showDashboardLoader(false, "success-generating"); // QR successfully generated
+    // setTimeout(() => showDashboardLoader(false), 2000); // hide after 2s
+  } else {
+    requestAnimationFrame(waitForQR);
+  }
+};
+waitForQR();
+     
     // 4. Keep original download function
     window.downloadQR = function() {
       const canvas = document.querySelector("#qrcode canvas");
