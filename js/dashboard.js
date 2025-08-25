@@ -852,18 +852,28 @@ function openCreateForm() {
   });
 
   // 3. CANCEL BUTTON LOGIC
-  if (!document.getElementById("cancelEditBtn")) {
-    const cancelBtn = document.createElement("button");
+let cancelBtn = document.getElementById("cancelEditBtn");
+if (!cancelBtn) {
+    // Create the button if it doesn't exist
+    cancelBtn = document.createElement("button");
     cancelBtn.id = "cancelEditBtn";
     cancelBtn.type = "button";
-    cancelBtn.className = "button cancel-btn ";
-    cancelBtn.innerHTML = '<i class="fas fa-times"></i> Cancel Edit';
-
+    cancelBtn.className = "button cancel-btn";
+    
+    // Append to form actions
+    const formActions = document.querySelector('.form-actions');
+    if (formActions) {
+        formActions.appendChild(cancelBtn);
+    }
+    
     cancelBtn.addEventListener("click", () => {
-      if (confirm("Discard this new profile?")) {
-        handleCancelEdit(); // Resets UI back
-      }
+        if (confirm("Discard this new profile?")) {
+            handleCancelEdit();
+        }
     });
+}
+// ✅ ALWAYS update the innerHTML (whether newly created or existing)
+cancelBtn.innerHTML = '<i class="fas fa-times"></i> Cancel Edit';
 
     // Append next to submit button (if found)
     const submitBtn = DOM.petList.querySelector('button[type="submit"]');
