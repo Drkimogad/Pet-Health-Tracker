@@ -949,42 +949,18 @@ async function deletePetProfile(petId) {
       localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
     }
 
-    // 🔸 UI update with requestAnimationFrame for smooth rendering
-    // 🔸 UI update with requestAnimationFrame for smooth rendering
+// 🔸 UI update with requestAnimationFrame for smooth rendering
 requestAnimationFrame(() => {
   loadSavedPetProfile();
-  showDashboardLoader(true, "success-deleting"); // success message
-  
-  // Add success fallback
-  setTimeout(() => {
-    const loaderAnim = document.getElementById("dashboard-loader-animation");
-    if (loaderAnim && loaderAnim.style.display === "none") {
-      // Lottie failed, use temp message
-      showTempMessage("Profile deleted successfully!", true, 3000);
-      showDashboardLoader(false); // Hide the loader
-    }
-  }, 500);
-  
-  setTimeout(() => showDashboardLoader(false), 2000); // hide after 2s
+  showDashboardLoader(false, "success-deleting"); // success message
+ // fallback is handled automatically by helper in utils.js 
 });
 
 } catch (error) {
   console.error('Delete error:', error);
   // ❌ Show paws + delete error message
   showDashboardLoader(true, "error-deleting");
-  
-  // Add error fallback
-  setTimeout(() => {
-    const loaderAnim = document.getElementById("dashboard-loader-animation");
-    if (loaderAnim && loaderAnim.style.display === "none") {
-      // Lottie failed, use temp message
-      showTempMessage("Failed to delete profile. Please try again.", false, 4000);
-      showDashboardLoader(false); // Hide the loader
-    }
-  }, 500);
-
-  // Hide loader overlay after 3s
-  setTimeout(() => showDashboardLoader(false), 3000); // hide overlay after 3s
+  // error fallback is handled by helper 
 }
 }
 
