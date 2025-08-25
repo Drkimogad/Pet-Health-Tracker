@@ -1564,7 +1564,7 @@ async function openCommunityChatModal(petId) {
  // QR FUNCTION 
 async function generateQRCode(petId) {
   try {
-    showDashboardLoader(true, "generating"); // “Generating QR…”
+    //showDashboardLoader(true, "generating"); // “Generating QR…”
       
     // 1. Load profile data
     const profiles = await loadPets();
