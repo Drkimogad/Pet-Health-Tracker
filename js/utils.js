@@ -266,7 +266,7 @@ function showDashboardLoader(show, messageKey = "loading") {
     // fallback if loader missing
     if (messageKey.includes("success") || messageKey.includes("error")) {
       const msg = getMessageText(messageKey);
-      showTempMessage(msg, !messageKey.includes("error"), messageKey.includes("success") ? 2500 : 3500);
+      showTempMessage(msg, !messageKey.includes("error"), messageKey.includes("success") ? 2500 : 3000);
     }
     return;
   }
@@ -302,7 +302,7 @@ function showDashboardLoader(show, messageKey = "loading") {
       if (cssSpinner) cssSpinner.style.display = "none";
 
       // Delay hiding overlay to let user see success message
-      const displayTime = messageKey.includes("success") ? 2500 : 3500; // it was 3000: 4000
+      const displayTime = messageKey.includes("success") ? 2500 : 3000; // it was 3000: 4000
       setTimeout(() => {
         loader.style.display = "none";
       }, displayTime);
@@ -313,7 +313,7 @@ function showDashboardLoader(show, messageKey = "loading") {
           const tempMsg = getMessageText(messageKey);
           showTempMessage(tempMsg, !messageKey.includes("error"), displayTime);
         }
-      }, 200); // small delay to check if message appeared TED IF NEED
+      }, 250); // small delay to check if message appeared TED IF NEED
     } else {
       loader.style.display = "none"; // immediate hide for other messages
     }
@@ -329,13 +329,13 @@ function getMessageText(messageKey) {
     "success-updating": "Profile updated successfully!",
     "success-deleting": "Profile deleted successfully!",
     "success-exporting": "All pet cards exported successfully!",
-    "sharing-success": "Shared successfully!",
+    "success-sharing": "Shared successfully!",
     "sharing-copied": "Link copied to clipboard!",
     "error-saving": "Failed to save profile. Please try again.",
     "error-updating": "Failed to update profile. Please try again.",
     "error-deleting": "Failed to delete profile. Please try again.",
     "error-exporting": "Export failed. Please try again.",
-    "sharing-error": "Couldn't share. Please try again."
+    "error-sharing": "Couldn't share. Please try again."
   };
   
   return messages[messageKey] || "Operation completed";
