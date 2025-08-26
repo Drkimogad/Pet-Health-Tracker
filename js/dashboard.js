@@ -1573,7 +1573,7 @@ if (!isAdmin) {
         userName: user.displayName || user.email.split('@')[0],
         text: messageText,
         type: "user",
-        approved: false,
+        approved: isAdmin ? true : false,  // Auto-approve if admin
         timestamp: new Date()  // Use client-side timestamp temporarily
       };
 
