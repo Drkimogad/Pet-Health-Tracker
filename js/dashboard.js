@@ -1267,16 +1267,25 @@ async function getPetProfile(petId) {
 
 // 2. Setup admin notification listener
 function setupAdminNotificationListener(petId) {
-  // Listen for unapproved messages
+  // Listen to the SINGLE DOCUMENT, not the collection
   firebase.firestore()
     .collection("Community_Chat")
-    .where("petId", "==", petId)
-    .where("approved", "==", false)
-    .onSnapshot(snapshot => {
+    .doc("feedback_thread")  // ← ADD THIS LINE
+    .onSnapshot(doc => {
+      if (!doc.exists) return;
+      
+      const data = doc.data();
+      const messages = Array.isArray(data.messages) ? data.messages : [];
+      
+      // Count unapproved messages
+      const unapprovedCount = messages.filter(msg => 
+        msg.approved === false && msg.type !== 'admin'
+      ).length;
+
       const notificationBadge = document.getElementById('community-chat-notification');
       if (notificationBadge) {
-        if (!snapshot.empty) {
-          notificationBadge.textContent = snapshot.size;
+        if (unapprovedCount > 0) {
+          notificationBadge.textContent = unapprovedCount;
           notificationBadge.style.display = 'inline-block';
         } else {
           notificationBadge.style.display = 'none';
