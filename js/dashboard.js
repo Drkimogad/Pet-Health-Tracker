@@ -1500,6 +1500,7 @@ async function openCommunityChatModal(petId) {
     }
 
     // CHECK DAILY LIMIT
+    if (!isAdmin) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
@@ -1518,7 +1519,7 @@ async function openCommunityChatModal(petId) {
       status.style.color = "var(--error-color)";
       return;
     }
-
+   }
     status.textContent = "Sending...";
     status.style.color = "var(--text-color)";
 
