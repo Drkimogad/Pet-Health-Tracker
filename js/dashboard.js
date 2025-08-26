@@ -1355,8 +1355,12 @@ async function openCommunityChatModal(petId) {
       const messages = Array.isArray(data.messages) ? data.messages : []; 
         
         //FILTER MESSAGES BASED ON APPROVAL AND USER STATUS
-const visibleMessages = isAdmin ? messages : messages.filter(msg => msg.approved === true);      
-      if (visibleMessages.length === 0) {
+      const visibleMessages = isAdmin ? messages : messages.filter(msg => msg.approved === true || msg.userId === user.uid);
+        console.log("All messages:", messages);
+        console.log("Visible messages:", visibleMessages); 
+        console.log("Is admin?", isAdmin, "User ID:", user.uid);
+        
+        if (visibleMessages.length === 0) {
         chatMessagesDiv.innerHTML = `<p class="no-messages">No feedback yet. Be the first to share!</p>`;
         return;
       }
