@@ -1468,31 +1468,44 @@ if (isAdmin) {
       }
     }
 
-    // APPROVE ACTION (admin only)
-    if (e.target.classList.contains('approve-btn') && isAdmin) {
-      // Update the approval status in the array
-      messages[msgIndex].approved = true;
+      // APPROVE ACTION (admin only)
+if (e.target.classList.contains('approve-btn') && isAdmin) {
+  // Create a copy of the message with approved: true
+  const approvedMessage = {
+    ...message,          // Copy all existing properties
+    approved: true       // Update only the approved status
+  };
+  
+  // Remove the old message and add the approved one
+  await chatDocRef.update({
+    messages: firebase.firestore.FieldValue.arrayRemove(message)
+  });
+  
+  await chatDocRef.update({
+    messages: firebase.firestore.FieldValue.arrayUnion(approvedMessage)
+  });
+  
+  // Ask if admin wants to reply immediately
+  if (confirm("Message approved. Would you like to reply now?")) {
+    const replyText = prompt(`Reply to ${message.userName}:`);
+    if (replyText) {
+      // Add admin reply to the messages array
+      const adminReplyMessage = {
+        id: "msg" + Date.now(),
+        userId: user.uid,
+        userName: "Admin",
+        text: replyText,
+        type: "admin",
+        approved: true,
+        timestamp: new Date()
+      };
       await chatDocRef.update({
-      messages: firebase.firestore.FieldValue.arrayUnion(newMessage)
-      });      
-      // Ask if admin wants to reply immediately
-      if (confirm("Message approved. Would you like to reply now?")) {
-        const replyText = prompt(`Reply to ${message.userName}:`);
-        if (replyText) {
-          // Add admin reply to the messages array
-          messages.push({
-            id: "msg" + Date.now(),
-            userId: user.uid,
-            userName: "Admin",
-            text: replyText,
-            type: "admin",
-            approved: true,
-            timestamp: new Date()  // Client timestamp first
-          });
-          await chatDocRef.update({ messages });
-        }
-      }
+        messages: firebase.firestore.FieldValue.arrayUnion(adminReplyMessage)
+      });
     }
+  }
+}
+   
 
     // REPLY ACTION (admin only to approved messages)
     if (e.target.classList.contains('reply-btn') && isAdmin && message.approved) {
