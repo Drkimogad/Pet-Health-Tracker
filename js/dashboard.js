@@ -1504,8 +1504,8 @@ async function openCommunityChatModal(petId) {
     today.setHours(0, 0, 0, 0);
     
     const docSnap = await chatDocRef.get();
-    const messages = docSnap.exists ? docSnap.data().messages || [] : [];
-    
+    const messages = docSnap.exists ? (Array.isArray(docSnap.data().messages) ? docSnap.data().messages : []) : [];
+      
     const userMessagesToday = messages.filter(msg => {
       return msg.userId === user.uid && 
              msg.timestamp && 
