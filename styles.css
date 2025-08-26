@@ -80,46 +80,58 @@
   margin-bottom: 20px;
 }
 
-/* Modified Google Sign-In Wrapper */
-#googleSignInBtnWrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  padding: 20px; /* Inner spacing */
-  border: 2px solid #D2B48C; /* Light brown border (adjust color/width) */
-  border-radius: 12px; /* Slightly rounded corners for the wrapper */
-  background: #FFF8F0; /* Optional: light cream background */
-  width: fit-content; /* Ensures wrapper hugs content */
-  margin: 0 auto; /* Centers the wrapper horizontally */
+
+/* Full-page Lottie background styles */
+.fullpage-lottie-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    overflow: hidden;
 }
 
-.google-btn {
-  background: #ffffff;
-  color: #444;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  padding: 12px 20px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 15px auto;
-  cursor: pointer;
-  transition: background 0.3s, box-shadow 0.3s;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  max-width: 250px;
-  font-weight: bold;
-  font-size: 16px;
+.fullpage-lottie-container lottie-player {
+    object-fit: cover;
 }
 
-.google-btn:hover {
-  background: #f1f1f1;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+/* Bouncing ball Google Sign-In styles */
+.bouncing-ball-container {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin: 2rem auto;
+    padding: 20px;
 }
 
-.google-btn img {
-  width: 20px;
-  height: 20px;
+.bouncing-ball {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #ffffff, #4285f4);
+    box-shadow: 0 4px 15px rgba(66, 133, 244, 0.4);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    animation: bounce 2s infinite ease-in-out;
+    transition: all 0.3s ease;
+}
+
+.bouncing-ball:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(66, 133, 244, 0.6);
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
 }
 
 .auth-message {
@@ -156,38 +168,70 @@
   margin: 15px 0;
 }
 
-/* ===== BANNER STYLES ===== */
-#fullPageBanner.banner-wrapper {
-  width: 90vw;
-  height: 70vh;
-  margin: 0 auto;
-  position: relative;
-  overflow: hidden;
-  border-bottom: 3px solid #e1b12c;
+
+/* Bouncing bone quote styles */
+.bouncing-bone-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }
 
-#fullPageBanner .banner-image {
-  width: 100%;
-  height: 100%;
-  margin: 20px auto;
-  object-fit: contain; /* shows the whole image */
-  object-position: center; /* Changed from "relative" */
-  display: block;
+.bone-shape {
+    width: 60px;
+    height: 20px;
+    background: #f8f8f8;
+    border-radius: 5px;
+    position: relative;
+    animation: bone-bounce 3s infinite ease-in-out;
 }
 
-#fullPageBanner .quote {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  background: rgba(0, 0, 0, 0.6);
-  color: #f5f5dc;
-  padding: 20px 30px;
-  border-radius: 10px;
-  font-style: italic;
-  font-size: clamp(1rem, 2.2vw, 1.4rem);
-  max-width: 45%;
-  text-align: right;
+.bone-shape::before,
+.bone-shape::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: #f8f8f8;
+    border-radius: 50%;
 }
+
+.bone-shape::before {
+    left: -10px;
+    top: 0;
+}
+
+.bone-shape::after {
+    right: -10px;
+    top: 0;
+}
+
+.quote-text {
+    color: #f8f8f8;
+    font-style: italic;
+    font-size: 0.9rem;
+    text-align: center;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.bouncing-bone-container:hover .quote-text {
+    opacity: 1;
+}
+
+@keyframes bone-bounce {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-10px) rotate(5deg); }
+    50% { transform: translateY(-5px) rotate(-5deg); }
+    75% { transform: translateY(-8px) rotate(3deg); }
+}
+
+
 
 /*===========================
 FOR PRIVACY AND TERMS HTMLS
