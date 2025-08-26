@@ -108,9 +108,7 @@
         </div>
     </noscript>
     <div class="background-container">
-        <header>
-            <h1>Pet Health Tracker</h1>
-        </header>
+        
     <!-- Auth loader works for showLoading function for aut.js self contained for authentication -->
 <div id="processing-loader" 
      style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000;">
@@ -189,6 +187,12 @@
   
     <!-- Auth Container -->
     <div id="authContainer">
+        <!-- Fixed Welcome Section -->
+     <div class="auth-welcome-section">
+        <header>
+            <h1>Pet Health Tracker</h1>
+        </header>
+        
         <!-- New Small Lottie Container USED AS A WELCOMING MESSAGE -->
         <div class="pet-animation-container" style="width: 80%; margin: 20px auto; aspect-ratio: 4/1; max-width: 800px;">
         <lottie-player
@@ -203,8 +207,9 @@
         
         <div class="auth-header"> 
         <h2>to your pet wellness hub </h2> 
-        </div>      
-        
+        </div>   
+     </div>
+        <!-- Scrollable Content -->
         <!-- 2. Bouncing ball Google Sign-In button -->
 <div id="googleSignInBtnWrapper" class="bouncing-ball-container">
     <p class="auth-message">Please sign in with your Google account</p>
