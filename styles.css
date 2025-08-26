@@ -945,7 +945,8 @@ body.modal-active {
   background: #fefaf0; /* Light mustard base */
   border-radius: 12px;
   width: 90%;
-  height: 500px; /* Fixed height instead of 70vh */
+  height: 90%; /* Fixed height instead of 70vh */
+  max-height: 90vh; /* Contain everything */
   min-height: 500px; /* Prevents collapsing */
   display: flex;
   flex-direction: column;
@@ -953,6 +954,7 @@ body.modal-active {
   position: relative;
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   animation: fadeSlideIn 0.3s ease;
+  overflow: hidden; /* Prevent spillout */
 }
 
 @keyframes fadeSlideIn {
@@ -997,9 +999,8 @@ body.modal-active {
   background: #fff9e6; /* Pale mustard */
   border: 1px solid #d2b48c; /* Light brown */
   padding: 0.5rem;
-  min-height: 380px; /* Increased from 300px */
-
-  margin-top: 1rem;
+  min-height: unset; /* Let flex:1 handle height */
+  max-height: 400px; /* Add maximum limit */
   margin: 0.25rem 0; /* Reduced from 1rem */
   overflow-y: auto;
   border-radius: 8px;
@@ -1027,7 +1028,9 @@ body.modal-active {
 #chatInput {
   resize: none;
   height: 50px;
+  padding-top: 0.5rem;
   padding: 0.75rem;
+  margin-top: auto; /* Push to bottom */
   font-size: 1rem;
   border-radius: 6px;
   border: 1px solid #b38b6d;
@@ -1079,10 +1082,11 @@ body.modal-active {
 }
 /* WHERE ONE MESSAGE PER DAY LINE*/
 .chat-status {
-  margin-top: 0.15rem; /* can be adjusted*/
-  margin-bottom: 0.8rem; /* can be adjusted*/
-  font-size: 1rem;
-  text-align: center;
+  margin-top: 0.15rem;
+  margin-bottom: 0.8rem; /* ← Reduce to: */
+  margin-bottom: 0.3rem;
+  font-size: 1rem; /* ← Reduce to: */
+  font-size: 0.85rem;
 }
 
 .no-messages {
