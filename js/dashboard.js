@@ -1410,6 +1410,17 @@ const visibleMessages = isAdmin ? messages : messages.filter(msg => msg.approved
 
   // INITIAL LOAD
   loadMessages();
+    
+// ADD TOGGLE BUTTON LISTENER RIGHT HERE
+if (isAdmin) {
+  const toggleViewBtn = modal.querySelector('#toggleViewBtn');
+  if (toggleViewBtn) {
+    toggleViewBtn.addEventListener('click', () => {
+      loadMessages(); // Refresh to show all messages
+      console.log("Admin: Toggling view to show all messages");
+    });
+  }
+}
 
     //MESSAGE ACTIONS HANDLER FOR ARRAY MANIPULATION
   modal.querySelector('#chatMessages').addEventListener('click', async (e) => {
