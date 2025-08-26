@@ -995,13 +995,12 @@ body.modal-active {
   opacity: 1;
   visibility: visible;
 }
-
 .community-modal-content {
   background: #fefaf0; /* Light mustard base */
-  border-radius: 10px;
-  max-width: 600px;
+  border-radius: 12px;
   width: 90%;
-  height: 70vh;
+  height: auto; /* Change from fixed height */
+  max-height: 85vh; /* Better for mobile */
   display: flex;
   flex-direction: column;
   padding: 1.5rem;
@@ -1009,6 +1008,8 @@ body.modal-active {
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   animation: fadeSlideIn 0.3s ease;
 }
+
+
 
 @keyframes fadeSlideIn {
   from {
@@ -1192,6 +1193,7 @@ body.modal-active {
     color: white;
   }
 }
+
 /* === Animations (Add these) === */
 @keyframes messageFadeIn {
   from { opacity: 0; transform: translateY(8px); }
@@ -1292,6 +1294,88 @@ body.modal-active {
   text-align: center;
 }
 
+/* ADD THESE LINES ONLY */
+
+/* Header layout for new JS structure */
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1rem 0;
+}
+
+.pet-name-header {
+  color: #4e348c;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.chat-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Responsive modal dimensions */
+@media (min-width: 768px) {
+  .community-modal-content {
+    max-width: 650px;
+    height: 75vh;
+  }
+}
+
+@media (max-width: 480px) {
+  .community-modal-content {
+    max-width: 95%;
+    height: 85vh;
+    padding: 1rem;
+  }
+  
+  .chat-header {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+  
+  .chat-controls {
+    justify-content: center;
+  }
+}
+
+/* responive designs for devices*/
+/* Desktop optimization */
+@media (min-width: 768px) {
+  .community-modal-content {
+    max-width: 650px; /* Slightly wider for desktop */
+    height: 75vh; /* Fixed height for desktop */
+  }
+}
+
+/* Tablet optimization */
+@media (min-width: 481px) and (max-width: 767px) {
+  .community-modal-content {
+    max-width: 90%;
+    height: 80vh;
+  }
+}
+
+/* Mobile optimization */
+@media (max-width: 480px) {
+  .community-modal-content {
+    max-width: 95%;
+    height: 85vh;
+    padding: 1rem;
+  }
+  
+  .chat-header {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+  
+  .chat-controls {
+    justify-content: center;
+  }
+}
 
 
 /* ===== HEADER & FOOTER STYLING ===== */
