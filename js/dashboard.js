@@ -1352,8 +1352,8 @@ async function openCommunityChatModal(petId) {
       }
 
       const data = doc.data();
-      const messages = data.messages || [];
-      
+      const messages = Array.isArray(data.messages) ? data.messages : []; 
+        
         //FILTER MESSAGES BASED ON APPROVAL AND USER STATUS
       const visibleMessages = isAdmin ? messages : messages.filter(msg => msg.approved);
       
