@@ -999,8 +999,8 @@ body.modal-active {
   background: #fefaf0; /* Light mustard base */
   border-radius: 12px;
   width: 90%;
-  height: auto; /* Change from fixed height */
-  max-height: 85vh; /* Better for mobile */
+  height: 500px; /* Fixed height instead of 70vh */
+  min-height: 500px; /* Prevents collapsing */
   display: flex;
   flex-direction: column;
   padding: 1.5rem;
@@ -1008,8 +1008,6 @@ body.modal-active {
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   animation: fadeSlideIn 0.3s ease;
 }
-
-
 
 @keyframes fadeSlideIn {
   from {
@@ -1064,8 +1062,9 @@ body.modal-active {
 }
   
 .chat-message {
-  margin-bottom: 1rem;
+  margin: 0.5rem 0; /* Reduced from 1rem */
   padding-bottom: 0.5rem;
+  min-height: 300px; /* Ensures minimum chat space */
   border-bottom: 1px solid #e0d4b7;
 }
 
@@ -1081,7 +1080,7 @@ body.modal-active {
 
 #chatInput {
   resize: none;
-  height: 60px;
+  height: 50px;
   padding: 0.75rem;
   font-size: 1rem;
   border-radius: 6px;
@@ -1089,7 +1088,7 @@ body.modal-active {
   background: #fffef7;
   color: #4e348c;
   outline: none;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 /* === Message Actions (Add these) === */
 .message-header {
@@ -1134,8 +1133,9 @@ body.modal-active {
 }
 
 .chat-status {
-  margin-top: 0.5rem;
-  font-size: 0.85rem;
+  margin-top: 0.25rem; /* can be adjusted*/
+  margin-bottom: 0.25rem; /* can be adjusted*/
+  font-size: 1rem;
   text-align: center;
 }
 
@@ -1301,7 +1301,7 @@ body.modal-active {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 1rem 0;
+  margin: 0.5rem 0;
 }
 
 .pet-name-header {
@@ -1362,7 +1362,7 @@ body.modal-active {
 @media (max-width: 480px) {
   .community-modal-content {
     max-width: 95%;
-    height: 85vh;
+    height: 500px;
     padding: 1rem;
   }
   
