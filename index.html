@@ -3,10 +3,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pet Health Tracker</title>
-    <meta name="description" content="Celebrate your pets' milestones and keep track of their birthdays with PetStudio">
-    <meta property="og:title" content="PetStudio - Pet Profile Manager">
-    <meta property="og:description" content="Create and share your pet's profile with milestones and birthday reminders">
+        <!-- Primary meta tags -->
+    <meta name="description" content="Track and manage your pet's health records, reminders, and medical history with Pet Health Tracker">
+    <meta property="og:title" content="Pet Health Tracker - Manage Your Pet's Health">
+    <meta property="og:description" content="Create and share your pet's complete health profile with vaccination reminders, medical history, and emergency information">
     <meta property="og:type" content="website">
+        <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Pet Health Tracker - Manage Your Pet's Health">
+    <meta property="og:description" content="Create and share your pet's complete health profile with vaccination reminders, medical history, and emergency information">
+    <meta property="og:image" content="https://your-domain.com/path-to-image.png">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Pet Health Tracker - Manage Your Pet's Health">
+    <meta name="twitter:description" content="Create and share your pet's complete health profile with vaccination reminders, medical history, and emergency information">
+    <meta name="twitter:image" content="https://your-domain.com/path-to-image.png">    
+    <!-- Preload critical resources -->
+    <link rel="preconnect" href="https://accounts.google.com">
+    <link rel="preconnect" href="https://apis.google.com">
+    <link rel="preload" href="https://accounts.google.com/gsi/client" as="script">
     
     <!-- Enhanced CSP with Nonce -->
 <meta http-equiv="Content-Security-Policy" content="
@@ -50,11 +66,6 @@
   form-action 'self';
   worker-src 'self';
 ">
- 
-<!-- Preload critical resources -->
-<link rel="preconnect" href="https://accounts.google.com">
-<link rel="preconnect" href="https://apis.google.com">
-<link rel="preload" href="https://accounts.google.com/gsi/client" as="script">
 
 <script>
   window.handleScriptError = (error) => {
@@ -194,9 +205,15 @@
         <h2>to your pet wellness hub </h2> 
         </div>         
         <div id="googleSignInBtnWrapper">
-            <p class="auth-message">Please sign in with your Google account to continue</p>
-            <div id="googleSignInButton"></div>
+         <p class="auth-message">Please sign in with your Google account to continue</p>
+          <div id="googleSignInButton"></div>
+          <div class="auth-legal">
+            By signing in, you agree to our 
+           <a href="https://drkimogad.github.io/Pet-Health-Tracker/privacy.html" target="_blank">Terms of Service</a> and 
+           <a href="https://drkimogad.github.io/Pet-Health-Tracker/terms.html" target="_blank">Privacy Policy</a>.
+         </div>
         </div>
+        
         <div id="fullPageBanner" class="banner banner-wrapper">
            <img src="./banner/image.png" alt="Banner Image" class="banner-image">
          <div class="quote">“Track your pet’s journey every step of the way.”</div>
@@ -314,8 +331,13 @@
     </div>
 
     <footer>
-        <p>&copy; 2024 Pet Health Tracker</p>
+    <p>&copy; 2024 Pet Health Tracker</p>
+    <div class="legal-links">
+        <a href="https://drkimogad.github.io/Pet-Health-Tracker/privacy.html" target="_blank">Privacy Policy</a> | 
+        <a href="https://drkimogad.github.io/Pet-Health-Tracker/terms.html" target="_blank">Terms of Service</a>
+    </div>
     </footer>
+    
         <!-- Scripts (Optimized Order) -->
     <script src="./js/auth.js" defer></script>
     <script src="./js/utils.js" defer></script>
