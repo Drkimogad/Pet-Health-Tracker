@@ -45,7 +45,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 80px; /* Space for your header */
+  padding-top: 10px; /* Space for your header it was 80*/
 }
 
 /* Scroll Layer - for elements that scroll */
@@ -91,19 +91,19 @@
 } 
 
 /* Auth Header - Fixed */
-.auth-header {
+.header h1 {
   text-align: center;
-  width: 100%;
+  width: 120%;
   margin: 10px 0;
-}
-
-.auth-header h1 {
   font-size: 2.2rem;
   margin: 0 0 0.5rem;
   color: #2c3e50; /* Darker color for better contrast */
 }
 
 .auth-header h2 {
+  text-align: right; /* was center */
+  width: 120%;
+  margin: 10px 0;
   color: #d4a017;
   font-size: 1.8rem;
   margin: 0;
