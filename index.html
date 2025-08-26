@@ -180,20 +180,16 @@
   </div>
 </div>
 
-
-
-
-
   
     <!-- Auth Container -->
     <div id="authContainer">
         <!-- Container for FIXED elements -->
         <!-- Fixed Welcome Section -->
+ <div class="auth-fixed-layer">
      <div class="auth-welcome-section">
         <header>
             <h1>Pet Health Tracker</h1>
-        </header>
-        
+        </header> 
         <!-- New Small Lottie Container USED AS A WELCOMING MESSAGE -->
         <div class="pet-animation-container" style="width: 80%; margin: 20px auto; aspect-ratio: 4/1; max-width: 800px;">
         <lottie-player
@@ -209,15 +205,21 @@
         <div class="auth-header"> 
         <h2>to your pet wellness hub </h2> 
         </div>   
+         
+                 <!-- 3. Bouncing bone quote element -->
+        <div id="bouncingQuote" class="bouncing-bone-container">
+          <div class="bone-shape"></div>
+           <div class="quote-text">"Track your pet's journey every step of the way."</div>
+        </div>
      </div>
+   </div>
         
-        <!-- Scrollable Content -->
         <!-- Container for SCROLLABLE elements -->
-        <!-- 2. Bouncing ball Google Sign-In button -->
-<div class="auth-content">
-        
-<div id="googleSignInBtnWrapper" class="bouncing-ball-container">
-    <p class="auth-message">Please sign in with your Google account</p>
+<div class="auth-scroll-layer">
+  <div class="auth-content">
+              <!-- Bouncing ball Google Sign-In button -->
+   <div id="googleSignInBtnWrapper" class="bouncing-ball-container">
+     <p class="auth-message">Please sign in with your Google account</p>
     <div id="googleSignInButton" class="bouncing-ball"></div>
     <div class="auth-legal">
         By signing in, you agree to our 
@@ -238,10 +240,6 @@
     ></lottie-player>
 </div>
         
-       <!-- 3. Bouncing bone quote element -->
-  <div id="bouncingQuote" class="bouncing-bone-container">
-    <div class="bone-shape"></div>
-    <div class="quote-text">"Track your pet's journey every step of the way."</div>
   </div>
 </div>
         
