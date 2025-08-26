@@ -894,60 +894,6 @@ body.modal-active {
   cursor: not-allowed !important;
   pointer-events: none !important;
 }
-/*==================
-  SHARING STYLE
-==================*/
-/* Sharing Container */
-.share-fallback {
-  position: fixed;
-  bottom: 20px;
-  left: 10px;
-  right: 10px;
-  padding: 15px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-  z-index: 1000;
-  animation: fadeIn 0.3s ease-out;
-}
-
-/* Paragraph */
-.share-fallback p {
-  margin-top: 0;
-  margin-bottom: 10px;
-  font-weight: 500;
-}
-
-/* Input */
-.share-fallback .share-input {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-/* Button */
-.share-fallback .share-done-btn {
-  padding: 8px 15px;
-  background: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.share-fallback .share-done-btn:hover {
-  background: #45a049;
-}
-
-/* Optional fade-in animation */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-
 
 /* ========== COMMUNITY CHAT MODAL ========== */
 /*  community chat button styling*/
@@ -1020,38 +966,46 @@ body.modal-active {
   }
 }
 
-.community-modal-content h2 {
-  margin: 0 40px; /* Add space for toggle button */
-  color: #4e348c; /* Lavender */
-  font-size: 1.4rem;
-  text-align: center;
-  padding-top: 5px;
+/* REDUCE HEADER SPACING */
+.community-modal-content h1 { /* Changed from h2 to h1 per your JS  COMMUNITY FEEDBACK */
+  margin: 0.25rem 0; /* Reduced from large margins */
+  padding: 0; /* Remove padding */
+  font-size: 1.3rem; /* Slightly smaller */
 }
 
-.close-community-chat {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  font-size: 1.5rem;
-  background: none;
-  border: none;
+/* Header layout for new JS structure */
+.chat-header {
+  margin: 0.25rem 0; /* Reduced from 1rem */
+  padding: 0.25rem 0; /* Add minimal padding */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.pet-name-header {
   color: #4e348c;
-  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.chat-controls {
+  display: flex;
+  gap: 0.5rem;
 }
 
 .chat-messages {
   flex: 1;
   background: #fff9e6; /* Pale mustard */
   border: 1px solid #d2b48c; /* Light brown */
-  padding: 1rem;
+  padding: 0.5rem;
+  min-height: 380px; /* Increased from 300px */
+
   margin-top: 1rem;
-  margin-bottom: 1rem;
+  margin: 0.25rem 0; /* Reduced from 1rem */
   overflow-y: auto;
   border-radius: 8px;
   font-size: 0.95rem;
   overscroll-behavior-y: contain; /* Prevent page scroll when chat scrolls */
 }
-  
 /* === Scrollbar (Update these) === */
 .chat-messages::-webkit-scrollbar-thumb {
   background: #d2b48c; /* Light brown */
@@ -1060,14 +1014,6 @@ body.modal-active {
 .dark-mode .chat-messages::-webkit-scrollbar-thumb {
   background: #555;
 }
-  
-.chat-message {
-  margin: 0.5rem 0; /* Reduced from 1rem */
-  padding-bottom: 0.5rem;
-  min-height: 300px; /* Ensures minimum chat space */
-  border-bottom: 1px solid #e0d4b7;
-}
-
 .chat-message strong {
   color: #8e6b3f; /* Earthy brown */
 }
@@ -1088,7 +1034,7 @@ body.modal-active {
   background: #fffef7;
   color: #4e348c;
   outline: none;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.15rem;
 }
 /* === Message Actions (Add these) === */
 .message-header {
@@ -1131,10 +1077,10 @@ body.modal-active {
 #sendChatBtn:hover {
   background: #f9b000;
 }
-
+/* WHERE ONE MESSAGE PER DAY LINE*/
 .chat-status {
-  margin-top: 0.25rem; /* can be adjusted*/
-  margin-bottom: 0.25rem; /* can be adjusted*/
+  margin-top: 0.15rem; /* can be adjusted*/
+  margin-bottom: 0.8rem; /* can be adjusted*/
   font-size: 1rem;
   text-align: center;
 }
@@ -1144,6 +1090,18 @@ body.modal-active {
   color: #aaa;
   font-style: italic;
 }
+
+.close-community-chat {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  color: #4e348c;
+  cursor: pointer;
+}
+
 .community-modal-overlay {
   /* Ensure modal is focusable for keyboard users */
   &:focus-visible { outline: 2px solid var(--purple); }
@@ -1292,27 +1250,6 @@ body.modal-active {
   color: #7f8c8d;
   margin-top: 10px;
   text-align: center;
-}
-
-/* ADD THESE LINES ONLY */
-
-/* Header layout for new JS structure */
-.chat-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 0.5rem 0;
-}
-
-.pet-name-header {
-  color: #4e348c;
-  font-weight: bold;
-  font-size: 1.1rem;
-}
-
-.chat-controls {
-  display: flex;
-  gap: 0.5rem;
 }
 
 /* Responsive modal dimensions */
