@@ -1316,11 +1316,14 @@ async function openCommunityChatModal(petId) {
   modal.innerHTML = `
     <div class="community-modal-content">
       <button class="close-community-chat">&times;</button>
-      <h2>💬 ${pet.petName || 'Pet'} Community Feedback</h2>
-      <div class="chat-header">
+          <h1>Community Feedback</h1>
+        <div class="chat-header">
+      <div class="pet-name-header">💬 ${pet.petName || 'Pet'}</div>
+            <div class="chat-controls">
         <button id="darkModeToggle" class="dark-mode-btn">🌙 Dark Mode</button>
         ${isAdmin ? '<button id="toggleViewBtn" class="view-toggle-btn">👁️ Show All Messages</button>' : ''}
       </div>
+    </div>
       <div class="chat-messages" id="chatMessages">Loading messages...</div>
       <div class="chat-input-area">
         <textarea id="chatInput" placeholder="Share your feedback..."></textarea>
