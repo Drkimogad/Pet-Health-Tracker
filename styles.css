@@ -48,14 +48,6 @@
   padding-top: 10px; /* Space for your header it was 80*/
 }
 
-/* Scroll Layer - for elements that scroll */
-.auth-scroll-layer {
-  position: relative;
-  height: 100%;
-  overflow-y: auto; /* Enables scrolling inside this container */
-  z-index: 10;
-}
-
 /* Your welcome section is now INSIDE .auth-fixed-layer */
 .auth-welcome-section {
   pointer-events: auto; /* Re-enable clicks if needed */
@@ -63,12 +55,6 @@
      .auth-fixed-layer now handles positioning */
 }
 
-/* Your content is now INSIDE .auth-scroll-layer */
-.auth-content {
-  padding: 2rem;
-  width: 100%;
-  /* Remove 'margin-top' - .auth-fixed-layer no longer pushes it down */
-}
 /* Welcome Lottie Container - Fixed */
 .pet-animation-container {
   width: 90%;
@@ -91,15 +77,17 @@
 } 
 
 /* Auth Header - Fixed */
-.auth-header h1 {
-  text-align: center;
+.auth-fixed-layer h1 { /* NEW RULE for the moved h1 */
   width: 100%;
-  margin: 10px 0;
+  text-align: center;
   font-size: 2.2rem;
-  margin: 0 0 0.5rem;
-  color: #2c3e50; /* Darker color for better contrast */
+  color: #2c3e50;
+  margin: 0 0 1rem 0;
 }
-
+.auth-header {
+  width: 70%; /* Match Lottie width */
+  text-align: right; /* Align container right */
+}
 .auth-header h2 {
   text-align: right; /* was center */
   width: 100%;
@@ -128,6 +116,22 @@
 
 .fullpage-lottie-container lottie-player {
     object-fit: cover;
+}
+
+
+/* Scroll Layer - for elements that scroll */
+.auth-scroll-layer {
+  position: relative;
+  height: 100%;
+  overflow-y: auto; /* Enables scrolling inside this container */
+  z-index: 10;
+  padding-top: 50vh; /* Pushes content to bottom half */
+}
+
+.auth-content {
+  padding: 2rem;
+  width: 100%;
+  min-height: 50vh; /* Ensures content fills bottom half */
 }
 
 /* Bouncing ball Google Sign-In styles */
