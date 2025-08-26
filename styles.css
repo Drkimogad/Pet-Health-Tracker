@@ -24,37 +24,51 @@
 }
 
 /* ===== AUTH SECTION VISIBILITY ===== */
+/* #authContainer - KEEP THIS VERSION ONLY */
 #authContainer {
-  display: flex !important;
-  flex-direction: column !important;
-  min-height: 100vh !important;
+  position: relative; /* Needed for absolute children */
+  height: 100vh; /* Container must have a height */
+  overflow: hidden; /* Prevent overall scrolling */
   padding: 2rem;
   box-sizing: border-box;
-  position: relative; /* Needed for absolute positioning of children */
 }
 
-/* Fixed Welcome Section - Stays at top */
-.auth-welcome-section {
-  position: fixed;
-  top: 80px; /* Adjust based on your header height */
+/* Fixed Layer - for elements that don't scroll */
+.auth-fixed-layer {
+  position: absolute; /* Takes elements out of normal flow */
+  top: 0;
   left: 0;
   width: 100%;
-  z-index: 15;
+  height: 100%;
+  pointer-events: none; /* Lets clicks pass through to the scroll layer */
+  z-index: 20;
   display: flex;
   flex-direction: column;
   align-items: center;
-  pointer-events: none; /* Allows clicks to pass through to content below */
+  padding-top: 80px; /* Space for your header */
 }
 
-/* Scrollable Content Area */
-.auth-content {
-  margin-top: 280px; /* Must be greater than welcome section height */
-  padding: 2rem;
-  z-index: 10;
+/* Scroll Layer - for elements that scroll */
+.auth-scroll-layer {
   position: relative;
-  width: 100%;
+  height: 100%;
+  overflow-y: auto; /* Enables scrolling inside this container */
+  z-index: 10;
 }
 
+/* Your welcome section is now INSIDE .auth-fixed-layer */
+.auth-welcome-section {
+  pointer-events: auto; /* Re-enable clicks if needed */
+  /* Remove 'position: fixed', 'top', 'left', 'z-index' - 
+     .auth-fixed-layer now handles positioning */
+}
+
+/* Your content is now INSIDE .auth-scroll-layer */
+.auth-content {
+  padding: 2rem;
+  width: 100%;
+  /* Remove 'margin-top' - .auth-fixed-layer no longer pushes it down */
+}
 /* Welcome Lottie Container - Fixed */
 .pet-animation-container {
   width: 80%;
