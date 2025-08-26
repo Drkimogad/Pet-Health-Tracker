@@ -188,6 +188,57 @@
   max-width: 45%;
   text-align: right;
 }
+
+/*===========================
+FOR PRIVACY AND TERMS HTMLS
+/* Legal Links Styling */
+============================*/
+.legal-links {
+    margin-top: 10px;
+    font-size: 0.9rem;
+}
+
+.legal-links a {
+    color: #4CAF50;
+    text-decoration: none;
+}
+
+.legal-links a:hover {
+    text-decoration: underline;
+}
+
+.auth-legal {
+    margin-top: 15px;
+    font-size: 0.8rem;
+    color: #666;
+    text-align: center;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.auth-legal a {
+    color: #4CAF50;
+    text-decoration: none;
+}
+
+.auth-legal a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .legal-links {
+        font-size: 0.8rem;
+    }
+    
+    .auth-legal {
+        font-size: 0.75rem;
+        padding: 0 10px;
+    }
+}
+
+
 /* ===== DASHBOARD STYLES ===== */
 /* Pet Card Image Fix */
 #petPhotoPreview {
