@@ -1355,8 +1355,7 @@ async function openCommunityChatModal(petId) {
       const messages = Array.isArray(data.messages) ? data.messages : []; 
         
         //FILTER MESSAGES BASED ON APPROVAL AND USER STATUS
-      const visibleMessages = isAdmin ? messages : messages.filter(msg => msg.approved);
-      
+const visibleMessages = isAdmin ? messages : messages.filter(msg => msg.approved === true);      
       if (visibleMessages.length === 0) {
         chatMessagesDiv.innerHTML = `<p class="no-messages">No feedback yet. Be the first to share!</p>`;
         return;
@@ -1500,26 +1499,27 @@ async function openCommunityChatModal(petId) {
     }
 
     // CHECK DAILY LIMIT
-    if (!isAdmin) {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    
-    const docSnap = await chatDocRef.get();
-    const messages = docSnap.exists ? (Array.isArray(docSnap.data().messages) ? docSnap.data().messages : []) : [];
-      
-    const userMessagesToday = messages.filter(msg => {
-      return msg.userId === user.uid && 
-             msg.timestamp && 
-             // WITH THIS:
-             msg.timestamp && (msg.timestamp.toDate ? msg.timestamp.toDate() : new Date(msg.timestamp)) >= today
-    });
+    // GET docSnap FIRST (before the admin check)
+const docSnap = await chatDocRef.get();
+const messages = docSnap.exists ? (Array.isArray(docSnap.data().messages) ? docSnap.data().messages : []) : [];
 
-    if (userMessagesToday.length > 0) {
-      status.textContent = "❌ You can only submit one feedback per day";
-      status.style.color = "var(--error-color)";
-      return;
-    }
-   }
+// CHECK DAILY LIMIT - SKIP FOR ADMIN
+if (!isAdmin) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+    
+  const userMessagesToday = messages.filter(msg => {
+    return msg.userId === user.uid && 
+           msg.timestamp && 
+           msg.timestamp && (msg.timestamp.toDate ? msg.timestamp.toDate() : new Date(msg.timestamp)) >= today
+  });
+
+  if (userMessagesToday.length > 0) {
+    status.textContent = "❌ You can only submit one feedback per day";
+    status.style.color = "var(--error-color)";
+    return;
+  }
+}
     status.textContent = "Sending...";
     status.style.color = "var(--text-color)";
 
