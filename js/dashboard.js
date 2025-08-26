@@ -1459,8 +1459,10 @@ if (isAdmin) {
       
       if (canDelete && confirm("Delete this message permanently?")) {
         // Remove the message from the array
-        messages.splice(msgIndex, 1);
-        await chatDocRef.update({ messages });
+        await chatDocRef.update({
+         messages: firebase.firestore.FieldValue.arrayRemove(message)
+       });
+          
       } else if (!canDelete) {
         alert("You can only delete your own messages before they are approved.");
       }
@@ -1470,8 +1472,9 @@ if (isAdmin) {
     if (e.target.classList.contains('approve-btn') && isAdmin) {
       // Update the approval status in the array
       messages[msgIndex].approved = true;
-      await chatDocRef.update({ messages });
-      
+      await chatDocRef.update({
+      messages: firebase.firestore.FieldValue.arrayUnion(newMessage)
+      });      
       // Ask if admin wants to reply immediately
       if (confirm("Message approved. Would you like to reply now?")) {
         const replyText = prompt(`Reply to ${message.userName}:`);
@@ -1505,7 +1508,9 @@ if (isAdmin) {
           approved: true,
           timestamp: new Date()  // Client timestamp first
         });
-        await chatDocRef.update({ messages });
+        await chatDocRef.update({
+        messages: firebase.firestore.FieldValue.arrayUnion(newMessage)
+     });
       }
     }
   });
@@ -1570,17 +1575,6 @@ if (!isAdmin) {
      petId: petId
     });
      }
-
-     // ADD THIS RIGHT AFTER await chatDocRef.update/set:
-// Update to server timestamp
-const updatedDoc = await chatDocRef.get();
-const updatedMessages = updatedDoc.data().messages || [];
-const addedMessageIndex = updatedMessages.findIndex(msg => msg.id === newMessage.id);
-if (addedMessageIndex !== -1) {
-  await chatDocRef.update({
-    [`messages.${addedMessageIndex}.timestamp`]: firebase.firestore.FieldValue.serverTimestamp()
-  });
-}
         
       input.value = '';
       status.textContent = "✓ Sent for approval!";
