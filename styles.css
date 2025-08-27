@@ -38,41 +38,23 @@
 #authContainer.hidden { display: none !important; }
 
 
-/* Scrollable overlay above the fixed layer */
-.auth-scroll-layer {
-  position: absolute;
-  height: 100vh;              /* only 80% of screen */
+/* Container for the header, positioned above the welcome section */
+.auth-header-container {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  background: #fff;          /* you can adjust */
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  z-index: 2;                /* sits above fixed layer */
-  scroll-behavior: smooth;
-  scroll-snap-type: y mandatory;
-  border-bottom-left-radius: 16px;
-  border-bottom-right-radius: 16px;
-  /* --- NEW: Enable scrolling and hide scrollbar --- */
-  overflow-y: scroll; /* Changed from 'auto' or if not present, added */
-  scrollbar-width: none;  /* Hides scrollbar in Firefox */
-}
-/* --- NEW: Hides scrollbar in WebKit browsers (Chrome, Safari, Edge) --- */
-.auth-scroll-layer::-webkit-scrollbar {
-  display: none;
-}
-
-
-/* Section 1: top welcome */
-.auth-welcome-section1 {
-  height: 40vh;
+  height: 15vh; /* Adjust this height based on your needs */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  text-align: center;
-  padding: 20px;
-  scroll-snap-align: start;
+  z-index: 4; /* Ensure it's above both the curtain (z-index: 2) and the auth content (z-index: 3) */
+  background: transparent; /* Or add a background color if needed */
 }
+
 /* H1 — Pet Health Tracker */
-.auth-scroll-layer h1 {
+.auth-header h1 {
   font-size: 2.4rem;
   font-weight: 700;
   color: #2c3e50;
@@ -83,59 +65,31 @@
 .auth-header h2 {
   font-size: 1.5rem;
   color: #d4a017;
-  text-align: center;
+  text-align: right;
   margin: 0 5px;
   line-height: 1.3;
 }
 
+/* Section 1: top welcome */
+.auth-welcome-section {
+  position: fixed;
+  top: 15vh; /* Start below the header container */
+  height: 20vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+}
+
 .pet-animation-container {
   width: 80%;
-  height: 20vh;                  /* scales with viewport */
+  height: 85%;                  /* scales with viewport */
   max-width: 600px;
   margin: 0 auto 1rem auto;
   border-radius: 12px;
   overflow: hidden;
   background-color: transparent;  /* show curtain color behind */
-  position: relative;
-}
-
-/* Section 2: message + peeking cat */
-.auth-welcome-section2 {
-/* --- CHANGED: Height is now 100vh to push the first section out of view --- */
-  height: 100vh; /* Changed from 40vh */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  text-align: center;
-  scroll-snap-align: start; /* This ensures it snaps to the top after the scroll */
-}
-
-.auth-welcome-section2 .pet-animation-container2 {
-  width: 70%;
-  max-width: 600px;
-  margin: 0 auto 10px auto;
-  max-width: 800px;
-  text-align: center;
-  aspect-ratio: 1/1;
-}
-
-.auth-welcome-section2 .quote-text {
-  font-size: 1.2rem;
-  font-weight: 500;
-  color: #555;  
-  animation: bounceMessage 2s infinite;
-  margin-top: 10px;
-  font-style: italic;
-  text-align: center;
-}
-
-
-/* Subtle bounce for the "scroll up" hint */
-@keyframes bounceMessage {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
 }
 
 
@@ -153,19 +107,6 @@
 .fullpage-lottie-container lottie-player {
     object-fit: cover;
 }
-
-/* ===== Scroll Layer & Auth Container Styling ===== */
-.auth-fixed-layer {
-  position: fixed;          /* contains the floating elements */
-  height: 100%;
-  width: 100%;
-  top: 0; 
-  left: 0;
-  overflow-y: auto;            /* allows scrolling if content grows */
-  z-index: 1;             /* sits underneath scroll layer */
-  background: transparent;     /* let the Lottie background show through */
-}
-
 
 /* Auth container floating on bottom-left */
 #googleSignInBtnWrapper {
@@ -262,8 +203,6 @@ FOR PRIVACY AND TERMS HTMLS
         padding: 0 10px;
     }
 }
-
-
 
 
 /* ===== DASHBOARD STYLES ===== */
