@@ -40,7 +40,7 @@
 
 /* Scrollable overlay above the fixed layer */
 .auth-scroll-layer {
-  position: relative;
+  position: absolute;
   height: 100vh;              /* only 80% of screen */
   width: 100%;
   background: #fff;          /* you can adjust */
