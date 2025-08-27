@@ -41,16 +41,16 @@
 /* Container for the header, positioned above the welcome section */
 .auth-header-container {
   position: fixed;
-  top: 0;
-  left: 0;
+  margin: 20px 0 10px 0;
   width: 100%;
-  height: 15vh; /* Adjust this height based on your needs */
+  height: 60px; /* Adjust this height based on your needs */
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: stretch;
+  border: black;
   z-index: 4; /* Ensure it's above both the curtain (z-index: 2) and the auth content (z-index: 3) */
-  background: transparent; /* Or add a background color if needed */
+  background: #DAB1DA; /* Or add a background color if needed */
 }
 
 /* H1 — Pet Health Tracker */
@@ -66,27 +66,28 @@
   font-size: 1.5rem;
   color: #d4a017;
   text-align: right;
-  margin: 0 5px;
+  margin: 0 20px;
   line-height: 1.3;
 }
 
 /* Section 1: top welcome */
 .auth-welcome-section {
   position: fixed;
-  top: 15vh; /* Start below the header container */
-  height: 20vh;
+  top: 20px; /* Start below the header container */
+  height: 100px;
+  width: 70%;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: stretch;
   text-align: center;
   padding: 20px;
+  background-color: #413752;  
 }
 
 .pet-animation-container {
-  width: 80%;
-  height: 85%;                  /* scales with viewport */
+  width: 100%;
+  height: 90%;                  /* scales with viewport */
   max-width: 600px;
-  margin: 0 auto 1rem auto;
   border-radius: 12px;
   overflow: hidden;
   background-color: transparent;  /* show curtain color behind */
@@ -119,16 +120,11 @@
   align-items: center;         /* center the button and text */
   gap: 15px;
   padding: 15px;
-  background: brown; /* readable over Lottie */
+  background: #828799; /* readable over Lottie */
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.2);
   z-index: 12;                 /* above scroll content, below curtain */
 }
-
-/* Ensure the ball stays centered inside the container */
-.bouncing-ball {
-}
-
 
 /* Bouncing ball button remains the same but ensure inside this container */
 .bouncing-ball {
