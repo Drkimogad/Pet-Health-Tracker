@@ -117,12 +117,15 @@ The. urtain */
 /* ===== Scroll Layer & Auth Container Styling ===== */
 .auth-scroll-layer {
   position: relative;          /* contains the floating elements */
-  height: 100%;                /* fills the remaining space below the curtain */
+  min-height: calc(100vh - 40vh); /* 100vh minus curtain height */
   overflow-y: auto;            /* allows scrolling if content grows */
   z-index: 10;                 /* below curtain but above Lottie */
   background: transparent;     /* let the Lottie background show through */
   padding-top: var(--auth-curtain); /* ensures content starts below the curtain */
 }
+
+
+
 
 /* Auth container floating on bottom-left */
 #googleSignInBtnWrapper {
