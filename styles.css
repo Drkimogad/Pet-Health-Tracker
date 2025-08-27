@@ -126,7 +126,7 @@ The. urtain */
 
 /* Auth container floating on bottom-left */
 #googleSignInBtnWrapper {
-  position: absolute;          /* floats inside scroll layer */
+  position: fixed;      /* floats above scroll content, relative to viewport */
   bottom: 120px;               /* offset from bottom, tweak to avoid Lottie food */
   left: 20px;                  /* offset from left edge */
   z-index: 12;                 /* above scroll layer content */
