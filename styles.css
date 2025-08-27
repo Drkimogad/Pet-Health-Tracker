@@ -21,6 +21,7 @@
   --green: #43a047;
   --red: #e74c3c;
   --darkred: #8B0000; /* Or your preferred value */
+  --auth-curtain: 45vh; /* 👈 Sensitive: tweak this value to control how tall the fixed curtain is */
 }
 
 /* ===== AUTH SECTION VISIBILITY ===== */
@@ -33,73 +34,71 @@
   box-sizing: border-box;
 }
 
-/* Fixed Layer - for elements that don't scroll */
+/* Fixed Layer - for elements that don't scroll enhanced*/
 .auth-fixed-layer {
-  position: absolute; /* Takes elements out of normal flow */
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none; /* Lets clicks pass through to the scroll layer */
-  z-index: 20;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch; /* to follow the container's width */
-  padding-top: 30px; /* Space for your header it was 80*/
-}
-
-/* Your welcome section is now INSIDE .auth-fixed-layer */
-.auth-welcome-section {
-  pointer-events: auto; /* Re-enable clicks if needed */
-  /* Remove 'position: fixed', 'top', 'left', 'z-index' - 
-     .auth-fixed-layer now handles positioning */
-}
-
-/* Welcome Lottie Container - Fixed */
-.pet-animation-container {
-  width: 90%;
-  height:100px;
-  max-width: 600px; /* Adjust*/
-  background-color: #f8f9fa;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  overflow: hidden;
-  position: relative;
-  margin: 0 auto; /* Centered */
-}
-
-.pet-animation-container lottie-player {
-  width: 100%;
-  height: 100%;
   position: absolute;
   top: 0;
   left: 0;
-} 
+  width: 100%;
+  height: var(--auth-curtain); /* 👈 Sensitive: this replaces the 100% */
+  pointer-events: none; /* keep so only children catch clicks */
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding-top: 30px; /* 👈 Sensitive: adjust for vertical spacing inside curtain */
+  background: #ffe6f0; /* 👈 Light pink background (sensitive: tweak color later) */
+}
 
-/* Auth Header - Fixed */
-.auth-fixed-layer h1 { /* NEW RULE for the moved h1 */
+/* ===== Fixed Welcome Section Refinements ===== */
+.auth-welcome-section {
+  pointer-events: auto;       /* keep interactive */
+  display: flex;
+  flex-direction: column;
+  align-items: center;        /* center all children horizontally */
+  justify-content: flex-start;/* start from top, but leave padding for spacing */
   width: 100%;
+  padding: 1rem 0;            /* vertical breathing room inside curtain */
+  box-sizing: border-box;
+}
+
+/* H1 — Pet Health Tracker */
+.auth-fixed-layer h1 {
   text-align: center;
-  font-size: 2.2rem;
-  color: #2c3e50;
-  margin: 0 0 1rem 0;
+  font-size: 2.4rem;          /* slightly larger for prominence */
+  font-weight: 700;           /* bold */
+  color: #2c3e50;             /* keeps contrast against pink */
+  margin: 0 0 1rem 0;         /* space below h1 */
 }
-.auth-header {
-  width: 80%; /* Match Lottie width */
-  text-align: center; /* Align container centre */
+
+/* Lottie Container — scalable with curtain */
+.pet-animation-container {
+  width: 80%;                 /* centered and responsive */
+  height: 20vh;               /* fluid height based on curtain height (sensitive: tweak later) */
+  max-width: 600px;           /* prevent stretching on wide screens */
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: transparent; /* remove box color to let curtain pink show through */
+  margin: 0 auto 1rem auto;      /* center + spacing below */
+  position: relative;
 }
+
+/* H2 — Subheading */
 .auth-header h2 {
-  text-align: right; /* was center */
-  width: 100%;
-  margin: 0 5px; 
-  color: #d4a017;
+  text-align: center;         /* center-align instead of right */
+  color: #d4a017;             /* keeps the gold accent */
   font-size: 1.5rem;
-  white-space: nowrap;
+  margin: 0 5px;              /* slight horizontal padding */
+  line-height: 1.3;           /* sensitive: adjust for smaller screens */
+  white-space: normal;        /* allow wrapping */
 }
+
 
 .hidden { display: none !important; }
 .visible { display: block !important; }
 #authContainer.hidden { display: none !important; }
+
+
 
 
 /* Full-page Lottie background styles */
