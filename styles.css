@@ -50,7 +50,15 @@
   scroll-snap-type: y mandatory;
   border-bottom-left-radius: 16px;
   border-bottom-right-radius: 16px;
+  /* --- NEW: Enable scrolling and hide scrollbar --- */
+  overflow-y: scroll; /* Changed from 'auto' or if not present, added */
+  scrollbar-width: none;  /* Hides scrollbar in Firefox */
 }
+/* --- NEW: Hides scrollbar in WebKit browsers (Chrome, Safari, Edge) --- */
+.auth-scroll-layer::-webkit-scrollbar {
+  display: none;
+}
+
 
 /* Section 1: top welcome */
 .auth-welcome-section1 {
@@ -93,14 +101,15 @@
 
 /* Section 2: message + peeking cat */
 .auth-welcome-section2 {
-  height: 40vh;
+/* --- CHANGED: Height is now 100vh to push the first section out of view --- */
+  height: 100vh; /* Changed from 40vh */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 20px;
   text-align: center;
-  scroll-snap-align: end;
+  scroll-snap-align: start; /* This ensures it snaps to the top after the scroll */
 }
 
 .auth-welcome-section2 .pet-animation-container2 {
@@ -109,7 +118,7 @@
   margin: 0 auto 10px auto;
   max-width: 800px;
   text-align: center;
-   aspect-ratio: 1/1;
+  aspect-ratio: 1/1;
 }
 
 .auth-welcome-section2 .quote-text {
