@@ -41,7 +41,7 @@
 /* Scrollable overlay above the fixed layer */
 .auth-scroll-layer {
   position: relative;
-  height: 80vh;              /* only 80% of screen */
+  height: 100vh;              /* only 80% of screen */
   width: 100%;
   overflow-y: auto;
   background: #fff;          /* you can adjust */
@@ -54,7 +54,7 @@
 
 /* Section 1: top welcome */
 .auth-welcome-section1 {
-  height: 40%;
+  height: 40vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -92,7 +92,7 @@
 
 /* Section 2: message + peeking cat */
 .auth-welcome-section2 {
-  height: 40%;
+  height: 40vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -102,17 +102,22 @@
 }
 
 .auth-welcome-section2 .pet-animation-container2 {
-  width: 60%;
-  max-width: 400px;
-  margin: 0 auto 15px auto;
+  width: 80%;
+  margin: 0 auto;
+  aspect-ratio: 4/1;
+  max-width: 800px;
+  text-align: center;
 }
 
 .auth-welcome-section2 .quote-text {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 500;
-  color: #444;
-  margin-top: 10px;
+  color: #444;  
   animation: bounceMessage 2s infinite;
+  margin-top: 12px;
+  font-size: 1.1rem;
+  font-style: italic;
+  color: #444;
 }
 
 /* Subtle bounce for the "scroll up" hint */
