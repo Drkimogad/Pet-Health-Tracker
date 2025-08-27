@@ -25,10 +25,11 @@
 
 /* ===== AUTH SECTION VISIBILITY ===== */
 /* #authContainer - KEEP THIS VERSION ONLY */
+/* ===== AUTH SECTION VISIBILITY ===== */
 #authContainer {
-  position: relative; /* Needed for absolute children */
-  height: 100vh; /* Container must have a height */
-  overflow: hidden; /* Prevent overall scrolling */
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
   padding: 1rem;
   box-sizing: border-box;
 }
@@ -37,29 +38,38 @@
 .visible { display: block !important; }
 #authContainer.hidden { display: none !important; }
 
+/* ===== FULLPAGE BANNER (BACKGROUND) ===== */
+.fullpage-lottie-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1; /* Changed from -1 to 1 (bottom layer) */
+    overflow: hidden;
+}
 
-/* Container for the header, positioned above the welcome section */
+/* ===== AUTH HEADER CONTAINER (TOP BAR) ===== */
 .auth-header-container {
   position: fixed;
-  margin: 20px 0 10px 0;
+  top: 0; /* Position at the very top */
+  left: 0;
   width: 100%;
-  height: 60px; /* Adjust this height based on your needs */
+  height: 60px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: stretch;
-  border: black;
-  z-index: 4; /* Ensure it's above both the curtain (z-index: 2) and the auth content (z-index: 3) */
-  background: #DAB1DA; /* Or add a background color if needed */
+  background: #DAB1DA;
+  z-index: 3; /* Above the curtain */
+  box-sizing: border-box;
 }
 
-/* H1 — Pet Health Tracker */
 .auth-header h1 {
   font-size: 2.4rem;
   font-weight: 700;
   color: #2c3e50;
   text-align: center;
-  margin: 0 0 1rem 0;
+  margin: 0;
 }
 
 .auth-header h2 {
@@ -70,63 +80,49 @@
   line-height: 1.3;
 }
 
-/* Section 1: top welcome */
+/* ===== AUTH WELCOME SECTION (CURTAIN) ===== */
 .auth-welcome-section {
   position: fixed;
-  top: 20px; /* Start below the header container */
+  top: 60px; /* Position below the header container */
+  left: 0;
+  width: 100%;
   height: 100px;
-  width: 70%;
   display: flex;
   justify-content: center;
-  align-items: stretch;
+  align-items: center;
   text-align: center;
   padding: 20px;
-  background-color: #413752;  
+  background-color: #413752;
+  z-index: 2; /* Between background and header */
+  box-sizing: border-box;
 }
 
 .pet-animation-container {
   width: 100%;
-  height: 90%;                  /* scales with viewport */
+  height: 90%;
   max-width: 600px;
   border-radius: 12px;
   overflow: hidden;
-  background-color: transparent;  /* show curtain color behind */
+  background-color: transparent;
 }
 
-
-/* Full-pag banner e Lottie background styles */
-.fullpage-lottie-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: -1;
-    overflow: hidden;
-}
-
-.fullpage-lottie-container lottie-player {
-    object-fit: cover;
-}
-
-/* Auth container floating on bottom-left */
+/* ===== GOOGLE SIGN-IN BUTTON ===== */
 #googleSignInBtnWrapper {
-  position: fixed;          /* stays inside scroll layer */
-  bottom: 80px;                /* adjust distance above footer */
-  left: 50%;                   /* center horizontally */
-  transform: translateX(-50%); /* exact center alignment */
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
-  align-items: center;         /* center the button and text */
+  align-items: center;
   gap: 15px;
   padding: 15px;
-  background: #828799; /* readable over Lottie */
+  background: #828799;
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.2);
-  z-index: 12;                 /* above scroll content, below curtain */
+  z-index: 4; /* Top layer */
 }
 
-/* Bouncing ball button remains the same but ensure inside this container */
 .bouncing-ball {
   width: 80px;
   height: 80px;
