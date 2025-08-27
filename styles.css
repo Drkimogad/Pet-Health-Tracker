@@ -117,7 +117,7 @@ The. urtain */
 /* ===== Scroll Layer & Auth Container Styling ===== */
 .auth-scroll-layer {
   position: relative;          /* contains the floating elements */
-  min-height: calc(100vh - 40vh); /* 100vh minus curtain height */
+  height: 100%;
   overflow-y: auto;            /* allows scrolling if content grows */
   z-index: 10;                 /* below curtain but above Lottie */
   background: transparent;     /* let the Lottie background show through */
@@ -129,7 +129,7 @@ The. urtain */
 
 /* Auth container floating on bottom-left */
 #googleSignInBtnWrapper {
-  position: absolute;          /* stays inside scroll layer */
+  position: fixed;          /* stays inside scroll layer */
   bottom: 80px;                /* adjust distance above footer */
   left: 50%;                   /* center horizontally */
   transform: translateX(-50%); /* exact center alignment */
@@ -138,7 +138,7 @@ The. urtain */
   align-items: center;         /* center the button and text */
   gap: 15px;
   padding: 15px;
-  background: rgba(255, 255, 255, 0.95); /* readable over Lottie */
+  background: brown; /* readable over Lottie */
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.2);
   z-index: 12;                 /* above scroll content, below curtain */
