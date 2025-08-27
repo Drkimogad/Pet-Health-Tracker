@@ -41,13 +41,14 @@
 /* Scrollable overlay above the fixed layer */
 .auth-scroll-layer {
   position: relative;
-  height: 100vh;              /* only 80% of screen */
+  height: 80vh;              /* only 80% of screen */
   width: 100%;
   overflow-y: auto;
   background: #fff;          /* you can adjust */
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  z-index: 20;                /* sits above fixed layer */
+  z-index: 1;                /* sits above fixed layer */
   scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
   border-bottom-left-radius: 16px;
   border-bottom-right-radius: 16px;
 }
@@ -61,6 +62,7 @@
   align-items: center;
   text-align: center;
   padding: 20px;
+  scroll-snap-align: start;
 }
 /* H1 — Pet Health Tracker */
 .auth-scroll-layer h1 {
@@ -99,26 +101,32 @@
   align-items: center;
   padding: 20px;
   text-align: center;
+  scroll-snap-align: end;
 }
 
 .auth-welcome-section2 .pet-animation-container2 {
-  width: 80%;
+  width: 70%;
+  max-width: 600px;
+  margin: 0 auto 10px auto;
   margin: 0 auto;
   aspect-ratio: 4/1;
   max-width: 800px;
   text-align: center;
+   aspect-ratio: 1/1;
 }
 
 .auth-welcome-section2 .quote-text {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 500;
-  color: #444;  
+  color: #555;  
   animation: bounceMessage 2s infinite;
-  margin-top: 12px;
+  margin-top: 10px;
   font-size: 1.1rem;
   font-style: italic;
+  text-align: center;
   color: #444;
 }
+
 
 /* Subtle bounce for the "scroll up" hint */
 @keyframes bounceMessage {
@@ -147,10 +155,13 @@
   position: fixed;          /* contains the floating elements */
   height: 100%;
   width: 100%;
+  top: 0; 
+  left: 0;
   overflow-y: auto;            /* allows scrolling if content grows */
-  z-index: 10;                 /* below curtain but above Lottie */
+  z-index: 0;             /* sits underneath scroll layer */
   background: transparent;     /* let the Lottie background show through */
 }
+
 
 /* Auth container floating on bottom-left */
 #googleSignInBtnWrapper {
