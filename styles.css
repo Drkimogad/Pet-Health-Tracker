@@ -21,7 +21,6 @@
   --green: #43a047;
   --red: #e74c3c;
   --darkred: #8B0000; /* Or your preferred value */
-  --auth-curtain: 40vh; /* 👈 Sensitive: tweak this value to control how tall the fixed curtain is */
 }
 
 /* ===== AUTH SECTION VISIBILITY ===== */
@@ -34,70 +33,94 @@
   box-sizing: border-box;
 }
 
-/* Fixed Layer - for elements that don't scroll enhanced
-The. urtain */
-.auth-fixed-layer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: var(--auth-curtain); /* 👈 Sensitive: this replaces the 100% */
-  pointer-events: none; /* keep so only children catch clicks */
-  z-index: 20;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  padding-top: 30px; /* 👈 Sensitive: adjust for vertical spacing inside curtain */
-  background: #ffe6f0; /* 👈 Light pink background (sensitive: tweak color later) */
-}
-
-/* ===== Fixed Welcome Section Refinements ===== */
-.auth-welcome-section {
-  pointer-events: auto;       /* keep interactive */
-  display: flex;
-  flex-direction: column;
-  align-items: center;        /* center all children horizontally */
-  justify-content: flex-start;/* start from top, but leave padding for spacing */
-  width: 100%;
-  padding: 1rem 0 0.5rem 0;   /* reduce bottom spacing */
-  box-sizing: border-box;
-}
-
-/* H1 — Pet Health Tracker */
-.auth-fixed-layer h1 {
-  text-align: center;
-  font-size: 2.4rem;          /* slightly larger for prominence */
-  font-weight: 700;           /* bold */
-  color: #2c3e50;             /* keeps contrast against pink */
-  margin: 0 0 1rem 0;         /* space below h1 */
-}
-
-/* Lottie Container — scalable with curtain */
-.pet-animation-container {
-  width: 80%;                 /* centered and responsive */
-  height: 20vh;               /* fluid height based on curtain height (sensitive: tweak later) */
-  max-width: 600px;           /* prevent stretching on wide screens */
-  border-radius: 12px;
-  overflow: hidden;
-  background-color: transparent; /* remove box color to let curtain pink show through */
-  margin: 0 auto 1rem auto;      /* center + spacing below */
-  position: relative;
-}
-
-/* H2 — Subheading */
-.auth-header h2 {
-  text-align: center;         /* center-align instead of right */
-  color: #d4a017;             /* keeps the gold accent */
-  font-size: 1.5rem;
-  margin: 0 5px;              /* slight horizontal padding */
-  line-height: 1.3;           /* sensitive: adjust for smaller screens */
-  white-space: normal;        /* allow wrapping */
-}
-  /* tweak margin bottom if needed*/
-
 .hidden { display: none !important; }
 .visible { display: block !important; }
 #authContainer.hidden { display: none !important; }
+
+
+/* Scrollable overlay above the fixed layer */
+.auth-scroll-layer {
+  position: relative;
+  height: 80vh;              /* only 80% of screen */
+  width: 100%;
+  overflow-y: auto;
+  background: #fff;          /* you can adjust */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  z-index: 2;                /* sits above fixed layer */
+  scroll-behavior: smooth;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+}
+
+/* Section 1: top welcome */
+.auth-welcome-section1 {
+  height: 40%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+}
+/* H1 — Pet Health Tracker */
+.auth-scroll-layer h1 {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #2c3e50;
+  text-align: center;
+  margin: 0 0 1rem 0;
+}
+
+.auth-header h2 {
+  font-size: 1.5rem;
+  color: #d4a017;
+  text-align: center;
+  margin: 0 5px;
+  line-height: 1.3;
+}
+
+.pet-animation-container {
+  width: 80%;
+  height: 20vh;                  /* scales with viewport */
+  max-width: 600px;
+  margin: 0 auto 1rem auto;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: transparent;  /* show curtain color behind */
+  position: relative;
+}
+
+/* Section 2: message + peeking cat */
+.auth-welcome-section2 {
+  height: 40%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  text-align: center;
+}
+
+.auth-welcome-section2 .pet-animation-container2 {
+  width: 60%;
+  max-width: 400px;
+  margin: 0 auto 15px auto;
+}
+
+.auth-welcome-section2 .quote-text {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #444;
+  margin-top: 10px;
+  animation: bounceMessage 2s infinite;
+}
+
+/* Subtle bounce for the "scroll up" hint */
+@keyframes bounceMessage {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
 
 /* Full-pag banner e Lottie background styles */
 .fullpage-lottie-container {
@@ -115,7 +138,7 @@ The. urtain */
 }
 
 /* ===== Scroll Layer & Auth Container Styling ===== */
-.auth-scroll-layer {
+.auth-fixed-layer {
   position: relative;          /* contains the floating elements */
   height: 100%;
   overflow-y: auto;            /* allows scrolling if content grows */
