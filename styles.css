@@ -126,24 +126,31 @@ The. urtain */
 
 /* Auth container floating on bottom-left */
 #googleSignInBtnWrapper {
-  position: fixed;      /* floats above scroll content, relative to viewport */
-  bottom: 120px;               /* offset from bottom, tweak to avoid Lottie food */
-  left: 20px;                  /* offset from left edge */
-  z-index: 12;                 /* above scroll layer content */
+  position: absolute;          /* stays inside scroll layer */
+  bottom: 80px;                /* adjust distance above footer */
+  left: 50%;                   /* center horizontally */
+  transform: translateX(-50%); /* exact center alignment */
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 15px;                   /* space between button, message, and legal text */
+  align-items: center;         /* center the button and text */
+  gap: 15px;
   padding: 15px;
-  background: rgba(255, 255, 255, 0.9); /* optional semi-transparent box for readability */
+  background: rgba(255, 255, 255, 0.95); /* readable over Lottie */
   border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.2); /* subtle lift effect */
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  z-index: 12;                 /* above scroll content, below curtain */
 }
+
+/* Ensure the ball stays centered inside the container */
+.bouncing-ball {
+}
+
 
 /* Bouncing ball button remains the same but ensure inside this container */
 .bouncing-ball {
   width: 80px;
   height: 80px;
+  margin: 0 auto;
   border-radius: 50%;
   background: radial-gradient(circle at 30% 30%, #ffffff, #4285f4);
   box-shadow: 0 4px 15px rgba(66, 133, 244, 0.4);
@@ -195,6 +202,10 @@ FOR PRIVACY AND TERMS HTMLS
 
 .auth-legal a:hover {
   text-decoration: underline;
+}
+
+.auth-message, .auth-legal {
+  text-align: center;          /* center text inside container */
 }
 
 /* Responsive adjustments */
