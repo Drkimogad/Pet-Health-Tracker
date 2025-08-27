@@ -46,7 +46,7 @@
   overflow-y: auto;
   background: #fff;          /* you can adjust */
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  z-index: 2;                /* sits above fixed layer */
+  z-index: 20;                /* sits above fixed layer */
   scroll-behavior: smooth;
   border-bottom-left-radius: 16px;
   border-bottom-right-radius: 16px;
@@ -139,16 +139,13 @@
 
 /* ===== Scroll Layer & Auth Container Styling ===== */
 .auth-fixed-layer {
-  position: relative;          /* contains the floating elements */
+  position: fixed;          /* contains the floating elements */
   height: 100%;
+  width: 100%;
   overflow-y: auto;            /* allows scrolling if content grows */
   z-index: 10;                 /* below curtain but above Lottie */
   background: transparent;     /* let the Lottie background show through */
-  padding-top: var(--auth-curtain); /* ensures content starts below the curtain */
 }
-
-
-
 
 /* Auth container floating on bottom-left */
 #googleSignInBtnWrapper {
