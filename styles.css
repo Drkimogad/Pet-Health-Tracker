@@ -92,9 +92,8 @@ The. urtain */
   margin: 0 5px;              /* slight horizontal padding */
   line-height: 1.3;           /* sensitive: adjust for smaller screens */
   white-space: normal;        /* allow wrapping */
-  /* tweak margin bottom if needed*/
 }
-
+  /* tweak margin bottom if needed*/
 
 .hidden { display: none !important; }
 .visible { display: block !important; }
