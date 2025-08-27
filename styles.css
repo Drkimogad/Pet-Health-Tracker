@@ -100,10 +100,7 @@ The. urtain */
 .visible { display: block !important; }
 #authContainer.hidden { display: none !important; }
 
-
-
-
-/* Full-page Lottie background styles */
+/* Full-pag banner e Lottie background styles */
 .fullpage-lottie-container {
     position: fixed;
     top: 0;
@@ -118,163 +115,48 @@ The. urtain */
     object-fit: cover;
 }
 
-
-/* Scroll Layer - for elements that scroll */
+/* ===== Scroll Layer & Auth Container Styling ===== */
 .auth-scroll-layer {
-  position: relative;
-  height: 100%;
-  overflow-y: auto; /* Enables scrolling inside this container */
-  z-index: 10;
-  padding-top: 55vh; /* Pushes content to bottom half */
+  position: relative;          /* contains the floating elements */
+  height: 100%;                /* fills the remaining space below the curtain */
+  overflow-y: auto;            /* allows scrolling if content grows */
+  z-index: 10;                 /* below curtain but above Lottie */
+  background: transparent;     /* let the Lottie background show through */
+  padding-top: var(--auth-curtain); /* ensures content starts below the curtain */
 }
 
-.auth-content {
-  padding: 2rem;
-  width: 100%;
-  min-height: 45vh; /* Ensures content fills bottom half */
-}
-
-/* Bouncing ball Google Sign-In styles */
-.bouncing-ball-container {
-    position: absolute; /* Change from relative */
-    left: 20px; /* Position from left */
-    bottom: 130px; /* Position from bottom - adjust this value */
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
-    padding: 20px;
-}
-
-.bouncing-ball {
-    width: 80px; /*80*/
-    height: 80px; /*80*/
-    border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, #ffffff, #4285f4);
-    box-shadow: 0 4px 15px rgba(66, 133, 244, 0.4);
-    cursor: pointer;
-    display: flex;
-    align-items: stretch;
-    justify-content: center;
-    color: white;
-    font-weight: bold;
-    animation: bounce 2s infinite ease-in-out;
-    transition: all 0.3s ease;
-}
-
-.bouncing-ball:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 20px rgba(66, 133, 244, 0.6);
-}
-
-@keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-15px); }
-}
-
-.auth-message {
-  color: #333;
-  margin-top: 10px;
-  font-size: 1rem;
-}
-.auth-switch-btn {
-  background: none;
-  border: none;
-  color: #0066cc;
-  text-decoration: underline;
-  cursor: pointer;
-  padding: 10px 0;
-  font-size: 1rem;
-  margin-top: 15px;
-  display: block;
-  width: 100%;
-  text-align: center;
-}
-
-.auth-switch-btn:hover {
-  color: #004499;
-}
-
-.button[disabled] {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.success-message {
-  color: #28a745;
-  text-align: center;
-  margin: 15px 0;
-}
-
-
-/* Bouncing bone quote styles */
-  /* Surgical fix for the bouncing bone */
-#bouncingQuote {
-  position: fixed;
-  bottom: 130px;
-  right: 20px;
-  transform: translateX(-50%);
-  z-index: 25;
+/* Auth container floating on bottom-left */
+#googleSignInBtnWrapper {
+  position: absolute;          /* floats inside scroll layer */
+  bottom: 120px;               /* offset from bottom, tweak to avoid Lottie food */
+  left: 20px;                  /* offset from left edge */
+  z-index: 12;                 /* above scroll layer content */
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-  gap: 10px;
-  width: 40%; /* Occupies 50% of page width */
-  background-color: #D2B48C; /* Light brown background */
+  align-items: flex-start;
+  gap: 15px;                   /* space between button, message, and legal text */
   padding: 15px;
+  background: rgba(255, 255, 255, 0.9); /* optional semi-transparent box for readability */
   border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2); /* subtle lift effect */
 }
 
-.bone-shape {
-    width: 120px; /* Double the size */
-    height: 40px; /* Double the size */
-    background: #f8f8f8;
-    border-radius: 8px;
-    position: relative;
-    animation: bone-bounce 3s infinite ease-in-out;
-    margin: 0 auto; /* Center the bone */
+/* Bouncing ball button remains the same but ensure inside this container */
+.bouncing-ball {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #ffffff, #4285f4);
+  box-shadow: 0 4px 15px rgba(66, 133, 244, 0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  animation: bounce 2s infinite ease-in-out;
+  transition: all 0.3s ease;
 }
-.bone-shape::before,
-.bone-shape::after {
-    content: '';
-    position: absolute;
-    width: 40px; /* Double the size */
-    height: 40px; /* Double the size */
-    background: #f8f8f8;
-    border-radius: 50%;
-}
-.bone-shape::before {
-    left: -10px;
-    top: 0;
-}
-.bone-shape::after {
-    right: -10px;
-    top: 0;
-}
-
-.quote-text {
-    color: #f8f8f8;
-    font-style: italic;
-    font-size: 0.9rem;
-    text-align: center;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.bouncing-bone-container:hover .quote-text {
-    opacity: 1;
-}
-
-@keyframes bone-bounce {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    25% { transform: translateY(-10px) rotate(5deg); }
-    50% { transform: translateY(-5px) rotate(-5deg); }
-    75% { transform: translateY(-8px) rotate(3deg); }
-}
-
-
 
 /*===========================
 FOR PRIVACY AND TERMS HTMLS
@@ -294,23 +176,26 @@ FOR PRIVACY AND TERMS HTMLS
     text-decoration: underline;
 }
 
+.auth-message {
+  color: #333;
+  font-size: 1rem;
+  margin: 0;
+}
+
 .auth-legal {
-    margin-top: 15px;
-    font-size: 0.8rem;
-    color: #666;
-    text-align: center;
-    max-width: 300px;
-    margin-left: auto;
-    margin-right: auto;
+  font-size: 0.8rem;
+  color: #666;
+  max-width: 280px;
+  margin: 0;
 }
 
 .auth-legal a {
-    color: #4CAF50;
-    text-decoration: none;
+  color: #4CAF50;
+  text-decoration: none;
 }
 
 .auth-legal a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 /* Responsive adjustments */
@@ -324,6 +209,8 @@ FOR PRIVACY AND TERMS HTMLS
         padding: 0 10px;
     }
 }
+
+
 
 
 /* ===== DASHBOARD STYLES ===== */
