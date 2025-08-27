@@ -45,7 +45,7 @@
   display: flex;
   flex-direction: column;
   align-items: stretch; /* to follow the container's width */
-  padding-top: 10px; /* Space for your header it was 80*/
+  padding-top: 30px; /* Space for your header it was 80*/
 }
 
 /* Your welcome section is now INSIDE .auth-fixed-layer */
@@ -57,8 +57,9 @@
 
 /* Welcome Lottie Container - Fixed */
 .pet-animation-container {
-  width: 100%;
-  max-width: 800px;
+  width: 90%;
+  height:100px;
+  max-width: 600px; /* Adjust*/
   background-color: #f8f9fa;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -84,16 +85,15 @@
   margin: 0 0 1rem 0;
 }
 .auth-header {
-  width: 100%; /* Match Lottie width */
-  text-align: right; /* Align container right */
+  width: 80%; /* Match Lottie width */
+  text-align: center; /* Align container centre */
 }
 .auth-header h2 {
   text-align: right; /* was center */
   width: 100%;
-  margin: 5px 0;
+  margin: 0 5px; 
   color: #d4a017;
-  font-size: 1.8rem;
-  margin: 0;
+  font-size: 1.5rem;
   white-space: nowrap;
 }
 
@@ -135,19 +135,20 @@
 
 /* Bouncing ball Google Sign-In styles */
 .bouncing-ball-container {
-    position: relative;
+    position: absolute; /* Change from relative */
+    left: 20px; /* Position from left */
+    bottom: 130px; /* Position from bottom - adjust this value */
     z-index: 10;
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* Change from 'center' to 'flex-start' */  
+    align-items: flex-start;
     gap: 15px;
-    margin: 2rem auto;
     padding: 20px;
 }
 
 .bouncing-ball {
-    width: 100px; /*80*/
-    height: 100px; /*80*/
+    width: 80px; /*80*/
+    height: 80px; /*80*/
     border-radius: 50%;
     background: radial-gradient(circle at 30% 30%, #ffffff, #4285f4);
     box-shadow: 0 4px 15px rgba(66, 133, 244, 0.4);
@@ -210,15 +211,15 @@
   /* Surgical fix for the bouncing bone */
 #bouncingQuote {
   position: fixed;
-  bottom: 100px;
-  left: 50%;
+  bottom: 130px;
+  right: 20px;
   transform: translateX(-50%);
   z-index: 25;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   gap: 10px;
-  width: 50%; /* Occupies 50% of page width */
+  width: 40%; /* Occupies 50% of page width */
   background-color: #D2B48C; /* Light brown background */
   padding: 15px;
   border-radius: 12px;
