@@ -466,6 +466,12 @@ textarea:focus {
 
 
 /* Pet Cards all styles SPLIT LAYOUT */
+/* added to ensure footer doesn't cover last petCard in dashboard  مهم جدآ*/
+.saved-profiles {
+  padding-bottom: 5vh;  /* same as footer height */
+  box-sizing: border-box;
+}
+
 ..pet-card {
   background: #ffffff;
   border-radius: 10px;
