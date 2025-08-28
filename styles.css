@@ -154,12 +154,13 @@ footer p, footer .legal-links {
 
 /* ===== GOOGLE SIGN-IN BUTTON ===== */
   /* moved outside Authentication container becauseLottis overflow hidden*/
+/* ===== GOOGLE SIGN-IN BUTTON WRAPPER ===== */
 #googleSignInBtnWrapper {
-  position: fixed !important;        /* pinned to viewport */
-  bottom: 6vh !important;           /* just above footer */
-  left: 50%;                          /* horizontal center */
+  position: fixed !important;
+  bottom: 6vh !important;
+  left: 50%;
   transform: translateX(-50%);
-  z-index: 1000 !important;           /* above all other fixed elements */
+  z-index: 1000 !important;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -168,10 +169,10 @@ footer p, footer .legal-links {
   background: #bfbbb2;
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.2);
-  animation: wrapperWave 3s infinite ease-in-out; /* gentle wave */
+  animation: wrapperWave 6s infinite ease-in-out; /* slower wave */
 }
 
-/* Optional: make sure bouncing ball is fully visible */
+/* ===== Bouncing Ball ===== */
 .bouncing-ball {
   width: 80px;
   height: 80px;
@@ -184,21 +185,22 @@ footer p, footer .legal-links {
   justify-content: center;
   color: white;
   font-weight: bold;
-  animation: bounce 1.5s infinite ease-in-out; /* fixed timing */
+  animation: bounce 3s infinite ease-in-out; /* slower bounce */
 }
 
 /* ===== Keyframes ===== */
 @keyframes bounce {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-15px); } /* vertical bounce height */
+  50% { transform: translateY(-8px); } /* smaller, gentle bounce */
 }
 
 @keyframes wrapperWave {
   0%, 100% { transform: translateX(-50%) translateY(0); }
-  25% { transform: translateX(-48%) translateY(-5px); }
-  50% { transform: translateX(-52%) translateY(5px); }
-  75% { transform: translateX(-49%) translateY(-3px); }
+  25% { transform: translateX(-49%) translateY(-3px); }
+  50% { transform: translateX(-51%) translateY(3px); }
+  75% { transform: translateX(-50%) translateY(-2px); }
 }
+
 
 /*===========================
 FOR PRIVACY AND TERMS HTMLS
