@@ -801,12 +801,22 @@ body.modal-active {
   color: black;
 }
 
+
 /* ===== ERROR STATES ===== */
-.error-message {
-  color: var(--error-color);
-  font-size: 0.9rem;
-  margin-top: 0.3rem;
-  display: none;
+/* Custom notification styles (optional) */
+#error-message {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  transition: opacity 0.3s ease;
+  font-family: inherit;
+  border: none;
+}
+
+#error-message.success-message {
+  background: #4CAF50 !important; /* Green */
+}
+
+#error-message.error-message {
+  background: #f44336 !important; /* Red */
 }
 
 /* ===== ANIMATIONS ===== */
@@ -819,6 +829,7 @@ body.modal-active {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
 
 /* ====== PDF Export Styles (Complete) ======= */
 @media print, screen and (width: 210mm) {
