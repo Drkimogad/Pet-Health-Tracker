@@ -72,7 +72,7 @@ footer p, footer .legal-links {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background: transparent;
+  background: #f9f5ff;
   z-index: 10 !important;
   margin: 0 !important;
   box-sizing: border-box;
