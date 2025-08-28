@@ -8,6 +8,12 @@ let auth = null;
 let provider = null;
 let isSignupInProgress = false;
 
+// Make these global for notification system 
+window.showSuccessNotification = showSuccessNotification;
+window.showErrorNotification = showErrorNotification;
+window.showErrorToUser = showErrorToUser;
+
+
 // 🔶 State Management🔶🔶🔶
 const VALID_ORIGINS = [
   'https://drkimogad.github.io',
@@ -254,24 +260,61 @@ function initAuthListeners() {
 }
 
 // MVED FUNCTIONS FROM UTILS.JS
-// Show error message to user
+// ===== IMPROVED NOTIFICATION SYSTEM =====
 function showErrorToUser(message, isSuccess = false) {
   try {
-    const errorDiv = document.getElementById('error-message');
-    if (!errorDiv) {
-      const newErrorDiv = document.createElement('div');
-      newErrorDiv.id = 'error-message';
-      newErrorDiv.className = isSuccess ? 'success-message' : 'auth-error';
-      newErrorDiv.textContent = message;
-      document.querySelector('#authContainer').prepend(newErrorDiv);
-    } else {
-      errorDiv.textContent = message;
-      errorDiv.className = isSuccess ? 'success-message' : 'auth-error';
+    let notificationDiv = document.getElementById('error-message');
+    
+    if (!notificationDiv) {
+      notificationDiv = document.createElement('div');
+      notificationDiv.id = 'error-message';
+      notificationDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 15px 20px;
+        border-radius: 8px;
+        z-index: 10000;
+        max-width: 80%;
+        text-align: center;
+        font-weight: bold;
+        display: none;
+      `;
+      document.body.appendChild(notificationDiv);
     }
+
+    notificationDiv.textContent = message;
+    notificationDiv.style.backgroundColor = isSuccess ? '#4CAF50' : '#f44336';
+    notificationDiv.style.color = 'white';
+    notificationDiv.style.display = 'block';
+    
+    // Accessibility
+    notificationDiv.setAttribute('role', 'alert');
+    notificationDiv.setAttribute('aria-live', 'assertive');
+
+    // Auto-dismiss after 5 seconds
+    setTimeout(() => {
+      if (notificationDiv) {
+        notificationDiv.style.display = 'none';
+      }
+    }, 5000);
+
   } catch (fallbackError) {
     alert(message);
   }
 }
+
+// Success wrapper (keep this)
+function showSuccessNotification(message) {
+  showErrorToUser(message, true);
+}
+
+// Error wrapper (keep this for consistency)
+function showErrorNotification(message) {
+  showErrorToUser(message, false);
+}
+
 // Show the sign-in form
 // ✅ Show Authentication Form
 function showAuthForm() {
@@ -294,6 +337,7 @@ function showUserInfo(user) {
     emailEl.textContent = user.email;
   }
 }
+
 // Disable all UI on fatal error
 function disableUI() {
   document.body.innerHTML = `
@@ -302,20 +346,6 @@ function disableUI() {
     </h1>
   `;
 }
-//=================================
-// Showsuccessnotification
-//=================================
-// Keep existing success function (unchanged)
-function showSuccessNotification(message) {
-  showErrorToUser(message, true);
-}
-window.showSuccessNotification = showSuccessNotification;
-
-// Fix error function (only corrected syntax)
-function showErrorNotification(message) {
-  showErrorToUser(message, false); // Removed stray 'isSuccess'
-}
-window.showErrorNotification = showErrorNotification;
 
 // Firebase accessors (optional to move)
 function getAuth() {
