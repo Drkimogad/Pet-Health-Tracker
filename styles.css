@@ -29,7 +29,6 @@
 #authContainer {
   position: relative;
   height: 100vh;
-  overflow: hidden;
   padding: 1rem;
   box-sizing: border-box;
 }
@@ -63,6 +62,9 @@
   z-index: 3; /* Above the curtain */
   box-sizing: border-box;
   border: purple;
+    /* Add these properties: */
+  padding-top: 10px; /* Adjust this value for desired space */
+  border: 2px solid purple; /* Complete border declaration */
 }
 
 .auth-header h1 {
