@@ -62,12 +62,12 @@ footer p, footer .legal-links {
 /* ===== HEADER style ===== */
 .header-container {
   position: fixed;
-  top: 0 !important; /* Force to top */
+  top: 10px !important; /* Force to top */
   left: 30px;
   right: 30px;
   bottom: 5px;
   width: calc(100% - 60px); /* Fixed syntax */
-  height: 18vh; 
+  height: 15vh; 
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -75,7 +75,7 @@ footer p, footer .legal-links {
   z-index: 10;
   margin: 0 !important;
   box-sizing: border-box;
-  padding: 40px 0 5px 0; /* Increased top padfing*/
+  padding-top: 40px; /* to adjust*/
   border: 2px solid purple;
 }
 
@@ -98,15 +98,15 @@ footer p, footer .legal-links {
 /* ===== AUTH SECTION===== */
 #authContainer {
   position: relative;
-  height: 82vh; /* to adjust */
-  padding-top: 18vh; /* Header + welcome section height */
+  height: 85vh; /* to adjust */
+  top: 15vh; /* Header height */
   box-sizing: border-box;
 }
 
 /* ===== AUTH WELCOME SECTION (CURTAIN) ===== */
 .auth-welcome-section {
   position: fixed;
-  top: 18vh; /* Position below the header container */
+  top: 15vh; /* Position below the header container to try 0*/
   left: 0;
   width: 100%;
   height: 15vh;
@@ -135,9 +135,10 @@ footer p, footer .legal-links {
 .fullpage-lottie-container {
     position: fixed;
     top: 30vh;
+    bottom: 15vh; /* enough for footer and Google container */
     left: 0;
     width: 100vw;
-    height: 60vh;
+    height: 55vh;
     z-index: 10 !important; /* Same as header and welcome section */
     overflow: hidden;
 }
@@ -145,7 +146,7 @@ footer p, footer .legal-links {
 /* ===== GOOGLE SIGN-IN BUTTON ===== */
 #googleSignInBtnWrapper {
   position: fixed;
-  bottom: 7vh; /* judt enough for footer*/
+  bottom: 8vh; /* judt enough for footer*/
   left: 50%;
   transform: translateX(-50%);
   display: flex;
