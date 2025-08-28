@@ -120,6 +120,7 @@ footer p, footer .legal-links {
   text-align: center;
   padding: 5px 5px !important;
   box-sizing: border-box;
+    z-index: 10 !important;    /* lower than fixed children */
 }
 
 
@@ -142,6 +143,7 @@ footer p, footer .legal-links {
   height: 68vh !important;
   margin: 0;
   overflow: hidden;
+    z-index: 10 !important;    /* lower than fixed children */
 }
 
 /* ===== GOOGLE SIGN-IN BUTTON ===== */
