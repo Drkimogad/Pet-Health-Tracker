@@ -114,13 +114,14 @@ footer p, footer .legal-links {
   height: 15vh !important;
   background-color: #413752;
   margin: 0;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
   display: flex;
-  justify-content: center;
-  align-items: stretch;
+  justify-content: center !important; /* horizontally center content */
+  align-items: center !important;  /* vertically center content */
   text-align: center;
-  padding: 10px;
   box-sizing: border-box;
-    z-index: 10 !important;    /* lower than fixed children */
+  z-index: 10 !important;    /* lower than fixed children */  
 }
 
 
@@ -143,7 +144,7 @@ footer p, footer .legal-links {
   height: 68vh !important;
   margin: 0;
   overflow: hidden;
-    z-index: 10 !important;    /* lower than fixed children */
+  z-index: 10 !important;    /* lower than fixed children */
 }
 
 /* ===== GOOGLE SIGN-IN BUTTON ===== */
@@ -159,7 +160,7 @@ footer p, footer .legal-links {
   align-items: center;
   gap: 15px;
   padding: 15px;
-  background: #784274;
+  background: #918AA1;
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.2);
 }
