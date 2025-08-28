@@ -28,36 +28,16 @@
 .visible { display: block !important; }
 #authContainer.hidden { display: none !important; }
 
-/* ===== Headers VISIBILITY ===== */
-/* I have two headers one for auth page and 
-another for dashboard.  they are toggled via their classes
-They ar3 both outside Authentication container in html*/
-
-/* Hide both by default */
-.dashboard-header,
-.auth-header-container {
-  display: none;
-}
-
-/* Show only on specific pages */
-body.dashboard .dashboard-header {
-  display: block;
-}
-
-body.auth-page .auth-header-container {
-  display: flex;
-}
-
-/* ===== DASHBOARD HEADER ONLY & AUTH AND DASHBOARD FOOTER STYLINGS ===== */
+/* ===== DASHBOARD HEADER ONLY & AUTH AND DASHBOARD FOOTER STYLINGS ===== 
 .dashboard-header {
   background-color: #967bb6;
   padding: 1.5rem 2rem;
   text-align: center;
-  margin-bottom: 2rem; /* adds space below header */
+  margin-bottom: 2rem; /* adds space below header 
   color: #fff;
   margin: 0;
   font-size: 2rem;
-}
+} */
 
 /* Optional footer styles */
 footer {
@@ -72,32 +52,32 @@ footer {
   z-index: 10;
 }
 
-/* ===== AUTH HEADER CONTAINER (TOP BAR) ===== */
-.auth-header-container {
+/* ===== HEADER style ===== */
+.header-container {
   position: fixed;
 /* for simple margins application */
   top: 70px; /* 60px original + 10px desired margin */
-  left: 10px; /* Left margin */
-  right: 10px; /* right margin */
+  left: 20px; /* Left margin */
+  right: 20px; /* right margin */
   bottom: 5px;
-  width: calc(100% - 20px); /* 100% minus left+right margins */  
+  width: calc(100% - 40px); /* 100% minus left+right margins */  
   height: 120px;
   
   display: flex;   /* Match it's toggling rule above in visibility section*/
   flex-direction: column;
   justify-content: center;
   background: #DAB1DA;
-  z-index: 3; 
+ /* z-index: 3; */
   box-sizing: border-box; /* keep it for container size control */
   padding: 20px; /* ← ADJUST THIS: equal padding on ALL sides */
   border: 2px solid purple; /* Complete border declaration */
   pointer-events: none; /* Prevents capturing scroll */
 }
-.auth-header-container * {
+.header-container * {
   pointer-events: auto; /* But allows clicking content inside */
 }
 
-.auth-header h1 {
+.heade-container h1 {
   font-size: 2.4rem;
   font-weight: 700;
   color: #2c3e50;
@@ -105,7 +85,7 @@ footer {
   margin: 0;
 }
 
-.auth-header h2 {
+.header-container h2 {
   font-size: 1.5rem;
   color: #d4a017;
   text-align: center;
