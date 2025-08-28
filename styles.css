@@ -67,7 +67,7 @@ footer {
   flex-direction: column;
   justify-content: center;
   background: #DAB1DA;
- /* z-index: 3; */
+  z-index: 2;
   box-sizing: border-box; /* keep it for container size control */
   padding: 20px; /* ← ADJUST THIS: equal padding on ALL sides */
   border: 2px solid purple; /* Complete border declaration */
@@ -114,10 +114,11 @@ footer {
   text-align: center;
   padding: 20px;
   background-color: #413752;
-  z-index: 2; /* Between background and header */
+  z-index: 2; /* same as the header */
   box-sizing: border-box;
 }
 
+/* for WELCOME LOTTIE */
 .pet-animation-container {
   width: 100%;
   height: 90%;
@@ -152,7 +153,7 @@ footer {
   background: transparent;
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.2);
-  z-index: 4; /* Top layer */
+  z-index: 3; /* Top layer SO WE CAN MAKE IT BOUNCE */
 }
 
 .bouncing-ball {
