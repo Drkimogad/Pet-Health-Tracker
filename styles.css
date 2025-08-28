@@ -155,6 +155,7 @@ footer p, footer .legal-links {
 /* ===== GOOGLE SIGN-IN BUTTON ===== */
   /* moved outside Authentication container becauseLottis overflow hidden*/
 /* ===== GOOGLE SIGN-IN BUTTON WRAPPER ===== */
+/* ===== GOOGLE SIGN-IN BUTTON WRAPPER AS FOOD BOWL ===== */
 #googleSignInBtnWrapper {
   position: fixed !important;
   bottom: 6vh !important;
@@ -166,10 +167,10 @@ footer p, footer .legal-links {
   align-items: center;
   gap: 15px;
   padding: 15px;
-  background: #bfbbb2;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
-  animation: wrapperWave 6s infinite ease-in-out; /* slower wave */
+  background: linear-gradient(to bottom, #e0e0e0, #c8c8c8); /* light aluminium look */
+  border-radius: 50% / 20%;  /* shallow ellipse, bowl-like */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3); /* subtle 3D effect */
+  animation: wrapperWave 6s infinite ease-in-out; /* gentle wave */
 }
 
 /* ===== Bouncing Ball ===== */
