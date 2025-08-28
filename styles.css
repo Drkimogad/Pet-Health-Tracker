@@ -33,9 +33,9 @@ footer {
   background-color: #967bb6;
   color: white;
   width: 100%;
-  height: 9vh; /* Fixed: removed leading zero, added semicolon */
+  height: 6vh; /* Fixed: removed leading zero, added semicolon */
   text-align: center !important;
-  padding: 1rem 2rem;
+  padding: 1rem;
   font-size: 1rem;
   margin-top: 2rem;
   position: sticky;
@@ -67,7 +67,7 @@ footer p, footer .legal-links {
   right: 30px;
   bottom: 5px;
   width: calc(100% - 60px); /* Fixed syntax */
-  height: 15vh; 
+  height: 18vh; 
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -75,7 +75,7 @@ footer p, footer .legal-links {
   z-index: 10;
   margin: 0 !important;
   box-sizing: border-box;
-  padding: 20px 0 5px 0;
+  padding: 40px 0 5px 0; /* Increased top padfing*/
   border: 2px solid purple;
 }
 
@@ -98,15 +98,15 @@ footer p, footer .legal-links {
 /* ===== AUTH SECTION===== */
 #authContainer {
   position: relative;
-  height: 85vh; /* to adjust */
-  padding-top: 15vh; /* Header + welcome section height */
+  height: 82vh; /* to adjust */
+  padding-top: 18vh; /* Header + welcome section height */
   box-sizing: border-box;
 }
 
 /* ===== AUTH WELCOME SECTION (CURTAIN) ===== */
 .auth-welcome-section {
   position: fixed;
-  top: 10vh; /* Position below the header container */
+  top: 18vh; /* Position below the header container */
   left: 0;
   width: 100%;
   height: 15vh;
@@ -145,7 +145,7 @@ footer p, footer .legal-links {
 /* ===== GOOGLE SIGN-IN BUTTON ===== */
 #googleSignInBtnWrapper {
   position: fixed;
-  bottom: 10vh; /* judt enough for footer*/
+  bottom: 7vh; /* judt enough for footer*/
   left: 50%;
   transform: translateX(-50%);
   display: flex;
