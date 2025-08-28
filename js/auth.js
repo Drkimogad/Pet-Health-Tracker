@@ -60,8 +60,8 @@ function initDOMReferences() {
 document.addEventListener('DOMContentLoaded', function() {
   if (initDOMReferences()) {
     // Set auth page classes - ADD THESE 2 LINES:
-    document.body.classList.add('auth-page');
-    document.body.classList.remove('dashboard');
+    document.body.classList.add('auth-header-container');
+    document.body.classList.remove('dashboard-header');
   }
 });
 
@@ -93,8 +93,8 @@ document.addEventListener("DOMContentLoaded", () => {
 function showDashboard() {
   console.log("🚪 Entered showDashboard()");
     // 🆕 ADD THESE TWO LINES for toggling auth and dashboardheaders visibility
-  document.body.classList.add('dashboard');
-  document.body.classList.remove('auth-page');
+  document.body.classList.add('dashboard-header');
+  document.body.classList.remove('auth-header-container);
 
   // 🔒 Hide sign-in related elements
   if (auth_DOM.googleSignInBtnWrapper) auth_DOM.googleSignInBtnWrapper.classList.add("hidden");
