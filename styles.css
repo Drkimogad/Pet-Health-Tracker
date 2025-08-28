@@ -103,7 +103,7 @@ footer p, footer .legal-links {
   height: 85vh;  /* still defines logical space if needed */
   top: 15vh;     /* keeps it starting below header if you need flow */
   box-sizing: border-box;
-  z-index: 1;    /* lower than fixed children */
+  z-index: 10;    /* lower than fixed children */
 }
 
 /* ===== AUTH WELCOME SECTION (CURTAIN) ===== */
