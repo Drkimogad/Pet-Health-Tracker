@@ -33,34 +33,50 @@ footer {
   background-color: #967bb6;
   color: white;
   width: 100%;
-  height: 09vh
-  text-align: center;
+  height: 9vh; /* Fixed: removed leading zero, added semicolon */
+  text-align: center !important;
   padding: 1rem 2rem;
-  font-size: 0.9rem;
-  margin-top: 2rem; /* adds space above footer */
+  font-size: 1rem;
+  margin-top: 2rem;
   position: sticky;
   bottom: 0 !important;
-  z-index: 10 !important; /* Same as header and welcome section  and bannerlottie*/
+  z-index: 10 !important;
+  
+  /* Additional properties for better centering */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+footer p, footer .legal-links {
+  margin: 0.3rem 0; /* Control spacing between elements */
+}
+
+.legal-links {
+  display: flex;
+  gap: 1rem; /* Space between links */
+  justify-content: center;
+  flex-wrap: wrap; /* Allow wrapping on small screens */
 }
 
 /* ===== HEADER style ===== */
 .header-container {
   position: fixed;
   top: 0 !important; /* Force to top */
-  left: 0;
-  right: 0;
+  left: 30px;
+  right: 30px;
   bottom: 5px;
-  width: 80%;  
+  width: calc(100% - 60px); /* Fixed syntax */
   height: 15vh; 
   display: flex;
   flex-direction: column;
   justify-content: center;
   background: transparent;
   z-index: 10;
-  margin: 0 !important; /* Remove any margins pushing it down */
-  box-sizing: border-box; /* keep it for container size control */
-  padding: 20px 0 5px 0; /* ← ADJUST THIS: equal padding on ALL sides */
-  border: 2px solid purple; /* Complete border declaration */
+  margin: 0 !important;
+  box-sizing: border-box;
+  padding: 20px 0 5px 0;
+  border: 2px solid purple;
 }
 
 .header-container h1 {
@@ -166,7 +182,7 @@ FOR PRIVACY AND TERMS HTMLS
 ============================*/
 .legal-links {
     margin-top: 10px;
-    font-size: 0.9rem;
+    font-size: 1rem;
 }
 
 .legal-links a {
