@@ -1337,15 +1337,15 @@ body.modal-active {
 }
 
 
-/* ===== HEADER & FOOTER STYLING ===== */
-header {
+/* ===== DASHBOARD HEADER ONLY & AUTH AND DASHBOARD FOOTER STYLINGS ===== */
+.dashboard-header {
   background-color: #967bb6;
   padding: 1.5rem 2rem;
   text-align: center;
   margin-bottom: 2rem; /* adds space below header */
 }
 
-header h1 {
+.dashboard-header h1 {
   color: #fff;
   margin: 0;
   font-size: 2rem;
