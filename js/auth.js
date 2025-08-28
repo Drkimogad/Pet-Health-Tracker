@@ -1,13 +1,3 @@
-// AT THE VERY TOP of the file for toggling headers
-document.addEventListener('DOMContentLoaded', function() {
-  // Show auth header, hide dashboard header
-  const authHeader = document.querySelector('.auth-header-container');
-  const dashboardHeader = document.querySelector('.dashboard-header');
-  
-  if (authHeader) authHeader.style.display = 'flex';
-  if (dashboardHeader) dashboardHeader.style.display = 'none';
-});
-//===============================================
 // GLOBAL DECLARATIONS - AUTH-INITIALIZATION
 const CLOUDINARY_CONFIG = {
   cloudName: 'dh7d6otgu',
@@ -60,6 +50,15 @@ function initDOMReferences() {
   return true;
 }
 
+// 🆕 ADD THIS RIGHT AFTER initDOMReferences() BUT BEFORE OTHER FUNCTIONS
+document.addEventListener('DOMContentLoaded', function() {
+  if (initDOMReferences()) {
+    // Set auth page classes - ADD THESE 2 LINES:
+    document.body.classList.add('auth-page');
+    document.body.classList.remove('dashboard');
+  }
+});
+
 // show loading function only for authentication
 function showLoading(show, message = "Loading your app") {
   const loader = auth_DOM.processingLoader;
@@ -87,6 +86,9 @@ document.addEventListener("DOMContentLoaded", () => {
 // ✅ Show Dashboard after successful login
 function showDashboard() {
   console.log("🚪 Entered showDashboard()");
+    // 🆕 ADD THESE TWO LINES for toggling auth and dashboardheaders visibility
+  document.body.classList.add('dashboard');
+  document.body.classList.remove('auth-page');
 
   // 🔒 Hide sign-in related elements
   if (auth_DOM.googleSignInBtnWrapper) auth_DOM.googleSignInBtnWrapper.classList.add("hidden");
