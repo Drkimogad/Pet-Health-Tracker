@@ -28,6 +28,14 @@
 .visible { display: block !important; }
 #authContainer.hidden { display: none !important; }
 
+/* ===== GLOBAL FIXES ===== */
+body, html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevent scrolling */
+}
+
 /* Optional footer styles */
 footer {
   position: fixed;
@@ -102,12 +110,13 @@ footer p, footer .legal-links {
 
 /* ===== AUTH SECTION===== */
 #authContainer {
-  position: relative;
-  height: 85vh; /* to adjust */
-  top: 15vh; /* Header height */
+/*  height: 85vh; /* to adjust */
+ /* top: 15vh; /* Header height */
   box-sizing: border-box;
+ position: static;
+  height: 0;
+  overflow: visible;
 }
-
 /* ===== AUTH WELCOME SECTION (CURTAIN) ===== */
 .auth-welcome-section {
   position: fixed;
