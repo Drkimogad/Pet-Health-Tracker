@@ -48,6 +48,30 @@ body.auth-page .auth-header-container {
   display: flex;
 }
 
+/* ===== DASHBOARD HEADER ONLY & AUTH AND DASHBOARD FOOTER STYLINGS ===== */
+.dashboard-header {
+  background-color: #967bb6;
+  padding: 1.5rem 2rem;
+  text-align: center;
+  margin-bottom: 2rem; /* adds space below header */
+  color: #fff;
+  margin: 0;
+  font-size: 2rem;
+}
+
+/* Optional footer styles */
+footer {
+  background-color: #967bb6;
+  color: white;
+  text-align: center;
+  padding: 1rem 2rem;
+  font-size: 0.9rem;
+  margin-top: 2rem; /* adds space above footer */
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+}
+
 /* ===== AUTH HEADER CONTAINER (TOP BAR) ===== */
 .auth-header-container {
   position: fixed;
@@ -1367,32 +1391,6 @@ body.modal-active {
 }
 
 
-/* ===== DASHBOARD HEADER ONLY & AUTH AND DASHBOARD FOOTER STYLINGS ===== */
-.dashboard-header {
-  background-color: #967bb6;
-  padding: 1.5rem 2rem;
-  text-align: center;
-  margin-bottom: 2rem; /* adds space below header */
-}
-
-.dashboard-header h1 {
-  color: #fff;
-  margin: 0;
-  font-size: 2rem;
-}
-
-/* Optional footer styles */
-footer {
-  background-color: #967bb6;
-  color: white;
-  text-align: center;
-  padding: 1rem 2rem;
-  font-size: 0.9rem;
-  margin-top: 2rem; /* adds space above footer */
-  position: sticky;
-  bottom: 0;
-  z-index: 10;
-}
 /* ===== RESPONSIVE DESIGNS============== */
 /* Prevent header/footer from shrinking on phones*/
 header, footer {
