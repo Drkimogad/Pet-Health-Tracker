@@ -488,6 +488,8 @@ async function loadSavedPetProfile() {
 //=================================
 // ✅ UPDATED showPetDetails() with Share Button in Modal
 function showPetDetails(profile) {
+    // 🆕 ADD THIS LINE AT THE VERY TOP:
+  if (!profile) return showErrorNotification("No profile data available.");
   // === START CRITICAL FIXES ===
   // 1. Verify profile exists in current data
   const currentData = JSON.parse(localStorage.getItem('petProfiles')) || [];
