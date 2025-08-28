@@ -51,20 +51,26 @@
 /* ===== AUTH HEADER CONTAINER (TOP BAR) ===== */
 .auth-header-container {
   position: fixed;
-  top: 60px; /* Position at the very top */
-  left: 0;
-  width: 100%;
+/* for simple margins application */
+  top: 70px; /* 60px original + 10px desired margin */
+  left: 10px; /* Left margin */
+  right: 10px; /* right margin */
+  bottom: 5px;
+  width: calc(100% - 20px); /* 100% minus left+right margins */  
   height: 120px;
+  
   display: flex;
   flex-direction: column;
   justify-content: center;
   background: #DAB1DA;
-  z-index: 3; /* Above the curtain */
-  box-sizing: border-box;
-  border: purple;
-    /* Add these properties: */
-  padding-top: 10px; /* Adjust this value for desired space */
+  z-index: 3; 
+  box-sizing: border-box; /* keep it for container size control */
+  padding: 20px; /* ← ADJUST THIS: equal padding on ALL sides */
   border: 2px solid purple; /* Complete border declaration */
+  pointer-events: none; /* Prevents capturing scroll */
+}
+.auth-header-container * {
+  pointer-events: auto; /* But allows clicking content inside */
 }
 
 .auth-header h1 {
