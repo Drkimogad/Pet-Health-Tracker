@@ -99,7 +99,7 @@ footer p, footer .legal-links {
 
 /* ===== AUTH SECTION===== */
 #authContainer {
-  position: relative !important;
+  position: fixed !important;
   height: 85vh;  /* still defines logical space if needed */
   top: 15vh;     /* keeps it starting below header if you need flow */
   box-sizing: border-box;
