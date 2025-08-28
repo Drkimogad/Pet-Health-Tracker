@@ -232,90 +232,6 @@ FOR PRIVACY AND TERMS HTMLS
   text-align: center;          /* center text inside container */
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .legal-links {
-        font-size: 0.8rem;
-    }
-    
-    .auth-legal {
-        font-size: 0.75rem;
-        padding: 0 10px;
-    }
-}
-/* Tablets */
-@media (max-width: 1024px) {
-    .header-container {
-        height: 110px;
-        padding: 15px;
-    }
-    
-    .header-container h1 {
-        font-size: 2rem;
-    }
-    
-    .header-container h2 {
-        font-size: 1.2rem;
-    }
-    
-    #authContainer, #dashboard {
-        padding-top: 130px;
-    }
-}
-
-/* Mobile Devices */
-@media (max-width: 768px) {
-    .header-container {
-        height: 100px;
-        padding: 10px;
-    }
-    
-    .header-container h1 {
-        font-size: 1.7rem;
-    }
-    
-    .header-container h2 {
-        font-size: 1.1rem;
-        margin-bottom: 5px;
-    }
-    
-    #authContainer, #dashboard {
-        padding-top: 120px;
-    }
-    
-    .auth-welcome-section {
-        height: 120px;
-        margin-bottom: 20px;
-    }
-}
-
-/* Small Mobile Devices */
-@media (max-width: 480px) {
-    .header-container {
-        height: 90px;
-    }
-    
-    .header-container h1 {
-        font-size: 1.5rem;
-    }
-    
-    .header-container h2 {
-        font-size: 1rem;
-    }
-    
-    #authContainer, #dashboard {
-        padding-top: 110px;
-    }
-    
-    .auth-welcome-section {
-        height: 100px;
-    }
-    
-    #googleSignInBtnWrapper {
-        bottom: 80px;
-    }
-}
-
 /* ===== DASHBOARD STYLES ===== */
 /* Pet Card Image Fix */
 #petPhotoPreview {
@@ -1683,3 +1599,148 @@ header, footer {
     height: 80px; /* Larger input area for mobile */
   }
 }
+
+
+/* AUTHENTICATION responsive designs*/
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .legal-links {
+        font-size: 0.8rem;
+    }
+    
+    .auth-legal {
+        font-size: 0.75rem;
+        padding: 0 10px;
+    }
+}
+/* Tablets */
+@media (max-width: 1024px) {
+    .header-container {
+        height: 110px;
+        padding: 15px;
+    }
+    
+    .header-container h1 {
+        font-size: 2rem;
+    }
+    
+    .header-container h2 {
+        font-size: 1.2rem;
+    }
+    
+    #authContainer, #dashboard {
+        padding-top: 130px;
+    }
+}
+
+/* Mobile Devices */
+@media (max-width: 768px) {
+    .header-container {
+        height: 100px;
+        padding: 10px;
+    }
+    
+    .header-container h1 {
+        font-size: 1.7rem;
+    }
+    
+    .header-container h2 {
+        font-size: 1.1rem;
+        margin-bottom: 5px;
+    }
+    
+    #authContainer, #dashboard {
+        padding-top: 120px;
+    }
+    
+    .auth-welcome-section {
+        height: 120px;
+        margin-bottom: 20px;
+    }
+}
+
+/* Small Mobile Devices */
+@media (max-width: 480px) {
+    .header-container {
+        height: 90px;
+    }
+    
+    .header-container h1 {
+        font-size: 1.5rem;
+    }
+    
+    .header-container h2 {
+        font-size: 1rem;
+    }
+    
+    #authContainer, #dashboard {
+        padding-top: 110px;
+    }
+    
+    .auth-welcome-section {
+        height: 100px;
+    }
+    
+    #googleSignInBtnWrapper {
+        bottom: 80px;
+    }
+}
+/* Large Desktop / Wide Screens */
+@media (min-width: 1200px) {
+    .header-container {
+        height: 14vh;
+        padding: 20px 0;
+    }
+    
+    .header-container h1 {
+        font-size: 2.8rem;
+    }
+    
+    .header-container h2 {
+        font-size: 1.7rem;
+    }
+    
+    .auth-welcome-section {
+        height: 18vh;
+    }
+    
+    .fullpage-lottie-container {
+        top: 32vh;      /* header + welcome */
+        height: 65vh;
+    }
+    
+    #googleSignInBtnWrapper {
+        bottom: 8vh;   /* slightly more above footer */
+    }
+}
+
+/* Landscape Tablets (1024px – 1200px) */
+@media (min-width: 1024px) and (max-width: 1200px) {
+    .header-container {
+        height: 12.5vh;
+        padding: 15px 0;
+    }
+    
+    .header-container h1 {
+        font-size: 2.2rem;
+    }
+    
+    .header-container h2 {
+        font-size: 1.3rem;
+    }
+    
+    .auth-welcome-section {
+        height: 16vh;
+    }
+    
+    .fullpage-lottie-container {
+        top: 28.5vh;
+        height: 68vh;
+    }
+    
+    #googleSignInBtnWrapper {
+        bottom: 7vh;
+    }
+}
+
+
