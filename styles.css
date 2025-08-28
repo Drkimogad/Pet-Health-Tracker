@@ -168,6 +168,7 @@ footer p, footer .legal-links {
   align-items: center;
   gap: 15px;
   padding: 15px;
+  border: 3px solid black;
   background: linear-gradient(to bottom, #e0e0e0, #c8c8c8); /* light aluminium look */
   border-radius: 50% / 20%;  /* shallow ellipse, bowl-like */
   box-shadow: 0 4px 12px rgba(0,0,0,0.3); /* subtle 3D effect */
@@ -224,7 +225,7 @@ FOR PRIVACY AND TERMS HTMLS
 
 .auth-message {
   color: #333;
-  font-size: 1rem;
+  font-size: 0.9rem;
   margin: 0;
 }
 
