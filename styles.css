@@ -168,6 +168,7 @@ footer p, footer .legal-links {
   background: #bfbbb2;
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  animation: wrapperWave 3s infinite ease-in-out; /* gentle wave */
 }
 
 /* Optional: make sure bouncing ball is fully visible */
@@ -183,10 +184,21 @@ footer p, footer .legal-links {
   justify-content: center;
   color: white;
   font-weight: bold;
-  animation: bounce 2s infinite ease-in-out;
-  transition: all 0.3s ease;
+  animation: bounce 1.5s infinite ease-in-out; /* fixed timing */
 }
 
+/* ===== Keyframes ===== */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); } /* vertical bounce height */
+}
+
+@keyframes wrapperWave {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  25% { transform: translateX(-48%) translateY(-5px); }
+  50% { transform: translateX(-52%) translateY(5px); }
+  75% { transform: translateX(-49%) translateY(-3px); }
+}
 
 /*===========================
 FOR PRIVACY AND TERMS HTMLS
