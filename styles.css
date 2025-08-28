@@ -28,17 +28,6 @@
 .visible { display: block !important; }
 #authContainer.hidden { display: none !important; }
 
-/* ===== DASHBOARD HEADER ONLY & AUTH AND DASHBOARD FOOTER STYLINGS ===== 
-.dashboard-header {
-  background-color: #967bb6;
-  padding: 1.5rem 2rem;
-  text-align: center;
-  margin-bottom: 2rem; /* adds space below header 
-  color: #fff;
-  margin: 0;
-  font-size: 2rem;
-} */
-
 /* Optional footer styles */
 footer {
   background-color: #967bb6;
@@ -50,7 +39,7 @@ footer {
   font-size: 0.9rem;
   margin-top: 2rem; /* adds space above footer */
   position: sticky;
-  bottom: 0;
+  bottom: 0 !important;
   z-index: 10 !important; /* Same as header and welcome section  and bannerlottie*/
 }
 
@@ -59,17 +48,18 @@ footer {
   position: fixed;
   top: 0 !important; /* Force to top */
   left: 0;
-   bottom: 5px;
+  right: 0;
+  bottom: 5px;
   width: 80%;  
-  height: 10vh; 
-  display: flex;   /* Match it's toggling rule above in visibility section*/
+  height: 15vh; 
+  display: flex;
   flex-direction: column;
   justify-content: center;
   background: transparent;
   z-index: 10;
   margin: 0 !important; /* Remove any margins pushing it down */
   box-sizing: border-box; /* keep it for container size control */
-  padding: 20px; /* ← ADJUST THIS: equal padding on ALL sides */
+  padding: 20px 0 5px 0; /* ← ADJUST THIS: equal padding on ALL sides */
   border: 2px solid purple; /* Complete border declaration */
 }
 
@@ -92,8 +82,8 @@ footer {
 /* ===== AUTH SECTION===== */
 #authContainer {
   position: relative;
-  height: 80vh; /* to adjust */
-  padding-top: 30vh; /* Header + welcome section height */
+  height: 85vh; /* to adjust */
+  padding-top: 15vh; /* Header + welcome section height */
   box-sizing: border-box;
 }
 
@@ -103,7 +93,7 @@ footer {
   top: 10vh; /* Position below the header container */
   left: 0;
   width: 100%;
-  height: 20vh;
+  height: 15vh;
   margin: 0;
   display: flex;
   justify-content: center;
@@ -118,7 +108,7 @@ footer {
 /* for WELCOME LOTTIE */
 .pet-animation-container {
   width: 100%;
-  height: 90%;
+  height: 100%;
   max-width: 600px;
   border-radius: 12px;
   overflow: hidden;
@@ -139,7 +129,7 @@ footer {
 /* ===== GOOGLE SIGN-IN BUTTON ===== */
 #googleSignInBtnWrapper {
   position: fixed;
-  bottom: 120px;
+  bottom: 10vh; /* judt enough for footer*/
   left: 50%;
   transform: translateX(-50%);
   display: flex;
