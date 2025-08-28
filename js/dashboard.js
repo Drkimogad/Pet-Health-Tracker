@@ -1268,6 +1268,7 @@ async function getPetProfile(petId) {
 
 // 2. Setup admin notification listener
 function setupAdminNotificationListener(petId) {
+try {
   // Listen to the SINGLE DOCUMENT, not the collection
   firebase.firestore()
     .collection("Community_Chat")
@@ -1293,16 +1294,27 @@ function setupAdminNotificationListener(petId) {
         }
       }
     });
-}
+ } catch (error) {
+    console.error("Failed to setup notification listener:", error);
+  } // closes try block
+} // closes function
 
+//======================≈=============================
 // 3. MODIFIED: open chat window using SINGLE DOCUMENT approach
+//==================================
 async function openCommunityChatModal(petId) {
   const user = firebase.auth().currentUser;
-  if (!user) return alert("You must be signed in to access community chat.");
-
+if (!user) {
+  showErrorNotification("You must be signed in to access community chat."); // ← REPLACE alert
+  return;
+}
+    
   const pet = await getPetProfile(petId);
-  if (!pet) return alert("Pet profile not found.");
-
+if (!pet) {
+  showErrorNotification("Pet profile not found."); // ← REPLACE alert  
+  return;
+}    
+    
   // Check if user is admin
   const isAdmin = user.email === 'drkimogad@gmail.com';
 
@@ -1358,8 +1370,9 @@ async function openCommunityChatModal(petId) {
   function loadMessages() {
     chatDocRef.onSnapshot(doc => {
       const chatMessagesDiv = modal.querySelector('#chatMessages');
+        chatMessagesDiv.innerHTML = '<div class="loading">Loading messages...</div>'; // ← ADD LOADING STATE
       
-      if (!doc.exists) {
+        if (!doc.exists) {
         chatMessagesDiv.innerHTML = `<p class="no-messages">No feedback yet. Be the first to share!</p>`;
         return;
       }
@@ -1422,6 +1435,10 @@ async function openCommunityChatModal(petId) {
         chatMessagesDiv.appendChild(msgEl);
       });
       chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+          // 🆕 ADD ERROR HANDLER RIGHT HERE - AFTER THE CLOSING BRACE OF onSnapshot
+  }, error => { // ← This goes AFTER your existing onSnapshot callback
+    chatMessagesDiv.innerHTML = '<div class="error">Failed to load messages</div>';
+    console.error("Chat load error:", error);
     });
   }
 
@@ -1453,7 +1470,11 @@ if (isAdmin) {
     const messages = data.messages || [];
     const message = messages[msgIndex];
     
-    if (!message) return;
+    // 🆕 ADD BOUNDS CHECK:
+    if (msgIndex < 0 || msgIndex >= messages.length) {
+     console.error("Invalid message index:", msgIndex);
+     return;
+    }
 
       
 
