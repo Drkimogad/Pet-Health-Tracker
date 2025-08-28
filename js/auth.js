@@ -1,3 +1,13 @@
+// AT THE VERY TOP of the file for toggling headers
+document.addEventListener('DOMContentLoaded', function() {
+  // Show auth header, hide dashboard header
+  const authHeader = document.querySelector('.auth-header-container');
+  const dashboardHeader = document.querySelector('.dashboard-header');
+  
+  if (authHeader) authHeader.style.display = 'flex';
+  if (dashboardHeader) dashboardHeader.style.display = 'none';
+});
+//===============================================
 // GLOBAL DECLARATIONS - AUTH-INITIALIZATION
 const CLOUDINARY_CONFIG = {
   cloudName: 'dh7d6otgu',
