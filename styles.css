@@ -118,7 +118,7 @@ footer p, footer .legal-links {
   justify-content: center;
   align-items: stretch;
   text-align: center;
-  padding: 5px 5px !important;
+  padding: 10px;
   box-sizing: border-box;
     z-index: 10 !important;    /* lower than fixed children */
 }
@@ -159,7 +159,7 @@ footer p, footer .legal-links {
   align-items: center;
   gap: 15px;
   padding: 15px;
-  background: transparent;
+  background: #784274;
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.2);
 }
