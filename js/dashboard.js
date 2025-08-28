@@ -1,13 +1,3 @@
-// AT THE VERY TOP of the file  
-document.addEventListener('DOMContentLoaded', function() {
-  // Show dashboard header, hide auth header
-  const authHeader = document.querySelector('.auth-header-container');
-  const dashboardHeader = document.querySelector('.dashboard-header');
-  
-  if (dashboardHeader) dashboardHeader.style.display = 'block';
-  if (authHeader) authHeader.style.display = 'none';
-});
-//==================================================
 
 // Global declaration
 let petDB; // IndexedDB reference (if used)
