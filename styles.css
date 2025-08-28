@@ -55,19 +55,18 @@ footer {
 /* ===== HEADER style ===== */
 .header-container {
   position: fixed;
-/* for simple margins application */
-  top: 70px; /* 60px original + 10px desired margin */
-  left: 20px; /* Left margin */
+  top: 0 !important; /* Force to top */
+  left: 0; /* Left margin */
   right: 20px; /* right margin */
   bottom: 5px;
-  width: calc(100% - 40px); /* 100% minus left+right margins */  
-  height: 120px;
-  
+  width: 100%;  
+  height: 120px; 
   display: flex;   /* Match it's toggling rule above in visibility section*/
   flex-direction: column;
   justify-content: center;
-  background: #DAB1DA;
-  z-index: 2;
+  background: transparent;
+  z-index: 1000;
+  margin: 0 !important; /* Remove any margins pushing it down */
   box-sizing: border-box; /* keep it for container size control */
   padding: 20px; /* ← ADJUST THIS: equal padding on ALL sides */
   border: 2px solid purple; /* Complete border declaration */
@@ -76,6 +75,7 @@ footer {
 .header-container * {
   pointer-events: auto; /* But allows clicking content inside */
 }
+
 
 .heade-container h1 {
   font-size: 2.4rem;
@@ -97,13 +97,13 @@ footer {
 #authContainer {
   position: relative;
   height: 100vh;
-  padding: 1rem;
+  padding-top: 140px; /* Height of header + some spacing */
   box-sizing: border-box;
 }
 
 /* ===== AUTH WELCOME SECTION (CURTAIN) ===== */
 .auth-welcome-section {
-  position: fixed;
+  position: relative;
   top: 100px; /* Position below the header container */
   left: 0;
   width: 100%;
@@ -114,7 +114,7 @@ footer {
   text-align: center;
   padding: 20px;
   background-color: #413752;
-  z-index: 2; /* same as the header */
+  z-index: 5; /* lower than the header */
   box-sizing: border-box;
 }
 
@@ -228,7 +228,78 @@ FOR PRIVACY AND TERMS HTMLS
         padding: 0 10px;
     }
 }
+/* Tablets */
+@media (max-width: 1024px) {
+    .header-container {
+        height: 110px;
+        padding: 15px;
+    }
+    
+    .header-container h1 {
+        font-size: 2rem;
+    }
+    
+    .header-container h2 {
+        font-size: 1.2rem;
+    }
+    
+    #authContainer, #dashboard {
+        padding-top: 130px;
+    }
+}
 
+/* Mobile Devices */
+@media (max-width: 768px) {
+    .header-container {
+        height: 100px;
+        padding: 10px;
+    }
+    
+    .header-container h1 {
+        font-size: 1.7rem;
+    }
+    
+    .header-container h2 {
+        font-size: 1.1rem;
+        margin-bottom: 5px;
+    }
+    
+    #authContainer, #dashboard {
+        padding-top: 120px;
+    }
+    
+    .auth-welcome-section {
+        height: 120px;
+        margin-bottom: 20px;
+    }
+}
+
+/* Small Mobile Devices */
+@media (max-width: 480px) {
+    .header-container {
+        height: 90px;
+    }
+    
+    .header-container h1 {
+        font-size: 1.5rem;
+    }
+    
+    .header-container h2 {
+        font-size: 1rem;
+    }
+    
+    #authContainer, #dashboard {
+        padding-top: 110px;
+    }
+    
+    .auth-welcome-section {
+        height: 100px;
+    }
+    
+    #googleSignInBtnWrapper {
+        bottom: 80px;
+    }
+}
 
 /* ===== DASHBOARD STYLES ===== */
 /* Pet Card Image Fix */
