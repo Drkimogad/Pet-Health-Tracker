@@ -1099,7 +1099,7 @@ body.modal-active {
 
 .chat-message small {
   display: block;
-  color: #FFFFFF; /* yo check*/
+  color: green; /* yo check*/
   font-size: 0.75rem;
 }
 
@@ -1113,7 +1113,7 @@ body.modal-active {
   border-radius: 6px;
   border: 1px solid #b38b6d;
   background: #fffef7;
-  color: #FFFFFF; 
+  color: black; 
   outline: none;
   margin-bottom: 0.15rem;
 }
