@@ -1169,7 +1169,7 @@ Get the app: https://drkimogad.github.io/Pet-Health-Tracker/
       // Ensure that only the "link copied" success message is shown for copy action
       setTimeout(() => {
         showSuccessNotification("✅ Link copied to clipboard! 📋");
-      }, 1000); // Slight delay to confirm the clipboard action was successful
+      }, 1500); // Slight delay to confirm the clipboard action was successful
 
       // Show fallback message
       showShareFallback(inviteMessage);
