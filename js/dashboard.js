@@ -1152,26 +1152,31 @@ Get the app: https://drkimogad.github.io/Pet-Health-Tracker/
     text: inviteMessage,
   };
 
+  let clipboardMessageShown = false; // Flag to track if clipboard message is shown
+
   try {
     // Only use the `share` API if it's available
     if (navigator.share) {
       // Native sharing dialog
       await navigator.share(shareData);
 
-      // Only show the success notification after the share action is successful
+      // Show shared success notification after share is completed
       setTimeout(() => {
-        showSuccessNotification("✅ Shared successfully! 🎉");
-      }, 1000); // Slight delay to ensure the action is properly completed
+        if (!clipboardMessageShown) {  // Only show if clipboard hasn't already shown
+          showSuccessNotification("✅ Shared successfully! 🎉");
+        }
+      }, 1000); // Delay slightly to ensure the action is completed
     } else {
       // Fallback if share is not supported: copy the link to the clipboard
       await navigator.clipboard.writeText(inviteMessage);
 
-      // Ensure that only the "link copied" success message is shown for copy action
+      // Show clipboard copied message only after copy action
       setTimeout(() => {
+        clipboardMessageShown = true;
         showSuccessNotification("✅ Link copied to clipboard! 📋");
-      }, 1500); // Slight delay to confirm the clipboard action was successful
+      }, 1500); // Adjust timing for the copied message
 
-      // Show fallback message
+      // Show fallback container for clipboard copy
       showShareFallback(inviteMessage);
     }
   } catch (error) {
@@ -1213,7 +1218,6 @@ function showShareFallback(inviteMessage) {
   document.body.appendChild(shareContainer);
   shareContainer.querySelector('input').select();
 }
-
 
 
 //=========================
