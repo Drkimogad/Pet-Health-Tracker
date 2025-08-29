@@ -299,6 +299,71 @@ FOR PRIVACY AND TERMS HTMLS
   .auth-welcome-section { height: 12vh; }
   .fullpage-lottie-container { height: 65vh; }
 }
+/* AUTH RESPONSIVE TWEAKS*/
+/* Tablet: 768px – 1199px */
+@media (min-width: 768px) and (max-width: 1199px) {
+
+  /* Welcome section slightly shorter */
+  .auth-welcome-section {
+    height: 16vh;
+  }
+
+  /* Lottie container width smaller */
+  .pet-animation-container {
+    width: 90%;
+    max-width: 600px;
+  }
+
+  /* Google Sign-In wrapper slightly smaller */
+  #googleSignInBtnWrapper {
+    bottom: 7vh;
+    padding: 12px;
+    gap: 12px;
+  }
+
+  /* Auth messages font */
+  #googleSignInBtnWrapper .auth-message,
+  #googleSignInBtnWrapper .auth-legal {
+    font-size: 0.9rem;
+  }
+}
+
+/* Mobile: below 768px */
+@media (max-width: 767px) {
+
+  /* Welcome section shorter */
+  .auth-welcome-section {
+    height: 12vh;
+  }
+
+  /* Lottie container width smaller */
+  .pet-animation-container {
+    width: 95%;
+    max-width: 500px;
+    margin: 10px auto;
+  }
+
+  /* Google Sign-In wrapper smaller and closer to footer */
+  #googleSignInBtnWrapper {
+    bottom: 6vh;
+    padding: 10px;
+    gap: 10px;
+  }
+
+  /* Auth messages font smaller */
+  #googleSignInBtnWrapper .auth-message,
+  #googleSignInBtnWrapper .auth-legal {
+    font-size: 0.85rem;
+  }
+
+  /* Bouncing ball smaller */
+  #googleSignInBtnWrapper .bouncing-ball {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+
 /* 🔹 Media queries for auth part */
 /* Tablet */
 @media (max-width: 1199px) {
