@@ -249,7 +249,6 @@ function initAuthListeners() {
 
 // MVED FUNCTIONS FROM UTILS.JS
 // ===== IMPROVED NOTIFICATION SYSTEM =====
-// ===== NOTIFICATION SYSTEM (GLOBAL) =====
 function showErrorToUser(message, type = "error") {
   try {
     let notificationDiv = document.getElementById('error-message');
@@ -321,7 +320,7 @@ function showErrorNotification(message) {
 function showInfoNotification(message) {
   showErrorToUser(message, "info");
 }
-function showInfoNotification(message) {
+function showFallbackNotification(message) {   // Fixed the function name here
   showErrorToUser(message, "fallback");
 }
 
