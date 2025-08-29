@@ -1133,9 +1133,8 @@ async function inviteFriends(petId) {
     alert("Pet data not loaded yet. Try again later.");
     return;
   }
-    
-// the whole message is wrapped in backticks `...` as one full string.
- const inviteMessage = `Meet ${profile.petName || 'my pet'}! 🐾
+
+  const inviteMessage = `Meet ${profile.petName || 'my pet'}! 🐾
 
 I'm using this awesome app (Pet Health Tracker) to manage:
 📋 Basic Information  
@@ -1148,31 +1147,91 @@ I'm using this awesome app (Pet Health Tracker) to manage:
 Get the app: https://drkimogad.github.io/Pet-Health-Tracker/
 📧 Contact developer: dr_kimogad@yahoo.com`;
 
-  const shareData = {
-    title: "Pet Profile",
-    text: inviteMessage,
-  };
+  handleInviteClick(inviteMessage); // pass message to handler
+}
 
+// ===== handleInviteClick now takes inviteMessage =====
+async function handleInviteClick(inviteMessage) {
   try {
-    if (navigator.share) {
-      await navigator.share(shareData);
-      // ✅ REPLACED: Use success notification instead of console.log
-      showSuccessNotification("Shared successfully! 🎉");
-    } else {
-      // ✅ REPLACED: Use success notification instead of alert
-      await navigator.clipboard.writeText(inviteMessage); // Fixed to use inviteMessage
-      showSuccessNotification("Link copied to clipboard! 📋");
-      showShareFallback(inviteMessage);
-    }
-  } catch (error) {
-    if (error.name !== 'AbortError') {
-      console.error("Sharing failed:", error);
-      // ✅ REPLACED: Use error notification instead of alert
-      showErrorNotification("Couldn't share. Please try again.");
-    }
-  }
-} // <== This closes the async function
+    let shareModal = document.getElementById("dynamic-share-modal");
+    if (!shareModal) {
+      shareModal = document.createElement("div");
+      shareModal.id = "dynamic-share-modal";
+      shareModal.style.cssText = `position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 9999;`;
 
+      const modalContent = document.createElement("div");
+      modalContent.id = "dynamic-share-content";
+      modalContent.style.cssText = `background: #fff; border-radius: 12px; padding: 20px 25px; max-width: 320px; width: 90%; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 15px;`;
+      shareModal.appendChild(modalContent);
+      document.body.appendChild(shareModal);
+    }
+
+    const content = document.getElementById("dynamic-share-content");
+    content.innerHTML = "";
+
+    // Copy Link button
+    const copyBtn = document.createElement("button");
+    copyBtn.textContent = "Copy Link";
+    copyBtn.className = "share-btn";
+    copyBtn.onclick = async (e) => {
+      e.stopPropagation();
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        showSuccessNotification("✅ Link copied to clipboard!");
+      } catch {
+        showErrorNotification("❌ Failed to copy link.");
+      }
+    };
+    content.appendChild(copyBtn);
+
+    // Share via Web Share API button
+    const shareBtn = document.createElement("button");
+    shareBtn.textContent = "Share";
+    shareBtn.className = "share-btn";
+    shareBtn.onclick = async (e) => {
+      e.stopPropagation();
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: "Pet Profile",
+            text: inviteMessage,
+            url: window.location.href,
+          });
+          showSuccessNotification("✅ Shared successfully!");
+          closeModal();
+        } catch (err) {
+          if (err.name === "AbortError") {
+            showInfoNotification("⚠️ Sharing aborted.");
+          } else {
+            showErrorNotification("❌ Couldn't share. Please try again.");
+          }
+        }
+      } else {
+        showErrorNotification("❌ Sharing not supported on this device.");
+        showShareFallback(inviteMessage); // call without ()
+      }
+    };
+    content.appendChild(shareBtn);
+
+    function closeModal() {
+      shareModal.style.display = "none";
+    }
+
+    shareModal.onclick = (e) => {
+      if (e.target === shareModal) {
+        closeModal();
+        showInfoNotification("⚠️ Sharing aborted.");
+      }
+    };
+
+    shareModal.style.display = "flex";
+
+  } catch (err) {
+    showErrorNotification("❌ Something went wrong opening share.");
+  }
+}
+
+// ===== showShareFallback stays same =====
 // Helper for fallback sharing
 function showShareFallback(inviteMessage) {
   const shareContainer = document.createElement('div');
