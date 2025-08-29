@@ -1,3 +1,8 @@
+/* Header container is outside auth container so it can be shown in dashboard as well
+that's why used a fixed height of 110px and also added padding top in petlist to show its content
+we also add padding bottom to petlist to avoid footer covering the end of petcards, so now
+everything shows nicely between header and footer */
+
 /* ===== GLOBAL STYLES ===== */
 :root {
   /* AUTHENTICATION PALETTE (preserved) */
@@ -150,7 +155,7 @@ KEEP THIS TO ENSURE AUTH CONTAINER AND DASHBOARD STARTS UNDER THE HEADER
 /* ===== FULLPAGE BANNER (BACKGROUND) ===== */
 .fullpage-lottie-container {
   position: fixed !important;
-  top: 27vh !important;   /* header (12) + welcome (15) */
+  top: calc(var(--header-height) + 15vh); /* new calculation*/
   left: 0;
   width: 100%;
   height: 71vh !important;
