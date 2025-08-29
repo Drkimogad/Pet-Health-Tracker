@@ -1258,7 +1258,19 @@ function showShareFallback(inviteMessage) {
   document.body.appendChild(shareContainer);
   shareContainer.querySelector('input').select();
 }
-    
+
+// Example: Invite button wiring
+const inviteBtn = document.getElementById("invite-btn");
+if (inviteBtn) {
+  inviteBtn.onclick = () => {
+    // Pass the petId here dynamically
+    const petId = inviteBtn.dataset.petId; 
+    inviteFriends(petId);
+  };
+}
+
+
+
 //=========================
 // Join Pet Community - ENHANCED VERSION
 //=========================
