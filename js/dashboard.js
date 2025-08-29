@@ -1165,7 +1165,7 @@ Get the app: https://drkimogad.github.io/Pet-Health-Tracker/
         if (!clipboardMessageShown) {  // Only show if clipboard hasn't already shown
           showSuccessNotification("✅ Shared successfully! 🎉");
         }
-      }, 1000); // Delay slightly to ensure the action is completed
+      }, 2000); // Delay slightly to ensure the action is completed
     } else {
       // Fallback if share is not supported: copy the link to the clipboard
       await navigator.clipboard.writeText(inviteMessage);
@@ -1174,7 +1174,7 @@ Get the app: https://drkimogad.github.io/Pet-Health-Tracker/
       setTimeout(() => {
         clipboardMessageShown = true;
         showSuccessNotification("✅ Link copied to clipboard! 📋");
-      }, 1500); // Adjust timing for the copied message
+      }, 1000); // Adjust timing for the copied message
 
       // Show fallback container for clipboard copy
       showShareFallback(inviteMessage);
