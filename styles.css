@@ -1020,7 +1020,7 @@ body.modal-active {
   visibility: visible;
 }
 .community-modal-content {
-  background: #C2E5D3; /* Light mustard base */
+  background: #a58cad; /* Light mustard base */
   border-radius: 12px;
   width: 90%;
   height: 90%; /* Fixed height instead of 70vh */
