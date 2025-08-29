@@ -1316,11 +1316,9 @@ body.modal-active {
   font-size: 1.5rem;
   background: none;
   border: none;
-  color: #4e348c;
+  color: #FFFFFF;
   cursor: pointer;
 }
-
-
 
 .community-modal-overlay {
   /* Ensure modal is focusable for keyboard users */
