@@ -1396,6 +1396,34 @@ body.modal-active {
   }
 }
 
+/*=====================
+  Share Modal Buttons 
+ =======================*/
+.share-btn {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.share-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+
+.share-btn:first-of-type {
+  background-color: #3498db;
+  color: #fff;
+}
+
+.share-btn:last-of-type {
+  background-color: #2ecc71;
+  color: #fff;
+}
+
 
 /* ===== RESPONSIVE DESIGNS============== */
 /* Prevent header/footer from shrinking on phones*/
