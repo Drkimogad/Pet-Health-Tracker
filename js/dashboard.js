@@ -1389,8 +1389,9 @@ if (!pet) {
 
   // LOAD MESSAGES FROM SINGLE DOCUMENT
   function loadMessages() {
+    const chatMessagesDiv = modal.querySelector('#chatMessages'); // moved up for defining it
+      
     chatDocRef.onSnapshot(doc => {
-      const chatMessagesDiv = modal.querySelector('#chatMessages');
         chatMessagesDiv.innerHTML = '<div class="loading">Loading messages...</div>'; // ← ADD LOADING STATE
       
         if (!doc.exists) {
