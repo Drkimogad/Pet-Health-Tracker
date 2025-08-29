@@ -1020,7 +1020,7 @@ body.modal-active {
   visibility: visible;
 }
 .community-modal-content {
-  background: #fefaf0; /* Light mustard base */
+  background: #C2E5D3; /* Light mustard base */
   border-radius: 12px;
   width: 90%;
   height: 90%; /* Fixed height instead of 70vh */
@@ -1062,7 +1062,7 @@ body.modal-active {
   align-items: center;
 }
 .pet-name-header {
-  color: #4e348c;
+  color: #FFFFFF;
   font-weight: bold;
   font-size: 1.1rem;
 }
@@ -1074,7 +1074,7 @@ body.modal-active {
 
 .chat-messages {
   flex: 1;
-  background: #fff9e6; /* Pale mustard */
+  background: white; /* Pale mustard */
   border: 1px solid #d2b48c; /* Light brown */
   padding: 0.5rem;
   min-height: unset; /* Let flex:1 handle height */
@@ -1099,7 +1099,7 @@ body.modal-active {
 
 .chat-message small {
   display: block;
-  color: #888;
+  color: #FFFFFF; /* yo check*/
   font-size: 0.75rem;
 }
 
@@ -1113,7 +1113,7 @@ body.modal-active {
   border-radius: 6px;
   border: 1px solid #b38b6d;
   background: #fffef7;
-  color: #4e348c;
+  color: #FFFFFF; 
   outline: none;
   margin-bottom: 0.15rem;
 }
@@ -1183,6 +1183,8 @@ body.modal-active {
   color: #4e348c;
   cursor: pointer;
 }
+
+
 
 .community-modal-overlay {
   /* Ensure modal is focusable for keyboard users */
@@ -1394,34 +1396,6 @@ body.modal-active {
   .chat-controls {
     justify-content: center;
   }
-}
-
-/*=====================
-  Share Modal Buttons 
- =======================*/
-.share-btn {
-  padding: 10px 18px;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: all 0.2s ease;
-}
-
-.share-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-}
-
-.share-btn:first-of-type {
-  background-color: #3498db;
-  color: #fff;
-}
-
-.share-btn:last-of-type {
-  background-color: #2ecc71;
-  color: #fff;
 }
 
 
