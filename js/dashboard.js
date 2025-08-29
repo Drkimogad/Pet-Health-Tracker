@@ -1127,7 +1127,6 @@ document.addEventListener('click', (e) => {
 //============================================
 // Invite Friends (UPDATED)
 //============================================
-// Invite Friends (UPDATED)
 async function inviteFriends(petId) {
   const profile = window.petProfiles.find(p => p.id === petId);
   if (!profile) {
@@ -1135,7 +1134,6 @@ async function inviteFriends(petId) {
     return;
   }
 
-  // the whole message is wrapped in backticks `...` as one full string.
   const inviteMessage = `Meet ${profile.petName || 'my pet'}! 🐾
 
 I'm using this awesome app (Pet Health Tracker) to manage:
@@ -1155,30 +1153,37 @@ Get the app: https://drkimogad.github.io/Pet-Health-Tracker/
   };
 
   try {
+    // Only use the `share` API if it's available
     if (navigator.share) {
-      // Open native share dialog
+      // Native sharing dialog
       await navigator.share(shareData);
+
+      // Only show the success notification after the share action is successful
       setTimeout(() => {
         showSuccessNotification("✅ Shared successfully! 🎉");
-      }, 1000); // Delay success to ensure it's triggered after dialog closes
+      }, 1000); // Slight delay to ensure the action is properly completed
     } else {
-      // Copy the link to clipboard
-      await navigator.clipboard.writeText(inviteMessage); 
+      // Fallback if share is not supported: copy the link to the clipboard
+      await navigator.clipboard.writeText(inviteMessage);
+
+      // Ensure that only the "link copied" success message is shown for copy action
       setTimeout(() => {
         showSuccessNotification("✅ Link copied to clipboard! 📋");
-      }, 1000); // Delay to show success after copying
-      showShareFallback(inviteMessage); // Fallback in case native share isn't supported
+      }, 1000); // Slight delay to confirm the clipboard action was successful
+
+      // Show fallback message
+      showShareFallback(inviteMessage);
     }
   } catch (error) {
-    setTimeout(() => {
-      if (error.name !== 'AbortError') {
-        console.error("Sharing failed:", error);
-        showErrorNotification("❌ Couldn't share. Please try again.");
-      } else {
-        // Handle cancel action if share is aborted
+    if (error.name !== 'AbortError') {
+      console.error("Sharing failed:", error);
+      showErrorNotification("❌ Couldn't share. Please try again.");
+    } else {
+      // Handle aborted share action
+      setTimeout(() => {
         showInfoNotification("⚠️ Sharing aborted.");
-      }
-    }, 1000); // Delay error handling after detection
+      }, 1000); // Ensure proper delay for aborted action
+    }
   }
 }
 
@@ -1208,6 +1213,7 @@ function showShareFallback(inviteMessage) {
   document.body.appendChild(shareContainer);
   shareContainer.querySelector('input').select();
 }
+
 
 
 //=========================
