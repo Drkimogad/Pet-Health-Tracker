@@ -260,6 +260,67 @@ FOR PRIVACY AND TERMS HTMLS
   text-align: center;          /* center text inside container */
 }
 
+/*AUTH RESPONSIVE DESIGNS*/
+/* Desktop: Large screens */
+@media (min-width: 1200px) {
+  :root {
+    --header-height: 140px;
+  }
+  
+  .header-container h1 { font-size: 2.8rem; }
+  .header-container h2 { font-size: 1.7rem; }
+
+  .auth-welcome-section { height: 18vh; }
+  .fullpage-lottie-container { height: 65vh; }
+}
+
+/* Tablet: Medium screens */
+@media (min-width: 768px) and (max-width: 1199px) {
+  :root {
+    --header-height: 120px;
+  }
+
+  .header-container h1 { font-size: 2rem; }
+  .header-container h2 { font-size: 1.3rem; }
+
+  .auth-welcome-section { height: 16vh; }
+  .fullpage-lottie-container { height: 68vh; }
+}
+
+/* Mobile: Small screens */
+@media (max-width: 767px) {
+  :root {
+    --header-height: 100px;
+  }
+
+  .header-container h1 { font-size: 1.7rem; }
+  .header-container h2 { font-size: 1.1rem; }
+
+  .auth-welcome-section { height: 12vh; }
+  .fullpage-lottie-container { height: 65vh; }
+}
+/* 🔹 Media queries for auth part */
+/* Tablet */
+@media (max-width: 1199px) {
+  #authContainer > .auth-item {
+    width: 85%;
+    font-size: 0.95rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  #authContainer > .auth-item {
+    width: 90%;
+    font-size: 0.9rem;
+  }
+}
+
+
+
+
+
+
 /* ===== DASHBOARD STYLES ===== */
 /* Pet Card Image Fix */
 #petPhotoPreview {
