@@ -249,10 +249,11 @@ function initAuthListeners() {
 
 // MVED FUNCTIONS FROM UTILS.JS
 // ===== IMPROVED NOTIFICATION SYSTEM =====
-function showErrorToUser(message, isSuccess = false) {
+// ===== NOTIFICATION SYSTEM (GLOBAL) =====
+function showErrorToUser(message, type = "error") {
   try {
     let notificationDiv = document.getElementById('error-message');
-    
+
     if (!notificationDiv) {
       notificationDiv = document.createElement('div');
       notificationDiv.id = 'error-message';
@@ -273,18 +274,29 @@ function showErrorToUser(message, isSuccess = false) {
     }
 
     notificationDiv.textContent = message;
-    notificationDiv.style.backgroundColor = isSuccess ? '#4CAF50' : '#f44336';
-    notificationDiv.style.color = 'white';
-    notificationDiv.style.display = 'block';
-    
-    // Accessibility
-    notificationDiv.setAttribute('role', 'alert');
-    notificationDiv.setAttribute('aria-live', 'assertive');
 
-    // Auto-dismiss after 5 seconds
+    // 🎨 Color scheme
+    if (type === "success") {
+      notificationDiv.style.backgroundColor = "#4CAF50"; // green
+      notificationDiv.style.color = "white";
+    } else if (type === "info") {
+      notificationDiv.style.backgroundColor = "#FFC107"; // yellow
+      notificationDiv.style.color = "black";
+    } else {
+      notificationDiv.style.backgroundColor = "#f44336"; // red
+      notificationDiv.style.color = "white";
+    }
+
+    notificationDiv.style.display = "block";
+
+    // Accessibility
+    notificationDiv.setAttribute("role", "alert");
+    notificationDiv.setAttribute("aria-live", "assertive");
+
+    // Auto-dismiss after 5s
     setTimeout(() => {
       if (notificationDiv) {
-        notificationDiv.style.display = 'none';
+        notificationDiv.style.display = "none";
       }
     }, 5000);
 
@@ -293,15 +305,17 @@ function showErrorToUser(message, isSuccess = false) {
   }
 }
 
-// Success wrapper (keep this)
+// Wrappers
 function showSuccessNotification(message) {
-  showErrorToUser(message, true);
+  showErrorToUser(message, "success");
+}
+function showErrorNotification(message) {
+  showErrorToUser(message, "error");
+}
+function showInfoNotification(message) {
+  showErrorToUser(message, "info");
 }
 
-// Error wrapper (keep this for consistency)
-function showErrorNotification(message) {
-  showErrorToUser(message, false);
-}
 
 // Show the sign-in form
 // ✅ Show Authentication Form
