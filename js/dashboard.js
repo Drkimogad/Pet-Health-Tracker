@@ -1173,8 +1173,8 @@ Get the app: https://drkimogad.github.io/Pet-Health-Tracker/
       // Show clipboard copied message only after copy action
       setTimeout(() => {
         clipboardMessageShown = true;
-        showErrorToUser("✅ Link copied to clipboard! 📋", "fallback");
-      }, 2000); // Adjust timing for the copied message
+        showFallbackNotification("✅ Link copied to clipboard! 📋");
+      }, 1000); // Adjust timing for the copied message
 
       // Show fallback container for clipboard copy
       showShareFallback(inviteMessage);
