@@ -279,12 +279,18 @@ function showErrorToUser(message, type = "error") {
     if (type === "success") {
       notificationDiv.style.backgroundColor = "#4CAF50"; // green
       notificationDiv.style.color = "white";
+      
     } else if (type === "info") {
       notificationDiv.style.backgroundColor = "#FFC107"; // yellow
       notificationDiv.style.color = "black";
-    } else {
+      
+    } else if (type === "error"){
       notificationDiv.style.backgroundColor = "#f44336"; // red
       notificationDiv.style.color = "white";
+      
+    } else if (type === "fallback") {   // for copied to clipboard message
+      notificationDiv.style.backgroundColor = "#ADD8E6"; // light blue for fallback
+      notificationDiv.style.color = "black"; // Make text readable
     }
 
     notificationDiv.style.display = "block";
@@ -315,7 +321,9 @@ function showErrorNotification(message) {
 function showInfoNotification(message) {
   showErrorToUser(message, "info");
 }
-
+function showInfoNotification(message) {
+  showErrorToUser(message, "fallback");
+}
 
 // Show the sign-in form
 // ✅ Show Authentication Form
