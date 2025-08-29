@@ -1130,7 +1130,7 @@ document.addEventListener('click', (e) => {
 async function inviteFriends(petId) {
   const profile = window.petProfiles.find(p => p.id === petId);
   if (!profile) {
-    alert("Pet data not loaded yet. Try again later.");
+    showErrorNotification("Pet data not loaded yet. Try again later.");
     return;
   }
 
@@ -1152,42 +1152,41 @@ Get the app: https://drkimogad.github.io/Pet-Health-Tracker/
     text: inviteMessage,
   };
 
-  let clipboardMessageShown = false; // Flag to track if clipboard message is shown
+  let successTimeoutId = null;
 
   try {
-    // Only use the `share` API if it's available
     if (navigator.share) {
-      // Native sharing dialog
+      // Native sharing
       await navigator.share(shareData);
-
-      // Show shared success notification after share is completed
-      setTimeout(() => {
-        if (!clipboardMessageShown) {  // Only show if clipboard hasn't already shown
-          showSuccessNotification("✅ Shared successfully! 🎉");
-        }
-      }, 1000); // Delay slightly to ensure the action is completed
+      
+      // Set timeout for success notification
+      successTimeoutId = setTimeout(() => {
+        showSuccessNotification("✅ Shared successfully! 🎉");
+      }, 1000);
+      
     } else {
-      // Fallback if share is not supported: copy the link to the clipboard
+      // Fallback: copy to clipboard - CANCEL any pending success notification
+      if (successTimeoutId) {
+        clearTimeout(successTimeoutId);
+      }
+      
       await navigator.clipboard.writeText(inviteMessage);
-
-      // Show clipboard copied message only after copy action
-      setTimeout(() => {
-        clipboardMessageShown = true;
-        showFallbackNotification("✅ Link copied to clipboard! 📋");
-      }, 1000); // Adjust timing for the copied message
+      showFallbackNotification("✅ Link copied to clipboard! 📋");
 
       // Show fallback container for clipboard copy
       showShareFallback(inviteMessage);
     }
   } catch (error) {
+    // CANCEL any pending success notification on error
+    if (successTimeoutId) {
+      clearTimeout(successTimeoutId);
+    }
+    
     if (error.name !== 'AbortError') {
       console.error("Sharing failed:", error);
       showErrorNotification("❌ Couldn't share. Please try again.");
     } else {
-      // Handle aborted share action
-      setTimeout(() => {
-        showInfoNotification("⚠️ Sharing aborted.");
-      }, 1000); // Ensure proper delay for aborted action
+      showInfoNotification("⚠️ Sharing aborted.");
     }
   }
 }
