@@ -1020,7 +1020,7 @@ body.modal-active {
   visibility: visible;
 }
 .community-modal-content {
-  background: #a58cad; /* Light mustard base */
+  background: #d2b6db; /* changed */
   border-radius: 12px;
   width: 90%;
   height: 90%; /* Fixed height instead of 70vh */
@@ -1074,7 +1074,7 @@ body.modal-active {
 
 .chat-messages {
   flex: 1;
-  background: white; /* Pale mustard */
+  background: #b1b374; /* Pale mustard */
   border: 1px solid #d2b48c; /* Light brown */
   padding: 0.5rem;
   min-height: unset; /* Let flex:1 handle height */
