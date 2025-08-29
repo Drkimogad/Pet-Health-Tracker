@@ -108,11 +108,13 @@
         </div>
     </noscript>
     <div class="background-container">
+    <!-- Header containermoved outsideauth containerso it can showin dashboard as well -->
           <div class="header-container"> 
              <h1>Pet Health Tracker</h1>
             <h2>Your pet wellness hub </h2> 
-        </div>   
-                      <!-- Bouncing ball Google Sign-In button -->
+        </div>           
+            <!-- Bouncing ball Google Sign-In button  moved outsideauth container-->
+            <!-- becauseof overflowhiddenin other elemebts will affect its visibility-->
    <div id="googleSignInBtnWrapper" class="bouncing-ball-container">
      <p class="auth-message">Please sign in with your Google account</p>
     <div id="googleSignInButton" class="bouncing-ball"></div>
@@ -123,7 +125,7 @@
     </div>
    </div>
         
-    <!-- Auth Container -->
+    <!-- Auth Container  has 2 things now-->
     <div id="authContainer">
      <div class="auth-welcome-section">   
         <!-- New Small Lottie Container USED AS A WELCOMING MESSAGE -->
@@ -172,7 +174,7 @@
 </div>
         
  <!-- ================================================-->
-<!-- Dashboard Loader (Paws Animation) -->
+<!-- Dashboard Loader (Paws Animation) for some functions -->
 <!-- ========================================== -->
 <div id="dashboard-loader" 
      style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000;">
@@ -188,10 +190,10 @@
       loop
       autoplay>
     </lottie-player>
-
+      
       <!-- 🌀 CSS Spinner Fallback (ADD THIS) -->
     <div id="css-spinner-fallback" class="css-spinner-fallback"></div>
-
+      
     <!-- Loader messages -->
     <!-- id in helper to fetch right message is dashboard-loader-message key -->
     <p id="dashboard-loader-loading" class="loader-text">Loading...</p>
@@ -211,15 +213,7 @@
     <p id="dashboard-loader-exporting" class="loader-text" style="display:none;">Exporting...</p>
     <p id="dashboard-loader-success-exporting" class="loader-text" style="display:none;">✅ all pet cards exported successfully!</p>
     <p id="dashboard-loader-error-exporting" class="loader-text" style="display:none; color:red;">❌ Export failed. Please try again.</p>
-
-    <p id="dashboard-loader-sharing" class="loader-text" style="display:none;">Sharing...</p>
-    <p id="dashboard-loader-sharing-copied" class="loader-text" style="display:none;">✅ Link copied to clipboard!</p>
-    <p id="dashboard-loader-success-sharing" class="loader-text" style="display:none;">✅ Shared successfully!</p>
-    <p id="dashboard-loader-error-sharing" class="loader-text" style="display:none; color:red;">❌ Couldn't share. Please try again.</p>
-
-    <p id="dashboard-loader-generating" class="loader-text" style="display:none;">Generating QR...</p>
-    <p id="dashboard-loader-success-generating" class="loader-text" style="display:none;">✅ QR successfully generated!</p>
-    <p id="dashboard-loader-error-generating" class="loader-text" style="display:none;">❌ Failed to generate QR code!</p>
+     <!-- qr, inviteFriends and showdetails modal using notificationsystem ftom auth.js-->
   </div>
 </div>
         
