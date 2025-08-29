@@ -844,6 +844,15 @@ button.delete-btn {
   color: white !important;
 }
 
+/* CSS rule to ensure the Lottie animation is visible when shown*/
+lottie-player[style*="display:none"] {
+  display: none !important;
+}
+
+lottie-player:not([style*="display:none"]) {
+  display: block !important;
+}
+
 /* =====Details Modal========== */
 /* Modal Styles */
 /* 👇 Add this new rule */  
