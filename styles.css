@@ -408,11 +408,13 @@ FOR PRIVACY AND TERMS HTMLS
 FORM Styling
 1️⃣ Desktop (default values are suitable large screens)
 ======================================================*/
-/* for dashboard backgrounf when form or saved petlists reduced in size */
+/* for dashboard background when form or saved petlists reduced in size */
+/* dashboard is hidden originally and when it shows it must have a space for the header on top and footer at the bottom */
 #dashboard {
   background-color: var(--light-bg); /* same or slightly different shade */
   min-height: 100vh;
-  padding: 1rem 0; /* optional top/bottom spacing */
+  padding-bottom: 5vh;     /* same as your saved profiles */
+  padding-top: var(--header-height); /* pushes all dashboard content below header */
   box-sizing: border-box;
 }
 
