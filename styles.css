@@ -609,7 +609,8 @@ textarea:focus {
   padding-top: var(--header-height); /* stays in sync with header 110px */
   padding-bottom: 5vh;  /* same as footer height */
   box-sizing: border-box;
-  max-width: 90%;   /* match the approximate width of your pet-card area */
+  max-width: 90%; /* or 100% if you want more flexibility */
+  margin: 0 auto; /* center on desktop */
 }
 
 .saved-profiles h3 {
@@ -618,10 +619,12 @@ textarea:focus {
 }
 
 .pet-card {
-  max-width: 100%; /* check how it behaves*/
+  width: 100%;       /* take full width of .saved-profiles */
+  max-width: 600px;  /* keeps card readable on wide screens */
   background: #ffffff; /* clean white */
   border-radius: 12px;
   padding: 1rem;
+  margin: 0 auto 1.5rem auto; /* center single cards */
   display: flex;
   flex-direction: column; /* 🔁 Changed from row */
   gap: 1rem;
@@ -630,9 +633,9 @@ textarea:focus {
   border: 1px solid #e0e0e0; /* lighter subtle border */
 }
 
+
 /* Add to apply to pet header and details*/
 .card-section {
-  width: 100%; /* yo check*/
   border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 0.75rem 1rem;
@@ -645,6 +648,11 @@ textarea:focus {
   flex-direction: column;
   width:100%;
 }
+
+.pet-card-content, .card-section {
+  width: 100%;
+}
+
 .pet-header {
   display: flex;
   flex-direction: column;
