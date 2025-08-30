@@ -29,6 +29,12 @@ everything shows nicely between header and footer */
   --header-height: 110px; /* base desktop value */
 }
 
+.background-container {
+  background-color: var(--light-bg); /* subtle, soft background */
+  min-height: 100vh; /* ensure it fills the viewport */
+  padding: 1rem 0;   /* optional vertical spacing */
+}
+
 /* untouchable  rules*/
 .hidden { display: none !important; }
 .visible { display: block !important; }
@@ -402,12 +408,21 @@ FOR PRIVACY AND TERMS HTMLS
 FORM Styling
 1️⃣ Desktop (default values are suitable large screens)
 ======================================================*/
+/* for dashboard backgrounf when form or saved petlists reduced in size */
+#dashboard {
+  background-color: var(--light-bg); /* same or slightly different shade */
+  min-height: 100vh;
+  padding: 1rem 0; /* optional top/bottom spacing */
+  box-sizing: border-box;
+}
+
 #petList {
-  max-width: 90%; /* suitable for desktop*/
-  margin: 2rem auto; /* center horizontally */
+  max-width: 70%; /* suitable for desktop*/
   padding: 2rem; /* maintain internal spacing can be adjusted to 3 rem for desktop*/
-  background: var(--card-bg); /* subtle light card */
+  background-color: var(--card-bg); /* slightly brighter than container */
+  border: 1px solid var(--border-color); /* subtle border */
   border-radius: 8px;
+  margin: 2rem auto; /* centers the form inside the container */
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   animation: formEntrance 0.4s ease;
 }
