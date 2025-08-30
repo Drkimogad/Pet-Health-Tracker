@@ -470,7 +470,7 @@ textarea:focus {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
-  padding: 0 1.5rem;
+  padding: 0 2.5rem; /* The padding: 0 1.5rem; is what gives horizontal spacing from the screen edges.*/
 }
 
 /* primary actions class controls logout, add profile, save pet profile buttons*/
@@ -503,12 +503,13 @@ textarea:focus {
   align-items: center;
   gap: 1rem;
   margin-top: 2rem;
+  padding: 0 2rem; /* To push them inward horizontally, we can add padding-left and padding-right to .form-actions*/
   width: 100%;
 }
 
 /* Update cancel button - remove margin-top */
 #cancelEditBtn {
-  background-color: var(--red);
+  background-color: #FF0000;  /* same as logout */
   color: white;
   margin-left: 0; 
   margin-top: 0;
@@ -523,14 +524,18 @@ textarea:focus {
 }
 
 #cancelEditBtn:hover {
-  background-color: #bf0000; /* using a darker red now for hover effect */
+  background-color: #bf0000; /* darker hover effect */
   border: black; 
 }
 
 /* Ensure submit button stays left-aligned */
 .form-actions button[type="submit"] {
   margin-right: auto;
+  min-width: 160px; /* keeps Save + Cancel same width */
+  text-align: center;
 }
+
+
 
 
 /* Pet Cards all styles SPLIT LAYOUT */
