@@ -392,19 +392,7 @@ FOR PRIVACY AND TERMS HTMLS
 
 
 
-/* ===== DASHBOARD STYLES ===== */
-/* Pet Card Image Fix */
-#petPhotoPreview {
-  max-width: 150px;
-  max-height: 150px;
-  margin-top: 10px;
-  border-radius: 8px;
-  display: none;
-  border: 1px solid var(--border-color);
-  object-fit: cover;
-}
-
-/*=============================
+/* ===== DASHBOARD STYLES ===== 
 FORM Styling
 1️⃣ Desktop (default values are suitable large screens)
 ======================================================*/
@@ -419,7 +407,7 @@ FORM Styling
 }
 
 #petList {
-  max-width: 70%; /* suitable for desktop*/
+  max-width: 90%; /* suitable for desktop*/
   padding: 2rem; /* maintain internal spacing can be adjusted to 3 rem for desktop*/
   background-color: var(--card-bg); /* slightly brighter than container */
   border: 1px solid var(--border-color); /* subtle border */
@@ -630,7 +618,7 @@ textarea:focus {
 }
 
 ..pet-card {
-  max-width: 100%; /* check how it behaves*/
+  max-width: 90%; /* check how it behaves*/
   background: #ffffff; /* clean white */
   border-radius: 12px;
   padding: 1rem;
