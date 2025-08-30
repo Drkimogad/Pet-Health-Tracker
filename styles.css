@@ -644,7 +644,7 @@ Emergency Contact*/
 .card-section {
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  padding: 0.75rem 1rem;
+  padding: 12px 14px; /* 12px top/bottom, 14px left/right, same as reminders */
   background: var(--card-bg); /* matches form + modern */
 }
 
