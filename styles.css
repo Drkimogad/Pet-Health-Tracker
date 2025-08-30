@@ -634,7 +634,13 @@ textarea:focus {
 }
 
 
-/* Add to apply to pet header and details*/
+/* the wrapper inside the pet card that holds grouped details, like:
+Pet Photo
+Pet Name / Header
+Breed, Age, Weight, Gender, Mood
+Diet, Allergies, Medical History
+Microchip info
+Emergency Contact*/
 .card-section {
   border: 1px solid var(--border-color);
   border-radius: 8px;
@@ -646,7 +652,6 @@ textarea:focus {
   flex: 1;
   display: flex;
   flex-direction: column;
-  width:100%;
 }
 
 .pet-card-content, .card-section {
