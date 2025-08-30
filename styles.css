@@ -610,7 +610,6 @@ textarea:focus {
   padding-bottom: 5vh;  /* same as footer height */
   box-sizing: border-box;
   max-width: 90%; /* or 100% if you want more flexibility */
-  margin: 0 auto; /* center on desktop */
 }
 
 .saved-profiles h3 {
@@ -619,33 +618,22 @@ textarea:focus {
 }
 
 .pet-card {
-  width: 75%;       /* take full width of .saved-profiles */
-  max-width: 650px;  /* keeps card readable on wide screens */
-  background: #ffffff; /* clean white */
-  border-radius: 12px;
+  background: #ffffff;
+  border-radius: 10px;
   padding: 1rem;
-  margin: 0 auto 1.5rem auto; /* center single cards */
   display: flex;
   flex-direction: column; /* 🔁 Changed from row */
   gap: 1rem;
-  margin-bottom: 2rem; /* cleaner spacing between cards IT MIGHT BE CONFLICTING WITH HTML 🔁 IN DASHBOARD.JS */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); /* slightly softer shadow */
-  border: 1px solid #e0e0e0; /* lighter subtle border */
+  margin-bottom: 10rem; /* will give more space between saved petcards 1.5rem*/
+  box-shadow: 0 4px 6px rgba(0,0,0,0.08);
+  border: 2px solid #A88905; /* 🔲 Card frame #e0e0e0 1px*/
 }
-
-
-/* the wrapper inside the pet card that holds grouped details, like:
-Pet Photo
-Pet Name / Header
-Breed, Age, Weight, Gender, Mood
-Diet, Allergies, Medical History
-Microchip info
-Emergency Contact*/
+/* Add to apply to pet header and details*/
 .card-section {
-  border: 1px solid var(--border-color);
+  border: 1px solid #ddd;
   border-radius: 8px;
-  padding: 1rem 1.25rem; /* slightly more top/bottom and horizontal space */
-  background: var(--card-bg); /* matches form + modern */
+  padding: 0.75rem 1rem;
+  background: #fafafa;
 }
 
 .pet-card-content {
@@ -653,11 +641,6 @@ Emergency Contact*/
   display: flex;
   flex-direction: column;
 }
-
-.pet-card-content, .card-section {
-  width: 100%;
-}
-
 .pet-header {
   display: flex;
   flex-direction: column;
@@ -666,9 +649,9 @@ Emergency Contact*/
   gap: 0.5rem;
 }
 .pet-header h4 {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   font-weight: bold;
-  color: #2c3e50; /* keep readable dark color */
+  color: #2c3e50;
   margin: 0;
 }
 .pet-details {
@@ -683,7 +666,6 @@ Emergency Contact*/
   margin: 0;
   padding: 4px 0;
   text-align: left;
-  color: #4a4a4a; /* slightly softer than pure black for readability */
 }
 
 /* SAVED PETCARD PHOTO*/
@@ -710,10 +692,10 @@ Emergency Contact*/
 }
 /* ======= all reminders related styleS ROOT COLOURS ARE REMOVED ============*/
 .pet-reminders {
- background: var(--light-bg);
-  border: 1px solid var(--border-color);
-  padding: 10px 14px;
-  border-radius: 8px;
+  background: #DECCE1;
+  border: 1px solid #f3e5ab;
+  padding: 12px 16px;
+  border-radius: 6px;
   margin-top: 1rem;
   font-size: 0.9rem;
 }
@@ -734,8 +716,8 @@ Emergency Contact*/
   margin-right: 6px;
 }
 .reminder.overdue {
-  background-color: #fff4e0;
-  border-left: 4px solid #ff9248;
+  background-color: #ffebee;
+  border-left: 4px solid #c62828;
   color: #c62828;
   font-weight: 500;
 }
@@ -807,10 +789,6 @@ Emergency Contact*/
   cursor: pointer;
   transition: background 0.2s ease;
 }
-.pet-actions button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
 
 .edit-btn {
   background-color: var(--purple);
@@ -852,69 +830,6 @@ button.delete-btn {
   font-weight: 600;
   color: var(--text-color);
 }
-
-/* ====== Pet Card Responsive Enhancements ====== */
-
-/* Larger screens (desktop) */
-@media (min-width: 1024px) {
-  .saved-profiles {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .pet-card {
-    width: 70%; /* same width as tablet for consistency */
-    max-width: 600px; /* optional max width */
-  }
-}
-
-
-/* Small screens (phones) */
-@media (max-width: 768px) {
-  .pet-card {
-    width: 95%;         /* take almost full width */
-    margin: 0 auto 1.5rem auto; /* center and space them */
-    padding: 0.75rem;   /* slightly tighter padding */
-  }
-
-  .pet-photo {
-    width: 80px; /* smaller photo for mobile */
-  }
-
-  .pet-header h4 {
-    font-size: 1rem; /* reduce heading size */
-  }
-}
-
-@media (min-width: 768px) and (max-width: 1199px) {
-  .saved-profiles ul {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* keep cards centered */
-    gap: 1.5rem;
-  }
-
-  .pet-card {
-    width: 75%; /* narrower than desktop for better readability */
-    margin-bottom: 2rem;
-  }
-}
-@media (max-width: 767px) {
-  .saved-profiles ul {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .pet-card {
-    width: 90%;
-    margin-bottom: 1.5rem;
-    padding: 0.8rem; /* slightly smaller for smaller screens */
-  }
-}
-
 
 
 
