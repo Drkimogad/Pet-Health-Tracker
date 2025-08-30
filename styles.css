@@ -606,10 +606,11 @@ textarea:focus {
 /*============================================================*/
 /* these values are tablet optimized*/
 .saved-profiles {
-  padding-top: var(--header-height); /* stays in sync with header 110px */
-  padding-bottom: 5vh;  /* same as footer height */
+ /* padding-top: var(--header-height);  stays in sync with header 110px */
+/*  padding-bottom: 5vh;  /* same as footer height */
   box-sizing: border-box;
   max-width: 90%; /* or 100% if you want more flexibility */
+  align-items: center;
 }
 
 .saved-profiles h3 {
@@ -632,8 +633,10 @@ textarea:focus {
 .card-section {
   border: 1px solid #ddd;
   border-radius: 8px;
-  padding: 0.75rem 1rem;
+  padding: 0.75rem 0rem;
   background: #fafafa;
+  margin-bottom: 0;
+
 }
 
 .pet-card-content {
@@ -696,7 +699,7 @@ textarea:focus {
   border: 1px solid #f3e5ab;
   padding: 12px 16px;
   border-radius: 6px;
-  margin-top: 1rem;
+  margin-top: 0rem;
   font-size: 0.9rem;
 }
 .reminder {
