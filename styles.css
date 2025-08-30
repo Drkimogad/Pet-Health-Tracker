@@ -619,8 +619,8 @@ textarea:focus {
 }
 
 .pet-card {
-  width: 100%;       /* take full width of .saved-profiles */
-  max-width: 600px;  /* keeps card readable on wide screens */
+  width: 75%;       /* take full width of .saved-profiles */
+  max-width: 650px;  /* keeps card readable on wide screens */
   background: #ffffff; /* clean white */
   border-radius: 12px;
   padding: 1rem;
@@ -628,7 +628,7 @@ textarea:focus {
   display: flex;
   flex-direction: column; /* 🔁 Changed from row */
   gap: 1rem;
-  margin-bottom: 1.5rem; /* cleaner spacing between cards IT MIGHT BE CONFLICTING WITH HTML 🔁 IN DASHBOARD.JS */
+  margin-bottom: 2rem; /* cleaner spacing between cards IT MIGHT BE CONFLICTING WITH HTML 🔁 IN DASHBOARD.JS */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); /* slightly softer shadow */
   border: 1px solid #e0e0e0; /* lighter subtle border */
 }
@@ -644,7 +644,7 @@ Emergency Contact*/
 .card-section {
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  padding: 12px 14px; /* 12px top/bottom, 14px left/right, same as reminders */
+  padding: 1rem 1.25rem; /* slightly more top/bottom and horizontal space */
   background: var(--card-bg); /* matches form + modern */
 }
 
