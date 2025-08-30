@@ -467,10 +467,12 @@ textarea:focus {
 /* Dashboard Action Buttons including new profile and logout button alignement with it plus submit button */
 .dashboard-actions {
   display: flex;
-  justify-content: space-between;
+  gap: 2rem; /* increase spacing between the two buttons */
+  justify-content: center;
+  min-width: 160px;  /* same as Save/Cancel */
+  height: 44px;      /* lock height */
   align-items: center;
   margin-bottom: 15px;
-  padding: 0 2.5rem; /* The padding: 0 1.5rem; is what gives horizontal spacing from the screen edges.*/
 }
 
 /* primary actions class controls logout, add profile, save pet profile buttons*/
@@ -499,12 +501,10 @@ textarea:focus {
   the actual styles are targetting buttons by id for cancel button and class for submit button */
 .form-actions {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  gap: 1rem;
+  gap: 2rem; /* increase or decrease to adjust the gap*/
   margin-top: 2rem;
-  padding: 0 2rem; /* To push them inward horizontally, we can add padding-left and padding-right to .form-actions*/
-  width: 100%;
 }
 
 /* Update cancel button - remove margin-top */
@@ -529,10 +529,11 @@ textarea:focus {
 }
 
 /* Ensure submit button stays left-aligned */
-.form-actions button[type="submit"] {
-  margin-right: auto;
+.form-actions button[type="submit"],
+#cancelEditBtn {
   min-width: 160px; /* keeps Save + Cancel same width */
-  text-align: center;
+  text-align: center;  /* centralize */
+  height: 44px;       /* fixed height for both buttons for uniformity */
 }
 
 
