@@ -617,7 +617,7 @@ textarea:focus {
 /* added to ensure footer doesn't cover last petCard in dashboard  مهم جدآ*/
 /*============================================================*/
 .saved-profiles {
-  padding-top: 110px; /* same height as header*/
+  padding-top: var(--header-height); /* stays in sync with header 110px */
   padding-bottom: 5vh;  /* same as footer height */
   box-sizing: border-box;
 }
@@ -629,16 +629,17 @@ textarea:focus {
   display: flex;
   flex-direction: column; /* 🔁 Changed from row */
   gap: 1rem;
-  margin-bottom: 10rem; /* will give more space between saved petcards 1.5rem*/
+  margin-bottom: 1.5rem; /* cleaner spacing between cards IT MIGHT BE CONFLICTING WITH HTML 🔁 IN DASHBOARD.JS */
   box-shadow: 0 4px 6px rgba(0,0,0,0.08);
-  border: 2px solid #A88905; /* 🔲 Card frame #e0e0e0 1px*/
+  border: 1px solid var(--border-color); /* unify with global border */
 }
+
 /* Add to apply to pet header and details*/
 .card-section {
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 0.75rem 1rem;
-  background: #fafafa;
+  background: var(--card-bg); /* matches form + modern */
 }
 
 .pet-card-content {
@@ -697,8 +698,8 @@ textarea:focus {
 }
 /* ======= all reminders related styleS ROOT COLOURS ARE REMOVED ============*/
 .pet-reminders {
-  background: #DECCE1;
-  border: 1px solid #f3e5ab;
+ background: var(--light-bg);
+  border: 1px solid var(--border-color);
   padding: 12px 16px;
   border-radius: 6px;
   margin-top: 1rem;
@@ -794,6 +795,9 @@ textarea:focus {
   cursor: pointer;
   transition: background 0.2s ease;
 }
+.pet-actions button:hover {
+  filter: brightness(0.9);
+}
 
 .edit-btn {
   background-color: var(--purple);
@@ -835,6 +839,8 @@ button.delete-btn {
   font-weight: 600;
   color: var(--text-color);
 }
+
+
 
 /* =====QR CODE STYLES======== */
 .qr-window {
