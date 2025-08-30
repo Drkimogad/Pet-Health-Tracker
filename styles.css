@@ -643,7 +643,7 @@ textarea:focus {
   flex: 1;
   display: flex;
   flex-direction: column;
-  width:100;
+  width:100%;
 }
 .pet-header {
   display: flex;
