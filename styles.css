@@ -398,12 +398,15 @@ FOR PRIVACY AND TERMS HTMLS
   object-fit: cover;
 }
 
-/* FORM Styling */
+/*=============================
+FORM Styling
+1️⃣ Desktop (default values are suitable large screens)
+======================================================*/
 #petList {
-  max-width: 90%;
-  margin: 2rem auto;
-  padding: 2rem;
-  background: #fff;
+  max-width: 90%; /* suitable for desktop*/
+  margin: 2rem auto; /* center horizontally */
+  padding: 2rem; /* maintain internal spacing can be adjusted to 3 rem for desktop*/
+  background: var(--card-bg); /* subtle light card */
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   animation: formEntrance 0.4s ease;
@@ -418,7 +421,7 @@ textarea {
   border: 1px solid var(--border-color);
   border-radius: 6px;
   padding: 10px;
-  width: 100%;
+  width: 100%; /* suitable for desktop*/
   font-size: 16px;
   transition: border 0.2s ease, box-shadow 0.2s ease;
 }
@@ -426,9 +429,21 @@ textarea {
 input:focus,
 select:focus,
 textarea:focus {
-  border-color: var(--mustard);
-  box-shadow: 0 0 0 2px rgba(244, 197, 66, 0.3);
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 2px rgba(39, 174, 96, 0.3); /* using --secondary-color greenish tint */
   outline: none;
+}
+
+/* Subtle secondary-color highlights for microchip and emergency contact inputs */
+#petList fieldset.reminders-section input[type="datetime-local"]:focus,
+#petList input#microchipId:focus,
+#petList input#microchipDate:focus,
+#petList input#microchipVendor:focus,
+#petList input#emergencyContactName:focus,
+#petList input#emergencyContactPhone:focus,
+#petList input#emergencyContactRelationship:focus {
+    box-shadow: 0 0 0 2px rgba(39, 174, 96, 0.3); /* var(--secondary-color) */
+    border-color: var(--secondary-color);
 }
 
 /* Form reminders section styling */
@@ -477,7 +492,7 @@ textarea:focus {
 
 /* primary actions class controls logout, add profile, save pet profile buttons*/
 .primary-action {
-  background-color: var(--purple); /* Changed from purple to green */
+  background-color: var(--primary-color);
   color: white;
   padding: 10px 20px;
   border-radius: 6px;
@@ -488,7 +503,7 @@ textarea:focus {
 }
 
 .primary-action:hover {
-  background-color: var(--green);
+  background-color: var(--primary-dark);
 }
 
 /* separate rule for logout button for its colour red , targeting it by its id #*/
@@ -509,7 +524,7 @@ textarea:focus {
 
 /* Update cancel button - remove margin-top */
 #cancelEditBtn {
-  background-color: #FF0000;  /* same as logout */
+  background-color: var(--red);
   color: white;
   margin-left: 0; 
   margin-top: 0;
@@ -524,7 +539,7 @@ textarea:focus {
 }
 
 #cancelEditBtn:hover {
-  background-color: #bf0000; /* darker hover effect */
+  background-color: var(--darkred);
   border: black; 
 }
 
@@ -536,11 +551,54 @@ textarea:focus {
   height: 44px;       /* fixed height for both buttons for uniformity */
 }
 
+/* 2️⃣ Tablet (768px – 1199px)*/
+@media (min-width: 768px) and (max-width: 1199px) {
+  #petList {
+    max-width: 85%;
+    padding: 1.8rem 2.5rem;
+  }
+
+  #petList input,
+  #petList select,
+  #petList textarea {
+    font-size: 0.95rem;
+    border-color: var(--border-color);
+  }
+    #petList input:focus,
+  #petList select:focus,
+  #petList textarea:focus {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 1.5px rgba(39, 174, 96, 0.3);
+  }
+}
+
+/* 3️⃣ Mobile (up to 767px)*/
+@media (max-width: 767px) {
+  #petList {
+    max-width: 95%;
+    padding: 1.2rem 1.5rem;
+  }
+
+  #petList input,
+  #petList select,
+  #petList textarea {
+    font-size: 0.9rem;
+  }
+  #petList input:focus,
+  #petList select:focus,
+  #petList textarea:focus {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 1px rgba(39, 174, 96, 0.25);
+  }
+}
 
 
 
+
+/*================================================*/
 /* Pet Cards all styles SPLIT LAYOUT */
 /* added to ensure footer doesn't cover last petCard in dashboard  مهم جدآ*/
+/*============================================================*/
 .saved-profiles {
   padding-top: 110px; /* same height as header*/
   padding-bottom: 5vh;  /* same as footer height */
