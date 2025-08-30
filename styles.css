@@ -609,10 +609,10 @@ textarea:focus {
   padding-top: var(--header-height); /* stays in sync with header 110px */
   padding-bottom: 5vh;  /* same as footer height */
   box-sizing: border-box;
+  max-width: 700px;   /* match the approximate width of your pet-card area */
 }
 
 .saved-profiles h3 {
-  max-width: 700px;   /* match the approximate width of your pet-card area */
   margin: 0 auto 1rem auto;  /* center it */
   text-align: center; /* optional: center text */
 }
