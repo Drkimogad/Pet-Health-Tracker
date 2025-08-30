@@ -612,13 +612,13 @@ textarea:focus {
 }
 
 .saved-profiles h3 {
-  max-width: 700px;   /* match the approximate width of your pet-card area */
+  max-width: 90%;   /* match the approximate width of your pet-card area */
   margin: 0 auto 1rem auto;  /* center it */
   text-align: center; /* optional: center text */
 }
 
 ..pet-card {
-  max-width: 90%; /* check how it behaves*/
+  max-width: 85%; /* check how it behaves*/
   background: #ffffff; /* clean white */
   border-radius: 12px;
   padding: 1rem;
