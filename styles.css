@@ -630,15 +630,15 @@ textarea:focus {
 }
 
 ..pet-card {
-  background: #ffffff;
-  border-radius: 10px;
+  background: #ffffff; /* clean white */
+  border-radius: 12px;
   padding: 1rem;
   display: flex;
   flex-direction: column; /* 🔁 Changed from row */
   gap: 1rem;
   margin-bottom: 1.5rem; /* cleaner spacing between cards IT MIGHT BE CONFLICTING WITH HTML 🔁 IN DASHBOARD.JS */
-  box-shadow: 0 4px 6px rgba(0,0,0,0.08);
-  border: 1px solid var(--border-color); /* unify with global border */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); /* slightly softer shadow */
+  border: 1px solid #e0e0e0; /* lighter subtle border */
 }
 
 /* Add to apply to pet header and details*/
@@ -662,9 +662,9 @@ textarea:focus {
   gap: 0.5rem;
 }
 .pet-header h4 {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   font-weight: bold;
-  color: #2c3e50;
+  color: #2c3e50; /* keep readable dark color */
   margin: 0;
 }
 .pet-details {
@@ -679,6 +679,7 @@ textarea:focus {
   margin: 0;
   padding: 4px 0;
   text-align: left;
+  color: #4a4a4a; /* slightly softer than pure black for readability */
 }
 
 /* SAVED PETCARD PHOTO*/
@@ -707,8 +708,8 @@ textarea:focus {
 .pet-reminders {
  background: var(--light-bg);
   border: 1px solid var(--border-color);
-  padding: 12px 16px;
-  border-radius: 6px;
+  padding: 10px 14px;
+  border-radius: 8px;
   margin-top: 1rem;
   font-size: 0.9rem;
 }
@@ -729,8 +730,8 @@ textarea:focus {
   margin-right: 6px;
 }
 .reminder.overdue {
-  background-color: #ffebee;
-  border-left: 4px solid #c62828;
+  background-color: #fff4e0;
+  border-left: 4px solid #ff9248;
   color: #c62828;
   font-weight: 500;
 }
@@ -803,7 +804,8 @@ textarea:focus {
   transition: background 0.2s ease;
 }
 .pet-actions button:hover {
-  filter: brightness(0.9);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .edit-btn {
@@ -852,16 +854,17 @@ button.delete-btn {
 /* Larger screens (desktop) */
 @media (min-width: 1024px) {
   .saved-profiles {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 2rem;
-    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .pet-card {
-    margin-bottom: 2rem; /* override your big 10rem margin for desktop */
+    width: 70%; /* same width as tablet for consistency */
+    max-width: 600px; /* optional max width */
   }
 }
+
 
 /* Small screens (phones) */
 @media (max-width: 768px) {
@@ -879,6 +882,36 @@ button.delete-btn {
     font-size: 1rem; /* reduce heading size */
   }
 }
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .saved-profiles ul {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* keep cards centered */
+    gap: 1.5rem;
+  }
+
+  .pet-card {
+    width: 75%; /* narrower than desktop for better readability */
+    margin-bottom: 2rem;
+  }
+}
+@media (max-width: 767px) {
+  .saved-profiles ul {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .pet-card {
+    width: 90%;
+    margin-bottom: 1.5rem;
+    padding: 0.8rem; /* slightly smaller for smaller screens */
+  }
+}
+
+
 
 
 
