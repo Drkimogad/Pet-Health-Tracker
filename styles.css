@@ -616,10 +616,17 @@ textarea:focus {
 /* Pet Cards all styles SPLIT LAYOUT */
 /* added to ensure footer doesn't cover last petCard in dashboard  مهم جدآ*/
 /*============================================================*/
+/* these values are tablet optimized*/
 .saved-profiles {
   padding-top: var(--header-height); /* stays in sync with header 110px */
   padding-bottom: 5vh;  /* same as footer height */
   box-sizing: border-box;
+}
+
+.saved-profiles h3 {
+  max-width: 700px;   /* match the approximate width of your pet-card area */
+  margin: 0 auto 1rem auto;  /* center it */
+  text-align: center; /* optional: center text */
 }
 
 ..pet-card {
@@ -838,6 +845,39 @@ button.delete-btn {
 .pet-field strong {
   font-weight: 600;
   color: var(--text-color);
+}
+
+/* ====== Pet Card Responsive Enhancements ====== */
+
+/* Larger screens (desktop) */
+@media (min-width: 1024px) {
+  .saved-profiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    justify-content: center;
+  }
+
+  .pet-card {
+    margin-bottom: 2rem; /* override your big 10rem margin for desktop */
+  }
+}
+
+/* Small screens (phones) */
+@media (max-width: 768px) {
+  .pet-card {
+    width: 95%;         /* take almost full width */
+    margin: 0 auto 1.5rem auto; /* center and space them */
+    padding: 0.75rem;   /* slightly tighter padding */
+  }
+
+  .pet-photo {
+    width: 80px; /* smaller photo for mobile */
+  }
+
+  .pet-header h4 {
+    font-size: 1rem; /* reduce heading size */
+  }
 }
 
 
