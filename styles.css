@@ -630,6 +630,7 @@ textarea:focus {
 }
 
 ..pet-card {
+  max-width: 100%; /* check how it behaves*/
   background: #ffffff; /* clean white */
   border-radius: 12px;
   padding: 1rem;
