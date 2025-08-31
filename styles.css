@@ -839,6 +839,11 @@ button.delete-btn {
   color: var(--text-color);
 }
 
+@media (min-width: 1024px) {
+  .pet-card {
+    flex-direction: column !important;
+  }
+}
 
 
 
