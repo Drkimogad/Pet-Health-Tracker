@@ -258,16 +258,18 @@ function showErrorToUser(message, type = "error") {
       notificationDiv.id = 'error-message';
       notificationDiv.style.cssText = `
         position: fixed;
-        top: 20px;
+        top: 50%;
         left: 50%;
-        transform: translateX(-50%);
-        padding: 15px 20px;
-        border-radius: 8px;
-        z-index: 10000;
+        transform: translate(-50%, -50%);
+        padding: 20px 30px;
+        border-radius: 12px;
+        z-index: 10001; /* Higher than modal */
         max-width: 80%;
         text-align: center;
         font-weight: bold;
         display: none;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        backdrop-filter: blur(10px);
       `;
       document.body.appendChild(notificationDiv);
     }
@@ -276,20 +278,21 @@ function showErrorToUser(message, type = "error") {
 
     // 🎨 Color scheme
     if (type === "success") {
-      notificationDiv.style.backgroundColor = "#4CAF50"; // green
+      notificationDiv.style.backgroundColor = "rgba(76, 175, 80, 0.95)"; 
       notificationDiv.style.color = "white";
-      
+      notificationDiv.style.border = "2px solid #4CAF50";
     } else if (type === "info") {
-      notificationDiv.style.backgroundColor = "#FFC107"; // yellow
+      notificationDiv.style.backgroundColor = "rgba(255, 193, 7, 0.95)";
       notificationDiv.style.color = "black";
-      
+      notificationDiv.style.border = "2px solid #FFC107";
     } else if (type === "error"){
-      notificationDiv.style.backgroundColor = "#f44336"; // red
+      notificationDiv.style.backgroundColor = "rgba(244, 67, 54, 0.95)";
       notificationDiv.style.color = "white";
-      
-    } else if (type === "fallback") {   // for copied to clipboard message
-      notificationDiv.style.backgroundColor = "#ADD8E6"; // light blue for fallback
-      notificationDiv.style.color = "black"; // Make text readable
+      notificationDiv.style.border = "2px solid #f44336";
+    } else if (type === "fallback") {
+      notificationDiv.style.backgroundColor = "rgba(173, 216, 230, 0.95)";
+      notificationDiv.style.color = "black";
+      notificationDiv.style.border = "2px solid #ADD8E6";
     }
 
     notificationDiv.style.display = "block";
@@ -310,7 +313,7 @@ function showErrorToUser(message, type = "error") {
   }
 }
 
-// Wrappers
+// Keep your wrapper functions exactly as they are:
 function showSuccessNotification(message) {
   showErrorToUser(message, "success");
 }
@@ -320,9 +323,10 @@ function showErrorNotification(message) {
 function showInfoNotification(message) {
   showErrorToUser(message, "info");
 }
-function showFallbackNotification(message) {   // Fixed the function name here
+function showFallbackNotification(message) {
   showErrorToUser(message, "fallback");
 }
+
 
 // Show the sign-in form
 // ✅ Show Authentication Form
