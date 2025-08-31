@@ -10,15 +10,55 @@ everything shows nicely between header and footer */
   --primary-dark: #2980b9;
   --secondary-color: #27ae60;
   --secondary-dark: #219a52;
-  --error-color: #e74c3c;
-  --text-color: #333;
   --light-bg: #f5f5f5;
   --card-bg: #f9f9f9;
   --border-color: #ddd;
   --qr-blue: #3498db;
   --qr-green: #27ae60;
   --link-blue: #3498db;
+  
+  /* Base Colors */
+  --pure-white: #FFFFFF;
+  --pure-black: #000000;
+  
+  /* Text Colors */
+  --text-primary: #333333;    /* Dark gray for main text */
+  --text-secondary: #666666;  /* Medium gray for secondary text */
+  --text-light: #999999;      /* Light gray for subtle text */
+  --text-inverse: #FFFFFF;    /* White text for dark backgrounds */
+  --error-color: #e74c3c;
+  --text-color: #333;
+    /* Gold Text Color */
+  --gold-text: #FFD700; /* ← Add this line */
+  
+  /* Background Colors */
+  --bg-primary: #FFFFFF;      /* Main white background */
+  --bg-secondary: #F8F9FA;    /* Light gray background */
+  --bg-dark: #333333;         /* Dark background for contrast */
 
+  /* Status Colors */
+  --success: #28A745;         /* Green for success */
+  --warning: #FFC107;         /* Yellow for warnings */
+  --error: #DC3545;           /* Red for errors */
+  --info: #17A2B8;            /* Blue for information */
+  
+ /* added new*/
+  /* Charcoal & Teal Scheme */
+  --charcoal: #36454F;
+  --teal-accent: #17BECF;
+  /* Deep Purple & Silver Scheme */
+  --deep-purple: #4B0082;
+  --silver-metallic: #C0C0C0;
+  /* Forest Green & Cream Scheme */
+  --forest-green: #2E4C3C;
+  --cream-accent: #D4B483;
+  /* Navy & Gold Scheme */
+  --dark-navy: #1A2238;
+  --gold-accent: #FFD700;
+  /* Burgundy & Champagne Scheme */
+  --burgundy: #6D2E46;
+  --champagne: #E8D6CB;  
+  
   /* DASHBOARD ADDITIONS */
   --mustard: #f4c542;
   --purple: #7e57c2;
@@ -26,7 +66,7 @@ everything shows nicely between header and footer */
   --green: #43a047;
   --red: #e74c3c;
   --darkred: #8B0000; /* Or your preferred value */
-  --header-height: 110px; /* base desktop value */
+  --header-height: 110px; /* base desktop value */ 
 }
 
 .background-container {
@@ -48,8 +88,8 @@ footer {
   left: 0;
   width: 100%;
   height: 5vh !important;
-  background-color: #f9f5ff;
-  color: black;
+  background-color: var(--deep-purple);
+  color: var(--pure-white);
   text-align: center !important;
  padding: 0.5rem !important;
   font-size: 1rem;
@@ -59,7 +99,7 @@ footer {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: 2px solid black;
+  border-top: 2px solid var(--silver-metallic);
 }
 
 footer p, footer .legal-links {
@@ -85,17 +125,17 @@ footer p, footer .legal-links {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background: #f9f5ff;
+  background: var(--deep-purple);
   z-index: 10 !important;
   margin: 0 !important;
   box-sizing: border-box;
-  border-bottom: 3px solid black;
+  border-bottom: 3px solid var(--silver-metallic);
 }
 
 .header-container h1 {
   font-size: 2.4rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: var(--pure-white);
   padding-top:10px;
   text-align: center;
   margin: 0;
@@ -103,7 +143,7 @@ footer p, footer .legal-links {
 
 .header-container h2 {
   font-size: 1.5rem;
-  color: #d4a017;
+  color: var(--gold-text);
   text-align: center;
   margin-bottom: 5px; /* to adjust*/
   line-height: 1.3;
