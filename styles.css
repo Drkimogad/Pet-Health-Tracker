@@ -493,8 +493,8 @@ textarea:focus {
   padding: 0 1.5rem;
   align-items: center;
   margin-bottom: 15px;
-  margin-right: 20px; /* ← ADD THIS */
-  margin-left: 20px; /* ← ADD THIS */
+  margin-right: 60px; /* ← ADD THIS */
+  margin-left: 60px; /* ← ADD THIS */
 }
 
 
@@ -553,7 +553,8 @@ textarea:focus {
 
 /* Ensure submit button stays left-aligned */
 .form-actions button[type="submit"],
-#cancelEditBtn {
+#cancelEditBtn,
+#logoutButton {  /* ← ADD THIS FOR LOGOUT BUTTON*/
   min-width: 160px; /* keeps Save + Cancel same width */
   text-align: center;  /* centralize */
   height: 44px;       /* fixed height for both buttons for uniformity */
