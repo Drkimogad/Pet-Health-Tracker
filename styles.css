@@ -442,7 +442,7 @@ FORM Styling
 /* for dashboard background when form or saved petlists reduced in size */
 /* dashboard is hidden originally and when it shows it must have a space for the header on top and footer at the bottom */
 #dashboard {
-  background-color: var(--bg-dark); /* same or slightly different shade */
+  background-color: var(--bg-page); /* same */
   min-height: 100vh;
   padding-bottom: 5vh;     /* same as your saved profiles */
   padding-top: var(--header-height); /* pushes all dashboard content below header */
@@ -500,7 +500,7 @@ textarea:focus {
   padding: 1rem;
   margin-top: 1rem;
   border-radius: 8px;
-  background-color: #f9f9f9;
+  background-color: var(--card-bg);
 }
 
 #petList fieldset.reminders-section legend {
@@ -681,7 +681,7 @@ textarea:focus {
 }
 /* Add to apply to pet header and details*/
 .card-section {
-  border: 1px solid #ddd;
+  border: 1px solid var(--charcoal);
   border-radius: 8px;
   padding: 0.75rem 1rem;
   background: #fafafa;
@@ -743,8 +743,8 @@ textarea:focus {
 }
 /* ======= all reminders related styleS ROOT COLOURS ARE REMOVED ============*/
 .pet-reminders {
-  background: #DECCE1;
-  border: 1px solid #f3e5ab;
+  background: var(--card-bg);
+  border: 1px solid var(--charcoal);
   padding: 12px 16px;
   border-radius: 6px;
   margin-top: 1rem;
