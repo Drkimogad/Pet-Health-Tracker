@@ -269,7 +269,7 @@ KEEP THIS TO ENSURE AUTH CONTAINER AND DASHBOARD STARTS UNDER THE HEADER
   align-items: center;
   gap: 15px;
   padding: 15px;
-  border: 3px solid var(--border-card);       /* Light gray border */;
+  border: 3px solid var(--border-button);       /* Gold border */
   background: linear-gradient(to bottom, #e0e0e0, #c8c8c8); /* light aluminium look */
   border-radius: 50% / 20%;  /* shallow ellipse, bowl-like */
   box-shadow: 0 4px 12px rgba(0,0,0,0.3); /* subtle 3D effect */
@@ -332,7 +332,7 @@ FOR PRIVACY AND TERMS HTMLS
 
 .auth-legal {
   font-size: 0.8rem;
-  color: var(--text-accent);
+  color: var(--text-main);                    /* Dark gray text */;
   max-width: 280px;
   margin: 0;
 }
