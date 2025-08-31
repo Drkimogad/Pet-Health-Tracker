@@ -269,7 +269,7 @@ KEEP THIS TO ENSURE AUTH CONTAINER AND DASHBOARD STARTS UNDER THE HEADER
   align-items: center;
   gap: 15px;
   padding: 15px;
-  border: 3px solid var(--border-button);       /* Gold border */
+  border: 3px solid var(--main-color);       /* Charcoal border */
   background: linear-gradient(to bottom, #e0e0e0, #c8c8c8); /* light aluminium look */
   border-radius: 50% / 20%;  /* shallow ellipse, bowl-like */
   box-shadow: 0 4px 12px rgba(0,0,0,0.3); /* subtle 3D effect */
@@ -281,6 +281,7 @@ KEEP THIS TO ENSURE AUTH CONTAINER AND DASHBOARD STARTS UNDER THE HEADER
   width: 80px;
   height: 80px;
   border-radius: 50%;
+  border: 3px solid var(--border-button);       /* Gold border */
   background: radial-gradient(circle at 30% 30%, #ffffff, #4285f4);
   box-shadow: 0 4px 15px rgba(66, 133, 244, 0.4);
   cursor: pointer;
@@ -703,6 +704,7 @@ transform: translateY(-2px); /* Optional lift effect */
   align-items: center;    /* keep cards centered horizontally */
   max-width: 90%; /* or 100% if you want more flexibility */
   flex-direction: column; /* force vertical stacking */
+  border:var(--border-card); /* to check it out*/
 }
 
 .saved-profiles h3 {
@@ -785,47 +787,57 @@ transform: translateY(-2px); /* Optional lift effect */
   background: #f0f0f0;
   font-size: 1.5rem;
 }
-/* ======= all reminders related styleS ROOT COLOURS ARE REMOVED ============*/
+
+/* ======= all reminders related styles ============ */
 .pet-reminders {
-  background: var(--bg-page);
-  border: 1px solid var(--border-card);
+  background: var(--bg-page); /* Light gray */
+  border: 1px solid var(--border-card); /* Light gray border */
   padding: 12px 16px;
   border-radius: 6px;
   margin-top: 1rem;
   font-size: 0.9rem;
 }
+
 .reminder {
-  padding-left: 6px;  /* Add small padding to give space between Lottie and emoji */
+  padding-left: 6px;
   display: flex;
   align-items: center;
-  gap: 10px; /* ensures space between emoji, text, and button */
+  gap: 10px;
 }
+
 .reminder-text {
   flex: 1;
-  color: inherit;        /* Inherit red, orange, green from .reminder */
-  font-size: 0.9rem;      /* Set readable size */
+  color: inherit;
+  font-size: 0.9rem;
   line-height: 1.4;
 }
+
 .reminder-emoji {
   font-size: 1.2rem;
   margin-right: 6px;
 }
+
+/* Overdue Reminder - Red theme */
 .reminder.overdue {
   background-color: #ffebee;
-  border-left: 4px solid #c62828;
-  color: #c62828;
+  border-left: 4px solid var(--error); /* Red */
+  color: var(--error); /* Red */
   font-weight: 500;
 }
+
+/* Today Reminder - Orange theme */
 .reminder.today {
   background-color: #fff3e0;
-  border-left: 4px solid #ff9248;
-  color: #ff9248;
+  border-left: 4px solid var(--warning); /* Yellow/Orange */
+  color: var(--warning); /* Yellow/Orange */
   font-weight: 500;
 }
+
+/* Upcoming Reminder - Green theme */
 .reminder.upcoming {
   background-color: #e8f5e9;
-  border-left: 4px solid #2e7d32;
-  color: #2e7d32;
+  border-left: 4px solid var(--success); /* Green */
+  color: var(--success); /* Green */
   font-weight: 500;
 }
 
@@ -841,31 +853,35 @@ transform: translateY(-2px); /* Optional lift effect */
   transition: background 0.3s ease;
 }
 
+/* Overdue Button - Red */
 .btn-overdue {
-  background-color: #c62828;
+  background-color: var(--error); /* Red */
   color: white;
 }
 .btn-overdue:hover {
-  background-color: #b71c1c;
+  background-color: #b71c1c; /* Darker red */
 }
 
+/* Today Button - Orange */
 .btn-today {
-  background-color: #ff9248;
+  background-color: var(--warning); /* Yellow/Orange */
   color: white;
 }
 .btn-today:hover {
-  background-color: #cf711f;
+  background-color: #cf711f; /* Darker orange */
 }
 
+/* Upcoming Button - Green */
 .btn-upcoming {
-  background-color: #2e7d32;
+  background-color: var(--success); /* Green */
   color: white;
 }
 .btn-upcoming:hover {
-  background-color: #1b5e20;
+  background-color: #1b5e20; /* Darker green */
 }
 
-/* ======== Pet Card Action & Buttons=========== */
+
+/* ======== Pet Card Action & Buttons =========== */
 .pet-actions {
   display: flex;
   flex-wrap: wrap;
@@ -873,6 +889,7 @@ transform: translateY(-2px); /* Optional lift effect */
   gap: 0.5rem;
   margin-top: 1rem;
 }
+
 .pet-actions button {
   flex: 1 1 30%;
   min-width: 100px;
@@ -882,40 +899,66 @@ transform: translateY(-2px); /* Optional lift effect */
   border-radius: 6px;
   border: none;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
 }
 
+/* Primary Actions (Edit, Details, Invite) */
 .edit-btn {
-  background-color: var(--purple);
-  color: white;
-}
-
-button.delete-btn {
-  background-color: white !important;
-  color: var(--darkred) !important;
-  border: 1px solid var(--darkred);
+  background-color: var(--accent-color); /* Gold */
+  color: var(--text-main); /* Dark gray */
 }
 
 .details-btn {
-  background-color: var(--mustard);
-  color: white;
-}
-.qr-btn {
-  background-color: #B5B2AC;
-  color: white;
+  background-color: var(--accent-color); /* Gold */
+  color: var(--text-main); /* Dark gray */
 }
 
 .inviteFriends-btn {
-  background-color: var(--green);
-  color: white;
+  background-color: var(--accent-color); /* Gold */
+  color: var(--text-main); /* Dark gray */
+}
+
+/* Secondary Actions (QR, Export) */
+.qr-btn {
+  background-color: var(--bg-page); /* Light gray */
+  color: var(--text-main); /* Dark gray */
+  border: 1px solid var(--border-card); /* Light gray border */
 }
 
 .exportAll-btn {
-  background-color: var(--qr-blue);
-  color: white;
+  background-color: var(--bg-page); /* Light gray */
+  color: var(--text-main); /* Dark gray */
+  border: 1px solid var(--border-card); /* Light gray border */
 }
 
-/*NEW HELPER FUNCTION FOR PET FIELDS*/
+/* Danger Action (Delete) */
+button.delete-btn {
+  background-color: var(--bg-card); /* White */
+  color: var(--error); /* Red */
+  border: 1px solid var(--error); /* Red border */
+}
+
+/* Hover States */
+.edit-btn:hover,
+.details-btn:hover,
+.inviteFriends-btn:hover {
+  background-color: #E6C300; /* Darker gold */
+  transform: translateY(-1px);
+}
+
+.qr-btn:hover,
+.exportAll-btn:hover {
+  background-color: #E8E8E8; /* Slightly darker gray */
+  transform: translateY(-1px);
+}
+
+button.delete-btn:hover {
+  background-color: var(--error); /* Red */
+  color: var(--text-inverse); /* White text */
+  transform: translateY(-1px);
+}
+
+/* NEW HELPER FUNCTION FOR PET FIELDS */
 .pet-field {
   display: flex;
   flex-direction: column;
@@ -923,7 +966,7 @@ button.delete-btn {
 
 .pet-field strong {
   font-weight: 600;
-  color: var(--text-color);
+  color: var(--text-main); /* Dark gray */
 }
 
 
