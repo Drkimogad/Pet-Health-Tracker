@@ -615,14 +615,14 @@ textarea:focus {
 }
 
 .saved-profiles h3 {
-  margin: 0 auto 1rem 0;  /* center it */
+  margin: 0 auto 1rem auto;  /* center it */
   text-align: center; /* optional: center text */
 }
 
 .pet-card {
   width: 100%;          /* fills parent container */
-  max-width: 700px;     /* 🔹 cap width so it doesn’t grow too wide */
-  margin: 0 auto 2rem;  /* center horizontally + space between cards */
+/*  max-width: 700px;    🔹 cap width so it doesn’t grow too wide */
+  margin: 0 auto 2rem auto;  /* center horizontally + space between cards */
   background: #ffffff;
   border-radius: 10px;
   padding: 1rem;
@@ -639,7 +639,7 @@ textarea:focus {
   border-radius: 0;
   background: transparent;  
   padding: 0.5rem 0;        /* subtle spacing only */
-  margin-bottom: 0.75rem;   /* consistent spacing between sections */
+  margin: 10px;   /* to keep adjusting */
 }
 
 .pet-card-content {
@@ -652,7 +652,7 @@ textarea:focus {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 0.5rem;
+  gap: 0.3rem; /* reduced from 0.5 to decrease the gap under the header and basic info*/
 }
 .pet-header h4 {
   font-size: 1.2rem;
@@ -703,7 +703,7 @@ textarea:focus {
   border-radius: 12px;
   font-size: 0.9rem;
   padding: 0.5rem 0;        /* subtle spacing only */
-  margin-bottom: 0.75rem;   /* consistent spacing between sections */
+  margin: 10px;   /* keep adjusting */
 }
 .reminder {
   padding-left: 6px;  /* Add small padding to give space between Lottie and emoji */
@@ -783,7 +783,7 @@ textarea:focus {
   background: transparent;  /* to be adjusted*/
   justify-content: space-between;
   padding: 0.5rem 0;        /* subtle spacing only */
-  margin-bottom: 0.75rem;   /* consistent spacing between sections */
+  margin: 10px;   /* keep adjusting */
   gap: 0.75rem;
 }
 .pet-actions button {
