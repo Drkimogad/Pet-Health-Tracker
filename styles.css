@@ -629,13 +629,13 @@ textarea:focus {
   flex-direction: column; /* 🔁 Changed from row */
   gap: 1rem; /* 🔹 this handles vertical spacing between sections */
   box-shadow: 0 4px 6px rgba(0,0,0,0.08);
-  border: 2px solid #A88905; /* 🔲 Card frame #e0e0e0 1px*/
+  border: none;       /*2px solid #A88905; 🔲 Card frame #e0e0e0 1px*/
 }
 
 /* the wrapper for all contents untill reminders */
 .card-section {
-  border: 2px solid #A88905; /* 🔲 Card frame #e0e0e0 1px*/
-  border-radius: 10px;
+  border: none;
+  border-radius: 0;
   background: transparent; 
   width: calc(100% - 20px); /* subtract left+right margin */
   margin: 10px; /* we will see if it needs padding*/
