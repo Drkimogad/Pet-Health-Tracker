@@ -625,7 +625,6 @@ textarea:focus {
   padding: 1rem;
   box-sizing: border-box; /* ← ADD THIS */
   display: flex;
-  align-items: stretch; /* ← ADD THIS LINE */
   flex-direction: column; /* 🔁 Changed from row */
   gap: 1rem; /* 🔹 this handles vertical spacing between sections */
   box-shadow: 0 4px 6px rgba(0,0,0,0.08);
@@ -635,12 +634,12 @@ textarea:focus {
 /* the wrapper for all contents untill reminders */
 .card-section {
   background: #fafafa;
-  display: flex;
   border-radius: 8px;
   border: 1px solid #ddd;
-  padding: 0.75rem 1rem;  /* Reasonable padding */
+  padding: 0.75rem 1rem;  /* Reasonable padding */ 
+  margin-left: 0; /* ← ADD THIS */
+  margin-right: 0; /* ← ADD THIS */
 }
-
 
 .pet-card-content {
   flex: 1;
