@@ -35,6 +35,9 @@ everything shows nicely between header and footer */
   --bg-primary: #FFFFFF;      /* Main white background */
   --bg-secondary: #F8F9FA;    /* Light gray background */
   --bg-dark: #333333;         /* Dark background for contrast */
+  --bg-page: #F5F5F5;       /* Page background */
+  --card-bg: #FFFFFF;       /* PetCard background */
+  --card-border: #E0E0E0;   /* PetCard border */
 
   /* Status Colors */
   --success: #28A745;         /* Green for success */
@@ -439,7 +442,7 @@ FORM Styling
 /* for dashboard background when form or saved petlists reduced in size */
 /* dashboard is hidden originally and when it shows it must have a space for the header on top and footer at the bottom */
 #dashboard {
-  background-color: var(--light-bg); /* same or slightly different shade */
+  background-color: var(--bg-dark); /* same or slightly different shade */
   min-height: 100vh;
   padding-bottom: 5vh;     /* same as your saved profiles */
   padding-top: var(--header-height); /* pushes all dashboard content below header */
@@ -666,7 +669,7 @@ textarea:focus {
 }
 
 ..pet-card {
-  background: #ffffff;
+  background: var(--card-bg); /* pure white*/
   border-radius: 10px;
   padding: 1rem;
   display: flex;
@@ -674,7 +677,7 @@ textarea:focus {
   gap: 1rem;
   margin-bottom: 10rem; /* will give more space between saved petcards 1.5rem*/
   box-shadow: 0 4px 6px rgba(0,0,0,0.08);
-  border: 2px solid #A88905; /* 🔲 Card frame #e0e0e0 1px*/
+  border: 2px solid var(--charcoal); /* 🔲 Card frame*/
 }
 /* Add to apply to pet header and details*/
 .card-section {
