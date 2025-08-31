@@ -487,13 +487,14 @@ textarea:focus {
 /* Dashboard Action Buttons including new profile and logout button alignement with it plus submit button */
 .dashboard-actions {
   display: flex;
-  gap: 6rem; /* increase spacing between the two buttons incrwased from 2*/
-  justify-content: center;
+  justify-content: space-between;
   min-width: 160px;  /* same as Save/Cancel */
   height: 44px;      /* lock height */
+  padding: 0 1.5rem;
   align-items: center;
   margin-bottom: 15px;
 }
+
 
 /* primary actions class controls logout, add profile, save pet profile buttons*/
 .primary-action {
