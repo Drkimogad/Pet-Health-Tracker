@@ -636,11 +636,18 @@ const canvas = await html2canvas(pdfContainer, {
       const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
       doc.addImage(canvas, 'PNG', 0, 0, 210, 297);
       doc.save(`PetProfile_${new Date().getTime()}.pdf`);
-     showSuccessNotification("PDF saved successfully! 📄");
+        
+    // ✅ FORCE NOTIFICATION TO APPEAR ABOVE EVERYTHING
+    setTimeout(() => {
+      showSuccessNotification("PDF saved successfully! 📄");
+    }, 100); // Small delay to ensure PDF process completes
         
     } catch (error) {
       console.error("PDF generation failed:", error);
-      showErrorNotification("Failed to save PDF. Please try again.");  
+        
+     setTimeout(() => {
+      showErrorNotification("Failed to save PDF. Please try again.");
+    }, 100);
         
     } finally {
       loader.remove();
