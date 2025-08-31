@@ -633,8 +633,6 @@ textarea:focus {
 
 /* the wrapper for all contents untill reminders */
 .card-section {
-  box-sizing: border-box; /* ← ADD THIS */
-  width: 100%; /* ← ADD THIS to make it fill the available space */
   background: #fafafa;
   border-radius: 8px;
   border: 1px solid #ddd;
