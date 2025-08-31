@@ -251,29 +251,28 @@ function initAuthListeners() {
 // ===== IMPROVED NOTIFICATION SYSTEM =====
 function showErrorToUser(message, type = "error") {
   try {
-    let notificationDiv = document.getElementById('error-message');
+    // CREATE NEW ELEMENT EACH TIME
+    const notificationDiv = document.createElement('div');
+    notificationDiv.className = 'notification'; // ← Use CLASS instead of ID
+    
+    // Set styles FIRST
+    notificationDiv.style.cssText = `
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 20px 30px;
+      border-radius: 12px;
+      z-index: 10002; /* ← HIGHER THAN MODAL */
+      max-width: 80%;
+      text-align: center;
+      font-weight: bold;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+      display: block; /* ← ADD THIS */
+    `;
 
-    if (!notificationDiv) {
-      notificationDiv = document.createElement('div');
-      notificationDiv.id = 'error-message';
-      notificationDiv.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        padding: 20px 30px;
-        border-radius: 12px;
-        z-index: 10001; /* Higher than modal */
-        max-width: 80%;
-        text-align: center;
-        font-weight: bold;
-        display: none;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        backdrop-filter: blur(10px);
-      `;
-      document.body.appendChild(notificationDiv);
-    }
-
+    // Set content and colors
     notificationDiv.textContent = message;
 
     // 🎨 Color scheme
@@ -295,16 +294,17 @@ function showErrorToUser(message, type = "error") {
       notificationDiv.style.border = "2px solid #ADD8E6";
     }
 
-    notificationDiv.style.display = "block";
-
     // Accessibility
     notificationDiv.setAttribute("role", "alert");
     notificationDiv.setAttribute("aria-live", "assertive");
 
-    // Auto-dismiss after 5s
+    // ✅ ADD TO DOM AFTER ALL STYLES ARE SET
+    document.body.appendChild(notificationDiv);
+
+    // Auto-remove after 5 seconds
     setTimeout(() => {
-      if (notificationDiv) {
-        notificationDiv.style.display = "none";
+      if (notificationDiv && notificationDiv.parentNode) {
+        notificationDiv.remove();
       }
     }, 5000);
 
