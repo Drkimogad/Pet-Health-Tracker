@@ -625,6 +625,7 @@ textarea:focus {
   padding: 1rem;
   box-sizing: border-box; /* ← ADD THIS */
   display: flex;
+  align-items: stretch; /* ← ADD THIS LINE */
   flex-direction: column; /* 🔁 Changed from row */
   gap: 1rem; /* 🔹 this handles vertical spacing between sections */
   box-shadow: 0 4px 6px rgba(0,0,0,0.08);
