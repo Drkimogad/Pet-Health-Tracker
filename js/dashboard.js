@@ -1720,7 +1720,7 @@ Checkups: ${profile.reminders?.checkups || 'N/A'}
 Grooming: ${profile.reminders?.grooming || 'N/A'}
 
 👉 Go to the app: https://drkimogad.github.io/Pet-Health-Tracker/
-📧 Contact developer: dr_kimogad@yahoo.com
+📧 Contact developer: Petkit2023@gmail.com
 `.trim();
 
     // 6. Build the layout with all enhancements
@@ -1819,7 +1819,7 @@ Grooming: ${profile.reminders?.grooming || 'N/A'}
           <!-- NEW: Developer Info Section -->
           <div class="developer-info">
             <p><strong>👉 Go to the app:</strong> <a href="https://drkimogad.github.io/Pet-Health-Tracker/" target="_blank">https://drkimogad.github.io/Pet-Health-Tracker/</a></p>
-            <p><strong>📧 Contact developer:</strong> dr_kimogad@yahoo.com</p>
+            <p><strong>📧 Contact developer:</strong> Petkit2023@gmail.com</p>
           </div>
 
           <div id="qrcode"></div>
