@@ -637,8 +637,9 @@ textarea:focus {
   border: none;
   border-radius: 0;
   background: transparent; 
-  width: calc(100% - 20px); /* subtract left+right margin */
+  width: calc(100% - 20px) !important; /* 20px = left + right margin */
   margin: 10px; /* we will see if it needs padding*/
+  box-sizing: border-box;                /* ensures padding doesn't add extra width */
 }
 
 .pet-card-content {
@@ -841,6 +842,7 @@ button.delete-btn {
   color: var(--text-color);
 }
 
+/* for petcard vertical alignement on desktop*/
 @media (min-width: 1024px) {
   .pet-card {
     flex-direction: column !important;
