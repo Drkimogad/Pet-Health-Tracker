@@ -1162,7 +1162,7 @@ Get the app: https://drkimogad.github.io/Pet-Health-Tracker/
       // Set timeout for success notification
       successTimeoutId = setTimeout(() => {
         showSuccessNotification("✅ Shared successfully! 🎉");
-      }, 1000);
+      }, 3000); // Adjust as long as needed.
       
     } else {
       // Fallback: copy to clipboard - CANCEL any pending success notification
