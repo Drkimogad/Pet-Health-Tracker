@@ -723,13 +723,14 @@ transform: translateY(-2px); /* Optional lift effect */
   gap: 1rem;
   margin-bottom: 10rem; /* will give more space between saved petcards 1.5rem*/
   box-shadow: 0 4px 6px rgba(0,0,0,0.08);
-  border: 2px solid var(--border-card);       /* Light gray border */
+  border: 2px solid var(--border-main);       /* Light gray border */
 }
+
 /* Add to apply to pet header and details*/
 .card-section {
   border: 1px solid var(--border-card);       /* Light gray border */
   border-radius: 8px;
-  padding: 0.75rem 1rem;
+  padding: 0.25rem 0.5rem;
   background: #fafafa;
 }
 
