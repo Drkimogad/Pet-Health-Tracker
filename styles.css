@@ -487,7 +487,7 @@ textarea:focus {
 /* Dashboard Action Buttons including new profile and logout button alignement with it plus submit button */
 .dashboard-actions {
   display: flex;
-  gap: 2rem; /* increase spacing between the two buttons */
+  gap: 6rem; /* increase spacing between the two buttons incrwased from 2*/
   justify-content: center;
   min-width: 160px;  /* same as Save/Cancel */
   height: 44px;      /* lock height */
@@ -617,6 +617,7 @@ textarea:focus {
 .saved-profiles h3 {
   margin: 0 0 1rem 2rem; /* top 0, right 0, bottom 1rem, left 2rem */
   text-align: left;      /* align text to the left */
+  align-self: flex-start; /* will force the left alignment */
 }
 
 .pet-card {
