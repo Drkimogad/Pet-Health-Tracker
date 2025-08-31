@@ -987,10 +987,10 @@ body.modal-active {
 } 
 .modal-overlay {
   position: fixed;
-  top: 5vh; /* 👈 Adds top/bottom spacing */
-  left: 5vh; /* 👈 Adds top/bottom spacing */
-  width: 90vw; /* modified*/
-  height: 90vh; /*modified*/
+  top: 0;       /* ← FIX: Start from top edge */
+  left: 0;      /* ← FIX: Start from left edge */
+  width: 100vw; /* ← FIX: Full viewport width */
+  height: 100vh; /* ← FIX: Full viewport height */
   padding-bottom: 2rem; /* 👈 pushes the card up inside the overlay */  
   background: rgba(0, 0, 0, 0.9); /* dark overlay */
   z-index: 9999; /* ensure it's above everything */
