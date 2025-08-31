@@ -842,10 +842,37 @@ button.delete-btn {
   color: var(--text-color);
 }
 
-/* for petcard vertical alignement on desktop*/
+/* responsive dexigns*/
+/* Desktop optimization - ENHANCE YOUR EXISTING RULE */
 @media (min-width: 1024px) {
   .pet-card {
-    flex-direction: column !important;
+    flex-direction: column !important; /* for petcard vertical alignement on desktop*/
+    max-width: 800px;        /* ← ADD: Prevent cards from getting too wide */
+    margin: 0 auto 2rem auto; /* ← ADD: Center cards with spacing */
+  }
+  .saved-profiles {
+    max-width: 85%;          /* ← ADD: More breathing room on desktop */
+  }
+}
+
+/*phones optimization */
+@media (max-width: 768px) {
+  .saved-profiles {
+    max-width: 97%; /* Nearly full width */
+  }
+  
+  .pet-card {
+    padding: 0.8rem; /* Slightly reduced padding */
+    gap: 0.8rem;     /* Tighter spacing */
+  }
+  
+  .card-section {
+    padding: 0.6rem 0.8rem; /* Reduced padding */
+  }
+  
+  .pet-actions button {
+    min-width: 90px; /* Slightly smaller buttons */
+    padding: 10px;   /* Better touch targets */
   }
 }
 
