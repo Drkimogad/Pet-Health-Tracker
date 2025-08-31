@@ -640,14 +640,14 @@ const canvas = await html2canvas(pdfContainer, {
     // ✅ FORCE NOTIFICATION TO APPEAR ABOVE EVERYTHING
     setTimeout(() => {
       showSuccessNotification("PDF saved successfully! 📄");
-    }, 100); // Small delay to ensure PDF process completes
+    }, 200); // Small delay to ensure PDF process completes
         
     } catch (error) {
       console.error("PDF generation failed:", error);
         
      setTimeout(() => {
       showErrorNotification("Failed to save PDF. Please try again.");
-    }, 100);
+    }, 200);
         
     } finally {
       loader.remove();
