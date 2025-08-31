@@ -615,13 +615,12 @@ textarea:focus {
 }
 
 .saved-profiles h3 {
-  margin: 0 auto 1rem auto;  /* center it */
-  text-align: center; /* optional: center text */
+  margin: 0 0 1rem 2rem; /* top 0, right 0, bottom 1rem, left 2rem */
+  text-align: left;      /* align text to the left */
 }
 
 .pet-card {
   width: 100%;          /* fills parent container */
-/*  max-width: 700px;    🔹 cap width so it doesn’t grow too wide */
   margin: 0 auto 2rem auto;  /* center horizontally + space between cards */
   background: #ffffff;
   border-radius: 10px;
@@ -635,11 +634,11 @@ textarea:focus {
 
 /* the wrapper for all contents untill reminders */
 .card-section {
-  border: none;
-  border-radius: 0;
-  background: transparent;  
-  padding: 0.5rem 0;        /* subtle spacing only */
-  margin: 10px;   /* to keep adjusting */
+  border: 2px solid #A88905; /* 🔲 Card frame #e0e0e0 1px*/
+  border-radius: 10px;
+  background: transparent; 
+  width: calc(100% - 20px); /* subtract left+right margin */
+  margin: 10px; /* we will see if it needs padding*/
 }
 
 .pet-card-content {
@@ -698,6 +697,9 @@ textarea:focus {
 }
 /* ======= all reminders related styleS ROOT COLOURS ARE REMOVED ============*/
 .pet-reminders {
+  display: flex; /* added*/
+  flex-direction: column; /* added*/
+  
   background: #DECCE1;/* can be adjusted*/
   border: 1px solid #f3e5ab;
   border-radius: 12px;
