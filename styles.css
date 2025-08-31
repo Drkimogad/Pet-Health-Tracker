@@ -493,6 +493,8 @@ textarea:focus {
   padding: 0 1.5rem;
   align-items: center;
   margin-bottom: 15px;
+  margin-right: 20px; /* ← ADD THIS */
+  margin-left: 20px; /* ← ADD THIS */
 }
 
 
