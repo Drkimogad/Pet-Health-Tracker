@@ -632,15 +632,26 @@ textarea:focus {
   border: none;       /*2px solid #A88905; 🔲 Card frame #e0e0e0 1px*/
 }
 
-/* the wrapper for all contents untill reminders */
+/* the wrapper for all contents untill reminders 
 .card-section {
   border: none;
   border-radius: 0;
   background: transparent; 
   width: calc(100% - 20px) !important; /* 20px = left + right margin */
-  margin: 10px; /* we will see if it needs padding*/
-  box-sizing: border-box;                /* ensures padding doesn't add extra width */
+ /* margin: 10px;  we will see if it needs padding*/
+/*  box-sizing: border-box;         ensures padding doesn't add extra width */
+} */
+
+.card-section {
+  width: 100%;              /* take full width of parent */
+  max-width: 100%;          /* ensure it never exceeds parent */
+  box-sizing: border-box;   /* include padding in width calculation */
+  padding: 0.5rem 10px;     /* inner spacing from left/right */
+  margin: 0;                /* remove margin that causes overflow */
+  display: flex;            /* optional, if you want vertical stacking of children */
+  flex-direction: column;   /* stack children vertically */
 }
+
 
 .pet-card-content {
   flex: 1;
