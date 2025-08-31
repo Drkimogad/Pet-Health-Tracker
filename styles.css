@@ -494,7 +494,7 @@ FORM Styling
   max-width: 90%; /* suitable for desktop*/
   padding: 2rem; /* maintain internal spacing can be adjusted to 3 rem for desktop*/
   background-color: var(--card-bg); /* slightly brighter than container */
-  border: 1px solid var(--border-color); /* subtle border */
+  border: 1px solid var(--border-card); /* subtle border */
   border-radius: 8px;
   margin: 2rem auto; /* centers the form inside the container */
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -507,7 +507,7 @@ input[type="tel"],
 input[type="date"],
 select,
 textarea {
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--accent-color);
   border-radius: 6px;
   padding: 10px;
   width: 100%; /* suitable for desktop*/
@@ -518,7 +518,7 @@ textarea {
 input:focus,
 select:focus,
 textarea:focus {
-  border-color: var(--secondary-color);
+  border-color: var(--accent-color);
   box-shadow: 0 0 0 2px rgba(39, 174, 96, 0.3); /* using --secondary-color greenish tint */
   outline: none;
 }
@@ -532,16 +532,16 @@ textarea:focus {
 #petList input#emergencyContactPhone:focus,
 #petList input#emergencyContactRelationship:focus {
     box-shadow: 0 0 0 2px rgba(39, 174, 96, 0.3); /* var(--secondary-color) */
-    border-color: var(--secondary-color);
+    border-color: var(--accent-color);
 }
 
 /* Form reminders section styling */
 #petList fieldset.reminders-section {
-  border: 1px solid #ccc;
+  border: 1px solid var(--accent-color);
   padding: 1rem;
   margin-top: 1rem;
   border-radius: 8px;
-  background-color: var(--card-bg);
+  background-color: var(--bg-card);
 }
 
 #petList fieldset.reminders-section legend {
@@ -555,7 +555,7 @@ textarea:focus {
   margin-top: 0.75rem;
   font-size: 0.9rem;
   font-weight: 500;
-  color: #333;
+  color: var(--text-main);
 }
 
 #petList fieldset.reminders-section input[type="datetime-local"] {
@@ -564,7 +564,7 @@ textarea:focus {
   padding: 6px 10px;
   font-size: 0.9rem;
   margin-top: 4px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-main);
   border-radius: 4px;
 }
 
@@ -584,25 +584,28 @@ textarea:focus {
 
 /* primary actions class controls logout, add profile, save pet profile buttons*/
 .primary-action {
-  background-color: var(--primary-color);
-  color: white;
+  background-color: var(--accent-color);      /* Gold */
+  color: var(--text-main);                    /* Dark gray text */
   padding: 10px 20px;
   border-radius: 6px;
   font-size: 1rem;
   cursor: pointer;
-  border: none;
+  border: 2px solid var(--border-button);     /* Gold border */
   transition: background 0.3s ease;
 }
 
 .primary-action:hover {
-  background-color: var(--primary-dark);
+background-color: #E6C300; /* Slightly darker gold */
+transform: translateY(-2px); /* Optional lift effect */
 }
 
 /* separate rule for logout button for its colour red , targeting it by its id #*/
 #logoutButton.primary-action {
-  background-color: #FF0000; /* Override purple */
+  background-color: var(--error);
 }
-
+#logoutButton.primary-action:hover {
+  background-color: var(--darkred);
+}
 /* Add this new container(.form-actions class) for cancel button and submit button too
   what's happening is the container targets the class form actions for the alignement and the wrapping of the two buttons.
   the actual styles are targetting buttons by id for cancel button and class for submit button */
@@ -616,7 +619,7 @@ textarea:focus {
 
 /* Update cancel button - remove margin-top */
 #cancelEditBtn {
-  background-color: var(--red);
+  background-color: var(--error);
   color: white;
   margin-left: 0; 
   margin-top: 0;
@@ -710,7 +713,7 @@ textarea:focus {
 }
 
 ..pet-card {
-  background: var(--card-bg); /* pure white*/
+  background: var(--bg-card); /*white */
   border-radius: 10px;
   padding: 1rem;
   display: flex;
@@ -718,11 +721,11 @@ textarea:focus {
   gap: 1rem;
   margin-bottom: 10rem; /* will give more space between saved petcards 1.5rem*/
   box-shadow: 0 4px 6px rgba(0,0,0,0.08);
-  border: 2px solid var(--charcoal); /* 🔲 Card frame*/
+  border: 2px solid var(--border-card);       /* Light gray border */
 }
 /* Add to apply to pet header and details*/
 .card-section {
-  border: 1px solid var(--charcoal);
+  border: 1px solid var(--border-card);       /* Light gray border */
   border-radius: 8px;
   padding: 0.75rem 1rem;
   background: #fafafa;
@@ -743,7 +746,7 @@ textarea:focus {
 .pet-header h4 {
   font-size: 1.2rem;
   font-weight: bold;
-  color: #2c3e50;
+  color: var(--text-main); /* Dark gray text */
   margin: 0;
 }
 .pet-details {
@@ -784,8 +787,8 @@ textarea:focus {
 }
 /* ======= all reminders related styleS ROOT COLOURS ARE REMOVED ============*/
 .pet-reminders {
-  background: var(--card-bg);
-  border: 1px solid var(--charcoal);
+  background: var(--bg-page);
+  border: 1px solid var(--border-card);
   padding: 12px 16px;
   border-radius: 6px;
   margin-top: 1rem;
