@@ -178,7 +178,8 @@
 <!-- ========================================== -->
 <div id="dashboard-loader" 
      style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000;">
-  <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; color: green;">
+    <div style="background: rgba(255, 255, 255, 0.95); padding: 20px; border-radius: 12px;">
+  <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center;">
     
     <!-- 🐾 Paws animation for dashboard operations -->
     <lottie-player
@@ -200,19 +201,19 @@
       
     <p id="dashboard-loader-saving" class="loader-text" style="display:none;">Saving...</p>
     <p id="dashboard-loader-success-saving" class="loader-text" style="display:none;">Profile saved successfully!</p>
-    <p id="dashboard-loader-error-saving" class="loader-text" style="display:none; color:red;">❌ Failed to save profile. Please try again.</p>
+    <p id="dashboard-loader-error-saving" class="loader-text" style="display:none;">❌ Failed to save profile. Please try again.</p>
 
      <p id="dashboard-loader-updating" class="loader-text" style="display:none;">Updating...</p>
     <p id="dashboard-loader-success-updating" class="loader-text" style="display:none;">Profile updated successfully!</p>
-    <p id="dashboard-loader-error-updating" class="loader-text" style="display:none; color:red;">❌ Failed to update profile. Please try again.</p>
+    <p id="dashboard-loader-error-updating" class="loader-text" style="display:none;">❌ Failed to update profile. Please try again.</p>
       
     <p id="dashboard-loader-deleting" class="loader-text" style="display:none;">Deleting...</p>
     <p id="dashboard-loader-success-deleting" class="loader-text" style="display:none;">Profile deleted successfully!</p>
-    <p id="dashboard-loader-error-deleting" class="loader-text" style="display:none; color:red;">❌ Failed to delete profile. Please try again.</p>
+    <p id="dashboard-loader-error-deleting" class="loader-text" style="display:none;">❌ Failed to delete profile. Please try again.</p>
 
     <p id="dashboard-loader-exporting" class="loader-text" style="display:none;">Exporting...</p>
     <p id="dashboard-loader-success-exporting" class="loader-text" style="display:none;">✅ all pet cards exported successfully!</p>
-    <p id="dashboard-loader-error-exporting" class="loader-text" style="display:none; color:red;">❌ Export failed. Please try again.</p>
+    <p id="dashboard-loader-error-exporting" class="loader-text" style="display:none;">❌ Export failed. Please try again.</p>
      <!-- qr, inviteFriends and showdetails modal using notificationsystem ftom auth.js-->
   </div>
 </div>
