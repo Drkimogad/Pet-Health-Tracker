@@ -1078,6 +1078,14 @@ button.delete-btn:hover {
   margin: 10px 0;
 }
 
+#dashboard-loader[style*="display: block"] > div {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  min-width: 280px;
+}
+
 /* Success messages - green */
 #dashboard-loader-success-saving,
 #dashboard-loader-success-updating,
