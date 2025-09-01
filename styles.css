@@ -256,7 +256,6 @@ KEEP THIS TO ENSURE AUTH CONTAINER AND DASHBOARD STARTS UNDER THE HEADER
 
 /* ===== GOOGLE SIGN-IN BUTTON ===== */
   /* moved outside Authentication container becauseLottis overflow hidden*/
-/* ===== GOOGLE SIGN-IN BUTTON WRAPPER ===== */
 /* ===== GOOGLE SIGN-IN BUTTON WRAPPER AS FOOD BOWL ===== */
 #googleSignInBtnWrapper {
   position: fixed !important;
@@ -269,7 +268,7 @@ KEEP THIS TO ENSURE AUTH CONTAINER AND DASHBOARD STARTS UNDER THE HEADER
   align-items: center;
   gap: 15px;
   padding: 15px;
-  border: 3px solid var(--main-color);       /* Charcoal border */
+  border: 3px solid var(--main-color);       /* Charcoal border FOR A DARKER LOOK*/
   background: linear-gradient(to bottom, #e0e0e0, #c8c8c8); /* light aluminium look */
   border-radius: 50% / 20%;  /* shallow ellipse, bowl-like */
   box-shadow: 0 4px 12px rgba(0,0,0,0.3); /* subtle 3D effect */
@@ -723,7 +722,7 @@ transform: translateY(-2px); /* Optional lift effect */
   gap: 1rem;
   margin-bottom: 10rem; /* will give more space between saved petcards 1.5rem*/
   box-shadow: 0 4px 6px rgba(0,0,0,0.08);
-  border: 2px solid var(--border-main);       /* Light gray border */
+  border: 2px solid var(--border-card);       /* Light gray border */
 }
 
 /* Add to apply to pet header and details*/
@@ -923,13 +922,13 @@ transform: translateY(-2px); /* Optional lift effect */
 .qr-btn {
   background-color: var(--bg-page); /* Light gray */
   color: var(--text-main); /* Dark gray */
-  border: 1px solid var(--border-card); /* Light gray border */
+  border: 2px solid var(--border-button); /* ← GOLD BORDER */
 }
 
 .exportAll-btn {
   background-color: var(--bg-page); /* Light gray */
   color: var(--text-main); /* Dark gray */
-  border: 1px solid var(--border-card); /* Light gray border */
+  border: 2px solid var(--border-button); /* ← GOLD BORDER */
 }
 
 /* Danger Action (Delete) */
