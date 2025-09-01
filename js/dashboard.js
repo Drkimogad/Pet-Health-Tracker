@@ -646,10 +646,6 @@ const canvas = await html2canvas(pdfContainer, {
     hideModal(); // This removes the stacking context prison
             console.log("🚪 Modal closed");
 
-    setTimeout(() => {
-  console.log("Modal closed, attempting notification...");
-  showSuccessNotification("PDF saved successfully! 📄");
-  
   setTimeout(() => {
      console.log("📢 Attempting to show success notification");
       showSuccessNotification("PDF saved successfully! 📄");
