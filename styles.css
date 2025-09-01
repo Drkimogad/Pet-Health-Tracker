@@ -31,8 +31,8 @@ everything shows nicely between header and footer */
   --error: #DC3545;              /* Red - Error messages */
   --warning: #FFC107;            /* Yellow - Warnings */
 
-
-
+  /*============================== added new ================================*/
+  --accent-green: #4caf50;        /* light green can be used  further in the app*/
 
 
 
@@ -971,6 +971,7 @@ button.delete-btn:hover {
 
 
 /* =====QR CODE STYLES======== */
+/* =====QR CODE STYLES======== */
 .qr-window {
   padding: 20px;
   text-align: center;
@@ -989,84 +990,166 @@ button.delete-btn:hover {
   border-radius: 6px;
   cursor: pointer;
   font-weight: 500;
+  transition: all 0.2s ease;
 }
 
 #downloadQR {
-  background: var(--qr-blue);
+  background: var(--accent-color); /* Gold */
+  color: var(--text-main); /* Dark text */
+}
+
+#downloadQR:hover {
+  background: #E6C300; /* Darker gold */
+  transform: translateY(-1px);
 }
 
 #printQR {
-  background: var(--qr-green);
+  background: var(--accent-green); /* Your new green */
+  color: white;
 }
+
+#printQR:hover {
+  background: #3D8B40; /* Darker green */
+  transform: translateY(-1px);
+}
+
 .developer-info {
   margin-top: 20px;
   padding: 12px 15px;
-  background-color: #f4f4f4; /* Very light gray */
+  background-color: var(--bg-page); /* Light gray */
   border-radius: 6px;
   font-size: 14px;
-  color: #333;
+  color: var(--text-main); /* Dark text */
+  border: 1px solid var(--border-card); /* Light border */
 }
+
 .developer-info a {
-  color: #0077cc;
+  color: var(--accent-color); /* Gold links */
   text-decoration: none;
+  font-weight: 500;
 }
+
 .developer-info a:hover {
   text-decoration: underline;
+  color: #E6C300; /* Darker gold */
 }
 
-/* ======LOADER SPINNER======= */
-/* CSS spinner fallback */
-.css-spinner-fallback {
-  display: none;
-  border: 3px solid #f3f3f3;
-  border-top: 3px solid var(--qr-blue);
-  border-radius: 50%;
-  width: 35px;
-  height: 35px;
-  animation: spin 1s linear infinite;
-  margin: 2rem auto;
+/* ======LOADER CONTAINERS======= */
+#processing-loader,
+#dashboard-loader {
+  background: rgba(0, 0, 0, 0.7) !important; /* Darker overlay for better contrast */
+  z-index: 2000;
+}
+
+/* ======LOADER CONTENT CENTERING======= */
+#processing-loader > div,
+#dashboard-loader > div {
   position: absolute;
-  left: 50%;
   top: 50%;
+  left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 1001;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.95); /* White background with slight transparency */
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  min-width: 280px;
 }
 
-@keyframes spin {
-  0% { transform: translate(-50%, -50%) rotate(0deg); }
-  100% { transform: translate(-50%, -50%) rotate(360deg); }
-}
-/*=≈========================*/
+/* ======LOADER TEXT STYLES======= */
 .loader-text {
-  color: green !important; /* Force brown color */
-  font-weight: bold;
-  font-size: 18px;
-  margin: 10px 0;
+  color: var(--text-main) !important; /* Dark gray for readability */
+  font-weight: 600 !important;
+  font-size: 1.1rem !important;
+  margin: 10px 0 !important;
+  text-shadow: 0px 1px 2px rgba(255, 255, 255, 0.9);
 }
 
-#dashboard-loader div {
-  color: green !important; /* Force brown color on all loader text */
+/* Status-specific text colors */
+#dashboard-loader-saving,
+#dashboard-loader-updating,
+#dashboard-loader-exporting,
+#dashboard-loader-deleting {
+  color: var(--accent-color) !important; /* Gold for in-progress */
 }
 
-/* Ensure temp messages keep their green/red styling */
-.success-message {
-  background-color: #4CAF50 !important;
-  color: white !important;
+#dashboard-loader-success-saving,
+#dashboard-loader-success-updating, 
+#dashboard-loader-success-deleting,
+#dashboard-loader-success-exporting {
+  color: var(--success) !important; /* Green for success */
 }
 
-.auth-error {
-  background-color: #f44336 !important;
-  color: white !important;
+#dashboard-loader-error-saving,
+#dashboard-loader-error-updating,
+#dashboard-loader-error-deleting, 
+#dashboard-loader-error-exporting {
+  color: var(--error) !important; /* Red for errors */
 }
 
-/* CSS rule to ensure the Lottie animation is visible when shown*/
+/* ======AUTH LOADER SPECIFIC======= */
+#auth-loader-message {
+  color: var(--text-main) !important; /* Dark gray */
+  margin-top: 1rem !important;
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+  text-shadow: 0px 1px 2px rgba(255, 255, 255, 0.9);
+}
+
+/* ======LOTTIE PLAYER FIXES======= */
+lottie-player {
+  display: block !important;
+  margin: 0 auto;
+}
+
 lottie-player[style*="display:none"] {
   display: none !important;
 }
 
-lottie-player:not([style*="display:none"]) {
+/* ======CSS SPINNER FALLBACK======= */
+.css-spinner-fallback {
+  border: 3px solid var(--bg-page); /* Light gray */
+  border-top: 3px solid var(--accent-color); /* Gold */
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  animation: spin 1s linear infinite;
+  margin: 1rem auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ======REMOVE INLINE STYLES======= */
+/* Remove these inline styles from HTML and let CSS handle them: */
+/* style="color: green;" */
+/* style="display:none; color:red;" */
+/* style="color:#fff;" */
+
+/* Hide all loader messages by default - JavaScript will show the appropriate one */
+#dashboard-loader-loading,
+#dashboard-loader-saving,
+#dashboard-loader-success-saving,
+#dashboard-loader-error-saving,
+#dashboard-loader-updating,
+#dashboard-loader-success-updating,
+#dashboard-loader-error-updating,
+#dashboard-loader-deleting,
+#dashboard-loader-success-deleting,
+#dashboard-loader-error-deleting,
+#dashboard-loader-exporting,
+#dashboard-loader-success-exporting,
+#dashboard-loader-error-exporting {
+  display: none;
+}
+
+/* Show only the active message via JavaScript class */
+.loader-text.active {
   display: block !important;
 }
+
 
 /* =====Details Modal========== */
 /* Modal Styles */
