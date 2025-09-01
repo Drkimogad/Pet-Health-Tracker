@@ -32,7 +32,7 @@ everything shows nicely between header and footer */
   --warning: #FFC107;            /* Yellow - Warnings */
 
   /*============================== added new ================================*/
-  --accent-green: #4caf50;        /* light green can be used  further in the app*/
+  --accent-green: #4caf50;        /* light green fpr positive enhancement*/
 
 
 
@@ -305,11 +305,25 @@ KEEP THIS TO ENSURE AUTH CONTAINER AND DASHBOARD STARTS UNDER THE HEADER
   75% { transform: translateX(-50%) translateY(-2px); }
 }
 
+/* Legal links inside auth wrapper (Google bowl) */
+#googleSignInBtnWrapper .legal-links a,
+#googleSignInBtnWrapper .auth-legal a {
+  color: #5A6268; /* Muted gray-blue that complements aluminum */
+  font-weight: 500;
+}
+
+#googleSignInBtnWrapper .legal-links a:hover,
+#googleSignInBtnWrapper .auth-legal a:hover {
+  color: var(--text-main); /* Dark gray on hover */
+  text-decoration: underline;
+}
 
 /*===========================
 FOR PRIVACY AND TERMS HTMLS
 /* Legal Links Styling */
 ============================*/
+/* the colours here for legal links a and legal links hover and auth legal will
+affect their colour in the footer */
 .legal-links {
     margin-top: 10px;
     font-size: 1rem;
