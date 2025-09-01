@@ -641,11 +641,6 @@ const canvas = await html2canvas(pdfContainer, {
       doc.save(`PetProfile_${new Date().getTime()}.pdf`);
             console.log("✅ PDF saved successfully");
 
-        // Added new
-        // ✅ HIDE MODAL FIRST, THEN SHOW NOTIFICATION
-    hideModal(); // This removes the stacking context prison
-            console.log("🚪 Modal closed");
-
   setTimeout(() => {
      console.log("📢 Attempting to show success notification");
       showSuccessNotification("PDF saved successfully! 📄");
@@ -653,14 +648,14 @@ const canvas = await html2canvas(pdfContainer, {
         
     } catch (error) {
       console.error("PDF generation failed:", error);
-            hideModal();
-
      setTimeout(() => {
       showErrorNotification("Failed to save PDF. Please try again.");
     }, 100);
         
     } finally {
-            console.log("🧹 Cleaning up loader");
+     hideModal(); // ← HIDE MODAL HERE ONCE for both success and error
+    console.log("🚪 Modal closed");
+   console.log("🧹 Cleaning up loader");
       loader.remove();
       document.querySelector('.pdf-export-container')?.remove();
     }
