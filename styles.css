@@ -1140,11 +1140,13 @@ body.modal-active {
   display: flex;
   align-items: center;
   justify-content: center;
-  isolation: isolate; /* 👈 Creates new stacking context */
-  will-change: opacity; /* 👈 Optimizes fade performance */
-  transform: translateZ(0); /* Forces hardware acceleration */
-  contain: strict; /* Prevents bleed */
-}
+ } 
+
+ /* isolation: isolate; /* 👈 Creates new stacking context */
+ /* will-change: opacity; /* 👈 Optimizes fade performance */
+/*  transform: translateZ(0); /* Forces hardware acceleration */
+ /* contain: strict; /* Prevents bleed */
+
 
 .modal-overlay.active {
   opacity: 1;
