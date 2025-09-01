@@ -1072,25 +1072,34 @@ button.delete-btn:hover {
 }
 /*=≈========================*/
 .loader-text {
-  color: green !important; /* Force brown color */
+  color: #2C3E50 !important; /* Your charcoal color */
   font-weight: bold;
   font-size: 18px;
   margin: 10px 0;
 }
 
-#dashboard-loader div {
-  color: green !important; /* Force brown color on all loader text */
+/* Success messages - green */
+#dashboard-loader-success-saving,
+#dashboard-loader-success-updating,
+#dashboard-loader-success-deleting, 
+#dashboard-loader-success-exporting {
+  color: #28A745 !important; /* Your success green */
 }
 
-/* Ensure temp messages keep their green/red styling */
-.success-message {
-  background-color: #4CAF50 !important;
-  color: white !important;
+/* Error messages - red */  
+#dashboard-loader-error-saving,
+#dashboard-loader-error-updating,
+#dashboard-loader-error-deleting,
+#dashboard-loader-error-exporting {
+  color: #DC3545 !important; /* Your error red */
 }
 
-.auth-error {
-  background-color: #f44336 !important;
-  color: white !important;
+/* In-progress messages - gold */
+#dashboard-loader-saving,
+#dashboard-loader-updating, 
+#dashboard-loader-deleting,
+#dashboard-loader-exporting {
+  color: #FFD700 !important; /* Your gold accent */
 }
 
 /* CSS rule to ensure the Lottie animation is visible when shown*/
@@ -1101,8 +1110,6 @@ lottie-player[style*="display:none"] {
 lottie-player:not([style*="display:none"]) {
   display: block !important;
 }
-
-
 
 /* =====Details Modal========== */
 /* Modal Styles */
