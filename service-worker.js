@@ -6,14 +6,33 @@ const CACHED_INDEX = '/index.html';
 const urlsToCache = [
   '/',
   CACHED_INDEX,
+  OFFLINE_URL,
+  '/auth.js', 
+  '/utils.js',
+  '/dashboard.js',
   '/styles.css',
-  '/script.js',
   '/manifest.json',
   '/icons/icon-192x192.png',
   '/icons/icon-512x512.png',
-  '/icons/badge-72x72.png',
   '/favicon.ico',
-  OFFLINE_URL,
+  '/banner/Image.png',
+  '/privacy.html',
+  '/terms.html',
+  
+  // Your local Lottie 8 of them 
+  '/lottiefiles/Welcome.json',
+  '/lottiefiles/momhugpets.json',
+  '/lottiefiles/Cat.json',
+  '/lottiefiles/paws.json',
+  '/lottiefiles/BlackCatPeeping.json',
+  '/lottiefiles/today.json',
+  '/lottiefiles/upcoming.json',
+  '/lottiefiles/overdue.json',
+
+   // Essential libraries 
+  'https://cdn.jsdelivr.net/npm/@lottiefiles/lottie-player@latest/dist/lottie-player.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
   'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js'
 ];
 
@@ -35,14 +54,14 @@ self.addEventListener('fetch', (event) => {
   // Skip non-GET requests
   if (request.method !== 'GET') return;
 
-  // Handle navigation requests
-  if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request)
-        .catch(() => caches.match(CACHED_INDEX) || caches.match(OFFLINE_URL))
-    );
-    return;
-  }
+ //✅  Handle navigation requests
+if (request.mode === 'navigate') {
+  event.respondWith(
+    fetch(request)
+      .catch(() => caches.match(OFFLINE_URL)) // ← ONLY offline.html
+  );
+  return;
+}
 
   // Cache-first for static assets
   event.respondWith(
@@ -108,3 +127,4 @@ self.addEventListener('notificationclick', (event) => {
       })
   );
 });
+
