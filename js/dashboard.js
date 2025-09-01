@@ -567,11 +567,14 @@ requestAnimationFrame(() => {
   
   // Refactored PDF saving logic specifically for the modal
   async function saveModalAsPDF() {
+        console.log("💾 PDF button clicked - function started");
     const loader = document.createElement('div');
     loader.className = 'loader pdf-loader';
     document.body.appendChild(loader);
 
     try {
+            console.log("📄 Generating PDF...");
+
       // 1. Wait for modal to be fully rendered
       await new Promise(resolve => setTimeout(resolve, 300));
       
@@ -636,31 +639,32 @@ const canvas = await html2canvas(pdfContainer, {
       const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
       doc.addImage(canvas, 'PNG', 0, 0, 210, 297);
       doc.save(`PetProfile_${new Date().getTime()}.pdf`);
+            console.log("✅ PDF saved successfully");
+
         // Added new
         // ✅ HIDE MODAL FIRST, THEN SHOW NOTIFICATION
     hideModal(); // This removes the stacking context prison
-        
+            console.log("🚪 Modal closed");
+
     setTimeout(() => {
   console.log("Modal closed, attempting notification...");
   showSuccessNotification("PDF saved successfully! 📄");
   
-  // Debug: Check if notification element exists and is visible
   setTimeout(() => {
-    const notification = document.querySelector('.notification');
-    console.log("Notification element:", notification);
-    console.log("Computed display:", notification ? getComputedStyle(notification).display : 'none');
-    console.log("Computed z-index:", notification ? getComputedStyle(notification).zIndex : 'none');
-  }, 50);
+     console.log("📢 Attempting to show success notification");
+      showSuccessNotification("PDF saved successfully! 📄");
 }, 100);
         
     } catch (error) {
       console.error("PDF generation failed:", error);
-        
+            hideModal();
+
      setTimeout(() => {
       showErrorNotification("Failed to save PDF. Please try again.");
     }, 100);
         
     } finally {
+            console.log("🧹 Cleaning up loader");
       loader.remove();
       document.querySelector('.pdf-export-container')?.remove();
     }
