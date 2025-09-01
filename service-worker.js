@@ -2,30 +2,30 @@ const CACHE_NAME = 'Pet-Health-Tracker-cache-v5';
 const OFFLINE_URL = '/offline.html';
 
 const urlsToCache = [
-  '/',
-  '/index.html',
+  './',
+  './index.html',
   OFFLINE_URL,
-  '/auth.js',
-  '/utils.js',
-  '/dashboard.js',
-  '/styles.css',
-  '/manifest.json',
-  '/icons/icon-192x192.png',
-  '/icons/icon-512x512.png',
-  '/favicon.ico',
-  '/banner/Image.png',
-  '/privacy.html',
-  '/terms.html',
+  './auth.js',
+  './utils.js',
+  './dashboard.js',
+  './styles.css',
+  './manifest.json',
+  './icons/icon-192x192.png',
+  './icons/icon-512x512.png',
+  './favicon.ico',
+  './banner/Image.png',
+  './privacy.html',
+  './terms.html',
   
   // Local Lotties
-  '/lottiefiles/Welcome.json',
-  '/lottiefiles/momhugpets.json',
-  '/lottiefiles/Cat.json',
-  '/lottiefiles/paws.json',
-  '/lottiefiles/BlackCatPeeping.json',
-  '/lottiefiles/today.json',
-  '/lottiefiles/upcoming.json',
-  '/lottiefiles/overdue.json',
+  './lottiefiles/Welcome.json',
+  './lottiefiles/momhugpets.json',
+  './lottiefiles/Cat.json',
+  './lottiefiles/paws.json',
+  './lottiefiles/BlackCatPeeping.json',
+  './lottiefiles/today.json',
+  './lottiefiles/upcoming.json',
+  './lottiefiles/overdue.json',
 
   // External libs (cache sparingly)
   'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js'
@@ -120,6 +120,7 @@ self.addEventListener('controllerchange', () => {
     });
   });
 });
+
 
 
 
