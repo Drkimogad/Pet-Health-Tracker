@@ -378,3 +378,37 @@ if ('serviceWorker' in navigator) {
       });
   });
 }
+
+// Check for updates and show notification
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('message', event => {
+    if (event.data === 'updateAvailable') {
+      showUpdateNotification();
+    }
+  });
+}
+
+function showUpdateNotification() {
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--accent-color);
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    z-index: 10005;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  `;
+  notification.innerHTML = `
+    <p>🔄 Update Available!</p>
+    <button onclick="window.location.reload()" 
+            style="background: white; color: var(--accent-color); border: none; padding: 5px 10px; border-radius: 4px; margin-top: 8px;">
+      Reload Now
+    </button>
+  `;
+  document.body.appendChild(notification);
+}
+
+
