@@ -35,10 +35,18 @@ const urlsToCache = [
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
-      .then(() => console.log('✅ Cached core assets for offline use'))
-      .catch(err => console.error('❌ Cache error:', err))
+  caches.open(CACHE_NAME)
+    .then(cache => {
+      const promises = urlsToCache.map(url => 
+        cache.add(url).catch(err => {
+          console.error(`❌ Failed to cache: ${url}`, err);
+          throw err; // Re-throw to stop the chain
+        })
+      );
+      return Promise.all(promises);
+    })
+    .then(() => console.log('✅ All assets cached successfully'))
+    .catch(err => console.error('❌ Cache error:', err))
   );
 });
 
