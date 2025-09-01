@@ -463,11 +463,11 @@ async function loadSavedPetProfile() {
      actionsDiv.className = 'pet-actions';
      actionsDiv.innerHTML = `
               <button class="edit-btn" data-pet-id="${profile.id}">Edit Profile</button>
-              <button class="delete-btn" data-pet-id="${profile.id}">Delete Profile</button>
+              <button class="inviteFriends-btn" data-pet-id="${profile.id}">Invite Friends</button>
               <button class="details-btn" data-pet-id="${profile.id}">Profile Details</button>
               <button id="exportAll-btn" class="exportAll-btn">📤 Save All Cards</button>
               <button class="qr-btn" data-pet-id="${profile.id}">Generate Qr Code</button>
-              <button class="inviteFriends-btn" data-pet-id="${profile.id}">Invite Friends</button>
+              <button class="delete-btn" data-pet-id="${profile.id}">Delete Profile</button>
             `;   
     const communityChatBtn = createCommunityChatButton(profile.id);
     actionsDiv.appendChild(communityChatBtn);
