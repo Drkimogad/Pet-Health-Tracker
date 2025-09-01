@@ -267,9 +267,9 @@ function ensureCancelEditButton() {
   if (!cancelButton) {
     cancelButton = document.createElement("button");
     cancelButton.id = "cancelEditBtn";
-    cancelButton.className = "button cancel-btn pill";
+    cancelButton.className = "button cancel-btn";
     cancelButton.type = "button";
-    cancelButton.innerHTML = '<i class="fas fa-times"></i> Cancel';
+    cancelButton.innerHTML = '<i class="fas fa-times"></i> Cancel Edit';
 
     cancelButton.addEventListener("click", () => {
       if (confirm("Discard changes to this profile?")) {
@@ -285,10 +285,10 @@ function ensureCancelEditButton() {
       form.appendChild(cancelButton);
     }
 
-    console.log("✅ Cancel button injected into form.");
+    console.log("✅ Cancel Edit button injected into form.");
   } else {
     cancelButton.style.display = "inline-block";
-    console.log("✅ Cancel button already exists, now visible.");
+    console.log("✅ Cancel Edit button already exists, now visible.");
   }
 }
 
@@ -885,7 +885,7 @@ if (!cancelBtn) {
 }
 
 // ✅ CRITICAL: ALWAYS set the text to "Cancel Edit" (whether new or existing)
-cancelBtn.innerHTML = '<i class="fas fa-times"></i> Cancel Edit';
+cancelBtn.innerHTML = '<i class="fas fa-times"></i> Cancel';
 cancelBtn.style.display = "inline-block"; // Ensure it's visible
 
   // 4. UPDATE UI
