@@ -1,4 +1,3 @@
-// service-worker.js
 const CACHE_NAME = 'Pet-Health-Tracker-cache-v4';
 const OFFLINE_URL = '/offline.html';
 
@@ -112,3 +111,4 @@ self.addEventListener('controllerchange', () => {
     });
   });
 });
+
