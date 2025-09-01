@@ -568,9 +568,15 @@ requestAnimationFrame(() => {
   // Refactored PDF saving logic specifically for the modal
   async function saveModalAsPDF() {
         console.log("💾 PDF button clicked - function started");
+      
     const loader = document.createElement('div');
+        console.log("🎯 Loader created - STEP 2"); // ← ADD THIS
+
     loader.className = 'loader pdf-loader';
+        console.log("🎯 Loader class set - STEP 3"); // ← ADD THIS
+
     document.body.appendChild(loader);
+  console.log("🎯 Loader appended - STEP 4"); // ← ADD THIS
 
     try {
             console.log("📄 Generating PDF...");
