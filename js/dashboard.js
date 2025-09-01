@@ -399,9 +399,9 @@ async function loadSavedPetProfile() {
       const REMINDER_THRESHOLD_DAYS = 3;
 
       // ✅ Lottie animations
-      const overdueAnimation = '/lottiefiles/overdue.json';
-      const todayAnimation = '/lottiefiles/today.json';
-      const upcomingAnimation = '/lottiefiles/upcoming.json';
+      const overdueAnimation = './lottiefiles/overdue.json';
+      const todayAnimation = './lottiefiles/today.json';
+      const upcomingAnimation = './lottiefiles/upcoming.json';
 
       Object.entries(profile.reminders || {}).forEach(([key, value]) => {
         if (!value) return;
