@@ -1,13 +1,12 @@
 // service-worker.js
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v3'; // Changed version
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v4';
 const OFFLINE_URL = '/offline.html';
-const CACHED_INDEX = '/index.html';
 
 const urlsToCache = [
   '/',
-  CACHED_INDEX,
+  '/index.html',
   OFFLINE_URL,
-  '/auth.js', 
+  '/auth.js',
   '/utils.js',
   '/dashboard.js',
   '/styles.css',
@@ -19,7 +18,7 @@ const urlsToCache = [
   '/privacy.html',
   '/terms.html',
   
-  // Your local Lottie 8 of them 
+  // Local Lotties
   '/lottiefiles/Welcome.json',
   '/lottiefiles/momhugpets.json',
   '/lottiefiles/Cat.json',
@@ -29,57 +28,59 @@ const urlsToCache = [
   '/lottiefiles/upcoming.json',
   '/lottiefiles/overdue.json',
 
-   // Essential libraries 
-  'https://cdn.jsdelivr.net/npm/@lottiefiles/lottie-player@latest/dist/lottie-player.min.js',
-  'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
-  'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
+  // External libs (cache sparingly)
   'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js'
 ];
 
-// ======== Improved Install Handler ========
+// ======== INSTALL ========
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => cache.addAll(urlsToCache))
-      .then(() => console.log('Cached core assets'))
-      .catch(err => console.error('Cache addAll error:', err))
+      .then(() => console.log('✅ Cached core assets for offline use'))
+      .catch(err => console.error('❌ Cache error:', err))
   );
 });
 
-// ======== Smarter Fetch Handler ========
+// ======== FETCH ========
 self.addEventListener('fetch', (event) => {
   const request = event.request;
   
-  // Skip non-GET requests
   if (request.method !== 'GET') return;
 
- //✅  Handle navigation requests
-if (request.mode === 'navigate') {
-  event.respondWith(
-    fetch(request)
-      .catch(() => caches.match(OFFLINE_URL)) // ← ONLY offline.html
-  );
-  return;
-}
+  // Handle navigation requests
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request)
+        .catch(() => caches.match(OFFLINE_URL))
+    );
+    return;
+  }
 
   // Cache-first for static assets
   event.respondWith(
     caches.match(request)
       .then(cached => cached || 
         fetch(request).then(response => {
-          // Cache new responses
+          // Cache successful responses
           if (response.ok && !request.url.includes('chrome-extension')) {
             const clone = response.clone();
             caches.open(CACHE_NAME).then(cache => cache.put(request, clone));
           }
           return response;
+        }).catch(() => {
+          // Final fallback for external resources
+          if (request.url.includes('cdn.jsdelivr.net') || 
+              request.url.includes('cdnjs.cloudflare.com')) {
+            return new Response('Offline - Resource not available');
+          }
         })
       )
   );
 });
 
-// ======== Cleanup Old Caches ========
+// ======== ACTIVATE & CLEANUP ========
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then(keys => 
@@ -89,42 +90,25 @@ self.addEventListener('activate', (event) => {
         )
       )
     ).then(() => {
-      console.log('Activated new SW');
+      console.log('✅ New service worker activated');
       self.clients.claim();
     })
   );
 });
 
-// ======== Push Notifications ========
-self.addEventListener('push', (event) => {
-  const payload = event.data ? event.data.json() : {
-    title: 'Pet Health Reminder',
-    body: 'Check your pet health tracker!',
-    icon: '/icons/icon-192x192.png'
-  };
-
-  event.waitUntil(
-    self.registration.showNotification(payload.title, {
-      body: payload.body,
-      icon: payload.icon,
-      badge: '/icons/badge-72x72.png',
-      data: { url: payload.url || '/' }
-    })
-  );
+// ======== UPDATE NOTIFICATION ========
+self.addEventListener('message', (event) => {
+  if (event.data === 'skipWaiting') {
+    self.skipWaiting();
+  }
 });
 
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close();
-  event.waitUntil(
-    clients.matchAll({type: 'window'})
-      .then(clientList => {
-        for (const client of clientList) {
-          if (client.url === event.notification.data.url) {
-            return client.focus();
-          }
-        }
-        return clients.openWindow(event.notification.data.url);
-      })
-  );
+// Listen for controller change (new version installed)
+self.addEventListener('controllerchange', () => {
+  // Send message to all clients to show update notification
+  self.clients.matchAll().then(clients => {
+    clients.forEach(client => {
+      client.postMessage('updateAvailable');
+    });
+  });
 });
-
