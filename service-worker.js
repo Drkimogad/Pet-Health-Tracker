@@ -1,29 +1,29 @@
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v4';
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v5';
 const OFFLINE_URL = '/offline.html';
 
 const urlsToCache = [
   '/',
   '/index.html',
-//  OFFLINE_URL,
+  OFFLINE_URL,
   '/auth.js',
   '/utils.js',
   '/dashboard.js',
   '/styles.css',
   '/manifest.json',
   '/icons/icon-192x192.png',
-//  '/icons/icon-512x512.png',
+  '/icons/icon-512x512.png',
   '/favicon.ico',
-//  '/banner/Image.png',
-//  '/privacy.html',
-//  '/terms.html',
+  '/banner/Image.png',
+  '/privacy.html',
+  '/terms.html',
   
   // Local Lotties
   '/lottiefiles/Welcome.json',
   '/lottiefiles/momhugpets.json',
   '/lottiefiles/Cat.json',
   '/lottiefiles/paws.json',
-//  '/lottiefiles/BlackCatPeeping.json',
-//  '/lottiefiles/today.json',
+  '/lottiefiles/BlackCatPeeping.json',
+  '/lottiefiles/today.json',
   '/lottiefiles/upcoming.json',
   '/lottiefiles/overdue.json',
 
@@ -111,6 +111,7 @@ self.addEventListener('controllerchange', () => {
     });
   });
 });
+
 
 
 
