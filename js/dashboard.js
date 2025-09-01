@@ -636,18 +636,21 @@ const canvas = await html2canvas(pdfContainer, {
       const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
       doc.addImage(canvas, 'PNG', 0, 0, 210, 297);
       doc.save(`PetProfile_${new Date().getTime()}.pdf`);
+        // Added new
+        // ✅ HIDE MODAL FIRST, THEN SHOW NOTIFICATION
+    hideModal(); // This removes the stacking context prison
         
     // ✅ FORCE NOTIFICATION TO APPEAR ABOVE EVERYTHING
     setTimeout(() => {
       showSuccessNotification("PDF saved successfully! 📄");
-    }, 200); // Small delay to ensure PDF process completes
+    }, 100); // Small delay to ensure PDF process completes
         
     } catch (error) {
       console.error("PDF generation failed:", error);
         
      setTimeout(() => {
       showErrorNotification("Failed to save PDF. Please try again.");
-    }, 200);
+    }, 100);
         
     } finally {
       loader.remove();
