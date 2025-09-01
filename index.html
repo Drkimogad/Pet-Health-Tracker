@@ -156,7 +156,7 @@
 
        <!-- Auth loader works for showLoading function for aut.js self contained for authentication -->
 <div id="processing-loader" 
-     style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000;">
+     style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000;">
   <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center;">      
     <!-- 🌀 Default Cat Spinner -->
     <lottie-player
@@ -169,7 +169,7 @@
       autoplay>
     </lottie-player>
       <!-- Auth-specific message -->
-    <p id="auth-loader-message" style="margin-top:1rem; font-size:1rem; font-weight:500;">Loading...</p>
+    <p id="auth-loader-message" style="color:#fff; margin-top:1rem; font-size:1rem; font-weight:500;">Loading...</p>
     </div>
 </div>
         
@@ -177,8 +177,8 @@
 <!-- Dashboard Loader (Paws Animation) for some functions -->
 <!-- ========================================== -->
 <div id="dashboard-loader" 
-     style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000;">
-  <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center;">
+     style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000;">
+  <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; color: green;">
     
     <!-- 🐾 Paws animation for dashboard operations -->
     <lottie-player
@@ -186,7 +186,7 @@
       src="https://drkimogad.github.io/Pet-Health-Tracker/lottiefiles/paws.json"
       background="transparent"
       speed="2"
-      style="width: 170px; height: 170px;"
+      style="width: 170px; height: 170px; display:none;"
       loop
       autoplay>
     </lottie-player>
@@ -198,21 +198,21 @@
     <!-- id in helper to fetch right message is dashboard-loader-message key -->
     <p id="dashboard-loader-loading" class="loader-text">Loading...</p>
       
-    <p id="dashboard-loader-saving" class="loader-text">Saving...</p>
-    <p id="dashboard-loader-success-saving" class="loader-text">Profile saved successfully!</p>
-    <p id="dashboard-loader-error-saving" class="loader-text">❌ Failed to save profile. Please try again.</p>
+    <p id="dashboard-loader-saving" class="loader-text" style="display:none;">Saving...</p>
+    <p id="dashboard-loader-success-saving" class="loader-text" style="display:none;">Profile saved successfully!</p>
+    <p id="dashboard-loader-error-saving" class="loader-text" style="display:none; color:red;">❌ Failed to save profile. Please try again.</p>
 
-     <p id="dashboard-loader-updating" class="loader-text">Updating...</p>
-    <p id="dashboard-loader-success-updating" class="loader-text">Profile updated successfully!</p>
-    <p id="dashboard-loader-error-updating" class="loader-text">❌ Failed to update profile. Please try again.</p>
+     <p id="dashboard-loader-updating" class="loader-text" style="display:none;">Updating...</p>
+    <p id="dashboard-loader-success-updating" class="loader-text" style="display:none;">Profile updated successfully!</p>
+    <p id="dashboard-loader-error-updating" class="loader-text" style="display:none; color:red;">❌ Failed to update profile. Please try again.</p>
       
-    <p id="dashboard-loader-deleting" class="loader-text">Deleting...</p>
-    <p id="dashboard-loader-success-deleting" class="loader-text">Profile deleted successfully!</p>
-    <p id="dashboard-loader-error-deleting" class="loader-text">❌ Failed to delete profile. Please try again.</p>
+    <p id="dashboard-loader-deleting" class="loader-text" style="display:none;">Deleting...</p>
+    <p id="dashboard-loader-success-deleting" class="loader-text" style="display:none;">Profile deleted successfully!</p>
+    <p id="dashboard-loader-error-deleting" class="loader-text" style="display:none; color:red;">❌ Failed to delete profile. Please try again.</p>
 
-    <p id="dashboard-loader-exporting" class="loader-text">Exporting...</p>
-    <p id="dashboard-loader-success-exporting" class="loader-text">✅ all pet cards exported successfully!</p>
-    <p id="dashboard-loader-error-exporting" class="loader-text">❌ Export failed. Please try again.</p>
+    <p id="dashboard-loader-exporting" class="loader-text" style="display:none;">Exporting...</p>
+    <p id="dashboard-loader-success-exporting" class="loader-text" style="display:none;">✅ all pet cards exported successfully!</p>
+    <p id="dashboard-loader-error-exporting" class="loader-text" style="display:none; color:red;">❌ Export failed. Please try again.</p>
      <!-- qr, inviteFriends and showdetails modal using notificationsystem ftom auth.js-->
   </div>
 </div>
