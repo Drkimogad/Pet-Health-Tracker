@@ -250,6 +250,7 @@ function initAuthListeners() {
 // MVED FUNCTIONS FROM UTILS.JS
 // ===== IMPROVED NOTIFICATION SYSTEM =====
 function showErrorToUser(message, type = "error") {
+    console.log("📢 Attempting to show notification:", message, type); // ← ADD THIS LINE
   try {
     // CREATE NEW ELEMENT EACH TIME
     const notificationDiv = document.createElement('div');
@@ -300,6 +301,7 @@ function showErrorToUser(message, type = "error") {
 
     // ✅ ADD TO DOM AFTER ALL STYLES ARE SET
     document.body.appendChild(notificationDiv);
+         console.log("✅ Notification created and appended to body"); // ← ADD THIS LINE
 
     // Auto-remove after 5 seconds
     setTimeout(() => {
@@ -309,6 +311,8 @@ function showErrorToUser(message, type = "error") {
     }, 5000);
 
   } catch (fallbackError) {
+        console.error("❌ Notification error:", fallbackError); // ← ADD ERROR LOG
+
     alert(message);
   }
 }
