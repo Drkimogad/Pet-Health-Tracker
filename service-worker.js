@@ -35,18 +35,19 @@ const urlsToCache = [
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
-  caches.open(CACHE_NAME)
-    .then(cache => {
-      const promises = urlsToCache.map(url => 
-        cache.add(url).catch(err => {
-          console.error(`❌ Failed to cache: ${url}`, err);
-          throw err; // Re-throw to stop the chain
-        })
-      );
-      return Promise.all(promises);
-    })
-    .then(() => console.log('✅ All assets cached successfully'))
-    .catch(err => console.error('❌ Cache error:', err))
+    caches.open(CACHE_NAME)
+      .then(cache => {
+        // Cache files one by one with error handling
+        const cachePromises = urlsToCache.map(url => 
+          cache.add(url).catch(err => {
+            console.warn(`⚠️ Could not cache: ${url}`, err);
+            // Don't throw - continue with other files
+          })
+        );
+        return Promise.all(cachePromises);
+      })
+      .then(() => console.log('✅ Installation completed (some files may not be cached)'))
+      .catch(err => console.error('❌ Installation failed:', err))
   );
 });
 
@@ -119,6 +120,7 @@ self.addEventListener('controllerchange', () => {
     });
   });
 });
+
 
 
 
