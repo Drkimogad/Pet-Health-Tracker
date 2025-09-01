@@ -936,13 +936,13 @@ transform: translateY(-2px); /* Optional lift effect */
 .qr-btn {
   background-color: var(--bg-page); /* Light gray */
   color: var(--text-main); /* Dark gray */
-  border: 2px solid var(--border-button); /* ← GOLD BORDER */
+  border: 2px solid var(--border-button) !important; /* ← GOLD BORDER */
 }
 
 .exportAll-btn {
   background-color: var(--bg-page); /* Light gray */
   color: var(--text-main); /* Dark gray */
-  border: 2px solid var(--border-button); /* ← GOLD BORDER */
+  border: 2px solid var(--main-color); /* ← GOLD BORDER */
 }
 
 /* Danger Action (Delete) */
