@@ -1,5 +1,5 @@
 const CACHE_NAME = 'Pet-Health-Tracker-cache-v5';
-const OFFLINE_URL = '/offline.html';
+const OFFLINE_URL = './offline.html';
 
 const urlsToCache = [
   './',
@@ -120,6 +120,7 @@ self.addEventListener('controllerchange', () => {
     });
   });
 });
+
 
 
 
