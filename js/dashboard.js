@@ -640,10 +640,18 @@ const canvas = await html2canvas(pdfContainer, {
         // ✅ HIDE MODAL FIRST, THEN SHOW NOTIFICATION
     hideModal(); // This removes the stacking context prison
         
-    // ✅ FORCE NOTIFICATION TO APPEAR ABOVE EVERYTHING
     setTimeout(() => {
-      showSuccessNotification("PDF saved successfully! 📄");
-    }, 100); // Small delay to ensure PDF process completes
+  console.log("Modal closed, attempting notification...");
+  showSuccessNotification("PDF saved successfully! 📄");
+  
+  // Debug: Check if notification element exists and is visible
+  setTimeout(() => {
+    const notification = document.querySelector('.notification');
+    console.log("Notification element:", notification);
+    console.log("Computed display:", notification ? getComputedStyle(notification).display : 'none');
+    console.log("Computed z-index:", notification ? getComputedStyle(notification).zIndex : 'none');
+  }, 50);
+}, 100);
         
     } catch (error) {
       console.error("PDF generation failed:", error);
