@@ -390,34 +390,43 @@ function setupLogout() {
 
 //==== EMAIL AND PASSWORD AUTHENTICATION ========
 // ====== Email/Password Sign-Up ======
+// ====== Email/Password Sign-Up ======
 function setupEmailPasswordSignUp() {
   const signupForm = document.getElementById("emailSignupForm");
   if (!signupForm) return;
 
   signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    showLoading(true, "Creating your account...");
+    showLoading(true, "Creating account...");
 
     const email = document.getElementById("signupEmailInput").value.trim();
     const password = document.getElementById("signupPasswordInput").value;
+    const confirmPassword = document.getElementById("signupConfirmInput").value;
 
-    if (!email || !password) {
-      showErrorToUser("Please enter both email and password.");
+    if (!email || !password || !confirmPassword) {
+      showErrorToUser("Please fill out all fields.");
+      showLoading(false);
+      return;
+    }
+    if (password !== confirmPassword) {
+      showErrorToUser("Passwords do not match.");
       showLoading(false);
       return;
     }
 
     try {
-      // Sign up with Firebase
+      // Firebase create user
       const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-      console.log("✅ Email/Password sign-up successful:", userCredential.user);
-      
-      // Force token refresh
-      await userCredential.user.getIdToken(true);
+      console.log("✅ Sign-up successful:", userCredential.user);
 
-      showSuccessNotification("Account created successfully! Redirecting...");
-      // Show dashboard after account creation
-      showDashboard();
+      // Optional: send verification email
+      await userCredential.user.sendEmailVerification();
+
+      // 🔄 Switch UI back to Sign-In form
+      toggleEmailForms(true);
+
+      // Give user feedback
+      showSuccessToUser("Account created! Please sign in.");
     } catch (error) {
       console.error("❌ Sign-up failed:", error);
       showErrorToUser(error.message || "Sign-up failed. Try again.");
@@ -426,6 +435,7 @@ function setupEmailPasswordSignUp() {
     }
   });
 }
+
 
 // ====== Email/Password Sign-In ======
 function setupEmailPasswordLogin() {
@@ -463,6 +473,7 @@ function setupEmailPasswordLogin() {
     }
   });
 }
+
 //==== VISIIBILITY TOGGLING HANDLER FOR SIGN-UP AND SIGN-IN =====
 // this handler handles the display and swope bet the balls.
 function toggleEmailForms(showLogin = true) {
@@ -491,6 +502,25 @@ function toggleEmailForms(showLogin = true) {
   }
 }
 
+//=== Wire toggle links =====
+function wireAuthToggleLinks() {
+  const toSignup = document.getElementById("goToSignup");
+  const toLogin  = document.getElementById("goToLogin");
+
+  if (toSignup) {
+    toSignup.addEventListener("click", (e) => {
+      e.preventDefault();
+      toggleEmailForms(false); // show SIGN-UP
+    });
+  }
+
+  if (toLogin) {
+    toLogin.addEventListener("click", (e) => {
+      e.preventDefault();
+      toggleEmailForms(true); // show SIGN-IN
+    });
+  }
+}
 
 
 // ====== Core Initialization ======
@@ -499,18 +529,20 @@ async function initializeAuth() {
     // 1. First make sure DOM is ready
     if (!initDOMReferences()) {
       throw new Error("Critical DOM elements missing");
-    }    
+    }
+
     // 2. Wait for Firebase to load
-    if (typeof firebase === 'undefined') {
-      await new Promise(resolve => {
+    if (typeof firebase === "undefined") {
+      await new Promise((resolve) => {
         const checkFirebase = setInterval(() => {
-          if (typeof firebase !== 'undefined') {
+          if (typeof firebase !== "undefined") {
             clearInterval(checkFirebase);
             resolve();
           }
         }, 100);
       });
-    }    
+    }
+
     // 3. Initialize Firebase Auth
     auth = await initializeFirebase();
     console.log("✅ Auth object received:", auth);
@@ -519,25 +551,32 @@ async function initializeAuth() {
     // ✅ Set persistence before attaching listener
     await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
     console.log("🔐 Firebase auth persistence set to LOCAL");
-    
+
     // 4. Set up auth state listener
-    initAuthListeners(auth); 
-    
-    // 5. Set up Google Sign-In button (if exists)
+    initAuthListeners(auth);
+
+    // 5. Google Sign-In
     if (document.getElementById("googleSignInButton")) {
-     setupEmailPasswordSignUp();
-    }
-   // ✅ Set up email/password login (if form exists)
-    if (document.getElementById("emailLoginForm")) {
-     setupEmailPasswordLogin();
-    }
-    
-   // ✅ Set up email/password login (if form exists)
-    if (document.getElementById("emailLoginForm")) {
-     setupEmailPasswordLogin();
+      setupGoogleLoginButton(); // <-- you had setupEmailPasswordSignUp here by mistake
     }
 
-    // ✅ Add logout listener after auth is ready
+    // 6. Email/Password Sign-Up
+    if (document.getElementById("emailSignupForm")) {
+      setupEmailPasswordSignUp();
+    }
+
+    // 7. Email/Password Login
+    if (document.getElementById("emailLoginForm")) {
+      setupEmailPasswordLogin();
+    }
+
+    // 8. Wire up toggle links (between login/signup)
+    wireAuthToggleLinks();
+
+    // 9. Decide which form to show first (default = login)
+    toggleEmailForms(true); // pass false if you want to start with Sign-Up
+
+    // 10. Logout listener
     if (typeof setupLogout === "function") {
       setupLogout();
     }
