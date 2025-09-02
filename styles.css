@@ -242,6 +242,28 @@ KEEP THIS TO ENSURE AUTH CONTAINER AND DASHBOARD STARTS UNDER THE HEADER
   text-align: center;
 }
 
+/* ===== FLOATING EMAIL/PASSWORD CARD ===== */
+.floating-auth-card {
+  position: fixed; /* float independently */
+  top: calc(var(--header-height) + 15vh); /* directly below welcome Lottie */
+  left: 50%; /* center horizontally */
+  transform: translateX(-50%);
+  width: 90%; /* almost full width */
+  max-width: 500px; /* prevent it from getting too wide */
+  height: 10vh; /* initial height as you requested */
+  background-color: var(--bg-card);
+  border: 3px solid var(--border-main);
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25); /* subtle floating shadow */
+  z-index: 12; /* above welcome section and banner */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  box-sizing: border-box;
+  backdrop-filter: blur(8px); /* optional frosted glass effect */
+}
+
 /* ===== FULLPAGE BANNER (BACKGROUND) ===== */
 .fullpage-lottie-container {
   position: fixed !important;
