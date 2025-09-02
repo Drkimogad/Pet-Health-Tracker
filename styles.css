@@ -247,11 +247,11 @@ KEEP THIS TO ENSURE AUTH CONTAINER AND DASHBOARD STARTS UNDER THE HEADER
   position: fixed;
   top: calc(var(--header-height) + 15vh + 10px); /* Just below welcome Lottie */
   right: 20px; /* float on the right side */
-  width: 200px;  /* good size for desktop/tablet120 */
-  height: 200px; /* make it circular120 */
+  width: 230px;  /* good size for desktop/tablet120 */
+  height: 230px; /* make it circular120 */
   border-radius: 50%; 
   background: radial-gradient(circle at 30% 30%, #ffffff, #4285f4);
-  border: 3px solid var(--main-color); /* Charcoal border */
+  border: 3px solid var(--accent-color); /* Gold  border */
   box-shadow: 0 4px 15px rgba(0,0,0,0.3); /* subtle 3D effect */
   display: flex;
   flex-direction: column;
@@ -270,7 +270,7 @@ KEEP THIS TO ENSURE AUTH CONTAINER AND DASHBOARD STARTS UNDER THE HEADER
   margin: 2px 0;
   padding: 4px 6px;
   border-radius: 8px;
-  border: 1px solid var(--accent-color); /* Gold accent colour*/
+  border: 1px solid var(--main-color); /* Gray accent colour*/
   font-size: 0.8rem;
 }
 
@@ -291,7 +291,7 @@ KEEP THIS TO ENSURE AUTH CONTAINER AND DASHBOARD STARTS UNDER THE HEADER
 #emailLoginWrapper .auth-legal {
   font-size: 0.6rem;
   margin-top: 4px;
-  color: var(--text-inverse);
+  color: var(--text-main);
   line-height: 1;
 }
 
