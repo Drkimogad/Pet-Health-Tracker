@@ -458,7 +458,7 @@ async function initializeAuth() {
     // 5. Set up Google Sign-In button (if exists)
     if (document.getElementById("googleSignInButton")) {
       setupGoogleLoginButton();
-    
+    }
     
    // ✅ Set up email/password login (if form exists)
     if (document.getElementById("emailLoginForm")) {
