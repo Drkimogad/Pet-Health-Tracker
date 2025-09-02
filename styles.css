@@ -247,8 +247,8 @@ KEEP THIS TO ENSURE AUTH CONTAINER AND DASHBOARD STARTS UNDER THE HEADER
   position: fixed;
   top: calc(var(--header-height) + 15vh + 10px); /* Just below welcome Lottie */
   right: 20px; /* float on the right side */
-  width: 230px;  /* good size for desktop/tablet120 */
-  height: 230px; /* make it circular120 */
+  width: 250px;  /* good size for desktop/tablet120 */
+  height: 250px; /* make it circular120 */
   border-radius: 50%; 
   background: radial-gradient(circle at 30% 30%, #ffffff, #4285f4);
   border: 3px solid var(--accent-color); /* Gold  border */
