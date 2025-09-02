@@ -376,33 +376,39 @@ affect their colour in the footer */
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start; /* keep content at top inside the ball */
   z-index: 12; /* above fullPageBanner */
-  padding: 10px;
+  padding-top: 8px;            /* smaller padding top */
+  padding-bottom: 8px;         /* smaller padding bottom */
   text-align: center;
   cursor: pointer;
   animation: slowBounce 4s infinite ease-in-out;
-
   /* Smooth transition when swapping modes */
   transition: background 0.8s ease, border 0.8s ease, transform 0.5s ease;
 }
 
+
 /* Inputs inside signup ball */
 #emailSignupWrapper input {
   width: 80%;
-  margin: 2px 0;
-  padding: 4px 6px;
+  margin: 1px 0;/* was 2px */
+  padding: 3px 4px;/* was 4px 6px */
   border-radius: 8px;
   border: 1px solid var(--main-color);
-  font-size: 0.8rem;
+  font-size: 0.75rem; /* slightly smaller text */
+}
+
+#emailSignupWrapper label {
+  font-size: 0.65rem; /* smaller labels */
+  margin-bottom: 2px; /* reduce space below label */
 }
 
 /* Buttons inside signup ball */
 #emailSignupWrapper button {
-  margin-top: 4px;
-  padding: 4px 6px;
+  margin-top: 2px;    /* was 4px */
+  padding: 3px 4px;   /* was 4px 6px */
   width: 60%;
-  font-size: 0.8rem;
+  font-size: 0.75rem; /* slightly smaller */
   border-radius: 8px;
   border: none;
   cursor: pointer;
@@ -411,11 +417,12 @@ affect their colour in the footer */
 
 /* Legal text inside signup ball */
 #emailSignupWrapper .auth-legal {
-  font-size: 0.6rem;
-  margin-top: 4px;
+  font-size: 0.55rem; /* slightly smaller */
+  margin-top: 2px;    /* was 4px */
   color: var(--text-main);
-  line-height: 1;
+  line-height: 1;     /* keep tight */
 }
+
 
 /* Sign-Up mode style */
 #emailSignupWrapper.signup-mode {
@@ -428,6 +435,7 @@ affect their colour in the footer */
   background-color: var(--accent-green);
   color: var(--text-inverse);
 }
+
 
 /* ====== Sign-In Floating Ball ===== */
 #emailLoginWrapper {
