@@ -242,27 +242,65 @@ KEEP THIS TO ENSURE AUTH CONTAINER AND DASHBOARD STARTS UNDER THE HEADER
   text-align: center;
 }
 
-/* ===== FLOATING EMAIL/PASSWORD CARD ===== */
-.floating-auth-card {
-  position: fixed; /* float independently */
-  top: calc(var(--header-height) + 15vh); /* directly below welcome Lottie */
-  left: 50%; /* center horizontally */
-  transform: translateX(-50%);
-  width: 90%; /* almost full width */
-  max-width: 500px; /* prevent it from getting too wide */
-  height: 10vh; /* initial height as you requested */
-  background-color: var(--bg-card);
-  border: 3px solid var(--border-main);
-  border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.25); /* subtle floating shadow */
-  z-index: 12; /* above welcome section and banner */
+/* ===== FLOATING EMAIL LOGIN BALL ===== */
+#emailLoginWrapper {
+  position: fixed;
+  top: calc(var(--header-height) + 15vh + 10px); /* Just below welcome Lottie */
+  right: 20px; /* float on the right side */
+  width: 120px;  /* good size for desktop/tablet */
+  height: 120px; /* make it circular */
+  border-radius: 50%; 
+  background: var(--accent-color); /* Gold treat ball */
+  border: 3px solid var(--main-color); /* Charcoal border */
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3); /* subtle 3D effect */
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0 20px;
-  box-sizing: border-box;
-  backdrop-filter: blur(8px); /* optional frosted glass effect */
+  z-index: 12; /* above fullpage banner */
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  animation: slowBounce 4s infinite ease-in-out;
 }
+
+/* Input inside the ball */
+#emailLoginWrapper input {
+  width: 80%; /* scale inside ball */
+  margin: 2px 0;
+  padding: 4px 6px;
+  border-radius: 8px;
+  border: 1px solid var(--main-color);
+  font-size: 0.8rem;
+}
+
+/* Submit button inside the ball */
+#emailLoginWrapper button {
+  margin-top: 4px;
+  padding: 4px 6px;
+  width: 60%;
+  font-size: 0.8rem;
+  border-radius: 8px;
+  border: none;
+  background-color: var(--main-color);
+  color: var(--text-inverse);
+  cursor: pointer;
+}
+
+/* Authentication legal text inside the ball */
+#emailLoginWrapper .auth-legal {
+  font-size: 0.6rem;
+  margin-top: 4px;
+  color: var(--text-inverse);
+  line-height: 1;
+}
+
+/* Gentle slow bounce animation */
+@keyframes slowBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
 
 /* ===== FULLPAGE BANNER (BACKGROUND) ===== */
 .fullpage-lottie-container {
