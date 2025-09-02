@@ -365,9 +365,72 @@ affect their colour in the footer */
 }
 
 /*==== Email & password authentication =====*/
-/* ====== Base Floating Ball ====== */
-/* Base floating ball style for both login & signup */
-.email-auth-wrapper {
+/* ====== Sign-Up Floating Ball ===== */
+#emailSignupWrapper {
+  position: fixed;
+  top: calc(var(--header-height) + 15vh + 10px); /* just below welcome Lottie */
+  right: 20px;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 12; /* above fullPageBanner */
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  animation: slowBounce 4s infinite ease-in-out;
+
+  /* Smooth transition when swapping modes */
+  transition: background 0.8s ease, border 0.8s ease, transform 0.5s ease;
+}
+
+/* Inputs inside signup ball */
+#emailSignupWrapper input {
+  width: 80%;
+  margin: 2px 0;
+  padding: 4px 6px;
+  border-radius: 8px;
+  border: 1px solid var(--main-color);
+  font-size: 0.8rem;
+}
+
+/* Buttons inside signup ball */
+#emailSignupWrapper button {
+  margin-top: 4px;
+  padding: 4px 6px;
+  width: 60%;
+  font-size: 0.8rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+/* Legal text inside signup ball */
+#emailSignupWrapper .auth-legal {
+  font-size: 0.6rem;
+  margin-top: 4px;
+  color: var(--text-main);
+  line-height: 1;
+}
+
+/* Sign-Up mode style */
+#emailSignupWrapper.signup-mode {
+  background: radial-gradient(circle at 30% 30%, #ffffff, var(--accent-green));
+  border: 3px solid var(--success);
+  transform: scale(1.05); /* slightly pop out */
+}
+
+#emailSignupWrapper.signup-mode button {
+  background-color: var(--accent-green);
+  color: var(--text-inverse);
+}
+
+/* ====== Sign-In Floating Ball ===== */
+#emailLoginWrapper {
   position: fixed;
   top: calc(var(--header-height) + 15vh + 10px);
   right: 20px;
@@ -384,11 +447,12 @@ affect their colour in the footer */
   cursor: pointer;
   animation: slowBounce 4s infinite ease-in-out;
 
+  /* Smooth transition for swapping styles */
   transition: background 0.8s ease, border 0.8s ease, transform 0.5s ease;
 }
 
-/* Inputs inside the ball */
-.email-auth-wrapper input {
+/* Inputs inside ball */
+#emailLoginWrapper input {
   width: 80%;
   margin: 2px 0;
   padding: 4px 6px;
@@ -398,7 +462,7 @@ affect their colour in the footer */
 }
 
 /* Buttons inside ball */
-.email-auth-wrapper button {
+#emailLoginWrapper button {
   margin-top: 4px;
   padding: 4px 6px;
   width: 60%;
@@ -410,11 +474,22 @@ affect their colour in the footer */
 }
 
 /* Legal text inside */
-.email-auth-wrapper .auth-legal {
+#emailLoginWrapper .auth-legal {
   font-size: 0.6rem;
   margin-top: 4px;
   color: var(--text-main);
   line-height: 1;
+}
+
+/* Sign-In mode style */
+#emailLoginWrapper.signin-mode {
+  background: radial-gradient(circle at 30% 30%, #ffffff, #4285f4); /* white → Google blue */
+  border: 3px solid var(--accent-color); /* Gold border */
+}
+
+#emailLoginWrapper.signin-mode button {
+  background-color: var(--main-color); /* dark charcoal */
+  color: var(--text-inverse);          /* white */
 }
 
 
