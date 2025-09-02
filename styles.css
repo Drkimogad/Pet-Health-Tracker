@@ -247,8 +247,8 @@ KEEP THIS TO ENSURE AUTH CONTAINER AND DASHBOARD STARTS UNDER THE HEADER
   position: fixed;
   top: calc(var(--header-height) + 15vh + 10px); /* Just below welcome Lottie */
   right: 20px; /* float on the right side */
-  width: 120px;  /* good size for desktop/tablet */
-  height: 120px; /* make it circular */
+  width: 160px;  /* good size for desktop/tablet120 */
+  height: 160px; /* make it circular120 */
   border-radius: 50%; 
   background: var(--accent-color); /* Gold treat ball */
   border: 3px solid var(--main-color); /* Charcoal border */
@@ -447,8 +447,8 @@ affect their colour in the footer */
   .header-container h1 { font-size: 2rem; }
   .header-container h2 { font-size: 1.3rem; }
 
-  .auth-welcome-section { height: 16vh; }
-  .fullpage-lottie-container { height: 68vh; }
+  .auth-welcome-section { height: 12vh; }  /* was 16*/
+  .fullpage-lottie-container { height: 70vh; }
 }
 
 /* Mobile: Small screens */
