@@ -139,7 +139,30 @@
             loop
             autoplay>
         </lottie-player>       
-        </div>         
+        </div>
+
+          <!-- Email/Password Login Form inside auth welcome section-->
+<div id="emailLoginWrapper" class="email-login-wrapper hidden">
+  <p class="auth-message">Or sign in with your email and password</p>
+  <form id="emailLoginForm" class="email-login-form">
+    <div class="form-group">
+      <label for="emailInput">Email</label>
+      <input type="email" id="emailInput" name="email" placeholder="you@example.com" required>
+    </div>
+    <div class="form-group">
+      <label for="passwordInput">Password</label>
+      <input type="password" id="passwordInput" name="password" placeholder="Your password" required>
+    </div>
+    <button type="submit" id="emailLoginBtn" class="login-btn">Sign In</button>
+  </form>
+  <p class="auth-legal">
+    By signing in, you agree to our 
+    <a href="./privacy.html" target="_blank">Terms of Service</a> and 
+    <a href="./terms.html" target="_blank">Privacy Policy</a>.
+  </p>
+</div>
+
+         
      </div>
                 
         <!-- 1. Full-page background Lottie (replacing banner) -->
