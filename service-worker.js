@@ -1,4 +1,4 @@
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v7'; // bump version after changes
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v8'; // bump version after changes
 
 const urlsToCache = [
   '.', // root (https://drkimogad.github.io/Pet-Health-Tracker/)
@@ -58,13 +58,16 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET') return;
 
   // Handle navigation requests
-  if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request)
-        .catch(() => caches.match('/offline.html'))
-    );
-    return;
-  }
+if (request.mode === 'navigate') {
+  event.respondWith(
+    fetch(request).catch(() => 
+      caches.match('index.html')  // serve app shell
+        .then(resp => resp || caches.match('offline.html'))
+    )
+  );
+  return;
+}
+
 
   // Cache-first for static assets
   event.respondWith(
@@ -120,6 +123,7 @@ self.addEventListener('controllerchange', () => {
     });
   });
 });
+
 
 
 
