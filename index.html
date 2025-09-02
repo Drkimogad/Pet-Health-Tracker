@@ -155,6 +155,11 @@
       <input type="password" id="signupPasswordInput" name="signupPassword" placeholder="Your password" required>
     </div>
     <button type="submit" id="emailSignupBtn" class="signup-btn">Sign Up</button>
+      <p class="auth-switch">
+        Already have an account?
+        <a href="#" id="goToLogin">Sign in</a>
+      </p>
+
   </form>
   <p class="auth-legal">
     By signing up, you agree to our 
@@ -177,7 +182,12 @@
       <input type="password" id="passwordInput" name="password" placeholder="Your password" required>
     </div>
     <button type="submit" id="emailLoginBtn" class="login-btn">Sign In</button>
-  </form>
+        <p class="auth-switch">
+          No account?
+        <a href="#" id="goToSignup">Create one</a>
+       </p>
+      
+   </form>
   <p class="auth-legal">
     By signing in, you agree to our 
     <a href="./privacy.html" target="_blank">Terms of Service</a>
