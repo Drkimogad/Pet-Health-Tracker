@@ -376,10 +376,9 @@ affect their colour in the footer */
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; /* keep content at top inside the ball */
+  justify-content: center; /* keep content at top inside the ball */
   z-index: 12; /* above fullPageBanner */
-  padding-top: 8px;            /* smaller padding top */
-  padding-bottom: 8px;         /* smaller padding bottom */
+  padding: 8px;    /* smaller padding */
   text-align: center;
   cursor: pointer;
   animation: slowBounce 4s infinite ease-in-out;
