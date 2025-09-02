@@ -417,6 +417,17 @@ affect their colour in the footer */
   line-height: 1;     /* keep tight */
 }
 
+#emailSignupWrapper .auth-switch {
+  font-size: 0.55rem;      /* smaller text */
+  margin: 2px 0;           /* less vertical space */
+  line-height: 1;           /* tight line spacing */
+}
+
+#emailSignupWrapper .auth-switch a {
+  font-size: 0.55rem;      /* scale the link to match */
+  text-decoration: underline;
+  cursor: pointer;
+}
 
 /* Sign-Up mode style */
 #emailSignupWrapper.signup-mode {
@@ -482,6 +493,18 @@ affect their colour in the footer */
   color: var(--text-main);
   line-height: 1;
 }
+#emailLoginWrapper .auth-switch {
+  font-size: 0.55rem;
+  margin: 2px 0;
+  line-height: 1;
+}
+
+#emailLoginWrapper .auth-switch a {
+  font-size: 0.55rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 
 /* Sign-In mode style */
 #emailLoginWrapper.signin-mode {
