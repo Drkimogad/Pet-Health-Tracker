@@ -4,9 +4,9 @@ const urlsToCache = [
   '.', // root (https://drkimogad.github.io/Pet-Health-Tracker/)
   'index.html',
   'offline.html',
-  'auth.js',
-  'utils.js',
-  'dashboard.js',
+  'js/auth.js',
+  'js/utils.js',
+  'js/dashboard.js',
   'styles.css',
   'manifest.json',
   'icons/icon-192x192.png',
@@ -120,6 +120,7 @@ self.addEventListener('controllerchange', () => {
     });
   });
 });
+
 
 
 
