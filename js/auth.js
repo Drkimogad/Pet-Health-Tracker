@@ -388,6 +388,45 @@ function setupLogout() {
   }
 }
 
+//==== EMAIL AND PASSWORD AUTHENTICATION ========
+// ====== Email/Password Sign-Up ======
+function setupEmailPasswordSignUp() {
+  const signupForm = document.getElementById("emailSignupForm");
+  if (!signupForm) return;
+
+  signupForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    showLoading(true, "Creating your account...");
+
+    const email = document.getElementById("signupEmailInput").value.trim();
+    const password = document.getElementById("signupPasswordInput").value;
+
+    if (!email || !password) {
+      showErrorToUser("Please enter both email and password.");
+      showLoading(false);
+      return;
+    }
+
+    try {
+      // Sign up with Firebase
+      const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+      console.log("✅ Email/Password sign-up successful:", userCredential.user);
+      
+      // Force token refresh
+      await userCredential.user.getIdToken(true);
+
+      showSuccessNotification("Account created successfully! Redirecting...");
+      // Show dashboard after account creation
+      showDashboard();
+    } catch (error) {
+      console.error("❌ Sign-up failed:", error);
+      showErrorToUser(error.message || "Sign-up failed. Try again.");
+    } finally {
+      showLoading(false);
+    }
+  });
+}
+
 // ====== Email/Password Sign-In ======
 function setupEmailPasswordLogin() {
   const loginForm = document.getElementById("emailLoginForm");
@@ -424,6 +463,17 @@ function setupEmailPasswordLogin() {
     }
   });
 }
+//==== VISIIBILITY TOGGLING HANDLER FOR SIGN-UP AND SIGN-IN =====
+function toggleEmailForms(showLogin = true) {
+  const loginWrapper = document.getElementById("emailLoginWrapper");
+  const signupWrapper = document.getElementById("emailSignupWrapper");
+
+  if (loginWrapper && signupWrapper) {
+    loginWrapper.style.display = showLogin ? "flex" : "none";
+    signupWrapper.style.display = showLogin ? "none" : "flex";
+  }
+}
+
 
 // ====== Core Initialization ======
 async function initializeAuth() {
@@ -457,7 +507,11 @@ async function initializeAuth() {
     
     // 5. Set up Google Sign-In button (if exists)
     if (document.getElementById("googleSignInButton")) {
-      setupGoogleLoginButton();
+     setupEmailPasswordSignUp();
+    }
+   // ✅ Set up email/password login (if form exists)
+    if (document.getElementById("emailLoginForm")) {
+     setupEmailPasswordLogin();
     }
     
    // ✅ Set up email/password login (if form exists)
