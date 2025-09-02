@@ -1,4 +1,5 @@
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v5';  
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v6'; // bump version after changes
+
 const urlsToCache = [
   '.', // root (https://drkimogad.github.io/Pet-Health-Tracker/)
   'index.html',
@@ -40,7 +41,7 @@ self.addEventListener('install', (event) => {
         const cachePromises = urlsToCache.map(url => 
           cache.add(url).catch(err => {
             console.warn(`⚠️ Could not cache: ${url}`, err);
-            // Don't throw - continue with other files
+            // Don’t stop caching other files
           })
         );
         return Promise.all(cachePromises);
@@ -119,6 +120,7 @@ self.addEventListener('controllerchange', () => {
     });
   });
 });
+
 
 
 
