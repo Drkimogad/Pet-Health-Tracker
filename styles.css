@@ -247,10 +247,10 @@ KEEP THIS TO ENSURE AUTH CONTAINER AND DASHBOARD STARTS UNDER THE HEADER
   position: fixed;
   top: calc(var(--header-height) + 15vh + 10px); /* Just below welcome Lottie */
   right: 20px; /* float on the right side */
-  width: 160px;  /* good size for desktop/tablet120 */
-  height: 160px; /* make it circular120 */
+  width: 200px;  /* good size for desktop/tablet120 */
+  height: 200px; /* make it circular120 */
   border-radius: 50%; 
-  background: var(--accent-color); /* Gold treat ball */
+  background: radial-gradient(circle at 30% 30%, #ffffff, #4285f4);
   border: 3px solid var(--main-color); /* Charcoal border */
   box-shadow: 0 4px 15px rgba(0,0,0,0.3); /* subtle 3D effect */
   display: flex;
@@ -270,7 +270,7 @@ KEEP THIS TO ENSURE AUTH CONTAINER AND DASHBOARD STARTS UNDER THE HEADER
   margin: 2px 0;
   padding: 4px 6px;
   border-radius: 8px;
-  border: 1px solid var(--main-color);
+  border: 1px solid var(--accent-color); /* Gold accent colour*/
   font-size: 0.8rem;
 }
 
