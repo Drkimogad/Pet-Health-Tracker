@@ -464,15 +464,33 @@ function setupEmailPasswordLogin() {
   });
 }
 //==== VISIIBILITY TOGGLING HANDLER FOR SIGN-UP AND SIGN-IN =====
+// this handler handles the display and swope bet the balls.
 function toggleEmailForms(showLogin = true) {
   const loginWrapper = document.getElementById("emailLoginWrapper");
   const signupWrapper = document.getElementById("emailSignupWrapper");
 
   if (loginWrapper && signupWrapper) {
+    // Toggle visibility
     loginWrapper.style.display = showLogin ? "flex" : "none";
     signupWrapper.style.display = showLogin ? "none" : "flex";
+
+    // Apply style modes (signin vs signup)
+    if (showLogin) {
+      loginWrapper.classList.add("signin-mode");
+      loginWrapper.classList.remove("signup-mode");
+
+      signupWrapper.classList.remove("signup-mode");
+      signupWrapper.classList.add("signin-mode"); // keep consistent style base
+    } else {
+      signupWrapper.classList.add("signup-mode");
+      signupWrapper.classList.remove("signin-mode");
+
+      loginWrapper.classList.remove("signin-mode");
+      loginWrapper.classList.add("signup-mode"); // keep consistent style base
+    }
   }
 }
+
 
 
 // ====== Core Initialization ======
