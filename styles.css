@@ -242,66 +242,6 @@ KEEP THIS TO ENSURE AUTH CONTAINER AND DASHBOARD STARTS UNDER THE HEADER
   text-align: center;
 }
 
-/* ===== FLOATING EMAIL LOGIN BALL ===== */
-#emailLoginWrapper {
-  position: fixed;
-  top: calc(var(--header-height) + 15vh + 10px); /* Just below welcome Lottie */
-  right: 20px; /* float on the right side */
-  width: 250px;  /* good size for desktop/tablet120 */
-  height: 250px; /* make it circular120 */
-  border-radius: 50%; 
-  background: radial-gradient(circle at 30% 30%, #ffffff, #4285f4);
-  border: 3px solid var(--accent-color); /* Gold  border */
-  box-shadow: 0 4px 15px rgba(0,0,0,0.3); /* subtle 3D effect */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 12; /* above fullpage banner */
-  padding: 10px;
-  text-align: center;
-  cursor: pointer;
-  animation: slowBounce 4s infinite ease-in-out;
-}
-
-/* Input inside the ball */
-#emailLoginWrapper input {
-  width: 80%; /* scale inside ball */
-  margin: 2px 0;
-  padding: 4px 6px;
-  border-radius: 8px;
-  border: 1px solid var(--main-color); /* Gray accent colour*/
-  font-size: 0.8rem;
-}
-
-/* Submit button inside the ball */
-#emailLoginWrapper button {
-  margin-top: 4px;
-  padding: 4px 6px;
-  width: 60%;
-  font-size: 0.8rem;
-  border-radius: 8px;
-  border: none;
-  background-color: var(--main-color);
-  color: var(--text-inverse);
-  cursor: pointer;
-}
-
-/* Authentication legal text inside the ball */
-#emailLoginWrapper .auth-legal {
-  font-size: 0.6rem;
-  margin-top: 4px;
-  color: var(--text-main);
-  line-height: 1;
-}
-
-/* Gentle slow bounce animation */
-@keyframes slowBounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-
 /* ===== FULLPAGE BANNER (BACKGROUND) ===== */
 .fullpage-lottie-container {
   position: fixed !important;
@@ -424,6 +364,83 @@ affect their colour in the footer */
   text-align: center;          /* center text inside container */
 }
 
+/*==== Email & password authentication =====*/
+/* ====== Base Floating Ball ====== */
+#emailLoginWrapper {
+  position: fixed;
+  top: calc(var(--header-height) + 15vh + 10px);
+  right: 20px;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 12;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  animation: slowBounce 4s infinite ease-in-out;
+
+  /* Smooth transition for swapping modes */
+  transition: background 0.8s ease, border 0.8s ease, transform 0.5s ease;
+}
+
+/* Inputs inside ball */
+#emailLoginWrapper input {
+  width: 80%;
+  margin: 2px 0;
+  padding: 4px 6px;
+  border-radius: 8px;
+  border: 1px solid var(--main-color);
+  font-size: 0.8rem;
+}
+
+/* Buttons inside ball */
+#emailLoginWrapper button {
+  margin-top: 4px;
+  padding: 4px 6px;
+  width: 60%;
+  font-size: 0.8rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+/* Legal text inside */
+#emailLoginWrapper .auth-legal {
+  font-size: 0.6rem;
+  margin-top: 4px;
+  color: var(--text-main);
+  line-height: 1;
+}
+
+/* ====== SIGN IN MODE (default) ====== */
+#emailLoginWrapper.signin-mode {
+  background: radial-gradient(circle at 30% 30%, #ffffff, #4285f4); /* white → Google blue */
+  border: 3px solid var(--accent-color); /* Gold border */
+}
+
+#emailLoginWrapper.signin-mode button {
+  background-color: var(--main-color); /* dark charcoal */
+  color: var(--text-inverse);          /* white */
+}
+
+/* ====== SIGN UP MODE (new) ====== */
+#emailLoginWrapper.signup-mode {
+  background: radial-gradient(circle at 30% 30%, #ffffff, var(--accent-green)); /* white → green */
+  border: 3px solid var(--success); /* Green border */
+  transform: scale(1.05); /* slightly pop out when active */
+}
+
+#emailLoginWrapper.signup-mode button {
+  background-color: var(--accent-green); /* green button */
+  color: var(--text-inverse);            /* white text */
+}
+
+/*===========================*/
 /*AUTH RESPONSIVE DESIGNS*/
 /* Desktop: Large screens */
 @media (min-width: 1200px) {
