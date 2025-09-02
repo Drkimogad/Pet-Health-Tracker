@@ -1,4 +1,4 @@
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v6'; // bump version after changes
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v7'; // bump version after changes
 
 const urlsToCache = [
   '.', // root (https://drkimogad.github.io/Pet-Health-Tracker/)
@@ -120,6 +120,7 @@ self.addEventListener('controllerchange', () => {
     });
   });
 });
+
 
 
 
