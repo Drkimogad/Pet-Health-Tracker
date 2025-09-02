@@ -366,7 +366,8 @@ affect their colour in the footer */
 
 /*==== Email & password authentication =====*/
 /* ====== Base Floating Ball ====== */
-#emailLoginWrapper {
+/* Base floating ball style for both login & signup */
+.email-auth-wrapper {
   position: fixed;
   top: calc(var(--header-height) + 15vh + 10px);
   right: 20px;
@@ -383,12 +384,11 @@ affect their colour in the footer */
   cursor: pointer;
   animation: slowBounce 4s infinite ease-in-out;
 
-  /* Smooth transition for swapping modes */
   transition: background 0.8s ease, border 0.8s ease, transform 0.5s ease;
 }
 
-/* Inputs inside ball */
-#emailLoginWrapper input {
+/* Inputs inside the ball */
+.email-auth-wrapper input {
   width: 80%;
   margin: 2px 0;
   padding: 4px 6px;
@@ -398,7 +398,7 @@ affect their colour in the footer */
 }
 
 /* Buttons inside ball */
-#emailLoginWrapper button {
+.email-auth-wrapper button {
   margin-top: 4px;
   padding: 4px 6px;
   width: 60%;
@@ -410,35 +410,37 @@ affect their colour in the footer */
 }
 
 /* Legal text inside */
-#emailLoginWrapper .auth-legal {
+.email-auth-wrapper .auth-legal {
   font-size: 0.6rem;
   margin-top: 4px;
   color: var(--text-main);
   line-height: 1;
 }
 
-/* ====== SIGN IN MODE (default) ====== */
-#emailLoginWrapper.signin-mode {
-  background: radial-gradient(circle at 30% 30%, #ffffff, #4285f4); /* white → Google blue */
-  border: 3px solid var(--accent-color); /* Gold border */
+
+/* ===== Sign-in mode ===== */
+.email-auth-wrapper.signin-mode {
+  background: radial-gradient(circle at 30% 30%, #ffffff, #4285f4);
+  border: 3px solid var(--accent-color);
 }
 
-#emailLoginWrapper.signin-mode button {
-  background-color: var(--main-color); /* dark charcoal */
-  color: var(--text-inverse);          /* white */
+.email-auth-wrapper.signin-mode button {
+  background-color: var(--main-color);
+  color: var(--text-inverse);
 }
 
-/* ====== SIGN UP MODE (new) ====== */
-#emailLoginWrapper.signup-mode {
-  background: radial-gradient(circle at 30% 30%, #ffffff, var(--accent-green)); /* white → green */
-  border: 3px solid var(--success); /* Green border */
-  transform: scale(1.05); /* slightly pop out when active */
+/* ===== Sign-up mode ===== */
+.email-auth-wrapper.signup-mode {
+  background: radial-gradient(circle at 30% 30%, #ffffff, var(--accent-green));
+  border: 3px solid var(--success);
+  transform: scale(1.05); /* slightly pop out */
 }
 
-#emailLoginWrapper.signup-mode button {
-  background-color: var(--accent-green); /* green button */
-  color: var(--text-inverse);            /* white text */
+.email-auth-wrapper.signup-mode button {
+  background-color: var(--accent-green);
+  color: var(--text-inverse);
 }
+
 
 /*===========================*/
 /*AUTH RESPONSIVE DESIGNS*/
