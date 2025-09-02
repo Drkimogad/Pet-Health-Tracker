@@ -397,11 +397,6 @@ affect their colour in the footer */
   font-size: 0.75rem; /* slightly smaller text */
 }
 
-#emailSignupWrapper label {
-  font-size: 0.65rem; /* smaller labels */
-  margin-bottom: 2px; /* reduce space below label */
-}
-
 /* Buttons inside signup ball */
 #emailSignupWrapper button {
   margin-top: 2px;    /* was 4px */
