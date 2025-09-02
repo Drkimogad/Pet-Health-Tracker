@@ -387,6 +387,44 @@ function setupLogout() {
     });
   }
 }
+
+// ====== Email/Password Sign-In ======
+function setupEmailPasswordLogin() {
+  const loginForm = document.getElementById("emailLoginForm");
+  if (!loginForm) return;
+
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    showLoading(true, "Signing in...");
+
+    const email = document.getElementById("emailInput").value.trim();
+    const password = document.getElementById("passwordInput").value;
+
+    if (!email || !password) {
+      showErrorToUser("Please enter both email and password.");
+      showLoading(false);
+      return;
+    }
+
+    try {
+      // Sign in with Firebase
+      const userCredential = await auth.signInWithEmailAndPassword(email, password);
+      console.log("✅ Email/Password sign-in successful:", userCredential.user);
+      
+      // Force token refresh (optional but safer)
+      await userCredential.user.getIdToken(true);
+
+      // Show dashboard
+      showDashboard();
+    } catch (error) {
+      console.error("❌ Email/Password sign-in failed:", error);
+      showErrorToUser(error.message || "Sign-in failed. Try again.");
+    } finally {
+      showLoading(false);
+    }
+  });
+}
+
 // ====== Core Initialization ======
 async function initializeAuth() {
   try {
@@ -420,6 +458,11 @@ async function initializeAuth() {
     // 5. Set up Google Sign-In button (if exists)
     if (document.getElementById("googleSignInButton")) {
       setupGoogleLoginButton();
+    
+    
+   // ✅ Set up email/password login (if form exists)
+    if (document.getElementById("emailLoginForm")) {
+     setupEmailPasswordLogin();
     }
 
     // ✅ Add logout listener after auth is ready
