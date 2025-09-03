@@ -541,6 +541,22 @@ affect their colour in the footer */
   color: var(--text-inverse);
 }
 
+/* forgot password */
+.forgot-password {
+  text-align: right;
+  margin: -10px 0 15px 0;
+}
+
+.forgot-password a {
+  color: var(--text-light);
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.forgot-password a:hover {
+  color: var(--main-color);
+  text-decoration: underline;
+}
 
 /*===========================*/
 /*AUTH RESPONSIVE DESIGNS*/
