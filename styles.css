@@ -1777,6 +1777,7 @@ body.modal-active {
 .chat-messages {
   flex: 1;
   background: #FFFFFF; /* Pure white */
+  color: black;
   border: 2px solid #CCCCCC; /* Medium contrast border */
   padding: 0.5rem;
   min-height: unset; /* Let flex:1 handle height */
@@ -1786,6 +1787,23 @@ body.modal-active {
   border-radius: 8px;
   font-size: 0.95rem;
   overscroll-behavior-y: contain; /* Prevent page scroll when chat scrolls */
+}
+
+/* Message states */
+.chat-message.pending {
+  opacity: 0.8;
+  border-left-color: var(--warning);
+}
+
+.chat-message.approved {
+  border-left-color: var(--success) !important;
+}
+
+.admin-message {
+  background-color: rgba(44, 62, 80, 0.1); /* Light charcoal tint */
+  padding: 8px;
+  border-radius: 5px;
+  border-left-color: var(--main-color); /* Charcoal left border */
 }
 /* === Scrollbar (Update these) === */
 .chat-messages::-webkit-scrollbar-thumb {
@@ -1894,6 +1912,7 @@ body.modal-active {
 }
 
 
+
 /* === Manual Dark Mode (Add these) === */
 .community-modal-content.dark-mode {
   background: #2a2a2a;
@@ -1905,9 +1924,15 @@ body.modal-active {
   border-color: #555;
 }
 .dark-mode .chat-message {
-  background: #2a2a2a; /* Dark gray */
-    border-color: #444;
+ border-color: #444;
+  background: #2D3748; /* Dark blue-gray */
+  color: white !important; /* Force white text */
 }
+  .dark-mode .chat-message:hover {
+  background: #333; /* Darker cards */
+  color: white;
+}
+
 .dark-mode #chatInput {
   background: #252525;
   color: var(--text-inverse);
@@ -1949,41 +1974,6 @@ body.modal-active {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* FOR INDIVIDUAL MESSAGE inside public chat*/
-.chat-message {
-  animation: messageFadeIn 0.3s ease-out;
-  transition: background 0.2s;
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid var(--border-card);
-  color: black;
-  background: white; /* ← Already pure white (good!) */
-}
-.chat-message:hover {
-  background: rgba(255, 215, 0, 0.05); /* Gold tint */
-}
-
-.dark-mode .chat-message:hover {
-  background: #333; /* Darker cards */
-  color: white;
-}
-
-/* Message states */
-.chat-message.pending {
-  opacity: 0.8;
-  border-left-color: var(--warning);
-}
-
-.chat-message.approved {
-  border-left-color: var(--success) !important;
-}
-
-.admin-message {
-  background-color: rgba(44, 62, 80, 0.1); /* Light charcoal tint */
-  padding: 8px;
-  border-radius: 5px;
-  border-left-color: var(--main-color); /* Charcoal left border */
-}
 .dark-mode .admin-message {
   background-color: rgba(255, 215, 0, 0.1); /* Gold tint in dark mode */
   border-left-color: var(--accent-color); /* Gold left border */
