@@ -1949,14 +1949,15 @@ body.modal-active {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* FOR INDIVIDUAL MESSAGE*/
+/* FOR INDIVIDUAL MESSAGE inside public chat*/
 .chat-message {
   animation: messageFadeIn 0.3s ease-out;
   transition: background 0.2s;
   padding: 8px;
   border-radius: 4px;
   border: 1px solid var(--border-card);
-  background: #FFFFFF; /* ← Already pure white (good!) */
+  color: black;
+  background: white; /* ← Already pure white (good!) */
 }
 .chat-message:hover {
   background: rgba(255, 215, 0, 0.05); /* Gold tint */
@@ -2059,6 +2060,7 @@ body.modal-active {
   color: var(--text-main);
 }
 
+
 .approved-badge {
   display: inline-block;
   font-size: 0.7rem;
@@ -2071,9 +2073,9 @@ body.modal-active {
 
 /* Keep the dark mode version separate */
 .dark-mode .approved-badge {
-  background-color: var(--success); /* Green */
-  color: var(--text-inverse); /* White text */
+  color: var(--success); /* Green */
 }
+
 
 
 /* Message controls */
