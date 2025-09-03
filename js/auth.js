@@ -477,6 +477,32 @@ function setupEmailPasswordLogin() {
   });
 }
 
+// ====== Forgot Password ======
+function setupForgotPassword() {
+  const forgotLink = document.getElementById('forgotPasswordLink');
+  if (!forgotLink) return;
+
+  forgotLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    
+    // Simple prompt implementation
+    const email = prompt('Enter your email to reset password:');
+    if (!email) return;
+    
+    showLoading(true, 'Sending reset email...');
+    
+    auth.sendPasswordResetEmail(email)
+      .then(() => {
+        showSuccessNotification('Password reset email sent! Check your inbox.');
+      })
+      .catch(error => {
+        showErrorToUser(error.message || 'Failed to send reset email');
+      })
+      .finally(() => {
+        showLoading(false);
+      });
+  });
+}
 //==== VISIIBILITY TOGGLING HANDLER FOR SIGN-UP AND SIGN-IN =====
 // this handler handles the display and swope bet the balls.
 function toggleEmailForms(showLogin = true) {
@@ -566,6 +592,10 @@ async function initializeAuth() {
     // 6. Email/Password Sign-Up
     if (document.getElementById("emailSignupForm")) {
       setupEmailPasswordSignUp();
+    }
+    // Add this line where you set up other auth methods
+    if (document.getElementById("forgotPasswordLink")) {
+     setupForgotPassword();
     }
 
     // 7. Email/Password Login
