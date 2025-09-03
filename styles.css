@@ -667,11 +667,11 @@ affect their colour in the footer */
 /* Mobile First (default styles are for mobile) */
 #emailSignupWrapper {
   position: fixed;
-  top: calc(var(--header-height) + 8vh + 4px);
+  top: calc(var(--header-height) + 10vh + 4px);
   right: 3px;
-  width: 220px; /* it was 220*/
-  height: 220px; /* 220*/
-  padding: 3px; /* adjust*/
+  width: 200px; /* it was 220*/
+  height: 200px; /* 220*/
+  padding: 2px; /* adjust*/
 }
 
 #emailSignupWrapper input {
@@ -688,10 +688,13 @@ affect their colour in the footer */
   font-size: 0.6rem; /* adjust 0.7*/
 }
 
-#emailSignupWrapper .auth-legal,
+#emailSignupWrapper .auth-legal {
+  font-size: 0.37rem;
+}
+
 #emailSignupWrapper .auth-switch,
 #emailSignupWrapper .auth-switch a {
-  font-size: 0.37rem;
+  font-size: 0.42rem;
 }
 
 /* Tablet */
