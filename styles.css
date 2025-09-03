@@ -663,43 +663,51 @@ affect their colour in the footer */
     font-size: 0.9rem;
   }
 }
+
 /*==========================================*/
-/* Mobile First (default styles are for mobile) */
-#emailSignupWrapper {
+/* Mobile First (default styles for mobile) */
+#emailSignupWrapper,
+#emailLoginWrapper {
   position: fixed;
   top: calc(var(--header-height) + 10vh + 4px);
   right: 3px;
-  width: 200px; /* it was 220*/
-  height: 200px; /* 220*/
-  padding: 2px; /* adjust*/
+  width: 200px;
+  height: 200px;
+  padding: 2px;
 }
 
-#emailSignupWrapper input {
+#emailSignupWrapper input,
+#emailLoginWrapper input {
   width: 50%;
   margin: 1px 0;
   padding: 1.8px 2.5px;
   font-size: 0.68rem;
 }
 
-#emailSignupWrapper button {
+#emailSignupWrapper button,
+#emailLoginWrapper button {
   margin-top: 2px;
   padding: 2px 3px;
   width: 40%;
-  font-size: 0.6rem; /* adjust 0.7*/
+  font-size: 0.6rem;
 }
 
-#emailSignupWrapper .auth-legal {
+#emailSignupWrapper .auth-legal,
+#emailLoginWrapper .auth-legal {
   font-size: 0.37rem;
 }
 
 #emailSignupWrapper .auth-switch,
-#emailSignupWrapper .auth-switch a {
+#emailLoginWrapper .auth-switch,
+#emailSignupWrapper .auth-switch a,
+#emailLoginWrapper .auth-switch a {
   font-size: 0.42rem;
 }
 
 /* Tablet */
 @media (min-width: 768px) and (max-width: 1023px) {
-  #emailSignupWrapper {
+  #emailSignupWrapper,
+  #emailLoginWrapper {
     top: calc(var(--header-height) + 12vh + 8px);
     right: 10px;
     width: 230px;
@@ -707,53 +715,64 @@ affect their colour in the footer */
     padding: 8px;
   }
 
-  #emailSignupWrapper input {
+  #emailSignupWrapper input,
+  #emailLoginWrapper input {
     padding: 3px 4px;
     font-size: 0.72rem;
   }
 
-  #emailSignupWrapper button {
+  #emailSignupWrapper button,
+  #emailLoginWrapper button {
     padding: 3px 4px;
     font-size: 0.72rem;
   }
 
   #emailSignupWrapper .auth-legal,
+  #emailLoginWrapper .auth-legal,
   #emailSignupWrapper .auth-switch,
-  #emailSignupWrapper .auth-switch a {
-    font-size: 0.58rem; /* adjust*/
+  #emailLoginWrapper .auth-switch,
+  #emailSignupWrapper .auth-switch a,
+  #emailLoginWrapper .auth-switch a {
+    font-size: 0.58rem;
   }
 }
 
 /* Desktop */
 @media (min-width: 1024px) {
-  #emailSignupWrapper {
+  #emailSignupWrapper,
+  #emailLoginWrapper {
     top: calc(var(--header-height) + 15vh + 10px);
-    right: 100px;  /* it was 20*/
-    width: 270px; /* adjust as needed*/
-    height: 270px; /* adjust as needed*/
+    right: 100px;
+    width: 270px;
+    height: 270px;
     padding: 8px;
   }
 
-  #emailSignupWrapper input {
+  #emailSignupWrapper input,
+  #emailLoginWrapper input {
     padding: 2.8px 3.8px;
     font-size: 0.75rem;
   }
 
-  #emailSignupWrapper button {
+  #emailSignupWrapper button,
+  #emailLoginWrapper button {
     padding: 3px 4px;
     font-size: 0.75rem;
   }
 
   #emailSignupWrapper .auth-legal,
+  #emailLoginWrapper .auth-legal,
   #emailSignupWrapper .auth-switch,
-  #emailSignupWrapper .auth-switch a {
-    font-size: 0.75rem;             /* to adjust*/
+  #emailLoginWrapper .auth-switch,
+  #emailSignupWrapper .auth-switch a,
+  #emailLoginWrapper .auth-switch a {
+    font-size: 0.75rem;
   }
   
-#emailLoginWrapper .auth-switch,
-#emailSignupWrapper .auth-switch {
-  font-size: 1rem; /* to adjust*/
-}
+  #emailLoginWrapper .auth-switch,
+  #emailSignupWrapper .auth-switch {
+    font-size: 1rem;
+  }
 }
 
 
