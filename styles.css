@@ -667,15 +667,15 @@ affect their colour in the footer */
 /* Mobile First (default styles are for mobile) */
 #emailSignupWrapper {
   position: fixed;
-  top: calc(var(--header-height) + 6vh + 0px);
-  right: 1px;
-  width: 200px; /* it was 220*/
-  height: 200px; /* 220*/
-  padding: 4px;
+  top: calc(var(--header-height) + 8vh + 4px);
+  right: 3px;
+  width: 220px; /* it was 220*/
+  height: 220px; /* 220*/
+  padding: 3px; /* adjust*/
 }
 
 #emailSignupWrapper input {
-  width: 60%;
+  width: 50%;
   margin: 1px 0;
   padding: 1.8px 2.5px;
   font-size: 0.68rem;
@@ -685,20 +685,20 @@ affect their colour in the footer */
   margin-top: 2px;
   padding: 2px 3px;
   width: 40%;
-  font-size: 0.7rem;
+  font-size: 0.6rem; /* adjust 0.7*/
 }
 
 #emailSignupWrapper .auth-legal,
 #emailSignupWrapper .auth-switch,
 #emailSignupWrapper .auth-switch a {
-  font-size: 0.5rem;
+  font-size: 0.37rem;
 }
 
 /* Tablet */
 @media (min-width: 768px) and (max-width: 1023px) {
   #emailSignupWrapper {
-    top: calc(var(--header-height) + 10vh + 2px);
-    right: 5px;
+    top: calc(var(--header-height) + 12vh + 8px);
+    right: 10px;
     width: 230px;
     height: 230px;
     padding: 8px;
@@ -717,7 +717,7 @@ affect their colour in the footer */
   #emailSignupWrapper .auth-legal,
   #emailSignupWrapper .auth-switch,
   #emailSignupWrapper .auth-switch a {
-    font-size: 0.52rem;
+    font-size: 0.58rem; /* adjust*/
   }
 }
 
@@ -744,7 +744,7 @@ affect their colour in the footer */
   #emailSignupWrapper .auth-legal,
   #emailSignupWrapper .auth-switch,
   #emailSignupWrapper .auth-switch a {
-    font-size: 0.55rem;
+    font-size: 0.75rem;             /* to adjust*/
   }
 }
 
