@@ -208,6 +208,7 @@ function initializeFirebase() {
 
 
 // ====== Auth State Listener ======
+// ====== Auth State Listener ======
 function initAuthListeners() {
   firebase.auth().onAuthStateChanged(async (user) => {
     const authContainer = document.getElementById('authContainer');
@@ -218,25 +219,39 @@ function initAuthListeners() {
       dashboard.classList.remove('hidden');
 
       try {
-        const snapshot = await firebase.firestore().collection("profiles").where("userId", "==", user.uid).get();
-        window.petProfiles = snapshot.docs.map(doc => doc.data());
+        // ✅ OFFLINE HANDLING: Check connectivity first
+        if (navigator.onLine) {
+          // Online: Use Firestore
+          const snapshot = await firebase.firestore().collection("profiles").where("userId", "==", user.uid).get();
+          window.petProfiles = snapshot.docs.map(doc => doc.data());
+        } else {
+          // Offline: Use localStorage fallback
+          window.petProfiles = JSON.parse(localStorage.getItem("petProfiles")) || [];
+          console.log("📴 Offline mode: Using cached profiles");
+        }
 
-        // ✅ Save to localStorage (fallback)
+        // ✅ Save to localStorage (fallback) - always update
         localStorage.setItem("petProfiles", JSON.stringify(window.petProfiles));
 
         // ✅ Now render profiles from storage
-       if (typeof loadSavedPetProfile === 'function') {
-       await loadSavedPetProfile(); // wait until data is rendered
+        if (typeof loadSavedPetProfile === 'function') {
+          await loadSavedPetProfile();
         }
-       if (typeof showDashboard === 'function') {
-        showDashboard(); // now dashboard sees data
-       }
-        // ✅ Hide loader only after dashboard is fully set up
+        if (typeof showDashboard === 'function') {
+          showDashboard();
+        }
+        
+        // ✅ Hide loader
         showLoading(false);
         
       } catch (error) {
         console.error("Profile load error:", error);
-        showErrorToUser("Couldn't load saved profiles");
+        // Fallback to localStorage on error
+        window.petProfiles = JSON.parse(localStorage.getItem("petProfiles")) || [];
+        if (typeof loadSavedPetProfile === 'function') {
+          await loadSavedPetProfile();
+        }
+        showErrorToUser("Using offline data - connect to sync");
       }
 
     } else {
