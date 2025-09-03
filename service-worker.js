@@ -4,7 +4,7 @@
 // ========================================
 
 // ======== CACHE NAME & ASSETS ========
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v10'; // Bump version after changes
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v11'; // Bump version after changes
 const urlsToCache = [
   '.', // root (https://drkimogad.github.io/Pet-Health-Tracker/)
   'index.html',
@@ -34,7 +34,9 @@ const urlsToCache = [
   // Add to urlsToCache:
 '__/firebase/8.10.1/firebase-auth.js',
 '__/firebase/init.js',
-
+ // Add to urlsToCache:
+'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js',
+'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js',
   // External libraries
 'js/qrcode.min.js'  // Or remove it if not essential for offline
 ];
@@ -133,6 +135,7 @@ self.addEventListener('controllerchange', () => {
     clients.forEach(client => client.postMessage('updateAvailable'));
   });
 });
+
 
 
 
