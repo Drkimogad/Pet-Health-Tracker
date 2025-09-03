@@ -1703,7 +1703,7 @@ body.modal-active {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(124, 88, 52, 0.6); /* Light brown overlay */
+  background: rgba(44, 62, 80, 0.85); /* Using --main-color with opacity */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1718,8 +1718,9 @@ body.modal-active {
   visibility: visible;
 }
 .community-modal-content {
-  background: #d2b6db; /* changed */
+  background: var(--bg-card); /* White card background */
   border-radius: 12px;
+  border: 2px solid var(--border-main); /* Gold border */
   width: 90%;
   height: 90%; /* Fixed height instead of 70vh */
   max-height: 90vh; /* Contain everything */
@@ -1760,7 +1761,10 @@ body.modal-active {
   align-items: center;
 }
 .pet-name-header {
-  color: #FFFFFF;
+  color: var(--text-main); /* Dark gray text */
+  background: var(--main-color); /* Charcoal background */  /* ADDED
+  padding: 0.5rem 1rem;  /* ADDED*/
+  border-radius: 6px; /* ADDED*/
   font-weight: bold;
   font-size: 1.1rem;
 }
@@ -1772,8 +1776,8 @@ body.modal-active {
 
 .chat-messages {
   flex: 1;
-  background: #b1b374; /* Pale mustard */
-  border: 1px solid #d2b48c; /* Light brown */
+  background: var(--bg-page); /* Light gray background */
+  border: 1px solid var(--border-card); /* Light gray border */
   padding: 0.5rem;
   min-height: unset; /* Let flex:1 handle height */
   max-height: 400px; /* Add maximum limit */
@@ -1792,12 +1796,12 @@ body.modal-active {
   background: #555;
 }
 .chat-message strong {
-  color: #8e6b3f; /* Earthy brown */
+  color: var(--main-color); /* Charcoal for usernames */
 }
 
 .chat-message small {
   display: block;
-  color: green; /* yo check*/
+  color: var(--text-light); /* Medium gray for timestamps */
   font-size: 0.75rem;
 }
 
@@ -1809,9 +1813,9 @@ body.modal-active {
   margin-top: auto; /* Push to bottom */
   font-size: 1rem;
   border-radius: 6px;
-  border: 1px solid #b38b6d;
-  background: #fffef7;
-  color: black; 
+  border: 1px solid var(--border-card);
+  background: var(--bg-card);
+  color: var(--text-main);
   outline: none;
   margin-bottom: 0.15rem;
 }
@@ -1844,17 +1848,17 @@ body.modal-active {
 }
 
 #sendChatBtn {
-  background: #fbc02d; /* Mustard */
-  color: #000;
+  background: var(--accent-color); /* Gold button */
+  color: var(--text-main); /* Dark text on gold */
   font-weight: bold;
   padding: 0.6rem 1.2rem;
-  border: none;
+  border: 1px solid var(--border-button);
   border-radius: 6px;
   cursor: pointer;
   transition: background 0.2s ease;
 }
 #sendChatBtn:hover {
-  background: #f9b000;
+  background: #e6c300; /* Slightly darker gold */
 }
 /* WHERE ONE MESSAGE PER DAY LINE*/
 .chat-status {
@@ -1876,10 +1880,12 @@ body.modal-active {
   top: 10px;
   right: 15px;
   font-size: 1.5rem;
-  background: none;
+  color: var(--main-color); /* Charcoal X */
   border: none;
-  color: #FFFFFF;
   cursor: pointer;
+}
+.close-community-chat:hover {
+  color: var(--error); /* Red on hover */
 }
 
 .community-modal-overlay {
@@ -1887,10 +1893,11 @@ body.modal-active {
   &:focus-visible { outline: 2px solid var(--purple); }
 }
 
+
 /* === Manual Dark Mode (Add these) === */
 .community-modal-content.dark-mode {
-  background: #2d2d2d !important; /* Override system preference */
-  color: #f0f0f0;
+  background: #2a2a2a;
+  color: var(--text-inverse);
   border-color: #444;
 }
 .dark-mode .chat-messages {
@@ -1902,13 +1909,15 @@ body.modal-active {
 }
 .dark-mode #chatInput {
   background: #252525;
-  color: white;
+  color: var(--text-inverse);
+  border-color: #555;
 }
 .dark-mode-toggle {
   position: absolute;
   top: 15px;
   left: 15px;
   background: rgba(0,0,0,0.1);
+  color: var(--text-main);
   border: none;
   border-radius: 20px;
   padding: 5px 10px;
@@ -1918,17 +1927,18 @@ body.modal-active {
 /* High-contrast mode support */
 @media (prefers-contrast: high) {
   .community-modal-content {
-    border: 2px solid black;
+    border: 2px solid var(--border-main);
   }
 }
 @media (prefers-color-scheme: dark) {
   .community-modal-content {
-    background: #2d2d2d;
-    color: white;
+    background: var(--main-color);
+    color: var(--text-inverse);
   }
   #chatInput {
-    background: #1e1e1e;
-    color: white;
+    background: #333;
+    color: var(--text-inverse);
+    border-color: #555;
   }
 }
 
@@ -1942,12 +1952,13 @@ body.modal-active {
   transition: background 0.2s;
   padding: 8px;
   border-radius: 4px;
+  border-left: 3px solid transparent;
 }
 .chat-message:hover {
-  background: rgba(210, 180, 140, 0.1); /* Light brown tint */
+  background: rgba(255, 215, 0, 0.05); /* Gold tint */
 }
 .dark-mode .chat-message:hover {
-  background: rgba(210, 180, 140, 0.05);
+  background: rgba(255, 215, 0, 0.1);
 }
 
 /* Notification badge */
@@ -1955,8 +1966,8 @@ body.modal-active {
   position: absolute;
   top: -5px;
   right: -5px;
-  background-color: #e74c3c;
-  color: white;
+  background-color: var(--error);
+  color: var(--text-inverse);
   border-radius: 50%;
   width: 18px;
   height: 18px;
@@ -1976,13 +1987,21 @@ body.modal-active {
 }
 
 .approved-badge {
-  background-color: #2ecc71;
-  color: white;
+  color: var(--success); /* Green for approved */
+  color: var(--text-inverse);
 }
 
 .pending-badge {
-  background-color: #f39c12;
-  color: white;
+  color: var(--warning); /* Yellow for pending */
+  color: var(--text-main);
+}
+
+/* Message controls */
+.delete-btn { 
+  color: var(--error); /* Red for delete */
+}
+.reply-btn { 
+  color: var(--main-color); /* Charcoal for reply */
 }
 
 /* Admin controls */
@@ -1997,37 +2016,47 @@ body.modal-active {
   border: none;
   cursor: pointer;
   font-size: 14px;
+  color: var(--text-main);
+}
+.dark-mode .admin-controls button {
+  color: var(--text-inverse);
 }
 
 /* Message states */
 .chat-message.pending {
   opacity: 0.8;
-  border-left: 3px solid #f39c12;
+  border-left-color: var(--warning);
 }
 
 .chat-message.approved {
-  border-left: 3px solid #2ecc71;
+  border-left-color: var(--success);
 }
 
 .admin-message {
-  background-color: rgba(52, 152, 219, 0.1);
+  background-color: rgba(44, 62, 80, 0.1); /* Main color tint */
   padding: 8px;
   border-radius: 5px;
+}
+.dark-mode .admin-message {
+  background-color: rgba(255, 215, 0, 0.1); /* Gold tint in dark mode */
 }
 
 /* View toggle button */
 .view-toggle-btn {
-  background: #7f8c8d;
-  color: white;
+  background: var(--main-color);
+  color: var(--text-inverse);
   border: none;
   padding: 5px 10px;
   border-radius: 4px;
   cursor: pointer;
 }
+.view-toggle-btn:hover {
+  background: #34495e; /* Darker charcoal */
+}
 
 .daily-limit-note {
   font-size: 0.8rem;
-  color: #7f8c8d;
+  color: var(--text-light);
   margin-top: 10px;
   text-align: center;
 }
@@ -2072,6 +2101,7 @@ body.modal-active {
   .community-modal-content {
     max-width: 90%;
     height: 80vh;
+    padding: 1rem; /* check*/
   }
 }
 
@@ -2079,7 +2109,7 @@ body.modal-active {
 @media (max-width: 480px) {
   .community-modal-content {
     max-width: 95%;
-    height: 500px;
+    height: 85vh;
     padding: 1rem;
   }
   
@@ -2093,6 +2123,15 @@ body.modal-active {
     justify-content: center;
   }
 }
+/* Ensure proper contrast in dark mode */
+.dark-mode .chat-message small {
+  color: #cccccc;
+}
+
+.dark-mode .no-messages {
+  color: #999999;
+}
+
 
 
 /* ===== RESPONSIVE DESIGNS============== */
