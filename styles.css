@@ -1962,8 +1962,10 @@ body.modal-active {
 .chat-message:hover {
   background: rgba(255, 215, 0, 0.05); /* Gold tint */
 }
+
 .dark-mode .chat-message:hover {
   background: #333; /* Darker cards */
+  color: white;
 }
 
 /* Message states */
