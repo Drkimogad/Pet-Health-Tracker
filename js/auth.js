@@ -423,10 +423,13 @@ function setupEmailPasswordSignUp() {
       await userCredential.user.sendEmailVerification();
 
       // 🔄 Switch UI back to Sign-In form
-      toggleEmailForms(true);
+     // Optional: Add a slight delay before showing sign-in
+     setTimeout(() => {
+     toggleEmailForms(true);
+     }, 1500); // can be adjusted based on the notification time 
 
       // Give user feedback
-      showSuccessNotification("Account created! Please sign in.");
+    showSuccessNotification("Account created! Verification email sent.");
     } catch (error) {
       console.error("❌ Sign-up failed:", error);
       showErrorToUser(error.message || "Sign-up failed. Try again.");
