@@ -4,7 +4,7 @@
 // ========================================
 
 // ======== CACHE NAME & ASSETS ========
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v9'; // Bump version after changes
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v10'; // Bump version after changes
 const urlsToCache = [
   '.', // root (https://drkimogad.github.io/Pet-Health-Tracker/)
   'index.html',
@@ -30,9 +30,13 @@ const urlsToCache = [
   'lottiefiles/today.json',
   'lottiefiles/upcoming.json',
   'lottiefiles/overdue.json',
+  
+  // Add to urlsToCache:
+'__/firebase/8.10.1/firebase-auth.js',
+'__/firebase/init.js',
 
   // External libraries
-  'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js'
+'js/qrcode.min.js'  // Or remove it if not essential for offline
 ];
 
 //External CDN files often fail caching due to CORS. We’ll handle them safely in the install step.
@@ -87,11 +91,16 @@ self.addEventListener('fetch', (event) => {
         }
         return response;
       }).catch(() => {
-        // Fallback for external resources
-        if (request.url.includes('cdn.jsdelivr.net') || request.url.includes('cdnjs.cloudflare.com')) {
-          return new Response('Offline - Resource not available');
-        }
-      });
+          // For HTML pages
+       if (request.destination === 'document') {
+       return caches.match('offline.html');
+      }
+  // For external resources
+      if (request.url.includes('cdn.')) {
+      return new Response('', { status: 408, statusText: 'Offline' });
+    }
+    return Response.error();
+    });
     })
   );
 });
@@ -124,6 +133,7 @@ self.addEventListener('controllerchange', () => {
     clients.forEach(client => client.postMessage('updateAvailable'));
   });
 });
+
 
 
 
