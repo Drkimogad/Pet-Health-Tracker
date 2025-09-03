@@ -749,9 +749,10 @@ affect their colour in the footer */
   #emailSignupWrapper .auth-switch a {
     font-size: 0.75rem;             /* to adjust*/
   }
-#emailLoginWrapper .auth-switch,/
+  
+#emailLoginWrapper .auth-switch,
 #emailSignupWrapper .auth-switch {
-  font-size: 0.8rem; /* to adjust*/
+  font-size: 1rem; /* to adjust*/
 }
 }
 
