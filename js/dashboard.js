@@ -1644,10 +1644,8 @@ if (!isAdmin) {
 
       // ADD TO MESSAGE ARRAY IN A SINGLE DOCUMENT
       if (docSnap.exists) {
-       await chatDocRef.update({                                                            // updated
-      "messages.$[elem].timestamp": firebase.firestore.FieldValue.serverTimestamp()
-        }, {
-       arrayFilters: [{"elem.id": newMessage.id}]
+       await chatDocRef.update({    // restored 
+       messages: firebase.firestore.FieldValue.arrayUnion(newMessage)
       });
 
      } else {
