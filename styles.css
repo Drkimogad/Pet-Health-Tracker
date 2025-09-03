@@ -1718,7 +1718,7 @@ body.modal-active {
   visibility: visible;
 }
 .community-modal-content {
-  background: var(--main-color); /* TEST IT */
+  background: var(--bg-card); /* Use white instead of main color */
   border-radius: 12px;
   border: 2px solid var(--border-main); /* Gold border */
   width: 90%;
@@ -1773,7 +1773,7 @@ body.modal-active {
   display: flex;
   gap: 0.5rem;
 }
-
+/* FOR THE CHAT MESSAGES CONTAINER/ SCROLLABLE AREA*/
 .chat-messages {
   flex: 1;
   background: #FFFFFF; /* Pure white */
@@ -1948,14 +1948,15 @@ body.modal-active {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* FOR INDIVIDUAL MESSAGE*/
 .chat-message {
   animation: messageFadeIn 0.3s ease-out;
   transition: background 0.2s;
   padding: 8px;
   border-radius: 4px;
   border: 1px solid var(--border-card);
-  background: var(--bg-page); /* Light gray */
-
+  background: #FFFFFF; /* ← Already pure white (good!) */
 }
 .chat-message:hover {
   background: rgba(255, 215, 0, 0.05); /* Gold tint */
@@ -1963,6 +1964,28 @@ body.modal-active {
 .dark-mode .chat-message:hover {
   background: #333; /* Darker cards */
 }
+
+/* Message states */
+.chat-message.pending {
+  opacity: 0.8;
+  border-left-color: var(--warning);
+}
+
+.chat-message.approved {
+  border-left-color: var(--success) !important;
+}
+
+.admin-message {
+  background-color: rgba(44, 62, 80, 0.1); /* Light charcoal tint */
+  padding: 8px;
+  border-radius: 5px;
+  border-left-color: var(--main-color); /* Charcoal left border */
+}
+.dark-mode .admin-message {
+  background-color: rgba(255, 215, 0, 0.1); /* Gold tint in dark mode */
+  border-left-color: var(--accent-color); /* Gold left border */
+}
+
 
 .dark-mode .pet-name-header {
   background: var(--accent-color); /* Gold in dark mode */
@@ -1988,27 +2011,6 @@ body.modal-active {
 }
 .dark-mode .admin-controls button {
   color: var(--text-inverse);
-}
-
-/* Message states */
-.chat-message.pending {
-  opacity: 0.8;
-  border-left-color: var(--warning);
-}
-
-.chat-message.approved {
-  border-left-color: var(--success) !important;
-}
-
-.admin-message {
-  background-color: rgba(44, 62, 80, 0.1); /* Light charcoal tint */
-  padding: 8px;
-  border-radius: 5px;
-  border-left-color: var(--main-color); /* Charcoal left border */
-}
-.dark-mode .admin-message {
-  background-color: rgba(255, 215, 0, 0.1); /* Gold tint in dark mode */
-  border-left-color: var(--accent-color); /* Gold left border */
 }
 
 /* View toggle button */
@@ -2047,23 +2049,26 @@ body.modal-active {
 }
 
 /* Message status badges */
-.approved-badge, .pending-badge {
+.pending-badge {
   display: inline-block;
   font-size: 0.7rem;
   padding: 2px 6px;
   border-radius: 10px;
   margin-top: 5px;
+  color: var(--warning); /* Yellow for pending */
+  color: var(--text-main);
 }
 
 .approved-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-top: 5px;
   color: var(--success); /* Green for approved */
   color: var(--text-inverse);
 }
 
-.pending-badge {
-  color: var(--warning); /* Yellow for pending */
-  color: var(--text-main);
-}
 
 /* Message controls */
 .delete-btn { 
