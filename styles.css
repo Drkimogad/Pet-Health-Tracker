@@ -2065,8 +2065,14 @@ body.modal-active {
   padding: 2px 6px;
   border-radius: 10px;
   margin-top: 5px;
-  color: var(--success); /* Green for approved */
+  color: var(--success) !important; /* Green for approved */
   color: var(--text-inverse);
+}
+
+/* Keep the dark mode version separate */
+.dark-mode .approved-badge {
+  background-color: var(--success); /* Green */
+  color: var(--text-inverse); /* White text */
 }
 
 
