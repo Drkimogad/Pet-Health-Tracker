@@ -1639,7 +1639,7 @@ if (!isAdmin) {
         text: messageText,
         type: "user",
         approved: isAdmin ? true : false,  // Auto-approve if admin
-        timestamp: new Date()  // Use client-side timestamp temporarily
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()    //CHANGED
       };
 
       // ADD TO MESSAGE ARRAY IN A SINGLE DOCUMENT
