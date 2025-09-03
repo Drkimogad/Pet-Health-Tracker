@@ -1639,14 +1639,17 @@ if (!isAdmin) {
         text: messageText,
         type: "user",
         approved: isAdmin ? true : false,  // Auto-approve if admin
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()    //CHANGED
+        timestamp: new Date()  // Temporary client timestamp
       };
 
       // ADD TO MESSAGE ARRAY IN A SINGLE DOCUMENT
       if (docSnap.exists) {
-       await chatDocRef.update({
-       messages: firebase.firestore.FieldValue.arrayUnion(newMessage)
+       await chatDocRef.update({                                                            // updated
+      "messages.$[elem].timestamp": firebase.firestore.FieldValue.serverTimestamp()
+        }, {
+       arrayFilters: [{"elem.id": newMessage.id}]
       });
+
      } else {
      await chatDocRef.set({
       messages: [newMessage],
