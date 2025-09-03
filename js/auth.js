@@ -566,7 +566,50 @@ function wireAuthToggleLinks() {
   }
 }
 
+// ======== OFFLINE STATUS DETECTION ========
+function checkOnlineStatus() {
+  const isOnline = navigator.onLine;
+  const statusElement = document.getElementById('online-status') || createStatusElement();
+  
+  if (isOnline) {
+    statusElement.textContent = 'Online';
+    statusElement.className = 'online-status online';
+    console.log('✅ Online - Connected to server');
+  } else {
+    statusElement.textContent = 'Offline - Using local data';
+    statusElement.className = 'online-status offline';
+    console.log('📴 Offline - Using cached data');
+  }
+  
+  return isOnline;
+}
 
+function createStatusElement() {
+  const statusElement = document.createElement('div');
+  statusElement.id = 'online-status';
+  document.body.appendChild(statusElement);
+  return statusElement;
+}
+
+// Listen for online/offline events
+window.addEventListener('online', checkOnlineStatus);
+window.addEventListener('offline', checkOnlineStatus);
+
+// ======== FIREBASE OFFLINE HANDLING ========
+function setupFirebaseOfflinePersistence() {
+  // Enable offline persistence
+  enableIndexedDbPersistence(db)
+    .then(() => {
+      console.log('✅ Firebase offline persistence enabled');
+    })
+    .catch((err) => {
+      if (err.code === 'failed-precondition') {
+        console.warn('⚠️ Multiple tabs open, offline persistence can only be enabled in one tab at a time.');
+      } else if (err.code === 'unimplemented') {
+        console.warn('⚠️ The current browser doesn\'t support offline persistence');
+      }
+    });
+}
 // ====== Core Initialization ======
 async function initializeAuth() {
   try {
