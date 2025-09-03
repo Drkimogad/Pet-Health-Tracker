@@ -1762,7 +1762,7 @@ body.modal-active {
 }
 .pet-name-header {
   color: var(--text-main); /* Dark gray text */
-  background: var(--main-color); /* Charcoal background */  /* ADDED
+  color: var(--text-inverse); /* White text */
   padding: 0.5rem 1rem;  /* ADDED*/
   border-radius: 6px; /* ADDED*/
   font-weight: bold;
@@ -1776,7 +1776,7 @@ body.modal-active {
 
 .chat-messages {
   flex: 1;
-  background: var(--bg-page); /* Light gray background */
+  background: var(--bg-page); /* Light gray   TO CHECK */  
   border: 1px solid var(--border-card); /* Light gray border */
   padding: 0.5rem;
   min-height: unset; /* Let flex:1 handle height */
@@ -1796,7 +1796,7 @@ body.modal-active {
   background: #555;
 }
 .chat-message strong {
-  color: var(--main-color); /* Charcoal for usernames */
+  color: var(--accent-color); /* Gold in dark mode */
 }
 
 .chat-message small {
@@ -1905,7 +1905,8 @@ body.modal-active {
   border-color: #555;
 }
 .dark-mode .chat-message {
-  border-color: #444;
+  background: #2a2a2a; /* Dark gray */
+    border-color: #444;
 }
 .dark-mode #chatInput {
   background: #252525;
@@ -1952,13 +1953,23 @@ body.modal-active {
   transition: background 0.2s;
   padding: 8px;
   border-radius: 4px;
-  border-left: 3px solid transparent;
+  border: 1px solid var(--border-card);
+  background: var(--bg-page); /* Light gray */
+
 }
 .chat-message:hover {
   background: rgba(255, 215, 0, 0.05); /* Gold tint */
 }
 .dark-mode .chat-message:hover {
-  background: rgba(255, 215, 0, 0.1);
+  background: #333; /* Darker cards */
+}
+
+.dark-mode .pet-name-header {
+  background: var(--accent-color); /* Gold in dark mode */
+  color: var(--text-main); /* Dark text on gold */
+}
+.dark-mode .chat-message strong {
+  color: var(--accent-color); /* Gold in dark mode */
 }
 
 /* Notification badge */
@@ -2033,12 +2044,14 @@ body.modal-active {
 }
 
 .admin-message {
-  background-color: rgba(44, 62, 80, 0.1); /* Main color tint */
+  background-color: rgba(44, 62, 80, 0.1); /* Light charcoal tint */
   padding: 8px;
   border-radius: 5px;
+  border-left-color: var(--main-color); /* Charcoal left border */
 }
 .dark-mode .admin-message {
   background-color: rgba(255, 215, 0, 0.1); /* Gold tint in dark mode */
+  border-left-color: var(--accent-color); /* Gold left border */
 }
 
 /* View toggle button */
