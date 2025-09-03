@@ -255,7 +255,7 @@ KEEP THIS TO ENSURE AUTH CONTAINER AND DASHBOARD STARTS UNDER THE HEADER
 }
 
 /* ===== GOOGLE SIGN-IN BUTTON ===== */
-  /* moved outside Authentication container becauseLottis overflow hidden*/
+  /* moved back inside Authentication container/ to check for visibility issues due to verflow hidden*/
 /* ===== GOOGLE SIGN-IN BUTTON WRAPPER AS FOOD BOWL ===== */
 #googleSignInBtnWrapper {
   position: fixed !important;
@@ -663,18 +663,19 @@ affect their colour in the footer */
     font-size: 0.9rem;
   }
 }
+/*==========================================*/
 /* Mobile First (default styles are for mobile) */
 #emailSignupWrapper {
   position: fixed;
-  top: calc(var(--header-height) + 10vh + 5px);
+  top: calc(var(--header-height) + 10vh + 1px);
   right: 10px;
-  width: 220px;
-  height: 220px;
+  width: 200px; /* it was 220*/
+  height: 200px; /* 220*/
   padding: 6px;
 }
 
 #emailSignupWrapper input {
-  width: 85%;
+  width: 80%;
   margin: 1px 0;
   padding: 2px 3px;
   font-size: 0.7rem;
@@ -696,10 +697,10 @@ affect their colour in the footer */
 /* Tablet */
 @media (min-width: 768px) and (max-width: 1023px) {
   #emailSignupWrapper {
-    top: calc(var(--header-height) + 12vh + 8px);
-    right: 15px;
-    width: 240px;
-    height: 240px;
+    top: calc(var(--header-height) + 12vh + 2px);
+    right: 10px;
+    width: 230px;
+    height: 230px;
     padding: 7px;
   }
 
@@ -724,9 +725,9 @@ affect their colour in the footer */
 @media (min-width: 1024px) {
   #emailSignupWrapper {
     top: calc(var(--header-height) + 15vh + 10px);
-    right: 20px;
-    width: 250px;
-    height: 250px;
+    right: 60px;  /* it was 20*/
+    width: 270px; /* adjust as needed*/
+    height: 270px; /* adjust as needed*/
     padding: 8px;
   }
 
@@ -946,7 +947,7 @@ transform: translateY(-2px); /* Optional lift effect */
 /* 3️⃣ Mobile (up to 767px)*/
 @media (max-width: 767px) {
   #petList {
-    max-width: 95%;
+    max-width: 98%; /* scale it down if neede*/
     padding: 1.2rem 1.5rem;
   }
 
@@ -1245,7 +1246,6 @@ button.delete-btn:hover {
 }
 
 
-/* =====QR CODE STYLES======== */
 /* =====QR CODE STYLES======== */
 .qr-window {
   padding: 20px;
