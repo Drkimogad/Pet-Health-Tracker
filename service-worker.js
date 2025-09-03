@@ -1,12 +1,14 @@
 // ========================================
 // SERVICE WORKER - Pet Health Tracker
-// Version: v8 (increment for updates)
+// Version: v12 (increment for updates)
 // ========================================
 
-// ======== CACHE NAME & ASSETS ========
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v11'; // Bump version after changes
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v12';
+const OFFLINE_CACHE = 'Pet-Health-Tracker-offline-v2';
+
+// Core app assets
 const urlsToCache = [
-  '.', // root (https://drkimogad.github.io/Pet-Health-Tracker/)
+  '.',
   'index.html',
   'offline.html',
   'js/auth.js',
@@ -32,13 +34,11 @@ const urlsToCache = [
   'lottiefiles/overdue.json',
   
   // External libraries
-'js/qrcode.min.js'  // Or remove it if not essential for offline
+  'js/qrcode.min.js'
 ];
 
-//External CDN files often fail caching due to CORS. We’ll handle them safely in the install step.
-
-// In your service-worker.js install event
-const firebaseResources = [
+// External resources to try caching (may fail due to CORS)
+const externalResources = [
   'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js',
   'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js',
   '__/firebase/8.10.1/firebase-auth.js',
@@ -46,113 +46,165 @@ const firebaseResources = [
 ];
 
 // ======== INSTALL ========
-// no-cors mode for external scripts avoids SW errors.
-//Each file has its own .catch() → one failed file doesn’t break the SW.
 self.addEventListener('install', (event) => {
   self.skipWaiting(); // Activate SW immediately
+  
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      const cachePromises = urlsToCache.map(url => 
-        cache.add(new Request(url, { mode: url.startsWith('http') ? 'no-cors' : 'same-origin' }))
-          .catch(err => console.warn(`⚠️ Could not cache: ${url}`, err))
-      );
-      return Promise.all(cachePromises);
-    })
-    .then(() => console.log('✅ Installation completed (some files may not be cached)'))
-    .catch(err => console.error('❌ Installation failed:', err))
+    (async () => {
+      // Cache core app assets
+      const cache = await caches.open(CACHE_NAME);
+      await cache.addAll(urlsToCache.map(url => 
+        new Request(url, { mode: 'same-origin' })
+      ));
+      
+      // Try to cache external resources (may fail due to CORS)
+      const externalCache = await caches.open(OFFLINE_CACHE);
+      for (const url of externalResources) {
+        try {
+          await externalCache.add(new Request(url, { 
+            mode: 'no-cors',
+            credentials: 'omit'
+          }));
+        } catch (err) {
+          console.warn(`⚠️ Could not cache external resource: ${url}`, err);
+        }
+      }
+      
+      console.log('✅ Installation completed');
+    })().catch(err => console.error('❌ Installation failed:', err))
   );
 });
 
-
 // ======== FETCH HANDLER ========
-//Navigation uses “app shell” strategy → offline page loads even if user is offline.
-//Only basic or cors responses are cached → avoids caching opaque or failed responses.
-//Final fallback for CDNs ensures the app won’t crash offline.
 self.addEventListener('fetch', (event) => {
   const request = event.request;
+  const url = new URL(request.url);
 
-  if (request.method !== 'GET') return; // Only handle GET requests
+  // Skip non-GET requests and browser extensions
+  if (request.method !== 'GET' || url.protocol === 'chrome-extension:') return;
 
-  // ----- Navigation Requests (App Shell) -----
+  // Handle navigation requests
   if (request.mode === 'navigate') {
     event.respondWith(
-      fetch(request)
-        .catch(() => caches.match('index.html')
-          .then(resp => resp || caches.match('offline.html')))
+      (async () => {
+        try {
+          // Try to fetch from network first
+          const networkResponse = await fetch(request);
+          return networkResponse;
+        } catch (error) {
+          // Fallback to cached version or offline page
+          const cached = await caches.match('index.html') || 
+                         await caches.match('offline.html');
+          return cached || Response.error();
+        }
+      })()
     );
     return;
   }
 
-  // ----- Static Assets (Cache First) -----
-  event.respondWith(
-    caches.match(request).then(cached => {
-      if (cached) return cached; // Serve from cache
-      return fetch(request).then(response => {
-        // Only cache successful, same-origin or CORS responses
-        if (response && response.ok && (response.type === 'basic' || response.type === 'cors')) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(request, clone));
+  // For API requests (Firestore), network first with offline fallback
+  if (url.href.includes('firestore.googleapis.com')) {
+    event.respondWith(
+      (async () => {
+        try {
+          return await fetch(request);
+        } catch (error) {
+          // Return a custom offline response for API calls
+          return new Response(JSON.stringify({ 
+            status: 'offline', 
+            message: 'You are offline. Changes will sync when connection is restored.' 
+          }), {
+            status: 408,
+            headers: { 'Content-Type': 'application/json' }
+          });
         }
-        return response;
-      }).catch(() => {
-          // For HTML pages
-       if (request.destination === 'document') {
-       return caches.match('offline.html');
+      })()
+    );
+    return;
+  }
+
+  // For static assets (cache first with network fallback)
+  event.respondWith(
+    (async () => {
+      // Try to get from cache first
+      const cachedResponse = await caches.match(request);
+      if (cachedResponse) return cachedResponse;
+
+      try {
+        // Not in cache, try network
+        const networkResponse = await fetch(request);
+        
+        // Only cache successful responses
+        if (networkResponse && networkResponse.status === 200) {
+          const cache = await caches.open(CACHE_NAME);
+          cache.put(request, networkResponse.clone());
+        }
+        
+        return networkResponse;
+      } catch (error) {
+        // For external resources that might be in offline cache
+        if (externalResources.some(resource => url.href.includes(resource))) {
+          const offlineResponse = await caches.match(request, { 
+            ignoreSearch: true,
+            cacheName: OFFLINE_CACHE 
+          });
+          if (offlineResponse) return offlineResponse;
+        }
+        
+        // For images, return a placeholder if available
+        if (request.destination === 'image') {
+          const placeholder = await caches.match('icons/icon-192x192.png');
+          if (placeholder) return placeholder;
+        }
+        
+        return Response.error();
       }
-  // For external resources
-      if (request.url.includes('cdn.')) {
-      return new Response('', { status: 408, statusText: 'Offline' });
-    }
-    return Response.error();
-    });
-    })
+    })()
   );
 });
 
 // ======== ACTIVATE & CLEANUP ========
-//Old caches are cleaned automatically to avoid storage bloat.
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then(keys => 
-      Promise.all(
-        keys.map(key => key !== CACHE_NAME ? caches.delete(key) : Promise.resolve())
-      )
-    ).then(() => {
+    (async () => {
+      // Enable navigation preload if supported
+      if (self.registration.navigationPreload) {
+        await self.registration.navigationPreload.enable();
+      }
+      
+      // Clean up old caches
+      const cacheKeys = await caches.keys();
+      await Promise.all(
+        cacheKeys.map(key => {
+          if (key !== CACHE_NAME && key !== OFFLINE_CACHE) {
+            return caches.delete(key);
+          }
+        })
+      );
+      
       console.log('✅ New service worker activated');
       self.clients.claim(); // Take control immediately
-    })
+    })()
   );
 });
 
+// ======== BACKGROUND SYNC ========
+// (Optional) You can add background sync for offline data later
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'background-sync') {
+    console.log('Background sync triggered');
+    // You can implement background sync for Firestore operations here
+  }
+});
 
 // ======== UPDATE NOTIFICATION ========
-//Notifies the app when a new SW version is available.
-//Allows your main JS to prompt the user to reload.
 self.addEventListener('message', (event) => {
   if (event.data === 'skipWaiting') self.skipWaiting();
 });
 
 self.addEventListener('controllerchange', () => {
+  // Notify all clients about the update
   self.clients.matchAll().then(clients => {
     clients.forEach(client => client.postMessage('updateAvailable'));
   });
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
