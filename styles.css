@@ -544,11 +544,11 @@ affect their colour in the footer */
 /* forgot password */
 .forgot-password {
   text-align: right;
-  margin: -10px 0 15px 0;
+  margin: 10px 0 10px 0;
 }
 
 .forgot-password a {
-  color: var(--text-light);
+  color: black;
   font-size: 0.85rem;
   text-decoration: none;
 }
