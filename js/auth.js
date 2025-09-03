@@ -426,7 +426,7 @@ function setupEmailPasswordSignUp() {
       toggleEmailForms(true);
 
       // Give user feedback
-      showSuccessToUser("Account created! Please sign in.");
+      showSuccessNotification("Account created! Please sign in.");
     } catch (error) {
       console.error("❌ Sign-up failed:", error);
       showErrorToUser(error.message || "Sign-up failed. Try again.");
