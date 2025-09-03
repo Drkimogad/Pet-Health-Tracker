@@ -1718,7 +1718,7 @@ body.modal-active {
   visibility: visible;
 }
 .community-modal-content {
-  background: var(--bg-card); /* White card background */
+  background: var(--main-color); /* TEST IT */
   border-radius: 12px;
   border: 2px solid var(--border-main); /* Gold border */
   width: 90%;
@@ -1761,7 +1761,7 @@ body.modal-active {
   align-items: center;
 }
 .pet-name-header {
-  color: var(--text-main); /* Dark gray text */
+  background: var(--text-main); /* Dark gray text */
   color: var(--text-inverse); /* White text */
   padding: 0.5rem 1rem;  /* ADDED*/
   border-radius: 6px; /* ADDED*/
@@ -1776,8 +1776,8 @@ body.modal-active {
 
 .chat-messages {
   flex: 1;
-  background: var(--bg-page); /* Light gray   TO CHECK */  
-  border: 1px solid var(--border-card); /* Light gray border */
+  background: #FFFFFF; /* Pure white */
+  border: 2px solid #CCCCCC; /* Medium contrast border */
   padding: 0.5rem;
   min-height: unset; /* Let flex:1 handle height */
   max-height: 400px; /* Add maximum limit */
@@ -1972,6 +1972,64 @@ body.modal-active {
   color: var(--accent-color); /* Gold in dark mode */
 }
 
+/* Admin controls */
+.admin-controls {
+  display: inline-flex;
+  gap: 5px;
+  margin-left: 10px;
+}
+
+.admin-controls button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-main);
+}
+.dark-mode .admin-controls button {
+  color: var(--text-inverse);
+}
+
+/* Message states */
+.chat-message.pending {
+  opacity: 0.8;
+  border-left-color: var(--warning);
+}
+
+.chat-message.approved {
+  border-left-color: var(--success) !important;
+}
+
+.admin-message {
+  background-color: rgba(44, 62, 80, 0.1); /* Light charcoal tint */
+  padding: 8px;
+  border-radius: 5px;
+  border-left-color: var(--main-color); /* Charcoal left border */
+}
+.dark-mode .admin-message {
+  background-color: rgba(255, 215, 0, 0.1); /* Gold tint in dark mode */
+  border-left-color: var(--accent-color); /* Gold left border */
+}
+
+/* View toggle button */
+.view-toggle-btn {
+  background: var(--main-color);
+  color: var(--text-inverse);
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.view-toggle-btn:hover {
+  background: #34495e; /* Darker charcoal */
+}
+
+.daily-limit-note {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  margin-top: 10px;
+  text-align: center;
+}
 /* Notification badge */
 .notification-badge {
   position: absolute;
@@ -2014,66 +2072,6 @@ body.modal-active {
 .reply-btn { 
   color: var(--main-color); /* Charcoal for reply */
 }
-
-/* Admin controls */
-.admin-controls {
-  display: inline-flex;
-  gap: 5px;
-  margin-left: 10px;
-}
-
-.admin-controls button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-  color: var(--text-main);
-}
-.dark-mode .admin-controls button {
-  color: var(--text-inverse);
-}
-
-/* Message states */
-.chat-message.pending {
-  opacity: 0.8;
-  border-left-color: var(--warning);
-}
-
-.chat-message.approved {
-  border-left-color: var(--success);
-}
-
-.admin-message {
-  background-color: rgba(44, 62, 80, 0.1); /* Light charcoal tint */
-  padding: 8px;
-  border-radius: 5px;
-  border-left-color: var(--main-color); /* Charcoal left border */
-}
-.dark-mode .admin-message {
-  background-color: rgba(255, 215, 0, 0.1); /* Gold tint in dark mode */
-  border-left-color: var(--accent-color); /* Gold left border */
-}
-
-/* View toggle button */
-.view-toggle-btn {
-  background: var(--main-color);
-  color: var(--text-inverse);
-  border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.view-toggle-btn:hover {
-  background: #34495e; /* Darker charcoal */
-}
-
-.daily-limit-note {
-  font-size: 0.8rem;
-  color: var(--text-light);
-  margin-top: 10px;
-  text-align: center;
-}
-
 /* Responsive modal dimensions */
 @media (min-width: 768px) {
   .community-modal-content {
