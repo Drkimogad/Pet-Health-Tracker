@@ -378,7 +378,7 @@ affect their colour in the footer */
   align-items: center;
   justify-content: center; /* keep content at top inside the ball */
   z-index: 12; /* above fullPageBanner */
-  padding: 8px;    /* smaller padding */
+  padding: 10px;    /* smaller padding why 8 */
   text-align: center;
   cursor: pointer;
   animation: slowBounce 4s infinite ease-in-out;
@@ -746,8 +746,11 @@ affect their colour in the footer */
   #emailSignupWrapper .auth-switch a {
     font-size: 0.75rem;             /* to adjust*/
   }
+#emailLoginWrapper .auth-switch,/
+#emailSignupWrapper .auth-switch {
+  font-size: 0.8rem; /* to adjust*/
 }
-
+}
 
 
 
