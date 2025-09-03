@@ -667,24 +667,24 @@ affect their colour in the footer */
 /* Mobile First (default styles are for mobile) */
 #emailSignupWrapper {
   position: fixed;
-  top: calc(var(--header-height) + 10vh + 1px);
-  right: 10px;
+  top: calc(var(--header-height) + 8vh + 0px);
+  right: 1px;
   width: 200px; /* it was 220*/
   height: 200px; /* 220*/
   padding: 6px;
 }
 
 #emailSignupWrapper input {
-  width: 80%;
+  width: 60%;
   margin: 1px 0;
-  padding: 2px 3px;
-  font-size: 0.7rem;
+  padding: 1.8px 2.5px;
+  font-size: 0.68rem;
 }
 
 #emailSignupWrapper button {
   margin-top: 2px;
   padding: 2px 3px;
-  width: 65%;
+  width: 40%;
   font-size: 0.7rem;
 }
 
@@ -701,7 +701,7 @@ affect their colour in the footer */
     right: 10px;
     width: 230px;
     height: 230px;
-    padding: 7px;
+    padding: 8px;
   }
 
   #emailSignupWrapper input {
@@ -725,14 +725,14 @@ affect their colour in the footer */
 @media (min-width: 1024px) {
   #emailSignupWrapper {
     top: calc(var(--header-height) + 15vh + 10px);
-    right: 60px;  /* it was 20*/
+    right: 100px;  /* it was 20*/
     width: 270px; /* adjust as needed*/
     height: 270px; /* adjust as needed*/
     padding: 8px;
   }
 
   #emailSignupWrapper input {
-    padding: 3px 4px;
+    padding: 2.8px 3.8px;
     font-size: 0.75rem;
   }
 
