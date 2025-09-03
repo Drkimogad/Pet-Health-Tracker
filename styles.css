@@ -667,11 +667,11 @@ affect their colour in the footer */
 /* Mobile First (default styles are for mobile) */
 #emailSignupWrapper {
   position: fixed;
-  top: calc(var(--header-height) + 8vh + 0px);
+  top: calc(var(--header-height) + 6vh + 0px);
   right: 1px;
   width: 200px; /* it was 220*/
   height: 200px; /* 220*/
-  padding: 6px;
+  padding: 4px;
 }
 
 #emailSignupWrapper input {
@@ -697,8 +697,8 @@ affect their colour in the footer */
 /* Tablet */
 @media (min-width: 768px) and (max-width: 1023px) {
   #emailSignupWrapper {
-    top: calc(var(--header-height) + 12vh + 2px);
-    right: 10px;
+    top: calc(var(--header-height) + 10vh + 2px);
+    right: 5px;
     width: 230px;
     height: 230px;
     padding: 8px;
