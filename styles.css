@@ -429,6 +429,13 @@ affect their colour in the footer */
   cursor: pointer;
 }
 
+/* added now. signup here ⬇️*/
+#emailSignupWrapper .auth-message {
+  color: var(--text-main);                    /* Dark gray text */;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+
 /* Sign-Up mode style */
 #emailSignupWrapper.signup-mode {
   background: radial-gradient(circle at 30% 30%, #ffffff, var(--accent-green));
