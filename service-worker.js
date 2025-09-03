@@ -31,17 +31,19 @@ const urlsToCache = [
   'lottiefiles/upcoming.json',
   'lottiefiles/overdue.json',
   
-  // Add to urlsToCache:
-'__/firebase/8.10.1/firebase-auth.js',
-'__/firebase/init.js',
- // Add to urlsToCache:
-'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js',
-'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js',
   // External libraries
 'js/qrcode.min.js'  // Or remove it if not essential for offline
 ];
 
 //External CDN files often fail caching due to CORS. We’ll handle them safely in the install step.
+
+// In your service-worker.js install event
+const firebaseResources = [
+  'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js',
+  'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js',
+  '__/firebase/8.10.1/firebase-auth.js',
+  '__/firebase/init.js'
+];
 
 // ======== INSTALL ========
 // no-cors mode for external scripts avoids SW errors.
@@ -135,6 +137,7 @@ self.addEventListener('controllerchange', () => {
     clients.forEach(client => client.postMessage('updateAvailable'));
   });
 });
+
 
 
 
