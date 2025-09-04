@@ -697,8 +697,10 @@ async function editPetProfile(petId) {
       profile = pets.find(p => p.id === petId);
     }    
     // 2. Fallback to localStorage
+      //// Use in-memory source of truthlocalStorage is fed by window.petprofiles
+
     if (!profile) {
-      const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+    const savedProfiles = [...window.petProfiles]; // clone to avoid mutation issues
       profile = savedProfiles.find(p => p.id === petId);
     }
 
@@ -2172,15 +2174,17 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
       if (editingProfileId !== null) {
         const index = savedProfiles.findIndex(p => p.id === editingProfileId);
         if (index !== -1) {
-     // savedProfiles[index] = petData;
-        window.petProfiles[index] = petData;
+        savedProfiles[index] = petData; // update the edited profile
         }
       } else {
-        //savedProfiles.push(petData); // Add new profile
-        window.petProfiles.push(petData);
+      savedProfiles.push(petData); // add new profile
       }
-     //Then update localStorage from window.petProfiles:       
-   localStorage.setItem('petProfiles', JSON.stringify(window.petProfiles));
+        
+   // ✅ Update the source of truth
+     window.petProfiles = savedProfiles;
+        
+    // ✅ Update localStorage for offline fallback
+   localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
       
 // AFTER SAVING IN LOCALSTORAGE AND FIRESTORE
 await new Promise(r => setTimeout(r, 2000)); //✅️ adjust this for faster or slower saving or updating display 
