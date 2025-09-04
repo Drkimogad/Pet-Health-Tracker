@@ -172,6 +172,51 @@ self.addEventListener('sync', (event) => {
   }
 });
 
+
+// ======== BACKGROUND SYNC ========
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'petProfiles-sync') {
+    console.log('Background sync triggered for petProfiles');
+    event.waitUntil(syncOfflineProfiles());
+  }
+});
+
+// Function to sync queued offline profiles
+async function syncOfflineProfiles() {
+  try {
+    const db = await openIndexedDB(); // simple IndexedDB wrapper
+    const offlineProfiles = await getOfflineProfiles(db); // retrieve queued operations
+
+    if (!offlineProfiles.length) return;
+
+    console.log('🔄 Syncing', offlineProfiles.length, 'offline profiles');
+
+    for (const item of offlineProfiles) {
+      const { action, profile } = item;
+      const user = firebase.auth().currentUser;
+      if (!user) continue;
+
+      const docRef = firebase.firestore().collection('profiles').doc(profile.id);
+
+      try {
+        if (action === 'add' || action === 'update') {
+          await docRef.set(profile, { merge: true });
+        } else if (action === 'delete') {
+          await docRef.delete();
+        }
+        // remove from queue
+        await removeOfflineProfile(db, item.id);
+        console.log(`✅ Synced profile ${profile.id}`);
+      } catch (err) {
+        console.warn('⚠️ Could not sync profile', profile.id, err);
+      }
+    }
+  } catch (err) {
+    console.error('Background sync error:', err);
+  }
+}
+
+
 // ======== UPDATE NOTIFICATION ========
 self.addEventListener('message', (event) => {
   if (event.data === 'skipWaiting') self.skipWaiting();
@@ -183,6 +228,7 @@ self.addEventListener('controllerchange', () => {
     clients.forEach(client => client.postMessage('updateAvailable'));
   });
 });
+
 
 
 
