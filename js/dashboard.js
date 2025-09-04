@@ -931,37 +931,48 @@ async function deletePetProfile(petId) {
        // 🔹 Show paw animation while deleting
   showDashboardLoader(true, "deleting"); 
 
-    // 🔸 Cloudinary image deletion via HTTP FUNCTION
-    if (petToDelete?.public_id && firebase.auth().currentUser) {
-      try {
-        const user = firebase.auth().currentUser;
-        const token = await user.getIdToken();
-        
-        const response = await fetch('https://us-central1-pet-health-tracker-4ec31.cloudfunctions.net/deleteImage', {
+    // 🔸 Cloudinary + Firestore deletion or queue offline
+if (navigator.onLine && firebase.auth().currentUser) {
+  // Online: proceed with Cloudinary and Firestore deletion
+  if (petToDelete?.public_id) {
+    try {
+      const user = firebase.auth().currentUser;
+      const token = await user.getIdToken();
+
+      const response = await fetch(
+        'https://us-central1-pet-health-tracker-4ec31.cloudfunctions.net/deleteImage',
+        {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           },
           body: JSON.stringify({ public_id: petToDelete.public_id })
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
         }
+      );
 
-        const result = await response.json();
-        console.log("✅ Cloudinary delete result:", result);
-
-      } catch (err) {
-        console.error("❌ Failed to delete image from Cloudinary:", err);
-      }
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const result = await response.json();
+      console.log("✅ Cloudinary delete result:", result);
+    } catch (err) {
+      console.error("❌ Failed to delete image from Cloudinary:", err);
     }
+  }
 
-    // 🔸 Delete from Firestore
-    if (firebase.auth().currentUser) {
-      await firebase.firestore().collection('profiles').doc(petId).delete();
-    }
+  // Firestore deletion
+  await firebase.firestore().collection('profiles').doc(petId).delete();
+} else {
+  // Offline: queue deletion in IndexedDB for background sync
+  console.log('📴 Offline: Queuing delete operation');
+  const db = await openIndexedDB(); // your helper
+  await addOfflineProfile(db, { action: 'delete', profileId: petId });
+
+  // Register background sync
+  if ('serviceWorker' in navigator && 'SyncManager' in window) {
+    const registration = await navigator.serviceWorker.ready;
+    await registration.sync.register('petProfiles-sync');
+  }
+}
 
     // 🔸 Optional: Remove from IndexedDB if still used
     if (window.petDB) {
@@ -2123,14 +2134,16 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
       console.log("🖼️ Using photo:", petData.petPhoto);
       
       // firestore saving implementation
-      if (firebase.auth().currentUser) {
-        const db = firebase.firestore();
-        const profileRef = db.collection("profiles").doc(petData.id); // Use pet ID as document ID
-        await profileRef.set(petData);
-        console.log("📥 Profile saved to Firestore:", petData);
-      }
-          
+    //  if (firebase.auth().currentUser) {
+   //     const db = firebase.firestore();
+    //    const profileRef = db.collection("profiles").doc(petData.id); // Use pet ID as document ID
+    //    await profileRef.set(petData);
+    //    console.log("📥 Profile saved to Firestore:", petData);
+    //  }
+        await saveProfile(petData);
+  
       // 2. Also update localStorage (for offline fallback)
+        
       savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
       // IF EDITING 
       if (editingProfileId !== null) {
