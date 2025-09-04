@@ -1,9 +1,9 @@
 // ========================================
 // SERVICE WORKER - Pet Health Tracker
-// Version: v12 (increment for updates)
+// Version: v14 (increment for updates)
 // ========================================
 
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v13';
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v14';
 const OFFLINE_CACHE = 'Pet-Health-Tracker-offline-v2';
 
 // Core app assets
@@ -31,7 +31,15 @@ const urlsToCache = [
   'lottiefiles/BlackCatPeeping.json',
   'lottiefiles/today.json',
   'lottiefiles/upcoming.json',
-  'lottiefiles/overdue.json'
+  'lottiefiles/overdue.json',
+
+  // offline libraries
+  'js/lib/cloudinary-core-shrinkwrap.min.js',
+  'js/lib/html2canvas.min.js',
+  'js/lib/jszip.min.js',
+  'js/lib/jspdf.umd.min.js',
+  'js/lib/lottie-player.js',
+  'js/lib/qrcode.min.js'  
   ];
 
 // ======== INSTALL ========
@@ -207,5 +215,6 @@ self.addEventListener('controllerchange', () => {
     clients.forEach(client => client.postMessage('updateAvailable'));
   });
 });
+
 
 
