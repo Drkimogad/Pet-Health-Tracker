@@ -1928,6 +1928,40 @@ showErrorNotification("❌ Failed to generate QR code. Please try again.")
   }
 } 
 
+// for saving offline
+async function saveProfile(profile) {
+  // Online: save directly to Firestore
+  if (navigator.onLine && firebase.auth().currentUser) {
+    const db = firebase.firestore();
+    const profileRef = db.collection("profiles").doc(profile.id);
+    await profileRef.set(profile, { merge: true });
+    console.log("📥 Profile saved to Firestore online:", profile);
+  } else {
+    // Offline: store in IndexedDB queue
+    console.log("📴 Offline: Queuing profile operation");
+
+    const db = await openIndexedDB();  // Your helper to open IndexedDB
+    await addOfflineProfile(db, { action: 'add', profile });
+
+    // Register background sync
+    if ('serviceWorker' in navigator && 'SyncManager' in window) {
+      const registration = await navigator.serviceWorker.ready;
+      await registration.sync.register('petProfiles-sync');
+      console.log("🔁 Background sync registered for offline profile");
+    }
+  }
+
+  // Always update localStorage for UI fallback
+  savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+  const index = savedProfiles.findIndex(p => p.id === profile.id);
+  if (index !== -1) {
+    savedProfiles[index] = profile;
+  } else {
+    savedProfiles.push(profile);
+  }
+  localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+}
+
 
 // ======== EVENT DELEGATION (FIXED) ========
 // ✅ Keep this block to handle profile actions (WIRING) ALL THE BUTTONS IN LOADSAVEDPETPROFILES FUNCTION✅
