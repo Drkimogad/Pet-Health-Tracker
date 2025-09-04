@@ -3,7 +3,7 @@
 // Version: v12 (increment for updates)
 // ========================================
 
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v12';
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v13';
 const OFFLINE_CACHE = 'Pet-Health-Tracker-offline-v2';
 
 // Core app assets
@@ -31,49 +31,48 @@ const urlsToCache = [
   'lottiefiles/BlackCatPeeping.json',
   'lottiefiles/today.json',
   'lottiefiles/upcoming.json',
-  'lottiefiles/overdue.json',
-  
-  // External libraries
-  'js/qrcode.min.js'
-];
-
-// External resources to try caching (may fail due to CORS)
-const externalResources = [
-  'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js',
-  'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js',
-  '__/firebase/8.10.1/firebase-auth.js',
-  '__/firebase/init.js'
-];
+  'lottiefiles/overdue.json'
+  ];
 
 // ======== INSTALL ========
 self.addEventListener('install', (event) => {
   self.skipWaiting(); // Activate SW immediately
   
-  event.waitUntil(
-    (async () => {
-      // Cache core app assets
-      const cache = await caches.open(CACHE_NAME);
-      await cache.addAll(urlsToCache.map(url => 
-        new Request(url, { mode: 'same-origin' })
-      ));
-      
-      // Try to cache external resources (may fail due to CORS)
-      const externalCache = await caches.open(OFFLINE_CACHE);
-      for (const url of externalResources) {
-        try {
-          await externalCache.add(new Request(url, { 
-            mode: 'no-cors',
-            credentials: 'omit'
-          }));
-        } catch (err) {
-          console.warn(`⚠️ Could not cache external resource: ${url}`, err);
-        }
+// Inside your 'install' event
+event.waitUntil(
+  (async () => {
+    // 1️⃣ Cache local assets
+    const cache = await caches.open(CACHE_NAME);
+    await cache.addAll(urlsToCache.map(url => new Request(url, { mode: 'same-origin' })));
+
+    // 2️⃣ Cache external libraries safely
+    const externalCache = await caches.open(OFFLINE_CACHE);
+    const externalLibs = [
+      'https://unpkg.com/cloudinary-core@2.11.4/cloudinary-core-shrinkwrap.min.js',
+      'https://apis.google.com/js/api.js',
+      'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js',
+      'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js',
+      'https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+      'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js',
+      'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js',
+      'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js',
+      'https://www.gstatic.com/firebasejs/9.23.0/firebase-functions-compat.js'
+    ];
+
+    for (const url of externalLibs) {
+      try {
+        await externalCache.add(new Request(url, { mode: 'no-cors', credentials: 'omit' }));
+      } catch (err) {
+        console.warn(`⚠️ Could not cache external library: ${url}`, err);
       }
-      
-      console.log('✅ Installation completed');
-    })().catch(err => console.error('❌ Installation failed:', err))
-  );
-});
+    }
+
+    console.log('✅ Installation completed with local + external libraries');
+  })().catch(err => console.error('❌ Installation failed:', err))
+);
+
 
 // ======== FETCH HANDLER ========
 self.addEventListener('fetch', (event) => {
@@ -208,3 +207,4 @@ self.addEventListener('controllerchange', () => {
     clients.forEach(client => client.postMessage('updateAvailable'));
   });
 });
+
