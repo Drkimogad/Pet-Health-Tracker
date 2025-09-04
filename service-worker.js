@@ -50,13 +50,31 @@ const urlsToCache = [
 self.addEventListener('install', (event) => {
   self.skipWaiting();
 
-  event.waitUntil(
-    (async () => {
-      const cache = await caches.open(CACHE_NAME);
-      await cache.addAll(urlsToCache.map(url => new Request(url, { mode: 'same-origin' })));
-      console.log('✅ Service worker installed and all local assets cached.');
-    })()
-  );
+// Inside your 'install' event
+event.waitUntil(
+  (async () => {
+    // 1️⃣ Cache local assets
+    const cache = await caches.open(CACHE_NAME);
+    await cache.addAll(urlsToCache.map(url => new Request(url, { mode: 'same-origin' })));
+
+    // 2️⃣ Cache external libraries safely
+    const externalCache = await caches.open(OFFLINE_CACHE);
+    const externalLibs = [
+      'https://apis.google.com/js/api.js',
+      // Add other external libraries here
+    ];
+
+    for (const url of externalLibs) {
+      try {
+        await externalCache.add(new Request(url, { mode: 'no-cors', credentials: 'omit' }));
+      } catch (err) {
+        console.warn(`⚠️ Could not cache external library: ${url}`, err);
+      }
+    }
+
+    console.log('✅ Installation completed with local + external libraries');
+  })().catch(err => console.error('❌ Installation failed:', err))
+);
 });
 
 // ======== FETCH HANDLER ========
@@ -159,6 +177,7 @@ self.addEventListener('controllerchange', () => {
     clients.forEach(client => client.postMessage('updateAvailable'));
   });
 });
+
 
 
 
