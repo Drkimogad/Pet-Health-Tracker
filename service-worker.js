@@ -72,7 +72,7 @@ event.waitUntil(
     console.log('✅ Installation completed with local + external libraries');
   })().catch(err => console.error('❌ Installation failed:', err))
 );
-
+}); // ✅ This closing brace and parenthesis was missing
 
 // ======== FETCH HANDLER ========
 self.addEventListener('fetch', (event) => {
@@ -207,4 +207,5 @@ self.addEventListener('controllerchange', () => {
     clients.forEach(client => client.postMessage('updateAvailable'));
   });
 });
+
 
