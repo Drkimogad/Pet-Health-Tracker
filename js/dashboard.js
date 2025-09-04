@@ -991,6 +991,10 @@ if (navigator.onLine && firebase.auth().currentUser) {
       savedProfiles.splice(localIndex, 1);
       localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
     }
+      
+ // 🔸 Update in-memory state for immediate UI consistency
+  window.petProfiles = window.petProfiles.filter(p => p.id !== petId);
+
 
 // 🔸 UI update with requestAnimationFrame for smooth rendering
 requestAnimationFrame(() => {
