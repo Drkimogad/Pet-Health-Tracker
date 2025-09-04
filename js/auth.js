@@ -607,20 +607,25 @@ window.addEventListener('online', checkOnlineStatus);
 window.addEventListener('offline', checkOnlineStatus);
 
 // ======== FIREBASE OFFLINE HANDLING ========
+// Replace your existing setupFirebaseOfflinePersistence() with this:
 function setupFirebaseOfflinePersistence() {
-  // Enable offline persistence
-  enableIndexedDbPersistence(db)
+  // Use compat API
+  firebase.firestore().enablePersistence()
     .then(() => {
       console.log('✅ Firebase offline persistence enabled');
     })
     .catch((err) => {
       if (err.code === 'failed-precondition') {
-        console.warn('⚠️ Multiple tabs open, offline persistence can only be enabled in one tab at a time.');
+        console.warn('⚠️ Multiple tabs open — persistence can only be enabled in one tab at a time.');
       } else if (err.code === 'unimplemented') {
-        console.warn('⚠️ The current browser doesn\'t support offline persistence');
+        console.warn('⚠️ Browser does not support all required features for persistence.');
+      } else {
+        console.warn('⚠️ Firestore persistence error:', err);
       }
     });
 }
+
+
 // ====== Core Initialization ======
 async function initializeAuth() {
   try {
