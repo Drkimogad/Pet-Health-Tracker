@@ -3,7 +3,7 @@
 // Version: v14 (increment for updates)
 // ========================================
 
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v15';
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v16';
 const OFFLINE_CACHE = 'Pet-Health-Tracker-offline-v2';
 
 // Core app assets
@@ -46,6 +46,64 @@ const urlsToCache = [
   'js/lib/firebase-functions-compat.js'
 ];
 
+
+
+// ====================
+// IndexedDB Helpers for SW
+// ====================
+
+// Open IndexedDB (creates 'offlineProfiles' store if not exists)
+async function openIndexedDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open('PetHealthDB', 1);
+
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains('offlineProfiles')) {
+        const store = db.createObjectStore('offlineProfiles', { keyPath: 'id', autoIncrement: true });
+        store.createIndex('profileId', 'profile.id', { unique: false });
+      }
+    };
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+// Add a queued operation
+async function addOfflineProfile(db, data) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('offlineProfiles', 'readwrite');
+    const store = tx.objectStore('offlineProfiles');
+    store.add(data);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+// Get all queued operations
+async function getOfflineProfiles(db) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('offlineProfiles', 'readonly');
+    const store = tx.objectStore('offlineProfiles');
+    const request = store.getAll();
+    request.onsuccess = () => resolve(request.result || []);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+// Remove a synced operation
+async function removeOfflineProfile(db, id) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('offlineProfiles', 'readwrite');
+    const store = tx.objectStore('offlineProfiles');
+    store.delete(id);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+
 // ======== INSTALL ========
 self.addEventListener('install', (event) => {
   self.skipWaiting();
@@ -77,7 +135,7 @@ event.waitUntil(
 );
 });
 
-// ======== FETCH HANDLER ========
+
 // ======== FETCH HANDLER ========
 self.addEventListener('fetch', (event) => {
   const request = event.request;
@@ -176,7 +234,7 @@ self.addEventListener('sync', (event) => {
 // ======== BACKGROUND SYNC ========
 self.addEventListener('sync', (event) => {
   if (event.tag === 'petProfiles-sync') {
-    console.log('Background sync triggered for petProfiles');
+    console.log('🔄 Background sync triggered for petProfiles');
     event.waitUntil(syncOfflineProfiles());
   }
 });
@@ -184,37 +242,45 @@ self.addEventListener('sync', (event) => {
 // Function to sync queued offline profiles
 async function syncOfflineProfiles() {
   try {
-    const db = await openIndexedDB(); // simple IndexedDB wrapper
-    const offlineProfiles = await getOfflineProfiles(db); // retrieve queued operations
+    const db = await openIndexedDB(); // IndexedDB wrapper
+    const offlineProfiles = await getOfflineProfiles(db); // get queued operations
 
-    if (!offlineProfiles.length) return;
+    if (!offlineProfiles.length) {
+      console.log('📭 No offline profiles to sync');
+      return;
+    }
 
     console.log('🔄 Syncing', offlineProfiles.length, 'offline profiles');
 
     for (const item of offlineProfiles) {
-      const { action, profile } = item;
+      const { action, profile, profileId } = item; // profileId used for delete
       const user = firebase.auth().currentUser;
-      if (!user) continue;
-
-      const docRef = firebase.firestore().collection('profiles').doc(profile.id);
+      if (!user) continue; // skip if no logged-in user
 
       try {
+        const docRef = (action === 'delete')
+          ? firebase.firestore().collection('profiles').doc(profileId)
+          : firebase.firestore().collection('profiles').doc(profile.id);
+
         if (action === 'add' || action === 'update') {
           await docRef.set(profile, { merge: true });
         } else if (action === 'delete') {
           await docRef.delete();
         }
+
         // remove from queue
         await removeOfflineProfile(db, item.id);
-        console.log(`✅ Synced profile ${profile.id}`);
+        console.log(`✅ Synced profile ${action === 'delete' ? profileId : profile.id} (${action})`);
       } catch (err) {
-        console.warn('⚠️ Could not sync profile', profile.id, err);
+        console.warn(`⚠️ Could not sync profile ${action === 'delete' ? profileId : profile.id}`, err);
       }
     }
+
   } catch (err) {
-    console.error('Background sync error:', err);
+    console.error('❌ Background sync error:', err);
   }
 }
+
 
 
 // ======== UPDATE NOTIFICATION ========
@@ -228,6 +294,7 @@ self.addEventListener('controllerchange', () => {
     clients.forEach(client => client.postMessage('updateAvailable'));
   });
 });
+
 
 
 
