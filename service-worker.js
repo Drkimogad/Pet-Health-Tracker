@@ -3,7 +3,7 @@
 // Version: v14 (increment for updates)
 // ========================================
 
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v14';
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v15';
 const OFFLINE_CACHE = 'Pet-Health-Tracker-offline-v2';
 
 // Core app assets
@@ -101,24 +101,30 @@ self.addEventListener('fetch', (event) => {
   }
 
   // Firestore API offline response
-  if (url.href.includes('firestore.googleapis.com')) {
-    event.respondWith(
-      (async () => {
-        try {
-          return await fetch(request);
-        } catch (err) {
-          return new Response(JSON.stringify({
-            status: 'offline',
-            message: 'You are offline. Changes will sync when connection is restored.'
-          }), {
-            status: 408,
-            headers: { 'Content-Type': 'application/json' }
-          });
-        }
-      })()
-    );
-    return;
-  }
+// For external CDN libs (stale-while-revalidate)
+if (url.origin.includes('googleapis.com') || url.href.includes('apis.google.com/js/api.js')) {
+  event.respondWith(
+    (async () => {
+      const cache = await caches.open(OFFLINE_CACHE);
+
+      // 1️⃣ Check if cached
+      const cachedResponse = await cache.match(request);
+      const networkFetch = fetch(request)
+        .then(response => {
+          if (response && response.status === 200) {
+            cache.put(request, response.clone()); // 2️⃣ Update cache silently
+          }
+          return response;
+        })
+        .catch(() => null);
+
+      // 3️⃣ Serve cached first, fallback to network if not cached
+      return cachedResponse || (await networkFetch) || Response.error();
+    })()
+  );
+  return;
+}
+
 
   // Static assets: cache first
   event.respondWith(
@@ -177,6 +183,7 @@ self.addEventListener('controllerchange', () => {
     clients.forEach(client => client.postMessage('updateAvailable'));
   });
 });
+
 
 
 
