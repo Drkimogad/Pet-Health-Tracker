@@ -75,6 +75,13 @@ function showLoading(show, message = "Loading your app") {
 document.addEventListener("DOMContentLoaded", () => {
   const domReady = initDOMReferences();
   if (!domReady) return;
+
+  // ✅ Show current online/offline status immediately
+  checkOnlineStatus();  // <<< ADD HERE
+  // Listen for changes
+  window.addEventListener('online', checkOnlineStatus);
+  window.addEventListener('offline', checkOnlineStatus);
+
   
   // ✅ Let initializeAuth handle everything
   initializeAuth();
@@ -201,6 +208,10 @@ function initializeFirebase() {
   */
 
   console.log("✅ Firebase initialized (HTTP functions mode)");
+
+  const db = firebase.firestore();
+  // ✅ Enable offline persistence
+  setupFirebaseOfflinePersistence();  // <<< ADD HERE
 
   // Return auth instance for use elsewhere
   return firebase.auth();
