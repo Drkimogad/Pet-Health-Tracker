@@ -2140,7 +2140,30 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
     //    await profileRef.set(petData);
     //    console.log("📥 Profile saved to Firestore:", petData);
     //  }
-        await saveProfile(petData);
+       // await saveProfile(petData);
+// 2️⃣ The offline-aware patch
+    if (!navigator.onLine) {
+    // Offline mode → store in IndexedDB + register background sync
+    const db = await openIndexedDB();
+    await addOfflineProfile(db, { action: 'add', profile: petData });
+    const registration = await navigator.serviceWorker.ready;
+    await registration.sync.register('petProfiles-sync');
+
+    // Immediately update in-memory and localStorage for UI
+    window.petProfiles.push(petData);
+    localStorage.setItem('petProfiles', JSON.stringify(window.petProfiles));
+
+    // Update UI immediately
+    showDashboard();
+    console.log("📦 Saved offline profile to IndexedDB and localStorage:", petData);
+
+} else {
+    // Online mode → regular Firestore save
+    await saveProfile(petData);
+}
+
+
+        
   
       // 2. Also update localStorage (for offline fallback)
         
@@ -2149,13 +2172,15 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
       if (editingProfileId !== null) {
         const index = savedProfiles.findIndex(p => p.id === editingProfileId);
         if (index !== -1) {
-          savedProfiles[index] = petData;
+     // savedProfiles[index] = petData;
+        window.petProfiles[index] = petData;
         }
       } else {
-        savedProfiles.push(petData); // Add new profile
+        //savedProfiles.push(petData); // Add new profile
+        window.petProfiles.push(petData);
       }
-            
-localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+     //Then update localStorage from window.petProfiles:       
+   localStorage.setItem('petProfiles', JSON.stringify(window.petProfiles));
       
 // AFTER SAVING IN LOCALSTORAGE AND FIRESTORE
 await new Promise(r => setTimeout(r, 2000)); //✅️ adjust this for faster or slower saving or updating display 
