@@ -925,6 +925,9 @@ cancelBtn.style.display = "inline-block"; // Ensure it's visible
 //=================================================
 // 🚀 Delete Pet Profile (Online + Offline Aware)
 // ================================
+//=================================================
+// 🚀 Delete Pet Profile (Online + Offline Aware)
+// ================================
 async function deletePetProfile(petId) {
   try {
     const pets = await loadPets();
@@ -933,10 +936,11 @@ async function deletePetProfile(petId) {
     // 🔹 Show paw animation while deleting
     showDashboardLoader(true, "deleting"); 
 
-    // ================================
-    // 🌐 ONLINE DELETION FLOW
-    // ================================
     if (navigator.onLine && firebase.auth().currentUser) {
+      // ================================
+      // 🌐 ONLINE DELETION FLOW
+      // ================================
+      
       // 🔸 Delete from Cloudinary (if image exists)
       if (petToDelete?.public_id) {
         try {
@@ -961,71 +965,52 @@ async function deletePetProfile(petId) {
         } catch (err) {
           console.error("❌ Failed to delete image from Cloudinary:", err);
         }
-      } // to check this brace 
+      }
 
-      // 🔸 Delete from Firestore wrapped in its own try and catch 
-
-     try {
-      await firebase.firestore().collection('profiles').doc(petId).delete();
+      // 🔸 Delete from Firestore
+      try {
+        await firebase.firestore().collection('profiles').doc(petId).delete();
       } catch (err) {
-     console.error('❌ Firestore delete failed:', err);
-     throw err; // will be caught in the outer catch
+        console.error('❌ Firestore delete failed:', err);
+        throw err; // propagate to outer catch
+      }
+
+      // 🔸 Delete locally after successful online deletion
+      deleteProfile(petId); // removes from memory + localStorage
+
+      // 🔹 Update UI
+      requestAnimationFrame(() => {
+        loadSavedPetProfile();
+        showDashboardLoader(false, "success-deleting");
+      });
+
+    } else {
+      // ================================
+      // 📴 OFFLINE DELETION FLOW
+      // ================================
+      console.log('📴 Offline: Queuing delete operation');
+
+      // Queue deletion in IndexedDB for background sync
+      const db = await openIndexedDB();
+      await addOfflineProfile(db, { action: 'delete', profileId: petId });
+
+      // Register background sync
+      if ('serviceWorker' in navigator && 'SyncManager' in window) {
+        const registration = await navigator.serviceWorker.ready;
+        await registration.sync.register('petProfiles-sync');
+      }
+
+  // Offline: delete locally, do NOT call loadSavedPetProfile()
+  deleteProfile(petId); // handles memory + localStorage
+  showDashboardLoader(false, "success-deleting");
     }
-    // ================================
-    // 🎨 UI UPDATE
-    // ================================
-    requestAnimationFrame(() => {
-      loadSavedPetProfile();
-      showDashboardLoader(false, "success-deleting"); // ✅ success even if queued offline
-    });
 
   } catch (error) {
     console.error('❌ Delete error:', error);
-    showDashboardLoader(true, "error-deleting"); // Show error only on real failure
-  }
-        
-// 📴 OFFLINE DELETION FLOW
-} else {
-  console.log('📴 Offline: Queuing delete operation');
-
-  // Queue deletion in IndexedDB for background sync
-  const db = await openIndexedDB();
-  await addOfflineProfile(db, { action: 'delete', profileId: petId });
-
-  // Register background sync
-  if ('serviceWorker' in navigator && 'SyncManager' in window) {
-    const registration = await navigator.serviceWorker.ready;
-    await registration.sync.register('petProfiles-sync');
-  }
-
-  // 🔥 Update UI and localStorage immediately
-  window.petProfiles = window.petProfiles.filter(p => p.id !== petId);
-
-  const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-  const localIndex = savedProfiles.findIndex(p => p.id === petId);
-
-  if (localIndex !== -1) {
-    const petName = savedProfiles[localIndex].petName || 'Unnamed Pet';
-    savedProfiles.splice(localIndex, 1);
-    localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
-    console.log(`📦 Offline delete applied locally for: ${petName}`);
+    showDashboardLoader(true, "error-deleting");
   }
 }
 
-
-    // ================================
-    // 🎨 UI UPDATE
-    // ================================
-    requestAnimationFrame(() => {
-     deleteProfile(petId); // handles online/offline + local deletion
-      showDashboardLoader(false, "success-deleting"); // ✅ success even if queued offline
-    });
-
-  } catch (error) {
-    console.error('❌ Delete error:', error);
-    showDashboardLoader(true, "error-deleting"); // Show error only on real failure
-  }
-}
 
 
 //====================================
