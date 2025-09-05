@@ -1007,7 +1007,9 @@ async function deletePetProfile(petId) {
 
   } catch (error) {
     console.error('❌ Delete error:', error);
-    showDashboardLoader(true, "error-deleting");
+    showDashboardLoader(true, "error-deleting");      
+   // Re-render UI from TEMPORARILY UPDATED localStorage
+   renderProfilesFromLocalStorage();
   }
 }
 
