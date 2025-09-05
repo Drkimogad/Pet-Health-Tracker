@@ -928,6 +928,9 @@ cancelBtn.style.display = "inline-block"; // Ensure it's visible
 //=================================================
 // 🚀 Delete Pet Profile (Online + Offline Aware)
 // ================================
+//=================================================
+// 🚀 Delete Pet Profile (Online + Offline Aware)
+// ================================
 async function deletePetProfile(petId) {
   try {
     const pets = await loadPets();
@@ -967,52 +970,37 @@ async function deletePetProfile(petId) {
         }
       }
 
-      // 🔸 Delete from Firestore
-      try {
-        await firebase.firestore().collection('profiles').doc(petId).delete();
-      } catch (err) {
-        console.error('❌ Firestore delete failed:', err);
-        throw err; // propagate to outer catch
-      }
-
-      // 🔸 Delete locally after successful online deletion
-      deleteProfile(petId); // removes from memory + localStorage
-
-      // 🔹 Update UI
-      requestAnimationFrame(() => {
-        loadSavedPetProfile();
-        showDashboardLoader(false, "success-deleting");
-      });
-
-    } else {
-      // ================================
-      // 📴 OFFLINE DELETION FLOW
-      // ================================
-      console.log('📴 Offline: Queuing delete operation');
-
-      // Queue deletion in IndexedDB for background sync
-      const db = await openIndexedDB();
-      await addOfflineProfile(db, { action: 'delete', profileId: petId });
-
-      // Register background sync
-      if ('serviceWorker' in navigator && 'SyncManager' in window) {
-        const registration = await navigator.serviceWorker.ready;
-        await registration.sync.register('petProfiles-sync');
-      }
-
-  // Offline: delete locally, do NOT call loadSavedPetProfile()
-  deleteProfile(petId); // handles memory + localStorage
-  showDashboardLoader(false, "success-deleting");
-    }
-
-  } catch (error) {
-    console.error('❌ Delete error:', error);
-    showDashboardLoader(true, "error-deleting");      
-   // Re-render UI from TEMPORARILY UPDATED localStorage
-   renderProfilesFromLocalStorage();
-  }
+    // 🔸 Delete from Firestore
+try {
+  await firebase.firestore().collection('profiles').doc(petId).delete();
+} catch (err) {
+  console.error('❌ Firestore delete failed:', err);
+  throw err;
 }
 
+// 🔸 Delete locally (localStorage + memory)
+let savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+savedProfiles = savedProfiles.filter(p => p.id !== petId);
+localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+window.petProfiles = window.petProfiles.filter(p => p.id !== petId);
+
+// 🔹 Update UI
+loadSavedPetProfile();
+showDashboardLoader(false, "success-deleting");
+
+    } else {
+  // ================================
+  // 📴 OFFLINE DELETION FLOW - FIXED SECTION
+  // ================================
+  console.log('📴 Offline: Queuing delete operation');
+
+  // 🟢 Call deleteProfile to handle ALL offline deletion operations
+  await deleteProfile(petId);
+  
+  // 🟢 Show success message after deleteProfile completes
+  showDashboardLoader(false, "success-deleting");
+    }
+}
 
 
 //====================================
@@ -1981,36 +1969,28 @@ async function saveProfile(profile) {
   }
   localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
 }
-// HELPER FOR DELETE 
+// HELPER FOR OFFLINE DELETE ONLY
 async function deleteProfile(profileId) {
-  if (navigator.onLine && firebase.auth().currentUser) {
-    const db = firebase.firestore();
-    await db.collection("profiles").doc(profileId).delete();
-    console.log("🗑️ Profile deleted from Firestore online:", profileId);
-  } else {
-    console.log("📴 Offline: Queuing delete operation");
+  // 🟢 REMOVE online handling - only handle offline
+  console.log("📴 Offline: Queuing delete operation");
 
-    const db = await openIndexedDB();
-    await addOfflineProfile(db, { action: 'delete', profileId });
+  const db = await openIndexedDB();
+  await addOfflineProfile(db, { action: 'delete', profileId });
 
-    if ('serviceWorker' in navigator && 'SyncManager' in window) {
-      const registration = await navigator.serviceWorker.ready;
-      await registration.sync.register('petProfiles-sync');
-      console.log("🔁 Background sync registered for offline deletion");
-    }
+  if ('serviceWorker' in navigator && 'SyncManager' in window) {
+    const registration = await navigator.serviceWorker.ready;
+    await registration.sync.register('petProfiles-sync');
+    console.log("🔁 Background sync registered for offline deletion");
   }
 
   // Update localStorage/UI immediately
   let savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
   savedProfiles = savedProfiles.filter(p => p.id !== profileId);
   localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
-
-  // Update in-memory for immediate UI update
   window.petProfiles = window.petProfiles.filter(p => p.id !== profileId);
-  requestAnimationFrame(() => {
-    loadSavedPetProfile(); // render UI without deleted profile
-    showDashboardLoader(false, "success-deleting");
-  });
+  
+  // Update UI
+  loadSavedPetProfile();
 }
 
 
