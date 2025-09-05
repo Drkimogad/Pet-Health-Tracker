@@ -465,3 +465,17 @@ async function removeOfflineProfile(db, id) {
     tx.onerror = () => reject(tx.error);
   });
 }
+
+
+// FUNCTION RENDER PROFILES FRO LOCALSTORAGE AND UPDATE UI
+
+function renderProfilesFromLocalStorage() {
+  const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+  // Replace the container content with savedProfiles
+  const container = document.getElementById('pet-cards-container'); // or whatever your cards container is
+  container.innerHTML = ''; 
+  savedProfiles.forEach(profile => {
+    container.appendChild(createPetCard(profile)); // your existing function to render a card
+  });
+}
+
