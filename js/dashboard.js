@@ -961,10 +961,16 @@ async function deletePetProfile(petId) {
         } catch (err) {
           console.error("❌ Failed to delete image from Cloudinary:", err);
         }
-      }
+      } // to check this brace 
 
-      // 🔸 Delete from Firestore
+      // 🔸 Delete from Firestore wrapped in its own try and catch 
+
+     try {
       await firebase.firestore().collection('profiles').doc(petId).delete();
+      } catch (err) {
+     console.error('❌ Firestore delete failed:', err);
+     throw err; // will be caught in the outer catch
+    }
 
     // ================================
     // 📴 OFFLINE DELETION FLOW
@@ -981,8 +987,9 @@ async function deletePetProfile(petId) {
         const registration = await navigator.serviceWorker.ready;
         await registration.sync.register('petProfiles-sync');
       }
-
-      // 3️⃣ 🔥 Critical: Update UI immediately
+    }
+      
+      // 3️⃣ 🔥 Critical: Update UI immediately Moved outside the else
       window.petProfiles = window.petProfiles.filter(p => p.id !== petId);
 
       const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
@@ -994,8 +1001,6 @@ async function deletePetProfile(petId) {
         localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
         console.log(`📦 Offline delete applied locally for: ${petName}`);
       }
-    }
-
     // ================================
     // 🎨 UI UPDATE
     // ================================
