@@ -50,6 +50,7 @@ const urlsToCache = [
 
 // ====================
 // IndexedDB Helpers for SW
+// This copy of helpers inside the service worker → for background sync 
 // ====================
 
 // Open IndexedDB (creates 'offlineProfiles' store if not exists)
@@ -294,6 +295,7 @@ self.addEventListener('controllerchange', () => {
     clients.forEach(client => client.postMessage('updateAvailable'));
   });
 });
+
 
 
 
