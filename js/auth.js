@@ -169,10 +169,10 @@ showLoading(true, "Loading your app");
         shape: "rectangular",
         width: 250
       });  
-  // ✅ Avoid popup if already signed in
-    if (!firebase.auth().currentUser) {
-      google.accounts.id.prompt();
-   } 
+  // ✅ Avoid popup if already signed in U CAN ALLOW IT IF NEEDED IN FUTURE 
+  //  if (!firebase.auth().currentUser) {
+  //    google.accounts.id.prompt();
+  // } 
   }
   } catch (error) {
     console.error("Google Sign-In setup failed:", error);
