@@ -922,93 +922,92 @@ cancelBtn.style.display = "inline-block"; // Ensure it's visible
 // which cannot be safely handled in a frontend-only app.
 // This means deleted profiles may leave behind orphaned images in Cloudinary.
 // ✅ Add server-side function or cleanup mechanism later if needed.
-
-
 //=================================================
+// 🚀 Delete Pet Profile (Online + Offline Aware)
+// ================================
 async function deletePetProfile(petId) {
   try {
     const pets = await loadPets();
     const petToDelete = pets.find(p => p.id === petId);
 
-       // 🔹 Show paw animation while deleting
-  showDashboardLoader(true, "deleting"); 
+    // 🔹 Show paw animation while deleting
+    showDashboardLoader(true, "deleting"); 
 
-    // 🔸 Cloudinary + Firestore deletion or queue offline
-if (navigator.onLine && firebase.auth().currentUser) {
-  // Online: proceed with Cloudinary and Firestore deletion
-  if (petToDelete?.public_id) {
-    try {
-      const user = firebase.auth().currentUser;
-      const token = await user.getIdToken();
+    // ================================
+    // 🌐 ONLINE DELETION FLOW
+    // ================================
+    if (navigator.onLine && firebase.auth().currentUser) {
+      // 🔸 Delete from Cloudinary (if image exists)
+      if (petToDelete?.public_id) {
+        try {
+          const user = firebase.auth().currentUser;
+          const token = await user.getIdToken();
 
-      const response = await fetch(
-        'https://us-central1-pet-health-tracker-4ec31.cloudfunctions.net/deleteImage',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ public_id: petToDelete.public_id })
+          const response = await fetch(
+            'https://us-central1-pet-health-tracker-4ec31.cloudfunctions.net/deleteImage',
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify({ public_id: petToDelete.public_id })
+            }
+          );
+
+          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+          const result = await response.json();
+          console.log("✅ Cloudinary delete result:", result);
+        } catch (err) {
+          console.error("❌ Failed to delete image from Cloudinary:", err);
         }
-      );
+      }
 
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      const result = await response.json();
-      console.log("✅ Cloudinary delete result:", result);
-    } catch (err) {
-      console.error("❌ Failed to delete image from Cloudinary:", err);
+      // 🔸 Delete from Firestore
+      await firebase.firestore().collection('profiles').doc(petId).delete();
+
+    // ================================
+    // 📴 OFFLINE DELETION FLOW
+    // ================================
+    } else {
+      console.log('📴 Offline: Queuing delete operation');
+
+      // 1️⃣ Queue deletion in IndexedDB for background sync
+      const db = await openIndexedDB();
+      await addOfflineProfile(db, { action: 'delete', profileId: petId });
+
+      // 2️⃣ Register background sync
+      if ('serviceWorker' in navigator && 'SyncManager' in window) {
+        const registration = await navigator.serviceWorker.ready;
+        await registration.sync.register('petProfiles-sync');
+      }
+
+      // 3️⃣ 🔥 Critical: Update UI immediately
+      window.petProfiles = window.petProfiles.filter(p => p.id !== petId);
+
+      const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+      const localIndex = savedProfiles.findIndex(p => p.id === petId);
+
+      if (localIndex !== -1) {
+        const petName = savedProfiles[localIndex].petName || 'Unnamed Pet';
+        savedProfiles.splice(localIndex, 1);
+        localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+        console.log(`📦 Offline delete applied locally for: ${petName}`);
+      }
     }
+
+    // ================================
+    // 🎨 UI UPDATE
+    // ================================
+    requestAnimationFrame(() => {
+      loadSavedPetProfile();
+      showDashboardLoader(false, "success-deleting"); // ✅ success even if queued offline
+    });
+
+  } catch (error) {
+    console.error('❌ Delete error:', error);
+    showDashboardLoader(true, "error-deleting"); // Show error only on real failure
   }
-
-  // Firestore deletion
-  await firebase.firestore().collection('profiles').doc(petId).delete();
-} else {
-  // Offline: queue deletion in IndexedDB for background sync
-  console.log('📴 Offline: Queuing delete operation');
-  const db = await openIndexedDB(); // your helper
-  await addOfflineProfile(db, { action: 'delete', profileId: petId });
-
-  // Register background sync
-  if ('serviceWorker' in navigator && 'SyncManager' in window) {
-    const registration = await navigator.serviceWorker.ready;
-    await registration.sync.register('petProfiles-sync');
-  }
-}
-
-    // 🔸 Optional: Remove from IndexedDB if still used
-    if (window.petDB) {
-      const tx = petDB.transaction('pets', 'readwrite');
-      tx.objectStore('pets').delete(petId);
-    }
-
-    // 🔸 Remove from localStorage
-    const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-    const localIndex = savedProfiles.findIndex(p => p.id === petId);
-
-    if (localIndex !== -1) {
-      petName = savedProfiles[localIndex].petName || 'Unnamed Pet';
-      savedProfiles.splice(localIndex, 1);
-      localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
-    }
-      
- // 🔸 Update in-memory state for immediate UI consistency
-  window.petProfiles = window.petProfiles.filter(p => p.id !== petId);
-
-
-// 🔸 UI update with requestAnimationFrame for smooth rendering
-requestAnimationFrame(() => {
-  loadSavedPetProfile();
-  showDashboardLoader(false, "success-deleting"); // success message
- // fallback is handled automatically by helper in utils.js 
-});
-
-} catch (error) {
-  console.error('Delete error:', error);
-  // ❌ Show paws + delete error message
-  showDashboardLoader(true, "error-deleting");
-  // error fallback is handled by helper 
-}
 }
 
 
