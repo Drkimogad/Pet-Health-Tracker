@@ -411,4 +411,57 @@ function showUpdateNotification() {
   document.body.appendChild(notification);
 }
 
+// ====================
+// IndexedDB Helpers for Background sync
+// This copy of helpers inside utils.js → for background sync, another copy in SW
+// ====================
+// Open IndexedDB (creates 'offlineProfiles' store if not exists)
+async function openIndexedDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open('PetHealthDB', 1);
 
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains('offlineProfiles')) {
+        const store = db.createObjectStore('offlineProfiles', { keyPath: 'id', autoIncrement: true });
+        store.createIndex('profileId', 'profile.id', { unique: false });
+      }
+    };
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+// Add a queued operation
+async function addOfflineProfile(db, data) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('offlineProfiles', 'readwrite');
+    const store = tx.objectStore('offlineProfiles');
+    store.add(data);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+// Get all queued operations
+async function getOfflineProfiles(db) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('offlineProfiles', 'readonly');
+    const store = tx.objectStore('offlineProfiles');
+    const request = store.getAll();
+    request.onsuccess = () => resolve(request.result || []);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+// Remove a synced operation
+async function removeOfflineProfile(db, id) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('offlineProfiles', 'readwrite');
+    const store = tx.objectStore('offlineProfiles');
+    store.delete(id);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
