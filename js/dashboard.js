@@ -971,25 +971,22 @@ async function deletePetProfile(petId) {
      console.error('❌ Firestore delete failed:', err);
      throw err; // will be caught in the outer catch
     }
-
-    // ================================
-    // 📴 OFFLINE DELETION FLOW
-    // ================================
-   // 📴 OFFLINE DELETION FLOW
+        
+// 📴 OFFLINE DELETION FLOW
 } else {
   console.log('📴 Offline: Queuing delete operation');
 
-  // 1️⃣ Queue deletion in IndexedDB for background sync
+  // Queue deletion in IndexedDB for background sync
   const db = await openIndexedDB();
   await addOfflineProfile(db, { action: 'delete', profileId: petId });
 
-  // 2️⃣ Register background sync
+  // Register background sync
   if ('serviceWorker' in navigator && 'SyncManager' in window) {
     const registration = await navigator.serviceWorker.ready;
     await registration.sync.register('petProfiles-sync');
   }
 
-  // 3️⃣ 🔥 Update UI and localStorage immediately
+  // 🔥 Update UI and localStorage immediately
   window.petProfiles = window.petProfiles.filter(p => p.id !== petId);
 
   const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
@@ -1002,6 +999,7 @@ async function deletePetProfile(petId) {
     console.log(`📦 Offline delete applied locally for: ${petName}`);
   }
 }
+
 
     // ================================
     // 🎨 UI UPDATE
