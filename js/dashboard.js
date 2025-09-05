@@ -971,6 +971,18 @@ async function deletePetProfile(petId) {
      console.error('❌ Firestore delete failed:', err);
      throw err; // will be caught in the outer catch
     }
+    // ================================
+    // 🎨 UI UPDATE
+    // ================================
+    requestAnimationFrame(() => {
+      loadSavedPetProfile();
+      showDashboardLoader(false, "success-deleting"); // ✅ success even if queued offline
+    });
+
+  } catch (error) {
+    console.error('❌ Delete error:', error);
+    showDashboardLoader(true, "error-deleting"); // Show error only on real failure
+  }
         
 // 📴 OFFLINE DELETION FLOW
 } else {
@@ -1005,7 +1017,7 @@ async function deletePetProfile(petId) {
     // 🎨 UI UPDATE
     // ================================
     requestAnimationFrame(() => {
-      loadSavedPetProfile();
+     deleteProfile(petId); // handles online/offline + local deletion
       showDashboardLoader(false, "success-deleting"); // ✅ success even if queued offline
     });
 
@@ -1981,6 +1993,37 @@ async function saveProfile(profile) {
     savedProfiles.push(profile);
   }
   localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+}
+// HELPER FOR DELETE 
+async function deleteProfile(profileId) {
+  if (navigator.onLine && firebase.auth().currentUser) {
+    const db = firebase.firestore();
+    await db.collection("profiles").doc(profileId).delete();
+    console.log("🗑️ Profile deleted from Firestore online:", profileId);
+  } else {
+    console.log("📴 Offline: Queuing delete operation");
+
+    const db = await openIndexedDB();
+    await addOfflineProfile(db, { action: 'delete', profileId });
+
+    if ('serviceWorker' in navigator && 'SyncManager' in window) {
+      const registration = await navigator.serviceWorker.ready;
+      await registration.sync.register('petProfiles-sync');
+      console.log("🔁 Background sync registered for offline deletion");
+    }
+  }
+
+  // Update localStorage/UI immediately
+  let savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+  savedProfiles = savedProfiles.filter(p => p.id !== profileId);
+  localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+
+  // Update in-memory for immediate UI update
+  window.petProfiles = window.petProfiles.filter(p => p.id !== profileId);
+  requestAnimationFrame(() => {
+    loadSavedPetProfile(); // render UI without deleted profile
+    showDashboardLoader(false, "success-deleting");
+  });
 }
 
 
