@@ -2153,57 +2153,9 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
       }
       console.log("🖼️ Using photo:", petData.petPhoto);
       
-      // firestore saving implementation
-    //  if (firebase.auth().currentUser) {
-   //     const db = firebase.firestore();
-    //    const profileRef = db.collection("profiles").doc(petData.id); // Use pet ID as document ID
-    //    await profileRef.set(petData);
-    //    console.log("📥 Profile saved to Firestore:", petData);
-    //  }
-       // await saveProfile(petData);
-// 2️⃣ The offline-aware patch
-    if (!navigator.onLine) {
-    // Offline mode → store in IndexedDB + register background sync
-    const db = await openIndexedDB();
-    await addOfflineProfile(db, { action: 'add', profile: petData });
-    const registration = await navigator.serviceWorker.ready;
-    await registration.sync.register('petProfiles-sync');
-
-    // Immediately update in-memory and localStorage for UI
-    window.petProfiles.push(petData);
-    localStorage.setItem('petProfiles', JSON.stringify(window.petProfiles));
-
-    // Update UI immediately
-    showDashboard();
-    console.log("📦 Saved offline profile to IndexedDB and localStorage:", petData);
-
-} else {
-    // Online mode → regular Firestore save
-    await saveProfile(petData);
-}
-
-
+  // 🟢 REPLACE all the manual saving with this single call:
+   await saveProfile(petData); // call it to handle the saving and updating 
         
-  
-      // 2. Also update localStorage (for offline fallback)
-        
-      savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-      // IF EDITING 
-      if (editingProfileId !== null) {
-        const index = savedProfiles.findIndex(p => p.id === editingProfileId);
-        if (index !== -1) {
-        savedProfiles[index] = petData; // update the edited profile
-        }
-      } else {
-      savedProfiles.push(petData); // add new profile
-      }
-        
-   // ✅ Update the source of truth
-     window.petProfiles = savedProfiles;
-        
-    // ✅ Update localStorage for offline fallback
-   localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
-      
 // AFTER SAVING IN LOCALSTORAGE AND FIRESTORE
 await new Promise(r => setTimeout(r, 2000)); //✅️ adjust this for faster or slower saving or updating display 
 
