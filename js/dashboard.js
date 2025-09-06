@@ -994,19 +994,18 @@ showDashboardLoader(false, "success-deleting");
   // ================================
   console.log('📴 Offline: Queuing delete operation');
 
-  // 🟢 Call deleteProfile to handle ALL offline deletion operations
+     // 🟢 Call deleteProfile to handle ALL offline deletion operations
   await deleteProfile(petId);
-// 🟢 DOUBLE-SAFETY: Ensure UI is updated (in case deleteProfile's update failed)
-  loadSavedPetProfile();
-        
+    // 🟢 DOUBLE-SAFETY: Ensure UI is updated (in case deleteProfile's update failed)
+  loadSavedPetProfile();      
     // 🟢 Show success message after deleteProfile completes
     showDashboardLoader(false, "success-deleting");
-        
+   }     
   } catch (error) {  // THIS CATCH WORKS FOR BOTH ONLINE & OFFLINE DELETION
     console.error('❌ Offline deletion failed:', error);
     showDashboardLoader(false, "error-deleting");
     }
-}
+} // closes the function
 
 
 //====================================
