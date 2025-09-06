@@ -3,9 +3,9 @@
 // Version: v14 (increment for updates)
 // ========================================
 
-// AT THE TOP OF YOUR SERVICE WORKER
-importScripts('https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js');
-importScripts('https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js');
+// AT THE TOP OF YOUR SERVICE WORKER (service-worker.js)
+importScripts('/js/lib/firebase-app-compat.js');
+importScripts('/js/lib/firebase-firestore-compat.js');
 
 // Initialize Firebase in Service Worker
 const firebaseConfig = {
@@ -19,10 +19,16 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+  console.log('✅ Firebase initialized in Service Worker');
+} else {
+  firebase.app(); // Use existing app
+}
+
 
 //==========================================================
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v19';
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v20';
 const OFFLINE_CACHE = 'Pet-Health-Tracker-offline-v2';
 
 // Core app assets
@@ -286,12 +292,12 @@ async function syncOfflineProfiles() {
       } catch (err) {
         console.warn(`⚠️ Could not sync profile ${action} operation:`, err);
       }
-    } // ← closes for loop
+    }
     
-  } catch (err) { // ← This catch was missing!
+  } catch (err) {
     console.error('❌ Background sync error:', err);
   }
-} // ← closes syncOfflineProfiles function
+}
 
 
 // ======== UPDATE NOTIFICATION ========
@@ -306,4 +312,5 @@ self.addEventListener('controllerchange', () => {
   });
 });
     
+
 
