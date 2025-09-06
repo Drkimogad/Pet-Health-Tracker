@@ -415,7 +415,7 @@ function showUpdateNotification() {
 // IndexedDB Helpers for Background sync
 // This copy of helpers inside utils.js → for background sync, another copy in SW
 // ====================
-// Open IndexedDB (creates 'offlineProfiles' store if not exists)
+// 1. Open IndexedDB (creates 'offlineProfiles' store if not exists)
 async function openIndexedDB() {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open('PetHealthDB', 1);
@@ -434,17 +434,22 @@ async function openIndexedDB() {
 }
 
 // Add a queued operation
+// 2. Enhance your IndexedDB helpers with better error handling
 async function addOfflineProfile(db, data) {
   return new Promise((resolve, reject) => {
     const tx = db.transaction('offlineProfiles', 'readwrite');
     const store = tx.objectStore('offlineProfiles');
-    store.add(data);
-    tx.oncomplete = () => resolve();
-    tx.onerror = () => reject(tx.error);
+    const request = store.add(data);
+    
+    request.onsuccess = () => resolve(request.result); // Return the ID
+    request.onerror = () => {
+      console.error('IndexedDB add error:', request.error);
+      reject(request.error);
+    };
   });
 }
 
-// Get all queued operations
+// 3. Get all queued operations
 async function getOfflineProfiles(db) {
   return new Promise((resolve, reject) => {
     const tx = db.transaction('offlineProfiles', 'readonly');
@@ -455,7 +460,7 @@ async function getOfflineProfiles(db) {
   });
 }
 
-// Remove a synced operation
+// 4. Remove a synced operation
 async function removeOfflineProfile(db, id) {
   return new Promise((resolve, reject) => {
     const tx = db.transaction('offlineProfiles', 'readwrite');
@@ -466,16 +471,4 @@ async function removeOfflineProfile(db, id) {
   });
 }
 
-
-// FUNCTION RENDER PROFILES FRO LOCALSTORAGE AND UPDATE UI
-
-function renderProfilesFromLocalStorage() {
-  const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-  // Replace the container content with savedProfiles
-  const container = document.getElementById('pet-cards-container'); // or whatever your cards container is
-  container.innerHTML = ''; 
-  savedProfiles.forEach(profile => {
-    container.appendChild(createPetCard(profile)); // your existing function to render a card
-  });
-}
 
