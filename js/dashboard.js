@@ -1945,7 +1945,9 @@ showErrorNotification("❌ Failed to generate QR code. Please try again.")
 // Enhanced helper function for saving offline
 //===============================================
 async function saveProfile(profile) {
-  const isUpdate = editingProfileId !== null; // Check if we're editing
+  // ✅ DETERMINE IF THIS IS AN UPDATE OR ADD OPERATION
+  const existingProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+  const isUpdate = existingProfiles.some(p => p.id === profile.id);
   
   // Online: save directly to Firestore
   if (navigator.onLine && firebase.auth().currentUser) {
@@ -1958,9 +1960,11 @@ async function saveProfile(profile) {
     console.log("📴 Offline: Queuing profile operation");
 
     const db = await openIndexedDB();
+    // TO THIS:
+    const isUpdate = /* Check if profile exists */;
     await addOfflineProfile(db, { 
-      action: isUpdate ? 'update' : 'add', 
-      profile 
+     action: isUpdate ? 'update' : 'add', 
+    profile 
     });
 
     // Register background sync
