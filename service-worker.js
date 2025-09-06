@@ -3,7 +3,7 @@
 // Version: v14 (increment for updates)
 // ========================================
 
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v18';
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v19';
 const OFFLINE_CACHE = 'Pet-Health-Tracker-offline-v2';
 
 // Core app assets
@@ -250,32 +250,26 @@ async function syncOfflineProfiles() {
 
     console.log('🔄 Syncing', offlineProfiles.length, 'offline profiles');
 
-    for (const item of offlineProfiles) {
-      const { action, profile, profileId } = item;
-      
-      try {
-        if (action === 'add' || action === 'update') {
-          const docRef = firebase.firestore().collection('profiles').doc(profile.id);
-          await docRef.set(profile, { merge: true });
-          console.log(`✅ Synced profile ${profile.id} (${action})`);
-        } else if (action === 'delete') {
-          const docRef = firebase.firestore().collection('profiles').doc(profileId);
-          await docRef.delete();
-          console.log(`✅ Deleted profile ${profileId}`);
-        }
-
-        // Remove from queue after successful sync
-        await removeOfflineProfile(db, item.id);
-      } catch (err) {
-        console.warn(`⚠️ Could not sync profile operation:`, err);
-        // Don't remove from queue if sync failed
-      }
+for (const item of offlineProfiles) {
+  const { action, profile, profileId } = item;
+  
+  try {
+    if (action === 'add' || action === 'update') {
+      const docRef = firebase.firestore().collection('profiles').doc(profile.id);
+      await docRef.set(profile, { merge: true }); // merge: true works for both
+      console.log(`✅ Synced profile ${profile.id} (${action})`);
+    } else if (action === 'delete') {
+      const docRef = firebase.firestore().collection('profiles').doc(profileId);
+      await docRef.delete();
+      console.log(`✅ Deleted profile ${profileId}`);
     }
-
+    
+    await removeOfflineProfile(db, item.id); // Remove from queue after success
   } catch (err) {
-    console.error('❌ Background sync error:', err);
+    console.warn(`⚠️ Could not sync profile ${action} operation:`, err);
   }
 }
+
 
 
 
@@ -290,6 +284,7 @@ self.addEventListener('controllerchange', () => {
     clients.forEach(client => client.postMessage('updateAvailable'));
   });
 });
+
 
 
 
