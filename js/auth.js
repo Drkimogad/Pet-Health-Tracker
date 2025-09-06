@@ -242,8 +242,13 @@ function initAuthListeners() {
         }
 
         // ✅ Save to localStorage (fallback) - always update
-        localStorage.setItem("petProfiles", JSON.stringify(window.petProfiles));
-
+       // WITH THIS:
+       const localProfiles = JSON.parse(localStorage.getItem("petProfiles")) || [];
+      // Only overwrite if local storage is empty or we have newer online data
+        if (localProfiles.length === 0 || navigator.onLine) {
+       localStorage.setItem("petProfiles", JSON.stringify(window.petProfiles));
+         }
+        
         // ✅ Now render profiles from storage
         if (typeof loadSavedPetProfile === 'function') {
           await loadSavedPetProfile();
