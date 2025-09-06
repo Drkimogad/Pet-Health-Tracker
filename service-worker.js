@@ -237,7 +237,6 @@ self.addEventListener('sync', (event) => {
 });
 
 // Function to sync queued offline profiles
-// In service-worker.js - update the syncOfflineProfiles function
 async function syncOfflineProfiles() {
   try {
     const db = await openIndexedDB();
@@ -250,27 +249,30 @@ async function syncOfflineProfiles() {
 
     console.log('🔄 Syncing', offlineProfiles.length, 'offline profiles');
 
-for (const item of offlineProfiles) {
-  const { action, profile, profileId } = item;
-  
-  try {
-    if (action === 'add' || action === 'update') {
-      const docRef = firebase.firestore().collection('profiles').doc(profile.id);
-      await docRef.set(profile, { merge: true }); // merge: true works for both
-      console.log(`✅ Synced profile ${profile.id} (${action})`);
-    } else if (action === 'delete') {
-      const docRef = firebase.firestore().collection('profiles').doc(profileId);
-      await docRef.delete();
-      console.log(`✅ Deleted profile ${profileId}`);
-    }
+    for (const item of offlineProfiles) {
+      const { action, profile, profileId } = item;
+      
+      try {
+        if (action === 'add' || action === 'update') {
+          const docRef = firebase.firestore().collection('profiles').doc(profile.id);
+          await docRef.set(profile, { merge: true });
+          console.log(`✅ Synced profile ${profile.id} (${action})`);
+        } else if (action === 'delete') {
+          const docRef = firebase.firestore().collection('profiles').doc(profileId);
+          await docRef.delete();
+          console.log(`✅ Deleted profile ${profileId}`);
+        }
+        
+        await removeOfflineProfile(db, item.id); // Remove from queue after success
+      } catch (err) {
+        console.warn(`⚠️ Could not sync profile ${action} operation:`, err);
+      }
+    } // ← closes for loop
     
-    await removeOfflineProfile(db, item.id); // Remove from queue after success
-  } catch (err) {
-    console.warn(`⚠️ Could not sync profile ${action} operation:`, err);
+  } catch (err) { // ← This catch was missing!
+    console.error('❌ Background sync error:', err);
   }
-}
-
-
+} // ← closes syncOfflineProfiles function
 
 
 // ======== UPDATE NOTIFICATION ========
@@ -284,15 +286,4 @@ self.addEventListener('controllerchange', () => {
     clients.forEach(client => client.postMessage('updateAvailable'));
   });
 });
-
-
-
-
-
-
-
-
-
-
-
-
+    
