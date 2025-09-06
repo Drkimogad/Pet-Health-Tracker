@@ -3,7 +3,7 @@
 // Version: v14 (increment for updates)
 // ========================================
 
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v16';
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v17';
 const OFFLINE_CACHE = 'Pet-Health-Tracker-offline-v2';
 
 // Core app assets
@@ -222,15 +222,6 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// ======== BACKGROUND SYNC ========
-// (Optional) You can add background sync for offline data later
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'background-sync') {
-    console.log('Background sync triggered');
-    // You can implement background sync for Firestore operations here
-  }
-});
-
 
 // ======== BACKGROUND SYNC ========
 self.addEventListener('sync', (event) => {
@@ -241,10 +232,11 @@ self.addEventListener('sync', (event) => {
 });
 
 // Function to sync queued offline profiles
+// In service-worker.js - update the syncOfflineProfiles function
 async function syncOfflineProfiles() {
   try {
-    const db = await openIndexedDB(); // IndexedDB wrapper
-    const offlineProfiles = await getOfflineProfiles(db); // get queued operations
+    const db = await openIndexedDB();
+    const offlineProfiles = await getOfflineProfiles(db);
 
     if (!offlineProfiles.length) {
       console.log('📭 No offline profiles to sync');
@@ -254,26 +246,24 @@ async function syncOfflineProfiles() {
     console.log('🔄 Syncing', offlineProfiles.length, 'offline profiles');
 
     for (const item of offlineProfiles) {
-      const { action, profile, profileId } = item; // profileId used for delete
-      const user = firebase.auth().currentUser;
-      if (!user) continue; // skip if no logged-in user
-
+      const { action, profile, profileId } = item;
+      
       try {
-        const docRef = (action === 'delete')
-          ? firebase.firestore().collection('profiles').doc(profileId)
-          : firebase.firestore().collection('profiles').doc(profile.id);
-
         if (action === 'add' || action === 'update') {
+          const docRef = firebase.firestore().collection('profiles').doc(profile.id);
           await docRef.set(profile, { merge: true });
+          console.log(`✅ Synced profile ${profile.id} (${action})`);
         } else if (action === 'delete') {
+          const docRef = firebase.firestore().collection('profiles').doc(profileId);
           await docRef.delete();
+          console.log(`✅ Deleted profile ${profileId}`);
         }
 
-        // remove from queue
+        // Remove from queue after successful sync
         await removeOfflineProfile(db, item.id);
-        console.log(`✅ Synced profile ${action === 'delete' ? profileId : profile.id} (${action})`);
       } catch (err) {
-        console.warn(`⚠️ Could not sync profile ${action === 'delete' ? profileId : profile.id}`, err);
+        console.warn(`⚠️ Could not sync profile operation:`, err);
+        // Don't remove from queue if sync failed
       }
     }
 
@@ -295,6 +285,7 @@ self.addEventListener('controllerchange', () => {
     clients.forEach(client => client.postMessage('updateAvailable'));
   });
 });
+
 
 
 
