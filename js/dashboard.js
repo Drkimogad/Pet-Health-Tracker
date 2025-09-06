@@ -996,9 +996,12 @@ showDashboardLoader(false, "success-deleting");
 
   // 🟢 Call deleteProfile to handle ALL offline deletion operations
   await deleteProfile(petId);
-  
-  // 🟢 Show success message after deleteProfile completes
-  showDashboardLoader(false, "success-deleting");
+        
+    // 🟢 Show success message after deleteProfile completes
+    showDashboardLoader(false, "success-deleting");
+  } catch (error) {  // THIS CATCH WORKS FOR BOTH ONLINE & OFFLINE DELETION
+    console.error('❌ Offline deletion failed:', error);
+    showDashboardLoader(false, "error-deleting");
     }
 }
 
