@@ -1961,9 +1961,8 @@ async function saveProfile(profile) {
 
     const db = await openIndexedDB();
     // TO THIS:
-    const isUpdate = /* Check if profile exists */;
     await addOfflineProfile(db, { 
-     action: isUpdate ? 'update' : 'add', 
+    action: isUpdate ? 'update' : 'add',  // ← USE THE isUpdate RESULT HERE
     profile 
     });
 
