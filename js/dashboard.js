@@ -1941,20 +1941,27 @@ showErrorNotification("❌ Failed to generate QR code. Please try again.")
   }
 } 
 
-// for saving offline
+//=================================================
+// Enhanced helper function for saving offline
+//===============================================
 async function saveProfile(profile) {
+  const isUpdate = editingProfileId !== null; // Check if we're editing
+  
   // Online: save directly to Firestore
   if (navigator.onLine && firebase.auth().currentUser) {
     const db = firebase.firestore();
     const profileRef = db.collection("profiles").doc(profile.id);
     await profileRef.set(profile, { merge: true });
-    console.log("📥 Profile saved to Firestore online:", profile);
+    console.log(`📥 Profile ${isUpdate ? 'updated' : 'saved'} to Firestore online:`, profile);
   } else {
-    // Offline: store in IndexedDB queue
+    // Offline: store in IndexedDB queue with correct action type
     console.log("📴 Offline: Queuing profile operation");
 
-    const db = await openIndexedDB();  // Your helper to open IndexedDB
-    await addOfflineProfile(db, { action: 'add', profile });
+    const db = await openIndexedDB();
+    await addOfflineProfile(db, { 
+      action: isUpdate ? 'update' : 'add', 
+      profile 
+    });
 
     // Register background sync
     if ('serviceWorker' in navigator && 'SyncManager' in window) {
@@ -1964,17 +1971,26 @@ async function saveProfile(profile) {
     }
   }
 
-  // Always update localStorage for UI fallback
-  savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+  // Update localStorage for UI - CRITICAL: Do this AFTER queue operation
+  let savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
   const index = savedProfiles.findIndex(p => p.id === profile.id);
+  
   if (index !== -1) {
-    savedProfiles[index] = profile;
+    savedProfiles[index] = profile; // Update existing
   } else {
-    savedProfiles.push(profile);
+    savedProfiles.push(profile); // Add new
   }
+  
   localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+  window.petProfiles = savedProfiles; // Keep memory in sync
+  
+  // Update UI immediately after localStorage is updated
+  loadSavedPetProfile();
 }
+
+//===============================================
 // HELPER FOR OFFLINE DELETE ONLY
+//==============================================
 async function deleteProfile(profileId) {
   // 🟢 REMOVE online handling - only handle offline
   console.log("📴 Offline: Queuing delete operation");
