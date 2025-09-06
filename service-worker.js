@@ -3,7 +3,7 @@
 // Version: v14 (increment for updates)
 // ========================================
 
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v17';
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v18';
 const OFFLINE_CACHE = 'Pet-Health-Tracker-offline-v2';
 
 // Core app assets
@@ -72,13 +72,18 @@ async function openIndexedDB() {
 }
 
 // Add a queued operation
+// Enhance your IndexedDB helpers with better error handling
 async function addOfflineProfile(db, data) {
   return new Promise((resolve, reject) => {
     const tx = db.transaction('offlineProfiles', 'readwrite');
     const store = tx.objectStore('offlineProfiles');
-    store.add(data);
-    tx.oncomplete = () => resolve();
-    tx.onerror = () => reject(tx.error);
+    const request = store.add(data);
+    
+    request.onsuccess = () => resolve(request.result); // Return the ID
+    request.onerror = () => {
+      console.error('IndexedDB add error:', request.error);
+      reject(request.error);
+    };
   });
 }
 
@@ -285,6 +290,7 @@ self.addEventListener('controllerchange', () => {
     clients.forEach(client => client.postMessage('updateAvailable'));
   });
 });
+
 
 
 
