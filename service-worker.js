@@ -3,6 +3,25 @@
 // Version: v14 (increment for updates)
 // ========================================
 
+// AT THE TOP OF YOUR SERVICE WORKER
+importScripts('https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js');
+
+// Initialize Firebase in Service Worker
+const firebaseConfig = {
+  apiKey: "AIzaSyAy2ObF1WWPurBa3TZ_AbBb00o80ZmlLAo",
+  authDomain: "pet-health-tracker-4ec31.firebaseapp.com",
+  projectId: "pet-health-tracker-4ec31",
+  storageBucket: "pet-health-tracker-4ec31.firebasestorage.app",
+  messagingSenderId: "123508617321",
+  appId: "1:123508617321:web:6abb04f74ce73d7d4232f8",
+  measurementId: "G-7YDDLF95KR"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+//==========================================================
 const CACHE_NAME = 'Pet-Health-Tracker-cache-v19';
 const OFFLINE_CACHE = 'Pet-Health-Tracker-offline-v2';
 
@@ -287,3 +306,4 @@ self.addEventListener('controllerchange', () => {
   });
 });
     
+
