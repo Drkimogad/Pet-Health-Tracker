@@ -301,29 +301,40 @@ async function loadSavedPetProfile() {
   try {
     let savedProfiles = [];
 
-    if (firebase.auth().currentUser) {
+    // ✅ CHECK ONLINE STATUS FIRST
+    const isOnline = navigator.onLine;
+    const user = firebase.auth().currentUser;
+
+    if (isOnline && user) {
       try {
+        // ONLINE: Try to load from Firestore
         const snapshot = await firebase.firestore()
           .collection("profiles")
-          .where("ownerId", "==", firebase.auth().currentUser.uid)
+          .where("ownerId", "==", user.uid)
           .get();
 
         if (!snapshot.empty) {
           savedProfiles = snapshot.docs.map(doc => doc.data());
           window.petProfiles = savedProfiles;
-          localStorage.setItem('petProfiles', JSON.stringify(savedProfiles)); // ✅ ADD THIS
+          localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
           console.log("🔥 Loaded from Firestore:", savedProfiles);
-            
         } else {
-          console.warn("⚠️ No profiles in Firestore. Falling back to localStorage.");
+          // No profiles in Firestore, fallback to localStorage
+          console.warn("⚠️ No profiles in Firestore. Using localStorage.");
           savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
         }
       } catch (err) {
+        // Firestore failed, fallback to localStorage
         console.error("❌ Firestore fetch failed:", err);
         savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
       }
+    } else {
+      // OFFLINE or NO USER: Load from localStorage only
+      console.log("📴 Offline mode: Loading from localStorage");
+      savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
     }
 
+    // ✅ RENDER THE PROFILES (whether from Firestore or localStorage)
     const savedProfilesList = DOM.savedProfilesList;
     if (!savedProfilesList) return;
     savedProfilesList.innerHTML = '';
@@ -1987,9 +1998,12 @@ async function saveProfile(profile) {
   localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
   window.petProfiles = savedProfiles; // Keep memory in sync
   
-  // Update UI immediately after localStorage is updated
-  loadSavedPetProfile();
-}
+// Update UI immediately after localStorage is updated
+// ✅ ADD THIS - Force immediate UI refresh
+if (typeof loadSavedPetProfile === 'function') {
+  loadSavedPetProfile(); // Update UI NOW
+ }
+} // CLOSES THE FUNCTION
 
 //===============================================
 // HELPER FOR OFFLINE DELETE ONLY
@@ -2013,9 +2027,11 @@ async function deleteProfile(profileId) {
   localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
   window.petProfiles = window.petProfiles.filter(p => p.id !== profileId);
   
-  // Update UI
-  loadSavedPetProfile();
-}
+// ✅ ADD THIS - Force immediate UI refresh  
+if (typeof loadSavedPetProfile === 'function') {
+  loadSavedPetProfile(); // Update UI NOW
+ }
+} // CLOSES FUNCTION
 
 
 // ======== EVENT DELEGATION (FIXED) ========
