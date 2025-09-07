@@ -2,7 +2,7 @@
 // SERVICE WORKER - Pet Health Tracker
 // Version: v14 (increment for updates)
 // ========================================
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v22';
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v23';
 const OFFLINE_CACHE = 'Pet-Health-Tracker-offline-v2';
 
 // Core app assets
@@ -282,7 +282,10 @@ async function syncOfflineProfiles() {
       try {
         if (action === 'add' || action === 'update') {
           const docRef = firebase.firestore().collection('profiles').doc(profile.id);
-          await docRef.set(profile, { merge: true });
+          await docRef.set(profile, { 
+            merge: true, 
+            headers: { 'x-background-sync': 'true' } // ← ADD THIS
+     });
           console.log(`✅ Synced profile ${profile.id} (${action})`);
         } else if (action === 'delete') {
           const docRef = firebase.firestore().collection('profiles').doc(profileId);
@@ -314,6 +317,7 @@ self.addEventListener('controllerchange', () => {
   });
 });
     
+
 
 
 
