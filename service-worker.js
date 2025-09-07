@@ -2,7 +2,7 @@
 // SERVICE WORKER - Pet Health Tracker
 // Version: v14 (increment for updates)
 // ========================================
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v23';
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v24';
 const OFFLINE_CACHE = 'Pet-Health-Tracker-offline-v2';
 
 // Core app assets
@@ -280,12 +280,16 @@ async function syncOfflineProfiles() {
       const { action, profile, profileId } = item;
       
       try {
+        // ✅ CRITICAL CHECK: Ensure profile has ownerId for security rules
+        if ((action === 'add' || action === 'update') && (!profile || !profile.ownerId)) {
+          console.warn('⚠️ Profile missing ownerId, skipping sync:', profile);
+          continue; // Skip invalid profiles
+        }
+
         if (action === 'add' || action === 'update') {
           const docRef = firebase.firestore().collection('profiles').doc(profile.id);
-          await docRef.set(profile, { 
-            merge: true, 
-            headers: { 'x-background-sync': 'true' } // ← ADD THIS
-     });
+          // ✅ REMOVED headers - not needed with updated rules
+          await docRef.set(profile, { merge: true });
           console.log(`✅ Synced profile ${profile.id} (${action})`);
         } else if (action === 'delete') {
           const docRef = firebase.firestore().collection('profiles').doc(profileId);
@@ -296,6 +300,7 @@ async function syncOfflineProfiles() {
         await removeOfflineProfile(db, item.id); // Remove from queue after success
       } catch (err) {
         console.warn(`⚠️ Could not sync profile ${action} operation:`, err);
+        // Don't remove from queue if sync failed - will retry later
       }
     }
     
@@ -317,6 +322,7 @@ self.addEventListener('controllerchange', () => {
   });
 });
     
+
 
 
 
