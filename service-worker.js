@@ -2,7 +2,7 @@
 // SERVICE WORKER - Pet Health Tracker
 // Version: v14 (increment for updates)
 // ========================================
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v21';
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v22';
 const OFFLINE_CACHE = 'Pet-Health-Tracker-offline-v2';
 
 // Core app assets
@@ -314,6 +314,7 @@ self.addEventListener('controllerchange', () => {
   });
 });
     
+
 
 
 
