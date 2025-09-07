@@ -2,33 +2,7 @@
 // SERVICE WORKER - Pet Health Tracker
 // Version: v14 (increment for updates)
 // ========================================
-
-// AT THE TOP OF YOUR SERVICE WORKER (service-worker.js)
-importScripts('/js/lib/firebase-app-compat.js');
-importScripts('/js/lib/firebase-firestore-compat.js');
-
-// Initialize Firebase in Service Worker
-const firebaseConfig = {
-  apiKey: "AIzaSyAy2ObF1WWPurBa3TZ_AbBb00o80ZmlLAo",
-  authDomain: "pet-health-tracker-4ec31.firebaseapp.com",
-  projectId: "pet-health-tracker-4ec31",
-  storageBucket: "pet-health-tracker-4ec31.firebasestorage.app",
-  messagingSenderId: "123508617321",
-  appId: "1:123508617321:web:6abb04f74ce73d7d4232f8",
-  measurementId: "G-7YDDLF95KR"
-};
-
-// Initialize Firebase
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-  console.log('✅ Firebase initialized in Service Worker');
-} else {
-  firebase.app(); // Use existing app
-}
-
-
-//==========================================================
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v20';
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v21';
 const OFFLINE_CACHE = 'Pet-Health-Tracker-offline-v2';
 
 // Core app assets
@@ -166,6 +140,29 @@ event.waitUntil(
 );
 });
 
+//========================================================================================================================
+//INITIALIZE FIREBASE AFTER ALL LIBRARIES HAVE BEEN CACHED AND SW INSTALLATION COMPLETED OTHERWISE IT WILL GET STUCK
+//========================================================================================================================
+importScripts('/js/lib/firebase-app-compat.js');
+importScripts('/js/lib/firebase-firestore-compat.js');
+// Initialize Firebase in Service Worker
+const firebaseConfig = {
+  apiKey: "AIzaSyAy2ObF1WWPurBa3TZ_AbBb00o80ZmlLAo",
+  authDomain: "pet-health-tracker-4ec31.firebaseapp.com",
+  projectId: "pet-health-tracker-4ec31",
+  storageBucket: "pet-health-tracker-4ec31.firebasestorage.app",
+  messagingSenderId: "123508617321",
+  appId: "1:123508617321:web:6abb04f74ce73d7d4232f8",
+  measurementId: "G-7YDDLF95KR"
+};
+
+// Initialize Firebase
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+  console.log('✅ Firebase initialized in Service Worker');
+} else {
+  firebase.app(); // Use existing app
+}
 
 // ======== FETCH HANDLER ========
 self.addEventListener('fetch', (event) => {
@@ -312,5 +309,6 @@ self.addEventListener('controllerchange', () => {
   });
 });
     
+
 
 
