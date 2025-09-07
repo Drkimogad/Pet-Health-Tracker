@@ -143,8 +143,8 @@ event.waitUntil(
 //========================================================================================================================
 //INITIALIZE FIREBASE AFTER ALL LIBRARIES HAVE BEEN CACHED AND SW INSTALLATION COMPLETED OTHERWISE IT WILL GET STUCK
 //========================================================================================================================
-importScripts('/js/lib/firebase-app-compat.js');
-importScripts('/js/lib/firebase-firestore-compat.js');
+importScripts('./js/lib/firebase-app-compat.js');
+importScripts('./js/lib/firebase-firestore-compat.js');
 // Initialize Firebase in Service Worker
 const firebaseConfig = {
   apiKey: "AIzaSyAy2ObF1WWPurBa3TZ_AbBb00o80ZmlLAo",
@@ -157,12 +157,17 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-  console.log('✅ Firebase initialized in Service Worker');
-} else {
-  firebase.app(); // Use existing app
-}
+// Wait a moment for files to load, then initialize
+setTimeout(() => {
+  if (typeof firebase !== 'undefined' && !firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+    console.log('✅ Firebase initialized in Service Worker');
+  } else if (typeof firebase !== 'undefined') {
+    console.log('✅ Firebase already available in Service Worker');
+  } else {
+    console.warn('⚠️ Firebase not loaded in Service Worker');
+  }
+}, 100);
 
 // ======== FETCH HANDLER ========
 self.addEventListener('fetch', (event) => {
@@ -309,6 +314,7 @@ self.addEventListener('controllerchange', () => {
   });
 });
     
+
 
 
 
