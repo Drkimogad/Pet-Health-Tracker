@@ -2,7 +2,7 @@
 // SERVICE WORKER - Pet Health Tracker
 // Version: v14 (increment for updates)
 // ========================================
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v25';
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v26';
 const OFFLINE_CACHE = 'Pet-Health-Tracker-offline-v2';
 
 // Core app assets
@@ -266,9 +266,15 @@ self.addEventListener('sync', (event) => {
 // Function to sync queued offline profiles
 async function syncOfflineProfiles() {
   try {
+    console.log('🔄 Background sync triggered for petProfiles');
+    
     const db = await openIndexedDB();
     const offlineProfiles = await getOfflineProfiles(db);
 
+     // 🔥 ADD DEBUG LOGS:
+    console.log('📋 Offline profiles in queue:', offlineProfiles);
+    console.log('📋 Number of profiles:', offlineProfiles.length);
+    
     if (!offlineProfiles.length) {
       console.log('📭 No offline profiles to sync');
       return;
@@ -328,6 +334,7 @@ self.addEventListener('controllerchange', () => {
   });
 });
     
+
 
 
 
