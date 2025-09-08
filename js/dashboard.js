@@ -2012,10 +2012,11 @@ async function deleteProfile(profileId) {
   console.log("📴 Offline: Queuing delete operation for:", profileId);
 
   const db = await openIndexedDB();
-  const operationData = { 
+   // ✅ CHANGE THIS LINE - use profileId at root, not nested
+  await addOfflineProfile(db, { 
     action: 'delete', 
-    profile: { id: profileId }
-  };
+    profileId: profileId  // ← MOVE TO ROOT LEVEL
+  });
   
   await addOfflineProfile(db, operationData);
 
