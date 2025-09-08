@@ -591,6 +591,10 @@ function checkOnlineStatus() {
     statusElement.textContent = 'Online';
     statusElement.className = 'online-status online';
     console.log('✅ Online - Connected to server');
+
+    // 🔥 ADD MANUAL SYNC TRIGGER HERE (ONLY WHEN COMING ONLINE)
+    triggerBackgroundSync();
+    
   } else {
     statusElement.textContent = 'Offline - Using local data';
     statusElement.className = 'online-status offline';
@@ -605,6 +609,21 @@ function createStatusElement() {
   statusElement.id = 'online-status';
   document.body.appendChild(statusElement);
   return statusElement;
+}
+
+// ======== MANUAL SYNC TRIGGER FUNCTION ======== ADDED RECENTLY
+function triggerBackgroundSync() {
+  if ('serviceWorker' in navigator && 'SyncManager' in window) {
+    navigator.serviceWorker.ready.then(registration => {
+      registration.sync.register('petProfiles-sync')
+        .then(() => console.log('🔁 Manual background sync triggered'))
+        .catch(err => console.log('⚠️ Manual sync not needed or failed:', err));
+    }).catch(err => {
+      console.log('⚠️ Service worker not ready for sync:', err);
+    });
+  } else {
+    console.log('ℹ️ Background sync API not available');
+  }
 }
 
 // Listen for online/offline events
