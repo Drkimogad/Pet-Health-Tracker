@@ -2013,8 +2013,12 @@ async function deleteProfile(profileId) {
   console.log("📴 Offline: Queuing delete operation");
 
   const db = await openIndexedDB();
-  await addOfflineProfile(db, { action: 'delete', profileId });
-
+ // ✅ CHANGE THIS LINE:
+  await addOfflineProfile(db, { 
+    action: 'delete', 
+    profile: { id: profileId }  // ← Nest under "profile" to match index
+  });
+    
   if ('serviceWorker' in navigator && 'SyncManager' in window) {
     const registration = await navigator.serviceWorker.ready;
     await registration.sync.register('petProfiles-sync');
