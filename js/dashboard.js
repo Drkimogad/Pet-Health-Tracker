@@ -2009,21 +2009,27 @@ if (typeof loadSavedPetProfile === 'function') {
 // HELPER FOR OFFLINE DELETE ONLY
 //==============================================
 async function deleteProfile(profileId) {
-  // 🟢 REMOVE online handling - only handle offline
-  console.log("📴 Offline: Queuing delete operation");
+  console.log("📴 Offline: Queuing delete operation for:", profileId);
 
   const db = await openIndexedDB();
- // ✅ CHANGE THIS LINE:
-  await addOfflineProfile(db, { 
+  const operationData = { 
     action: 'delete', 
-    profile: { id: profileId }  // ← Nest under "profile" to match index
-  });
-    
+    profile: { id: profileId }  // Make sure this structure is correct
+  };
+  
+  console.log("📋 Queueing data:", operationData);
+  await addOfflineProfile(db, operationData);
+
   if ('serviceWorker' in navigator && 'SyncManager' in window) {
-    const registration = await navigator.serviceWorker.ready;
-    await registration.sync.register('petProfiles-sync');
-    console.log("🔁 Background sync registered for offline deletion");
+    try {
+      const registration = await navigator.serviceWorker.ready;
+      await registration.sync.register('petProfiles-sync');
+      console.log('✅ Sync registered successfully');
+    } catch (err) {
+      console.error('❌ Sync registration failed:', err);
+    }
   }
+
 
   // Update localStorage/UI immediately
   let savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
