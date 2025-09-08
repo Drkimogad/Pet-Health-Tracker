@@ -612,19 +612,25 @@ function createStatusElement() {
 }
 
 // ======== MANUAL SYNC TRIGGER FUNCTION ======== ADDED RECENTLY
-function triggerBackgroundSync() {
+async function triggerBackgroundSync() {
   if ('serviceWorker' in navigator && 'SyncManager' in window) {
-    navigator.serviceWorker.ready.then(registration => {
-      registration.sync.register('petProfiles-sync')
-        .then(() => console.log('🔁 Manual background sync triggered'))
-        .catch(err => console.log('⚠️ Manual sync not needed or failed:', err));
-    }).catch(err => {
-      console.log('⚠️ Service worker not ready for sync:', err);
-    });
+    try {
+      // ✅ WAIT for service worker to be fully ready
+      const registration = await navigator.serviceWorker.ready;
+      
+      // ✅ ADD DELAY to ensure Firebase is initialized in SW
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      await registration.sync.register('petProfiles-sync');
+      console.log('🔁 Manual background sync triggered (after readiness)');
+    } catch (err) {
+      console.log('⚠️ Manual sync failed:', err);
+    }
   } else {
     console.log('ℹ️ Background sync API not available');
   }
 }
+
 
 // Listen for online/offline events
 window.addEventListener('online', checkOnlineStatus);
