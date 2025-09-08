@@ -2014,10 +2014,9 @@ async function deleteProfile(profileId) {
   const db = await openIndexedDB();
   const operationData = { 
     action: 'delete', 
-    profile: { id: profileId }  // Make sure this structure is correct
+    profile: { id: profileId }
   };
   
-  console.log("📋 Queueing data:", operationData);
   await addOfflineProfile(db, operationData);
 
   if ('serviceWorker' in navigator && 'SyncManager' in window) {
