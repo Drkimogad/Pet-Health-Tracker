@@ -2,7 +2,7 @@
 // SERVICE WORKER - Pet Health Tracker
 // Version: v14 (increment for updates)
 // ========================================
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v24';
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v25';
 const OFFLINE_CACHE = 'Pet-Health-Tracker-offline-v2';
 
 // Core app assets
@@ -278,6 +278,12 @@ async function syncOfflineProfiles() {
 
     for (const item of offlineProfiles) {
       const { action, profile, profileId } = item;
+
+        // ✅ ADD VALIDATION CHECKS HERE:
+  if (action === 'delete' && !profileId) {
+    console.warn('⚠️ Delete operation missing profileId, skipping');
+    continue; // Skip invalid delete operations
+  }
       
       try {
         // ✅ CRITICAL CHECK: Ensure profile has ownerId for security rules
@@ -322,6 +328,7 @@ self.addEventListener('controllerchange', () => {
   });
 });
     
+
 
 
 
