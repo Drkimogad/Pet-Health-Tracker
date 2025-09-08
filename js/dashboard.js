@@ -2009,6 +2009,10 @@ if (typeof loadSavedPetProfile === 'function') {
 // HELPER FOR OFFLINE DELETE ONLY
 //==============================================
 async function deleteProfile(profileId) {
+    // Get the profile first to include ownerId
+  const profiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+  const profile = profiles.find(p => p.id === profileId);
+    
   console.log("📴 Offline: Queuing delete operation for:", profileId);
 
   const db = await openIndexedDB();
@@ -2016,7 +2020,8 @@ async function deleteProfile(profileId) {
   // ✅ CORRECTED - use consistent variable name
   const operationData = { 
     action: 'delete', 
-    profileId: profileId  // ← profileId at ROOT level
+    profileId: profileId,  // ← profileId at ROOT level
+    ownerId: profile?.ownerId // ← Include ownerId for validation
   };
   
   console.log("📋 Queueing data:", operationData);
