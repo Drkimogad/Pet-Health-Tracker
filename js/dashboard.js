@@ -2012,13 +2012,15 @@ async function deleteProfile(profileId) {
   console.log("📴 Offline: Queuing delete operation for:", profileId);
 
   const db = await openIndexedDB();
-   // ✅ CHANGE THIS LINE - use profileId at root, not nested
-  await addOfflineProfile(db, { 
-    action: 'delete', 
-    profileId: profileId  // ← MOVE TO ROOT LEVEL
-  });
   
-  await addOfflineProfile(db, operationData);
+  // ✅ CORRECTED - use consistent variable name
+  const operationData = { 
+    action: 'delete', 
+    profileId: profileId  // ← profileId at ROOT level
+  };
+  
+  console.log("📋 Queueing data:", operationData);
+  await addOfflineProfile(db, operationData);  // ← FIXED VARIABLE NAME
 
   if ('serviceWorker' in navigator && 'SyncManager' in window) {
     try {
