@@ -2022,7 +2022,8 @@ async function deleteProfile(profileId) {
   if ('serviceWorker' in navigator && 'SyncManager' in window) {
     const registration = await navigator.serviceWorker.ready;
     await registration.sync.register('petProfiles-sync');
-    console.log("🔁 Background sync registered for offline deletion");
+      .then(() => console.log('✅ Sync registered successfully'))
+      .catch(err => console.error('❌ Sync registration failed:', err)); // ← ADD THIS
   }
 
   // Update localStorage/UI immediately
