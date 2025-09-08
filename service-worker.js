@@ -2,7 +2,7 @@
 // SERVICE WORKER - Pet Health Tracker
 // Version: v14 (increment for updates)
 // ========================================
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v26';
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v27';
 const OFFLINE_CACHE = 'Pet-Health-Tracker-offline-v2';
 
 // Core app assets
@@ -257,6 +257,8 @@ self.addEventListener('activate', (event) => {
 
 // ======== BACKGROUND SYNC ========
 self.addEventListener('sync', (event) => {
+    console.log('🔄 Sync event received with tag:', event.tag);
+
   if (event.tag === 'petProfiles-sync') {
     console.log('🔄 Background sync triggered for petProfiles');
     event.waitUntil(syncOfflineProfiles());
@@ -334,6 +336,7 @@ self.addEventListener('controllerchange', () => {
   });
 });
     
+
 
 
 
