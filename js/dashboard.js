@@ -2022,7 +2022,7 @@ async function deleteProfile(profileId) {
   if ('serviceWorker' in navigator && 'SyncManager' in window) {
     const registration = await navigator.serviceWorker.ready;
     await registration.sync.register('petProfiles-sync');
-      .then(() => console.log('✅ Sync registered successfully'))
+      .then(() => console.log('✅ Sync registered successfully'));
       .catch(err => console.error('❌ Sync registration failed:', err)); // ← ADD THIS
   }
 
