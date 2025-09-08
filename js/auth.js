@@ -582,7 +582,27 @@ function wireAuthToggleLinks() {
   }
 }
 
+// ======== SERVICE WORKER SYNC TRIGGER ========
+function triggerServiceWorkerSync() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.ready.then(registration => {
+      // Wait 3 seconds to ensure SW is fully initialized
+      setTimeout(() => {
+        if (registration.active) {
+          registration.active.postMessage('triggerSync');
+          console.log('📤 Message sent to service worker: triggerSync');
+        } else {
+          console.log('⚠️ Service worker not active yet');
+        }
+      }, 3000);
+    }).catch(err => {
+      console.log('⚠️ Service worker not ready:', err);
+    });
+  }
+}
+
 // ======== OFFLINE STATUS DETECTION ========
+// Call this when coming online instead of manual sync
 function checkOnlineStatus() {
   const isOnline = navigator.onLine;
   const statusElement = document.getElementById('online-status') || createStatusElement();
@@ -591,9 +611,9 @@ function checkOnlineStatus() {
     statusElement.textContent = 'Online';
     statusElement.className = 'online-status online';
     console.log('✅ Online - Connected to server');
-
-    // 🔥 ADD MANUAL SYNC TRIGGER HERE (ONLY WHEN COMING ONLINE)
-    triggerBackgroundSync();
+    
+    // ✅ REPLACE MANUAL SYNC WITH MESSAGE TRIGGER
+    triggerServiceWorkerSync();
     
   } else {
     statusElement.textContent = 'Offline - Using local data';
@@ -604,33 +624,13 @@ function checkOnlineStatus() {
   return isOnline;
 }
 
+
 function createStatusElement() {
   const statusElement = document.createElement('div');
   statusElement.id = 'online-status';
   document.body.appendChild(statusElement);
   return statusElement;
 }
-
-// ======== MANUAL SYNC TRIGGER FUNCTION ======== ADDED RECENTLY
-async function triggerBackgroundSync() {
-  if ('serviceWorker' in navigator && 'SyncManager' in window) {
-    try {
-      // ✅ WAIT for service worker to be fully ready
-      const registration = await navigator.serviceWorker.ready;
-      
-      // ✅ ADD DELAY to ensure Firebase is initialized in SW
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      await registration.sync.register('petProfiles-sync');
-      console.log('🔁 Manual background sync triggered (after readiness)');
-    } catch (err) {
-      console.log('⚠️ Manual sync failed:', err);
-    }
-  } else {
-    console.log('ℹ️ Background sync API not available');
-  }
-}
-
 
 // Listen for online/offline events
 window.addEventListener('online', checkOnlineStatus);
