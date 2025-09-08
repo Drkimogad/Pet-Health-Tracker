@@ -2,7 +2,7 @@
 // SERVICE WORKER - Pet Health Tracker
 // Version: v14 (increment for updates)
 // ========================================
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v27';
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v28';
 const OFFLINE_CACHE = 'Pet-Health-Tracker-offline-v2';
 
 // Core app assets
@@ -256,27 +256,27 @@ self.addEventListener('activate', (event) => {
 
 
 // ======== BACKGROUND SYNC ========
+// ======== BACKGROUND SYNC ========
 self.addEventListener('sync', (event) => {
-    console.log('🔄 Sync event received with tag:', event.tag);
-
+  console.log('🔄 Sync event received with tag:', event.tag);
   if (event.tag === 'petProfiles-sync') {
     console.log('🔄 Background sync triggered for petProfiles');
     event.waitUntil(syncOfflineProfiles());
   }
 });
 
-// Function to sync queued offline profiles
+// Function to sync queued offline profiles WITH DEEP DEBUGGING
 async function syncOfflineProfiles() {
   try {
-    console.log('🔄 Background sync triggered for petProfiles');
+    console.log('🔄 Starting syncOfflineProfiles');
     
     const db = await openIndexedDB();
+    console.log('✅ IndexedDB opened');
+    
     const offlineProfiles = await getOfflineProfiles(db);
-
-     // 🔥 ADD DEBUG LOGS:
     console.log('📋 Offline profiles in queue:', offlineProfiles);
     console.log('📋 Number of profiles:', offlineProfiles.length);
-    
+
     if (!offlineProfiles.length) {
       console.log('📭 No offline profiles to sync');
       return;
@@ -285,44 +285,48 @@ async function syncOfflineProfiles() {
     console.log('🔄 Syncing', offlineProfiles.length, 'offline profiles');
 
     for (const item of offlineProfiles) {
+      console.log('🔍 Processing item:', item);
       const { action, profile, profileId } = item;
+      console.log('🔍 Action:', action, 'Profile:', profile, 'ProfileId:', profileId);
 
-        // ✅ ADD VALIDATION CHECKS HERE:
-  if (action === 'delete' && !profileId) {
-    console.warn('⚠️ Delete operation missing profileId, skipping');
-    continue; // Skip invalid delete operations
-  }
+      // ✅ VALIDATION: Check for missing profileId in delete operations
+      if (action === 'delete' && !profileId) {
+        console.warn('⚠️ Delete operation missing profileId, skipping');
+        continue;
+      }
       
       try {
-        // ✅ CRITICAL CHECK: Ensure profile has ownerId for security rules
+        // ✅ VALIDATION: Ensure profile has ownerId for add/update
         if ((action === 'add' || action === 'update') && (!profile || !profile.ownerId)) {
           console.warn('⚠️ Profile missing ownerId, skipping sync:', profile);
-          continue; // Skip invalid profiles
+          continue;
         }
 
         if (action === 'add' || action === 'update') {
+          console.log('🔄 Processing add/update for profile:', profile.id);
           const docRef = firebase.firestore().collection('profiles').doc(profile.id);
-          // ✅ REMOVED headers - not needed with updated rules
           await docRef.set(profile, { merge: true });
           console.log(`✅ Synced profile ${profile.id} (${action})`);
         } else if (action === 'delete') {
+          console.log('🔄 Processing delete for profileId:', profileId);
           const docRef = firebase.firestore().collection('profiles').doc(profileId);
           await docRef.delete();
           console.log(`✅ Deleted profile ${profileId}`);
         }
         
-        await removeOfflineProfile(db, item.id); // Remove from queue after success
+        await removeOfflineProfile(db, item.id);
+        console.log('✅ Removed item from queue:', item.id);
       } catch (err) {
         console.warn(`⚠️ Could not sync profile ${action} operation:`, err);
-        // Don't remove from queue if sync failed - will retry later
+        console.warn('⚠️ Error details:', err.message, err.code);
       }
     }
     
   } catch (err) {
     console.error('❌ Background sync error:', err);
+    console.error('❌ Error details:', err.message, err.code);
   }
 }
-
 
 // ======== UPDATE NOTIFICATION ========
 self.addEventListener('message', (event) => {
@@ -336,6 +340,7 @@ self.addEventListener('controllerchange', () => {
   });
 });
     
+
 
 
 
