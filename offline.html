@@ -71,55 +71,43 @@
     <!-- NEW: Last Online Time -->
     <p id="lastOnline">Last Online: <span id="lastOnlineTime">Unknown</span></p>
 
-    <script>
-        function checkAndRedirect() {
-          if (navigator.onLine) {
-            // ✅ Go back to main app if online
-            window.location.href = 'index.html';
-          } else {
-            // ✅ Still offline, just reload
+<script>
+    // ✅ **Store Last Online Time**
+    function updateLastOnlineTime() {
+        const lastOnline = localStorage.getItem("lastOnline");
+        if (lastOnline) {
+            document.getElementById("lastOnlineTime").textContent = lastOnline;
+        }
+    }
+
+    // ✅ **Bypass service worker for redirects**
+    function forceRedirect() {
+        if (navigator.onLine) {
+            // Bypass service worker cache with timestamp
+            window.location.href = 'index.html?t=' + Date.now();
+        } else {
+            // Still offline, just reload
             window.location.reload();
-          }
         }
-        // ✅ FORCE BYPASS SERVICE WORKER FOR REDIRECTS
-function forceRedirect() {
-  if (navigator.onLine) {
-    // Bypass service worker cache
-    window.location.href = 'index.html?t=' + Date.now();
-  }
-}
+    }
 
-// ✅ Update the auto-redirect
-window.addEventListener("online", () => {
-  setTimeout(forceRedirect, 1000);
-});
+    // ✅ **Single online event listener for everything**
+    window.addEventListener("online", () => {
+        const now = new Date().toLocaleString();
+        localStorage.setItem("lastOnline", now);
+        updateLastOnlineTime(); // Update display immediately
+        
+        // Auto-redirect after 1 second
+        setTimeout(forceRedirect, 1000);
+    });
 
-// ✅ Update the manual button
-function checkAndRedirect() {
-  forceRedirect();
-}
+    // ✅ **Manual button uses the same function**
+    function checkAndRedirect() {
+        forceRedirect();
+    }
 
-        // ✅ **Store Last Online Time AND Auto-Redirect**
-        window.addEventListener("online", () => {
-            const now = new Date().toLocaleString();
-            localStorage.setItem("lastOnline", now);
-            
-            // ✅ Also auto-redirect if coming back online
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 1000); // Short delay to ensure stable connection
-        });
-
-        // ✅ **Display Last Online Time**
-        function updateLastOnlineTime() {
-            const lastOnline = localStorage.getItem("lastOnline");
-            if (lastOnline) {
-                document.getElementById("lastOnlineTime").textContent = lastOnline;
-            }
-        }
-
-        // Call function on page load
-        updateLastOnlineTime();
-    </script>
+    // Call function on page load
+    updateLastOnlineTime();
+</script>
 </body>
 </html>
