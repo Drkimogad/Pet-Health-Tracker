@@ -80,28 +80,25 @@
         }
     }
 
-    // ✅ **Bypass service worker completely**
-    function forceRedirect() {
+    // ✅ **ONLY redirect if actually online**
+    function checkAndRedirect() {
         if (navigator.onLine) {
-            // COMPLETE bypass - force reload from network
-            window.location.replace('index.html?t=' + Date.now());
+            // Bypass service worker cache with timestamp
+            window.location.href = 'index.html?t=' + Date.now();
         } else {
-            window.location.reload();
+            // Still offline - show message but don't redirect
+            console.log('📴 Still offline - cannot redirect yet');
+            alert('Still offline. Please check your connection and try again.');
         }
     }
 
-    // ✅ **Check every second if we're online**
+    // ✅ **Check every 3 seconds if we're online (less aggressive)**
     setInterval(() => {
         if (navigator.onLine) {
-            console.log('🔄 Auto-detected online, redirecting...');
-            forceRedirect();
+            console.log('✅ Now online - auto-redirecting to app');
+            window.location.href = 'index.html?t=' + Date.now();
         }
-    }, 1000);
-
-    // ✅ **Manual button**
-    function checkAndRedirect() {
-        forceRedirect();
-    }
+    }, 3000); // Check every 3 seconds instead of 1
 
     // Call function on page load
     updateLastOnlineTime();
