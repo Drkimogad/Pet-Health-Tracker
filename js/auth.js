@@ -1,3 +1,9 @@
+// ====== IMMEDIATE REDIRECT CHECK ======
+// ✅ Prevent offline.html from being cached too aggressively
+if (window.location.pathname.includes('offline.html') && navigator.onLine) {
+  window.location.href = 'index.html'; // Auto-redirect if online
+}
+
 // GLOBAL DECLARATIONS - AUTH-INITIALIZATION
 const CLOUDINARY_CONFIG = {
   cloudName: 'dh7d6otgu',
