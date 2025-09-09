@@ -171,9 +171,19 @@ showLoading(true, "Loading your app");
 }
     }); 
 // Render button if container exists
-    const googleButtonContainer = document.getElementById("googleSignInButton");
-    if (googleButtonContainer) {
-      google.accounts.id.renderButton(googleButtonContainer, {
+    // Render button if container exists
+const googleButtonContainer = document.getElementById("googleSignInButton");
+if (googleButtonContainer) {
+  // ✅ ADD OFFLINE CHECK TO BUTTON CONTAINER
+  googleButtonContainer.addEventListener('click', (e) => {
+    if (!navigator.onLine) {
+      e.preventDefault();
+      e.stopPropagation();
+      window.location.href = 'offline.html';
+    }
+  });;
+
+  google.accounts.id.renderButton(googleButtonContainer, {
         type: "standard",
         theme: "filled_blue",
         size: "large",
