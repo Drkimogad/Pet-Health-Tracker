@@ -35,16 +35,7 @@ everything shows nicely between header and footer */
   --accent-green: #4caf50;        /* light green fpr positive enhancement*/
 
 
-
-
-
-
-
-
-
-
-  
-  /* AUTHENTICATION PALETTE (preserved) */
+  /* AUTHENTICATION PALETTE (OLD preserved) */
   --primary-color: #3498db;
   --primary-dark: #2980b9;
   --secondary-color: #27ae60;
@@ -83,9 +74,9 @@ everything shows nicely between header and footer */
   --warning: #FFC107;         /* Yellow for warnings */
   --error: #DC3545;           /* Red for errors */
   --info: #17A2B8;            /* Blue for information */
+
   
- /* added new*/
-  /* Charcoal & Teal Scheme */
+    /* Charcoal & Teal Scheme */
   --charcoal: #36454F;
   --teal-accent: #17BECF;
   /* Deep Purple & Silver Scheme */
@@ -111,6 +102,7 @@ everything shows nicely between header and footer */
   --header-height: 110px; /* base desktop value */ 
 }
 
+/* Beginning */
 .background-container {
   background-color: var(--light-bg); /* subtle, soft background */
   min-height: 100vh; /* ensure it fills the viewport */
@@ -825,6 +817,31 @@ FORM Styling
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   animation: formEntrance 0.4s ease;
 }
+
+/* ===== PET PHOTO & PHOTO PREVIEW FIX =ADDED RECENTLY==== */
+#petPhoto {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid var(--accent-color);
+  border-radius: 6px;
+}
+
+#petPhotoPreview {
+  max-width: 100%;      /* Prevents overflow */
+  height: auto;         /* Maintains aspect ratio */
+  max-height: 200px;    /* Limits maximum height */
+  object-fit: contain;  /* Ensures proper scaling */
+  border-radius: 8px;
+  margin-top: 10px;
+  display: none;        /* Hidden until image loads */
+}
+
+/* Show preview when image is loaded */
+#petPhotoPreview[src]:not([src="#"]) {
+  display: block;
+}
+
 
 /* Input field enhancement */
 input[type="text"],
