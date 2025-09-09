@@ -149,6 +149,12 @@ function setupGoogleLoginButton() {
     google.accounts.id.initialize({
       client_id: CLIENT_ID,
 callback: async (response) => {
+// ✅ ADD OFFLINE CHECK - MUST BE FIRST
+  if (!navigator.onLine) {
+    window.location.href = 'offline.html';
+    return; // STOP here - don't proceed with Google sign-in
+  }
+  
 showLoading(true, "Loading your app");
   
   try {
