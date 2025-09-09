@@ -1066,6 +1066,7 @@ showDashboardLoader(true, "exporting");
       petCard.style.animation = 'formEntrance 0.3s ease-out'; // Your animation
 
       petCard.innerHTML = `
+       <div class="pet-card" style="border: 2px solid var(--accent-color); border-radius: 12px;">
         <div class="pet-header">
           <h3>${profile.petName || 'Unnamed Pet'}</h3>
           ${profile.petPhoto ? `<img src="${profile.petPhoto}" class="pet-photo" crossorigin="anonymous">` : ''}
