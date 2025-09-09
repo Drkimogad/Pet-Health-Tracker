@@ -2,8 +2,8 @@
 // SERVICE WORKER - Pet Health Tracker
 // Version: v14 (increment for updates)
 // ========================================
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v31';
-const OFFLINE_CACHE = 'Pet-Health-Tracker-offline-v2';
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v32';
+const OFFLINE_CACHE = 'Pet-Health-Tracker-offline-v3';
 
 // Core app assets
 const urlsToCache = [
@@ -177,19 +177,31 @@ self.addEventListener('fetch', (event) => {
   // Skip non-GET and browser extensions
   if (request.method !== 'GET' || url.protocol === 'chrome-extension:') return;
 
-  // Navigation requests (pages)
-  if (request.mode === 'navigate') {
-    event.respondWith(
-      (async () => {
+// Navigation requests (pages)
+if (request.mode === 'navigate') {
+  event.respondWith(
+    (async () => {
+      // ✅ DON'T SERVE OFFLINE.HTML IF ONLINE
+      if (navigator.onLine) {
         try {
           return await fetch(request);
         } catch (err) {
-          return await caches.match('index.html') || await caches.match('offline.html');
+          // Fallback to index.html if online but fetch fails
+          return await caches.match('index.html');
         }
-      })()
-    );
-    return;
-  }
+      } else {
+        // ✅ ONLY SERVE OFFLINE.HTML WHEN ACTUALLY OFFLINE
+        try {
+          const networkResponse = await fetch(request);
+          return networkResponse;
+        } catch (err) {
+          return await caches.match('offline.html');
+        }
+      }
+    })()
+  );
+  return;
+}
 
   // Firestore API offline response
 // For external CDN libs (stale-while-revalidate)
@@ -357,6 +369,7 @@ self.addEventListener('controllerchange', () => {
   });
 });
     
+
 
 
 
