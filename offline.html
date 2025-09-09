@@ -80,25 +80,37 @@
         }
     }
 
-    // ✅ **ONLY redirect if actually online**
+    // ✅ **RELIABLE online check - ONLY redirect if truly online**
     function checkAndRedirect() {
-        if (navigator.onLine) {
-            // Bypass service worker cache with timestamp
+        // Double-check online status with a network request
+        fetch('https://httpbin.org/status/200', { 
+            method: 'HEAD',
+            cache: 'no-store'
+        })
+        .then(() => {
+            // ✅ REALLY online - redirect
             window.location.href = 'index.html?t=' + Date.now();
-        } else {
-            // Still offline - show message but don't redirect
-            console.log('📴 Still offline - cannot redirect yet');
-            alert('Still offline. Please check your connection and try again.');
-        }
+        })
+        .catch(() => {
+            // ❌ Still offline
+            alert('❌ Still offline. Please check your internet connection.');
+        });
     }
 
-    // ✅ **Check every 3 seconds if we're online (less aggressive)**
+    // ✅ **RELIABLE auto-check every 5 seconds**
     setInterval(() => {
-        if (navigator.onLine) {
-            console.log('✅ Now online - auto-redirecting to app');
+        fetch('https://httpbin.org/status/200', {
+            method: 'HEAD', 
+            cache: 'no-store'
+        })
+        .then(() => {
+            console.log('✅ Confirmed online - redirecting...');
             window.location.href = 'index.html?t=' + Date.now();
-        }
-    }, 3000); // Check every 3 seconds instead of 1
+        })
+        .catch(() => {
+            // Silently fail - still offline
+        });
+    }, 5000); // Check every 5 seconds
 
     // Call function on page load
     updateLastOnlineTime();
