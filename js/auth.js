@@ -637,10 +637,26 @@ window.addEventListener('online', checkOnlineStatus);
 window.addEventListener('offline', checkOnlineStatus);
 
 // ======== FIREBASE OFFLINE HANDLING ========
-// Replace your existing setupFirebaseOfflinePersistence() with this:
 function setupFirebaseOfflinePersistence() {
-  // Use compat API
-  firebase.firestore().enablePersistence()
+  // Use NEW cache API instead of deprecated enablePersistence()
+  const firestore = firebase.firestore();
+  const settings = { 
+    cache: { 
+      kind: 'persistent'  // ← NEW API
+    } 
+  };
+  firestore.setSettings(settings)
+    .then(() => {
+      console.log('✅ Firebase offline persistence enabled (new API)');
+    })
+    .catch((err) => {
+      // Fallback to old API if new one fails
+      if (err.code === 'invalid-argument') {
+        console.log('⚠️ New cache API not available, falling back to enablePersistence()');
+        return firestore.enablePersistence();
+      }
+      throw err;
+    })
     .then(() => {
       console.log('✅ Firebase offline persistence enabled');
     })
