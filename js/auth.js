@@ -415,14 +415,26 @@ function getFirestore() {
   if (!firestore) console.warn("Firestore not initialized - using localStorage fallback");
   return firestore;
 }
+
+
 // logoutbutton logic
 function setupLogout() {
   if (auth_DOM.logoutButton) {
     auth_DOM.logoutButton.addEventListener('click', async () => {
       try {
+        // ✅ ADD OFFLINE CHECK - DON'T REDIRECT TO OFFLINE.HTML
+        if (!navigator.onLine) {
+          // Offline logout - just sign out and show auth form
+          await firebase.auth().signOut();
+          showAuthForm(); // Show login form instead of redirecting
+          console.log("👋 User signed out (offline)");
+          return;
+        }
+        
+        // Online logout - normal behavior
         await firebase.auth().signOut();
-        console.log("👋 User signed out"); // IN CONSOLE FOR NOW
-        window.location.reload(); // Reset app state
+        console.log("👋 User signed out");
+        window.location.reload();
       } catch (error) {
         console.error("Logout failed:", error);
         showErrorToUser("Logout failed. Please try again.");
@@ -432,7 +444,6 @@ function setupLogout() {
 }
 
 //==== EMAIL AND PASSWORD AUTHENTICATION ========
-// ====== Email/Password Sign-Up ======
 // ====== Email/Password Sign-Up ======
 function setupEmailPasswordSignUp() {
   const signupForm = document.getElementById("emailSignupForm");
@@ -490,20 +501,14 @@ function setupEmailPasswordLogin() {
 
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-        // ✅ ADD OFFLINE CHECK - MUST BE FIRST THING
+    
+    // ✅ SOFTER OFFLINE CHECK - Wait to confirm
     if (!navigator.onLine) {
-      window.location.href = 'offline.html';
-      return; // STOP here - don't proceed with login
-    }
-
-    showLoading(true, "Signing in...");
-
-    const email = document.getElementById("emailInput").value.trim();
-    const password = document.getElementById("passwordInput").value;
-
-    if (!email || !password) {
-      showErrorToUser("Please enter both email and password.");
-      showLoading(false);
+      setTimeout(() => {
+        if (!navigator.onLine) { // Double-check after delay
+          window.location.href = 'offline.html';
+        }
+      }, 1500); // 1.5 second delay to confirm offline
       return;
     }
 
@@ -534,10 +539,14 @@ function setupForgotPassword() {
   forgotLink.addEventListener('click', (e) => {
     e.preventDefault();
     
-     // ✅ ADD OFFLINE CHECK
+    // ✅ SOFTER OFFLINE CHECK
     if (!navigator.onLine) {
-      window.location.href = 'offline.html';
-      return; // STOP here
+      setTimeout(() => {
+        if (!navigator.onLine) {
+          window.location.href = 'offline.html';
+        }
+      }, 1500);
+      return;
     }
     
     // Simple prompt implementation
