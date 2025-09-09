@@ -478,6 +478,12 @@ function setupEmailPasswordLogin() {
 
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
+        // ✅ ADD OFFLINE CHECK - MUST BE FIRST THING
+    if (!navigator.onLine) {
+      window.location.href = 'offline.html';
+      return; // STOP here - don't proceed with login
+    }
+
     showLoading(true, "Signing in...");
 
     const email = document.getElementById("emailInput").value.trim();
@@ -515,6 +521,12 @@ function setupForgotPassword() {
 
   forgotLink.addEventListener('click', (e) => {
     e.preventDefault();
+    
+     // ✅ ADD OFFLINE CHECK
+    if (!navigator.onLine) {
+      window.location.href = 'offline.html';
+      return; // STOP here
+    }
     
     // Simple prompt implementation
     const email = prompt('Enter your email to reset password:');
