@@ -508,7 +508,19 @@ function setupEmailPasswordLogin() {
         if (!navigator.onLine) { // Double-check after delay
           window.location.href = 'offline.html';
         }
-      }, 1500); // 1.5 second delay to confirm offline
+      }, 1500);
+      return;
+    }
+
+    // ✅ MOVE THESE INSIDE - AFTER OFFLINE CHECK
+    const email = document.getElementById("emailInput").value.trim();
+    const password = document.getElementById("passwordInput").value;
+
+    showLoading(true, "Signing in...");
+
+    if (!email || !password) {
+      showErrorToUser("Please enter both email and password.");
+      showLoading(false);
       return;
     }
 
