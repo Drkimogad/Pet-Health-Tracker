@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Offline</title>
-     <!-- ADD THIS LINE -->
     <script src="https://cdn.jsdelivr.net/npm/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <style>
         body {
@@ -32,34 +31,11 @@
         .retry-btn:hover {
             background-color: #45a049;
         }
-        .logs-container {
-            margin-top: 20px;
-            padding: 15px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            display: inline-block;
-            text-align: left;
-            max-width: 400px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .log-entry {
-            border-bottom: 1px solid #ddd;
-            padding: 10px 0;
-        }
-        .log-entry:last-child {
-            border-bottom: none;
-        }
         /* NEW: Dark Mode Support */
         @media (prefers-color-scheme: dark) {
             body {
                 background-color: #1e1e1e;
                 color: #ffffff;
-            }
-            .logs-container {
-                background: #333;
-                box-shadow: none;
             }
         }
         /* NEW: Offline Icon */
@@ -95,32 +71,14 @@
     <!-- NEW: Last Online Time -->
     <p id="lastOnline">Last Online: <span id="lastOnlineTime">Unknown</span></p>
 
-    <!-- Pet Logs Section -->
-    <div class="logs-container" id="logsContainer">
-        <h2>Last Recorded Pet Logs</h2>
-        <div id="logEntries">No data available.</div>
-    </div>
-
     <script>
-        // ✅ **NEW: Load Pet Logs from Local Storage**
-        function loadOfflineLogs() {
-            const logsContainer = document.getElementById("logEntries");
-            const logs = JSON.parse(localStorage.getItem("petLogs")) || [];
+        // ✅ **Store Last Online Time Before Going Offline**
+        window.addEventListener("online", () => {
+            const now = new Date().toLocaleString();
+            localStorage.setItem("lastOnline", now);
+        });
 
-            if (logs.length === 0) {
-                logsContainer.innerHTML = "<p>No saved pet logs available.</p>";
-                return;
-            }
-
-            logsContainer.innerHTML = logs.map(log => `
-                <div class="log-entry">
-                    <strong>${log.petName}</strong> - ${log.date}
-                    <p>Exercise: ${log.exercise} | Duration: ${log.duration} mins</p>
-                </div>
-            `).join('');
-        }
-
-        // ✅ **NEW: Store Last Online Time**
+        // ✅ **Display Last Online Time**
         function updateLastOnlineTime() {
             const lastOnline = localStorage.getItem("lastOnline");
             if (lastOnline) {
@@ -128,14 +86,7 @@
             }
         }
 
-        // ✅ **NEW: Save Last Online Time Before Going Offline**
-        window.addEventListener("online", () => {
-            const now = new Date().toLocaleString();
-            localStorage.setItem("lastOnline", now);
-        });
-
-        // Call functions on page load
-        loadOfflineLogs();
+        // Call function on page load
         updateLastOnlineTime();
     </script>
 </body>
