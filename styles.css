@@ -2434,34 +2434,4 @@ header, footer {
   }
 }
 
-/* =====OFFLINE LOTTIE RESPONSIVE POSITIONING ===== */
-.lottie-container {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 120px;
-  height: 120px;
-  z-index: 1000;
-}
-
-/* Mobile devices - center at bottom */
-@media (max-width: 768px) {
-  .lottie-container {
-    position: fixed;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100px;
-    height: 100px;
-  }
-}
-
-/* Very small screens - reduce size */
-@media (max-width: 480px) {
-  .lottie-container {
-    width: 80px;
-    height: 80px;
-    bottom: 5px;
-  }
-}
 
