@@ -66,10 +66,29 @@
   </lottie-player>
     <h1>Oops! You're Offline</h1>
     <p>It seems like you're not connected to the internet. Please check your connection.</p>
-    <button class="retry-btn" onclick="window.location.reload();">Try Again</button>
+   <button class="retry-btn" onclick="checkAndRedirect();">Try Again</button>
 
     <!-- NEW: Last Online Time -->
     <p id="lastOnline">Last Online: <span id="lastOnlineTime">Unknown</span></p>
+
+    <script>
+function checkAndRedirect() {
+  if (navigator.onLine) {
+    // ✅ Go back to main app if online
+    window.location.href = 'index.html';
+  } else {
+    // ✅ Still offline, just reload
+    window.location.reload();
+  }
+}
+
+// ✅ Also auto-redirect if coming back online
+window.addEventListener('online', () => {
+  setTimeout(() => {
+    window.location.href = 'index.html';
+  }, 1000); // Short delay to ensure stable connection
+});
+</script>
 
     <script>
         // ✅ **Store Last Online Time Before Going Offline**
