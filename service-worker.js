@@ -2,7 +2,7 @@
 // SERVICE WORKER - Pet Health Tracker
 // Version: v14 (increment for updates)
 // ========================================
-const CACHE_NAME = 'Pet-Health-Tracker-cache-v32';
+const CACHE_NAME = 'Pet-Health-Tracker-cache-v33';
 const OFFLINE_CACHE = 'Pet-Health-Tracker-offline-v3';
 
 // Core app assets
@@ -181,21 +181,18 @@ self.addEventListener('fetch', (event) => {
 if (request.mode === 'navigate') {
   event.respondWith(
     (async () => {
-      // ✅ DON'T SERVE OFFLINE.HTML IF ONLINE
-      if (navigator.onLine) {
-        try {
-          return await fetch(request);
-        } catch (err) {
-          // Fallback to index.html if online but fetch fails
-          return await caches.match('index.html');
-        }
-      } else {
-        // ✅ ONLY SERVE OFFLINE.HTML WHEN ACTUALLY OFFLINE
-        try {
-          const networkResponse = await fetch(request);
-          return networkResponse;
-        } catch (err) {
+      try {
+        // ✅ ALWAYS TRY NETWORK FIRST
+        const networkResponse = await fetch(request);
+        return networkResponse;
+      } catch (err) {
+        // ✅ NETWORK FAILED - CHECK IF OFFLINE
+        if (!navigator.onLine) {
+          // ✅ TRULY OFFLINE - SERVE OFFLINE.HTML
           return await caches.match('offline.html');
+        } else {
+          // ✅ ONLINE BUT NETWORK FAILED - SERVE INDEX.HTML
+          return await caches.match('index.html');
         }
       }
     })()
@@ -369,6 +366,7 @@ self.addEventListener('controllerchange', () => {
   });
 });
     
+
 
 
 
