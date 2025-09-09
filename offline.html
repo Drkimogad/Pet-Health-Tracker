@@ -81,6 +81,23 @@
             window.location.reload();
           }
         }
+        // ✅ FORCE BYPASS SERVICE WORKER FOR REDIRECTS
+function forceRedirect() {
+  if (navigator.onLine) {
+    // Bypass service worker cache
+    window.location.href = 'index.html?t=' + Date.now();
+  }
+}
+
+// ✅ Update the auto-redirect
+window.addEventListener("online", () => {
+  setTimeout(forceRedirect, 1000);
+});
+
+// ✅ Update the manual button
+function checkAndRedirect() {
+  forceRedirect();
+}
 
         // ✅ **Store Last Online Time AND Auto-Redirect**
         window.addEventListener("online", () => {
