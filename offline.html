@@ -384,15 +384,48 @@ checkTabletView();
 window.addEventListener('resize', checkTabletView);
         
         // Lottie error handler
-        function lottieError() {
-            console.error('Lottie animation failed to load');
-            document.querySelector('.fallback-animation').style.display = 'block';
-            
-            if (debugMode) {
-                document.getElementById('lottieStatus').textContent = '❌ Error loading';
-                document.getElementById('lottieStatus').style.color = 'red';
-            }
-        }
+// Add this to your lottieError function
+function lottieError() {
+    console.error('Lottie animation failed to load');
+    const errorEvent = new CustomEvent('lottieError', { 
+        detail: 'Lottie failed to load on this device' 
+    });
+    document.dispatchEvent(errorEvent);
+    document.querySelector('.fallback-animation').style.display = 'block';
+    
+    if (debugMode) {
+        document.getElementById('lottieStatus').textContent = '❌ Error loading';
+        document.getElementById('lottieStatus').style.color = 'red';
+    }
+}
+
+// Add event listener to detect Lottie errors
+document.addEventListener('lottieError', function(e) {
+    console.log("Lottie error detected:", e.detail);
+});
+        // Add this function
+function manuallyLoadLottie() {
+    const lottiePlayer = document.getElementById('lottiePlayer');
+    if (lottiePlayer && !lottiePlayer.getLottie) {
+        console.log("Lottie player not loaded, attempting manual load");
+        
+        // Try re-adding the Lottie player
+        const newPlayer = document.createElement('lottie-player');
+        newPlayer.setAttribute('src', './lottiefiles/BlackCatPeeping.json');
+        newPlayer.setAttribute('background', 'transparent');
+        newPlayer.setAttribute('speed', '1');
+        newPlayer.setAttribute('loop', '');
+        newPlayer.setAttribute('autoplay', '');
+        newPlayer.setAttribute('id', 'lottiePlayer');
+        
+        const container = document.querySelector('.lottie-container');
+        container.innerHTML = '';
+        container.appendChild(newPlayer);
+    }
+}
+
+// Call this after a delay
+setTimeout(manuallyLoadLottie, 2000);
         
         // Store last online time when going offline
         if (navigator.onLine) {
