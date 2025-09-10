@@ -192,6 +192,18 @@
                 max-width: none;
             }
         }
+        /* Add to your existing media queries */
+@media (min-width: 769px) and (max-width: 1024px) {
+    /* Specific fix for tablets */
+    .lottie-container {
+        height: 60vh !important; /* Force height on tablets */
+        bottom: 5vh !important;
+    }
+    
+    .content {
+        margin-bottom: 65vh !important; /* Adjust content spacing */
+    }
+}
     </style>
 </head>
 <body>
@@ -235,6 +247,50 @@
     </div>
     
     <script>
+
+        // Immediate offline check on page load
+(function immediateOfflineCheck() {
+    if (!navigator.onLine) {
+        // We're already on offline.html, no action needed
+        console.log("Offline page loaded directly");
+        return;
+    }
+    
+    // If we're online but on offline.html, redirect back
+    if (window.location.pathname.includes('offline.html')) {
+        window.location.href = 'index.html';
+    }
+})();
+
+// Enhanced offline detection for auth page
+function setupAuthPageOfflineDetection() {
+    // Skip if we're already on the offline page
+    if (window.location.pathname.includes('offline.html')) {
+        return false;
+    }
+    
+    // Check if we're on auth page and offline
+    const isAuthPage = window.location.pathname.includes('auth.html') || 
+                       window.location.pathname.includes('index.html');
+    
+    if (isAuthPage && !navigator.onLine) {
+        console.log("Auth page detected offline, redirecting...");
+        window.location.href = 'offline.html';
+        return true; // Redirect initiated
+    }
+    return false; // No redirect needed
+}
+
+// Run this immediately when auth page loads
+if (!setupAuthPageOfflineDetection()) {
+    // Also listen for offline events
+    window.addEventListener('offline', function() {
+        if (setupAuthPageOfflineDetection()) {
+            console.log("Went offline on auth page, redirected to offline.html");
+        }
+    });
+}
+        
         // Debug mode flag
         let debugMode = false;
         
@@ -284,6 +340,31 @@
                 document.getElementById('lottieStatus').style.color = 'red';
             }
         }
+        // Add to your existing script
+function checkTabletView() {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const isTablet = width >= 769 && width <= 1024;
+    
+    if (isTablet) {
+        console.log("Tablet detected:", width, "x", height);
+        const lottieContainer = document.querySelector('.lottie-container');
+        if (lottieContainer) {
+            const bounds = lottieContainer.getBoundingClientRect();
+            console.log("Lottie container dimensions:", bounds.width, "x", bounds.height);
+            
+            // Force visible if dimensions are zero
+            if (bounds.height === 0) {
+                lottieContainer.style.height = "60vh";
+                console.log("Forced Lottie container height on tablet");
+            }
+        }
+    }
+}
+
+// Call this on load and resize
+checkTabletView();
+window.addEventListener('resize', checkTabletView);
         
         // Lottie error handler
         function lottieError() {
