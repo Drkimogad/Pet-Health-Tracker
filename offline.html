@@ -32,10 +32,14 @@
            /* box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);*/
         }
         
-        h1 {
-            color: #4CAF50;
-            margin-bottom: 20px;
-        }
+      /* Add this to your existing CSS */
+  h1 {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
         
         p {
             font-size: 1.2em;
@@ -112,6 +116,28 @@
             z-index: 101;
             animation: bounce 2s infinite;
         }
+    /* wifi bars */
+        .wifi-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 30px;
+}
+
+.bar {
+    width: 8px;
+    background: #4CAF50;
+    animation: wifiPulse 1.5s infinite;
+}
+
+.bar:nth-child(1) { height: 10px; animation-delay: 0.1s; }
+.bar:nth-child(2) { height: 15px; animation-delay: 0.2s; }
+.bar:nth-child(3) { height: 20px; animation-delay: 0.3s; }
+
+@keyframes wifiPulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+}
         
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
@@ -210,7 +236,13 @@
         </lottie-player>
     </div>
     
-    <div class="fallback-animation">😿</div>
+<div class="fallback-animation">
+    <div class="wifi-bars">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
+</div>    
     
     <div class="online-notification" id="onlineNotification">
         <span class="icon">✅</span>
@@ -258,111 +290,167 @@
         }
         
         // ===== LAST ONLINE TIME TRACKING =====
-        // Stores and displays when the user was last online
-        function updateLastOnlineTime() {
-            const lastOnline = localStorage.getItem("lastOnline");
-            if (lastOnline) {
-                document.getElementById("lastOnlineTime").textContent = lastOnline;
-            } else {
-                document.getElementById("lastOnlineTime").textContent = "Never";
-            }
-        }
+// Stores and displays when the user was last online
+function updateLastOnlineTime() {
+    const lastOnline = localStorage.getItem("lastOnline");
+    console.log("Last online data:", lastOnline);
+    if (lastOnline) {
+        document.getElementById("lastOnlineTime").textContent = lastOnline;
+    } else {
+        document.getElementById("lastOnlineTime").textContent = "Never";
+    }
+}
+
+// ===== MANUAL CONNECTION CHECK =====
+// Triggered when user clicks "Try Again" button
+function checkAndRedirect() {
+    console.log("Manual connection check triggered");
+    const btn = document.querySelector('.retry-btn');
+    const originalText = btn.textContent;
+    btn.textContent = 'Checking connection...';
+    btn.disabled = true;
+    
+    // Use multiple endpoints for better connection verification
+    const connectionTest = Promise.race([
+        fetch('https://httpbin.org/status/200', { 
+            method: 'HEAD',
+            cache: 'no-store',
+            mode: 'no-cors'
+        }),
+        fetch('https://www.google.com/favicon.ico', {
+            method: 'HEAD',
+            cache: 'no-store', 
+            mode: 'no-cors'
+        })
+    ]);
+    
+    connectionTest
+    .then((response) => {
+        console.log("Connection verified, showing notification");
+        // Show success notification before redirecting
+        showOnlineNotification();
         
-        // ===== MANUAL CONNECTION CHECK =====
-        // Triggered when user clicks "Try Again" button
-        function checkAndRedirect() {
-            const btn = document.querySelector('.retry-btn');
-            const originalText = btn.textContent;
-            btn.textContent = 'Checking connection...';
-            btn.disabled = true;
-            
-            fetch('https://httpbin.org/status/200', { 
+        // Update last online time
+        localStorage.setItem("lastOnline", new Date().toLocaleString());
+        updateLastOnlineTime();
+        
+        // Wait a moment so user sees the notification
+        setTimeout(() => {
+            window.location.href = 'index.html?t=' + Date.now();
+        }, 1500);
+    })
+    .catch((error) => {
+        console.error("Connection check failed:", error);
+        // Still offline
+        btn.textContent = originalText;
+        btn.disabled = false;
+        alert('Still offline. Please check your internet connection.');
+    });
+}
+
+// ===== AUTOMATIC CONNECTION CHECKING =====
+// Checks connection status every 5 seconds
+let checkInterval = setInterval(() => {
+    console.log("Automatic connection check running");
+    if (navigator.onLine) {
+        // Use multiple endpoints for better verification
+        Promise.race([
+            fetch('https://httpbin.org/status/200', {
+                method: 'HEAD', 
+                cache: 'no-store',
+                mode: 'no-cors'
+            }),
+            fetch('https://www.google.com/favicon.ico', {
                 method: 'HEAD',
-                cache: 'no-store'
+                cache: 'no-store',
+                mode: 'no-cors'
             })
-            .then(() => {
-                // Show success notification before redirecting
-                showOnlineNotification();
-                
-                // Wait a moment so user sees the notification
-                setTimeout(() => {
-                    window.location.href = 'index.html?t=' + Date.now();
-                }, 1500);
-            })
-            .catch(() => {
-                // Still offline
-                btn.textContent = originalText;
-                btn.disabled = false;
-                alert('Still offline. Please check your internet connection.');
-            });
-        }
-        
-        // ===== AUTOMATIC CONNECTION CHECKING =====
-        // Checks connection status every 5 seconds
-        let checkInterval = setInterval(() => {
-            if (navigator.onLine) {
-                fetch('https://httpbin.org/status/200', {
-                    method: 'HEAD', 
-                    cache: 'no-store'
-                })
-                .then(() => {
-                    // Show notification and redirect
-                    showOnlineNotification();
-                    clearInterval(checkInterval);
-                    setTimeout(() => {
-                        window.location.href = 'index.html?t=' + Date.now();
-                    }, 2000);
-                })
-                .catch(() => {
-                    // Silently fail - still offline
-                });
-            }
-        }, 4000);
-        
-        // ===== INITIALIZATION =====
-        // Runs when page loads to set up everything
-        function initializeOfflinePage() {
-            // Store last online time when going offline
-            if (navigator.onLine) {
-                localStorage.setItem("lastOnline", new Date().toLocaleString());
-            }
+        ])
+        .then(() => {
+            console.log("Automatic check: Online verified");
+            // Show notification and redirect
+            showOnlineNotification();
+            clearInterval(checkInterval);
             
-            // Update last online time display
-            // Update last online time display
+            // Update last online time
+            localStorage.setItem("lastOnline", new Date().toLocaleString());
             updateLastOnlineTime();
             
-            // Set up auth page offline detection
-            if (!setupAuthPageOfflineDetection()) {
-                // Listen for offline events if not redirected
-                window.addEventListener('offline', function() {
-                    if (setupAuthPageOfflineDetection()) {
-                        console.log("Went offline on auth page, redirected to offline.html");
-                    }
-                });
+            setTimeout(() => {
+                window.location.href = 'index.html?t=' + Date.now();
+            }, 2000);
+        })
+        .catch((error) => {
+            console.log("Automatic check: Still offline", error);
+            // Silently fail - still offline
+        });
+    }
+}, 4000);
+
+// ===== INITIALIZATION =====
+// Runs when page loads to set up everything
+function initializeOfflinePage() {
+    console.log("Initializing offline page");
+    
+    // Store last online time when going offline
+    if (navigator.onLine) {
+        console.log("Currently online, storing last online time");
+        localStorage.setItem("lastOnline", new Date().toLocaleString());
+    } else {
+        console.log("Currently offline");
+    }
+    
+    // Update last online time display
+    updateLastOnlineTime();
+    
+    // Set up auth page offline detection
+    if (!setupAuthPageOfflineDetection()) {
+        // Listen for offline events if not redirected
+        window.addEventListener('offline', function() {
+            console.log("Browser offline event detected");
+            if (setupAuthPageOfflineDetection()) {
+                console.log("Went offline on auth page, redirected to offline.html");
             }
+        });
+    }
+    
+    // Listen for online events to show notification
+    window.addEventListener('online', function() {
+        console.log("Browser online event detected, verifying connection");
+        // Verify with actual network request
+        Promise.race([
+            fetch('https://httpbin.org/status/200', {
+                method: 'HEAD', 
+                cache: 'no-store',
+                mode: 'no-cors'
+            }),
+            fetch('https://www.google.com/favicon.ico', {
+                method: 'HEAD',
+                cache: 'no-store',
+                mode: 'no-cors'
+            })
+        ])
+        .then(() => {
+            console.log("Online event verified with network request");
+            showOnlineNotification();
+            clearInterval(checkInterval);
             
+            // Update last online time
+            localStorage.setItem("lastOnline", new Date().toLocaleString());
+            updateLastOnlineTime();
             
-            // Listen for online events to show notification
-            window.addEventListener('online', function() {
-                fetch('https://httpbin.org/status/200', {
-                    method: 'HEAD', 
-                    cache: 'no-store'
-                })
-                .then(() => {
-                    showOnlineNotification();
-                    clearInterval(checkInterval);
-                    setTimeout(() => {
-                        window.location.href = 'index.html?t=' + Date.now();
-                    }, 2000);
-                })
-                .catch(() => {
-                    // Not really online or request failed
-                });
-            });
-        }
-        
-        // Start everything when page loads
-        window.addEventListener('load', initializeOfflinePage);
+            setTimeout(() => {
+                window.location.href = 'index.html?t=' + Date.now();
+            }, 2000);
+        })
+        .catch((error) => {
+            console.log("Online event but no real connection:", error);
+        });
+    });
+}
+
+// Start everything when page loads
+window.addEventListener('load', initializeOfflinePage);
     </script>
 </body>
 </html>
