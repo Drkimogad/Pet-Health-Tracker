@@ -169,6 +169,14 @@
         .online-notification .icon {
             font-size: 24px;
         }
+        .online-notification {
+    display: none; /* Add this to ensure it's hidden */
+}
+
+.online-notification.show {
+    display: flex; /* Only show when needed */
+}
+
 
         /* Mobile devices */
         @media (max-width: 768px) {
