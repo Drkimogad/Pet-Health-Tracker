@@ -437,13 +437,19 @@ function setupLogout() {
           await firebase.auth().signOut();
           showAuthForm(); // Show login form instead of redirecting
           console.log("👋 User signed out (offline)");
+          showSuccessNotification("You're logged out.");  // ADDED 
           return;
         }
         
         // Online logout - normal behavior
         await firebase.auth().signOut();
         console.log("👋 User signed out");
-        window.location.reload();
+       showSuccessNotification("You're logged out.");  // ADDED 
+        
+    //   setTimeout(() => {
+    //   window.location.reload();  // CAN BE REMOVED IF NOT NEEDED
+    //   }, 2000); // Reload after 2 seconds
+        
       } catch (error) {
         console.error("Logout failed:", error);
         showErrorToUser("Logout failed. Please try again.");
@@ -692,23 +698,35 @@ window.addEventListener('offline', checkOnlineStatus);
 
 // ======== FIREBASE OFFLINE HANDLING ========
 /* it will have to be upgraded in the future alongside higher firebase */
-function setupFirebaseOfflinePersistence() {
+//function setupFirebaseOfflinePersistence() {
   // Use compat API
-  firebase.firestore().enablePersistence()
-    .then(() => {
-      console.log('✅ Firebase offline persistence enabled');
-    })
-    .catch((err) => {
-      if (err.code === 'failed-precondition') {
-        console.warn('⚠️ Multiple tabs open — persistence can only be enabled in one tab at a time.');
-      } else if (err.code === 'unimplemented') {
-        console.warn('⚠️ Browser does not support all required features for persistence.');
-      } else {
-        console.warn('⚠️ Firestore persistence error:', err);
-      }
-    });
+//  firebase.firestore().enablePersistence()
+//    .then(() => {
+//      console.log('✅ Firebase offline persistence enabled');
+//    })
+//    .catch((err) => {
+//      if (err.code === 'failed-precondition') {
+//        console.warn('⚠️ Multiple tabs open — persistence can only be enabled in one tab at a time.');
+//      } else if (err.code === 'unimplemented') {
+//        console.warn('⚠️ Browser does not support all required features for persistence.');
+//      } else {
+//        console.warn('⚠️ Firestore persistence error:', err);
+//      }
+//    });
+//} 
+// ======== FIREBASE OFFLINE HANDLING UPDATED FUNCTION ========
+function setupFirebaseOfflinePersistence() {
+  // Use the new cache settings instead of enablePersistence()
+  firebase.firestore().settings({
+    cache: {
+      sizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED
+    }
+  }).then(() => {
+    console.log('✅ Firebase offline cache enabled');
+  }).catch((err) => {
+    console.warn('⚠️ Firestore cache settings error:', err);
+  });
 }
-
 
 
 // ====== Core Initialization ======
