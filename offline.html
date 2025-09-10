@@ -18,12 +18,15 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            position: relative;
+            overflow: hidden;
         }
         
         .content {
             max-width: 600px;
             z-index: 1000;
             margin-bottom: 10vh; /* Space above the Lottie animation */
+            position: relative;
         }
         
         h1 {
@@ -45,6 +48,8 @@
             font-size: 1em;
             border-radius: 5px;
             transition: background-color 0.3s;
+            z-index: 1001;
+            position: relative;
         }
         
         .retry-btn:hover {
@@ -93,13 +98,26 @@
             pointer-events: none;
             display: flex;
             justify-content: center;
+            align-items: flex-end;
+        }
+
+        /* Ensure Lottie player takes full container space */
+        .lottie-container lottie-player {
+            width: 100%;
+            height: 100%;
+            max-height: 80vh;
+            object-fit: contain;
         }
 
         /* Fallback animation if Lottie doesn't load */
         .fallback-animation {
             display: none;
             font-size: 80px;
-            margin-top: 20px;
+            position: fixed;
+            bottom: 10vh;
+            width: 100%;
+            text-align: center;
+            z-index: 100;
             animation: bounce 2s infinite;
         }
         
@@ -110,8 +128,64 @@
 
         /* Mobile devices */
         @media (max-width: 768px) {
+            .content {
+                margin-bottom: 5vh;
+            }
+            
             .lottie-container {
-                height: 60vh; /* Slightly smaller on mobile */
+                height: 70vh;
+                bottom: 5vh;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            p {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Very small screens */
+        @media (max-width: 480px) {
+            .content {
+                margin-bottom: 2vh;
+            }
+            
+            .lottie-container {
+                height: 65vh;
+                bottom: 2vh;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            p {
+                font-size: 1rem;
+            }
+            
+            .retry-btn {
+                padding: 10px 20px;
+            }
+        }
+
+        /* Large screens */
+        @media (min-width: 1200px) {
+            .lottie-container {
+                height: 75vh;
+            }
+        }
+
+        /* Landscape orientation */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .content {
+                margin-bottom: 5vh;
+            }
+            
+            .lottie-container {
+                height: 70vh;
+                bottom: 5vh;
             }
         }
     </style>
@@ -129,7 +203,6 @@
             src="./lottiefiles/BlackCatPeeping.json" 
             background="transparent"
             speed="1"
-            style="width: 100%; height: 100%;"
             loop
             autoplay
             onerror="lottieError()">
