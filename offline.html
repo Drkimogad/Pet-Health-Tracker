@@ -247,18 +247,30 @@
     </div>
     
     <script>
+  // Add at the top of your offline.html script
+  let isManualRedirect = false;
 
         // Immediate offline check on page load
 (function immediateOfflineCheck() {
-    if (!navigator.onLine) {
-        // We're already on offline.html, no action needed
-        console.log("Offline page loaded directly");
-        return;
-    }
-    
-    // If we're online but on offline.html, redirect back
-    if (window.location.pathname.includes('offline.html')) {
-        window.location.href = 'index.html';
+    // Only redirect if we're definitely online (double-check with fetch)
+    if (navigator.onLine) {
+        fetch('https://httpbin.org/status/200', {
+            method: 'HEAD',
+            cache: 'no-store',
+            timeout: 3000
+        })
+        .then(() => {
+            // Only redirect if we're truly online
+            if (window.location.pathname.includes('offline.html')) {
+                window.location.href = 'index.html';
+            }
+        })
+        .catch(() => {
+            // Fetch failed - we're actually offline, stay on offline.html
+            console.log("Staying on offline page - fetch confirmed offline status");
+        });
+    } else {
+        console.log("Offline page loaded directly - navigator confirms offline");
     }
 })();
 
@@ -399,6 +411,7 @@ window.addEventListener('resize', checkTabletView);
         
         // Reliable online check
         function checkAndRedirect() {
+             isManualRedirect = true;
             const btn = document.querySelector('.retry-btn');
             const originalText = btn.textContent;
             btn.textContent = 'Checking connection...';
@@ -420,7 +433,7 @@ window.addEventListener('resize', checkTabletView);
         
         // Auto-check every 5 seconds
         setInterval(() => {
-            if (navigator.onLine) {
+      if (navigator.onLine && !isManualRedirect) {
                 fetch('https://httpbin.org/status/200', {
                     method: 'HEAD', 
                     cache: 'no-store'
