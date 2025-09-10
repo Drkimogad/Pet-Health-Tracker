@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Offline</title>
+    <title>Offline - Debug Mode</title>
     <script src="https://cdn.jsdelivr.net/npm/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <style>
         body {
@@ -19,7 +19,6 @@
             justify-content: center;
             align-items: center;
             position: relative;
-            overflow: hidden;
         }
         
         .content {
@@ -50,18 +49,22 @@
             transition: background-color 0.3s;
             z-index: 1001;
             position: relative;
+            margin: 5px;
         }
         
-        .retry-btn:hover {
-            background-color: #45a049;
+        .debug-btn {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 0.9em;
+            border-radius: 5px;
+            margin: 5px;
         }
         
-        /* Dark Mode Support */
-        @media (prefers-color-scheme: dark) {
-            body {
-                background-color: #1e1e1e;
-                color: #ffffff;
-            }
+        .retry-btn:hover, .debug-btn:hover {
+            opacity: 0.9;
         }
         
         /* Last Online Time */
@@ -87,69 +90,29 @@
             50% { opacity: 0.5; }
         }
         
-/* ===== UPDATED LOTTIE POSITIONING ===== */
-.lottie-container {
-    position: fixed;
-    bottom: 10vh;
-    left: 0;
-    width: 100%;
-    height: 80vh;
-    z-index: 100;
-    pointer-events: none;
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-}
+        /* Lottie container */
+        .lottie-container {
+            position: fixed;
+            bottom: 10vh;
+            left: 0;
+            width: 100%;
+            height: 80vh;
+            z-index: 100;
+            pointer-events: none;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            border: 2px dashed red; /* Temporary border for visibility */
+        }
 
-/* Mobile devices - keep fixed positioning but adjust size */
-@media (max-width: 768px) {
-    .lottie-container {
-        /* Keep fixed positioning */
-        position: fixed;
-        bottom: 10vh;
-        left: 0;
-        
-        /* Adjust size for mobile */
-        height: 50vh; /* Reduced height for mobile */
-        max-height: 400px; /* Maximum height limit */
-    }
-    
-    .content {
-        margin-bottom: 55vh; /* Increase space for the larger Lottie container */
-    }
-}
+        .lottie-container lottie-player {
+            width: 100%;
+            height: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+        }
 
-/* Very small screens - further adjustments */
-@media (max-width: 480px) {
-    .lottie-container {
-        height: 45vh; /* Slightly smaller on very small screens */
-        bottom: 5vh;
-    }
-    
-    .content {
-        margin-bottom: 50vh; /* Adjust content spacing */
-    }
-}
-
-/* Tablet landscape orientation */
-@media (max-width: 1024px) and (orientation: landscape) {
-    .lottie-container {
-        height: 70vh; /* Taller in landscape */
-        bottom: 5vh;
-    }
-    
-    .content {
-        margin-bottom: 75vh; /* More space for landscape */
-    }
-}
-
-/* Ensure Lottie player maintains aspect ratio */
-.lottie-container lottie-player {
-    width: 100%;
-    height: 100%;
-    object-fit: contain; /* Maintain aspect ratio */
-}
-        /* Fallback animation if Lottie doesn't load */
+        /* Fallback animation */
         .fallback-animation {
             display: none;
             font-size: 80px;
@@ -166,54 +129,67 @@
             50% { transform: translateY(-20px); }
         }
 
-        /* Back online notification */
-        .online-notification {
+        /* Debug panel */
+        .debug-panel {
             position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-100px);
-            background-color: #4CAF50;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
             color: white;
-            padding: 16px 24px;
+            padding: 15px;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 2000;
-            transition: transform 0.5s ease-out;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            font-size: 14px;
+            z-index: 10000;
+            max-width: 300px;
+            text-align: left;
+            display: none;
         }
         
-        .online-notification.show {
-            transform: translateX(-50%) translateY(0);
+        .debug-panel h3 {
+            margin-top: 0;
+            border-bottom: 1px solid #555;
+            padding-bottom: 5px;
         }
         
-        .online-notification .icon {
-            font-size: 24px;
+        .debug-info {
+            margin: 10px 0;
+            line-height: 1.4;
         }
-
+        
+        .device-test {
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+        }
+        
         /* Mobile devices */
         @media (max-width: 768px) {
-            .content {
-                margin-bottom: 5vh;
-            }
-            
             .lottie-container {
-                height: 70vh;
+                height: 50vh;
                 bottom: 5vh;
             }
             
-            h1 {
-                font-size: 1.8rem;
+            .content {
+                margin-bottom: 55vh;
+            }
+        }
+
+        /* Very small screens */
+        @media (max-width: 480px) {
+            .lottie-container {
+                height: 45vh;
+                bottom: 2vh;
             }
             
-            p {
-                font-size: 1.1rem;
+            .content {
+                margin-bottom: 50vh;
             }
             
-            .online-notification {
-                width: 90%;
-                text-align: center;
+            .debug-panel {
+                left: 10px;
+                right: 10px;
+                max-width: none;
             }
         }
     </style>
@@ -223,11 +199,13 @@
         <h1><span class="status-indicator"></span>Oops! You're Offline</h1>
         <p>It seems like you're not connected to the internet. Please check your connection.</p>
         <button class="retry-btn" onclick="checkAndRedirect();">Try Again</button>
+        <button class="debug-btn" onclick="toggleDebug()">Toggle Debug Info</button>
         <p id="lastOnline">Last Online: <span id="lastOnlineTime">Unknown</span></p>
     </div>
 
     <div class="lottie-container">
         <lottie-player
+            id="lottiePlayer"
             src="./lottiefiles/BlackCatPeeping.json" 
             background="transparent"
             speed="1"
@@ -239,52 +217,83 @@
     
     <div class="fallback-animation">😿</div>
     
-    <!-- Back online notification -->
-    <div class="online-notification" id="onlineNotification">
-        <span class="icon">✅</span>
-        <span class="message">Connection restored! You're back online.</span>
+    <div class="debug-panel" id="debugPanel">
+        <h3>Lottie Debug Info</h3>
+        <div class="debug-info" id="lottieDebugInfo">
+            Loading diagnostic information...
+        </div>
+        <div class="device-test">
+            <strong>Device Test:</strong>
+            <div id="deviceInfo"></div>
+        </div>
+        <div class="debug-info">
+            <strong>Instructions:</strong> 
+            <p>1. Check if red dashed border is visible</p>
+            <p>2. Check console for errors (F12)</p>
+            <p>3. Test on all your devices</p>
+        </div>
     </div>
     
     <script>
-
-      // Handle device orientation changes
-let initialLoad = true;
-
-function handleOrientationChange() {
-    const isMobile = window.innerWidth <= 768;
-    const lottieContainer = document.querySelector('.lottie-container');
-    
-    if (isMobile) {
-        if (window.innerHeight > window.innerWidth) {
-            // Portrait mode
-            lottieContainer.style.height = '50vh';
-        } else {
-            // Landscape mode
-            lottieContainer.style.height = '70vh';
+        // Debug mode flag
+        let debugMode = false;
+        
+        // Toggle debug panel
+        function toggleDebug() {
+            const panel = document.getElementById('debugPanel');
+            debugMode = !debugMode;
+            panel.style.display = debugMode ? 'block' : 'none';
+            
+            if (debugMode) {
+                updateDebugInfo();
+            }
         }
-    }
-    
-    if (!initialLoad) {
-        // Re-trigger animation on orientation change
-        const lottiePlayer = document.querySelector('lottie-player');
-        if (lottiePlayer) {
-            lottiePlayer.stop();
-            setTimeout(() => lottiePlayer.play(), 100);
+        
+        // Update debug information
+        function updateDebugInfo() {
+            const lottieContainer = document.querySelector('.lottie-container');
+            const lottiePlayer = document.getElementById('lottiePlayer');
+            const bounds = lottieContainer.getBoundingClientRect();
+            
+            // Get device info
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            const screenSize = `${window.innerWidth} x ${window.innerHeight}`;
+            
+            let debugHTML = `
+                <strong>Container Visibility:</strong> ${bounds.width > 0 && bounds.height > 0 ? '✅ Visible' : '❌ Hidden'}<br>
+                <strong>Dimensions:</strong> ${bounds.width.toFixed(0)}px x ${bounds.height.toFixed(0)}px<br>
+                <strong>Position:</strong> (${bounds.left.toFixed(0)}px, ${bounds.top.toFixed(0)}px)<br>
+                <strong>Lottie Status:</strong> <span id="lottieStatus">Checking...</span>
+            `;
+            
+            let deviceHTML = `
+                <strong>Device:</strong> ${isMobile ? 'Mobile/Tablet' : 'Desktop'}<br>
+                <strong>Screen:</strong> ${screenSize}<br>
+                <strong>User Agent:</strong> ${navigator.userAgent}
+            `;
+            
+            document.getElementById('lottieDebugInfo').innerHTML = debugHTML;
+            document.getElementById('deviceInfo').innerHTML = deviceHTML;
+            
+            // Check Lottie player status
+            if (lottiePlayer && lottiePlayer.getLottie()) {
+                document.getElementById('lottieStatus').textContent = '✅ Loaded';
+                document.getElementById('lottieStatus').style.color = 'green';
+            } else {
+                document.getElementById('lottieStatus').textContent = '❌ Not loaded';
+                document.getElementById('lottieStatus').style.color = 'red';
+            }
         }
-    }
-    
-    initialLoad = false;
-}
-
-// Initial call and event listener
-handleOrientationChange();
-window.addEventListener('resize', handleOrientationChange);
-window.addEventListener('orientationchange', handleOrientationChange);
         
         // Lottie error handler
         function lottieError() {
             console.error('Lottie animation failed to load');
             document.querySelector('.fallback-animation').style.display = 'block';
+            
+            if (debugMode) {
+                document.getElementById('lottieStatus').textContent = '❌ Error loading';
+                document.getElementById('lottieStatus').style.color = 'red';
+            }
         }
         
         // Store last online time when going offline
@@ -302,41 +311,21 @@ window.addEventListener('orientationchange', handleOrientationChange);
             }
         }
         
-        // Show online notification
-        function showOnlineNotification() {
-            const notification = document.getElementById('onlineNotification');
-            notification.classList.add('show');
-            
-            // Auto-hide after 5 seconds
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 5000);
-        }
-        
         // Reliable online check
         function checkAndRedirect() {
-            // Show loading state
             const btn = document.querySelector('.retry-btn');
             const originalText = btn.textContent;
             btn.textContent = 'Checking connection...';
             btn.disabled = true;
             
-            // Double-check online status with a network request
             fetch('https://httpbin.org/status/200', { 
                 method: 'HEAD',
                 cache: 'no-store'
             })
             .then(() => {
-                // Show notification before redirecting
-                showOnlineNotification();
-                
-                // Wait a moment so user sees the notification, then redirect
-                setTimeout(() => {
-                    window.location.href = 'index.html?t=' + Date.now();
-                }, 1500);
+                window.location.href = 'index.html?t=' + Date.now();
             })
             .catch(() => {
-                // Still offline
                 btn.textContent = originalText;
                 btn.disabled = false;
                 alert('Still offline. Please check your internet connection.');
@@ -344,23 +333,14 @@ window.addEventListener('orientationchange', handleOrientationChange);
         }
         
         // Auto-check every 5 seconds
-        let checkInterval = setInterval(() => {
+        setInterval(() => {
             if (navigator.onLine) {
                 fetch('https://httpbin.org/status/200', {
                     method: 'HEAD', 
                     cache: 'no-store'
                 })
                 .then(() => {
-                    // Show notification
-                    showOnlineNotification();
-                    
-                    // Clear the interval as we're online now
-                    clearInterval(checkInterval);
-                    
-                    // Redirect after a short delay
-                    setTimeout(() => {
-                        window.location.href = 'index.html?t=' + Date.now();
-                    }, 2000);
+                    window.location.href = 'index.html?t=' + Date.now();
                 })
                 .catch(() => {
                     // Silently fail - still offline
@@ -368,31 +348,29 @@ window.addEventListener('orientationchange', handleOrientationChange);
             }
         }, 5000);
         
-        // Call function on page load
+        // Initial setup
         updateLastOnlineTime();
         
         // Add event listener for online status changes
         window.addEventListener('online', function() {
-            // Verify with a fetch request
             fetch('https://httpbin.org/status/200', {
                 method: 'HEAD', 
                 cache: 'no-store'
             })
             .then(() => {
-                showOnlineNotification();
-                
-                // Clear the interval as we're online now
-                clearInterval(checkInterval);
-                
-                // Redirect after notification is shown
-                setTimeout(() => {
-                    window.location.href = 'index.html?t=' + Date.now();
-                }, 2000);
+                window.location.href = 'index.html?t=' + Date.now();
             })
             .catch(() => {
                 // Not really online or request failed
             });
         });
+        
+        // Periodically update debug info if in debug mode
+        setInterval(() => {
+            if (debugMode) {
+                updateDebugInfo();
+            }
+        }, 2000);
     </script>
 </body>
 </html>
