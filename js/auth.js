@@ -143,36 +143,48 @@ function setupGoogleLoginButton() {
     setTimeout(setupGoogleLoginButton, 300);
     return;
   } 
+  
   const CLIENT_ID = '175545140523-ufts7k2laidsobihlqnpf7q0m63h3abo.apps.googleusercontent.com';
+  
   try {
     // Initialize Google Identity Services
     google.accounts.id.initialize({
       client_id: CLIENT_ID,
-callback: async (response) => {
-// ✅ ADD OFFLINE CHECK - MUST BE FIRST
-  if (!navigator.onLine) {
-    window.location.href = 'offline.html';
-    return; // STOP here - don't proceed with Google sign-in
-  }
-  
-showLoading(true, "Loading your app");
-  
-  try {
-    const credential = firebase.auth.GoogleAuthProvider.credential(response.credential);
-    const userCredential = await firebase.auth().signInWithCredential(credential);
-    await userCredential.user.getIdToken(true); // Force token refresh
-   console.log("✅ Sign-in complete. Waiting for auth state listener to handle dashboard rendering.");
-    
-  } catch (error) {
-    console.error("Google Sign-In failed:", error);
-   showErrorToUser("Google Sign-In failed. Please try again."); // From utils.js
-   showLoading(false); // moved inside the catch for smoother UI
-  } 
-}
+      callback: async (response) => {
+        // ✅ ADD OFFLINE CHECK - MUST BE FIRST
+        if (!navigator.onLine) {
+          window.location.href = 'offline.html';
+          return; // STOP here - don't proceed with Google sign-in
+        }
+        
+        showLoading(true, "Loading your app");
+        
+        try {
+          const credential = firebase.auth.GoogleAuthProvider.credential(response.credential);
+          const userCredential = await firebase.auth().signInWithCredential(credential);
+          await userCredential.user.getIdToken(true); // Force token refresh
+          console.log("✅ Sign-in complete. Waiting for auth state listener to handle dashboard rendering.");
+        } catch (error) {
+          console.error("Google Sign-In failed:", error);
+          showErrorToUser("Google Sign-In failed. Please try again."); // From utils.js
+          showLoading(false); // moved inside the catch for smoother UI
+        } 
+      }
     }); 
-// Render button if container exists
+    
+    // Render button if container exists
     const googleButtonContainer = document.getElementById("googleSignInButton");
     if (googleButtonContainer) {
+      // ✅ ADD DIRECT CLICK HANDLER FOR OFFLINE DETECTION
+      googleButtonContainer.addEventListener('click', function(e) {
+        if (!navigator.onLine) {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          window.location.href = 'offline.html';
+          return false;
+        }
+      }, true); // Use capture phase to intercept early
+      
       google.accounts.id.renderButton(googleButtonContainer, {
         type: "standard",
         theme: "filled_blue",
@@ -181,15 +193,12 @@ showLoading(true, "Loading your app");
         shape: "rectangular",
         width: 250
       });  
-  // ✅ Avoid popup if already signed in U CAN ALLOW IT IF NEEDED IN FUTURE 
-  //  if (!firebase.auth().currentUser) {
-  //    google.accounts.id.prompt();
-  // } 
-  }
+    }
   } catch (error) {
     console.error("Google Sign-In setup failed:", error);
   }
 }
+
 // ====== Firebase Integration ======
 // ====== Firebase Initialization ======
 function initializeFirebase() {
