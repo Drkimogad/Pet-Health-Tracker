@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Offline - Debug Mode</title>
-    <script src="https://cdn.jsdelivr.net/npm/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -240,17 +240,11 @@
         <p id="lastOnline">Last Online: <span id="lastOnlineTime">Unknown</span></p>
     </div>
 
-    <div class="lottie-container">
-        <lottie-player
-            id="lottiePlayer"
-            src="./lottiefiles/BlackCatPeeping.json" 
-            background="transparent"
-            speed="1"
-            loop
-            autoplay
-            onerror="lottieError()">
-        </lottie-player>
-    </div>
+    // REMOVE the current lottie-player element from your HTML and
+// REPLACE with this simpler container:
+<div class="lottie-container">
+    <div id="lottieAnimation"></div>
+</div>
     
     <div class="fallback-animation" id="fallbackAnimation">😿</div>
     
@@ -331,6 +325,63 @@
             }
         }
         
+        // REPLACE your current Lottie player implementation with this:
+    function loadLottieAnimation() {
+    const container = document.querySelector('.lottie-container');
+    const fallback = document.getElementById('fallbackAnimation');
+    
+    // First, try to detect if Lottie player is supported
+    if (typeof lottie === 'undefined') {
+        console.log("Lottie library not loaded, using fallback");
+        fallback.classList.add('show');
+        return;
+    }
+    
+    // Create a div for the animation instead of lottie-player web component
+    const animationContainer = document.createElement('div');
+    animationContainer.id = 'lottieAnimation';
+    animationContainer.style.width = '100%';
+    animationContainer.style.height = '100%';
+    
+    // Clear previous content
+    container.innerHTML = '';
+    container.appendChild(animationContainer);
+    
+    // TEST FILE ACCESS FIRST before trying to load animation
+    testLottieFileAccess().then(isAccessible => {
+        if (isAccessible) {
+            try {
+                // Load animation using the standard Lottie method
+                const animation = lottie.loadAnimation({
+                    container: animationContainer,
+                    renderer: 'svg',
+                    loop: true,
+                    autoplay: true,
+                    path: './lottiefiles/BlackCatPeeping.json'
+                });
+                
+                animation.addEventListener('DOMLoaded', function() {
+                    console.log("Lottie animation loaded successfully");
+                    fallback.classList.remove('show');
+                });
+                
+                animation.addEventListener('error', function(e) {
+                    console.error("Lottie animation error:", e);
+                    fallback.classList.add('show');
+                });
+                
+            } catch (error) {
+                console.error("Failed to load Lottie animation:", error);
+                fallback.classList.add('show');
+            }
+        } else {
+            console.log("Lottie file not accessible, using fallback");
+            fallback.classList.add('show');
+        }
+    });
+}
+
+        
         // Lottie error handler
         function lottieError() {
             console.error('Lottie animation failed to load');
@@ -342,6 +393,29 @@
                 document.getElementById('lottieStatus').className = 'status-error';
             }
         }
+
+        // Update this function to return a promise
+function testLottieFileAccess() {
+    return new Promise((resolve) => {
+        fetch('./lottiefiles/BlackCatPeeping.json')
+            .then(response => {
+                if (response.ok) {
+                    console.log("Lottie JSON file is accessible");
+                    resolve(true);
+                    return response.json();
+                }
+                throw new Error('File not found or inaccessible');
+            })
+            .then(data => {
+                console.log("Lottie JSON is valid");
+            })
+            .catch(error => {
+                console.error("Lottie file access error:", error);
+                document.getElementById('fallbackAnimation').classList.add('show');
+                resolve(false);
+            });
+    });
+}
         
         // Function to fix animation visibility
         function fixAnimationVisibility() {
@@ -367,6 +441,7 @@
                 lottieError();
             }
         }
+
         
         // Store last online time when going offline
         if (navigator.onLine) {
@@ -421,9 +496,19 @@
         }, 5000);
         
         // Initial setup
-        updateLastOnlineTime();
-        fixAnimationVisibility();
-        updateDebugInfo();
+        // Replace your current Lottie initialization with:
+     window.addEventListener('load', function() {
+    updateLastOnlineTime();
+    loadLottieAnimation(); // REPLACES fixAnimationVisibility()
+    updateDebugInfo();
+});
+
+// Also call it if the Lottie library loads later
+if (typeof lottie !== 'undefined') {
+    loadLottieAnimation();
+} else {
+    window.addEventListener('lottieLoaded', loadLottieAnimation);
+}
         
         // Update debug info periodically
         setInterval(() => {
