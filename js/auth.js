@@ -717,15 +717,17 @@ window.addEventListener('offline', checkOnlineStatus);
 // ======== FIREBASE OFFLINE HANDLING UPDATED FUNCTION ========
 function setupFirebaseOfflinePersistence() {
   // Use the new cache settings instead of enablePersistence()
+  try {
   firebase.firestore().settings({
     cache: {
       sizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED
-    }
-  }).then(() => {
-    console.log('✅ Firebase offline cache enabled');
-  }).catch((err) => {
-    console.warn('⚠️ Firestore cache settings error:', err);
+    },
+    merge: true // ← ADD THIS to fix the warning
   });
+  console.log('✅ Firebase offline cache enabled');
+} catch (err) {
+  console.warn('⚠️ Firestore cache settings error:', err);
+ }
 }
 
 
