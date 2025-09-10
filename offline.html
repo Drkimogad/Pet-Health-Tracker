@@ -264,6 +264,11 @@
 
 // Enhanced offline detection for auth page
 function setupAuthPageOfflineDetection() {
+     // Exit if we're not on auth/index pages
+    if (!window.location.pathname.includes('auth.html') && 
+        !window.location.pathname.includes('index.html')) {
+        return false;
+    }
     // Skip if we're already on the offline page
     if (window.location.pathname.includes('offline.html')) {
         return false;
