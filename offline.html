@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Offline - Debug Mode</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+    <title>Offline</title>
+    <script src="https://cdn.jsdelivr.net/npm/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -30,7 +30,6 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            border: 2px solid #4CAF50; /* Highlight content area */
         }
         
         h1 {
@@ -52,24 +51,10 @@
             font-size: 1em;
             border-radius: 5px;
             transition: background-color 0.3s;
-            z-index: 1001;
-            position: relative;
-            margin: 5px;
         }
         
-        .debug-btn {
-            background-color: #6c757d;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            cursor: pointer;
-            font-size: 0.9em;
-            border-radius: 5px;
-            margin: 5px;
-        }
-        
-        .retry-btn:hover, .debug-btn:hover {
-            opacity: 0.9;
+        .retry-btn:hover {
+            background-color: #45a049;
         }
         
         /* Last Online Time */
@@ -95,7 +80,7 @@
             50% { opacity: 0.5; }
         }
         
-        /* Lottie container - HIGHLIGHTED for debugging */
+        /* Lottie container */
         .lottie-container {
             position: fixed;
             bottom: 10vh;
@@ -107,8 +92,6 @@
             display: flex;
             justify-content: center;
             align-items: flex-end;
-            border: 3px dashed #ff0000; /* Red dashed border for visibility */
-            background-color: rgba(255, 0, 0, 0.1); /* Light red background */
         }
 
         .lottie-container lottie-player {
@@ -116,12 +99,11 @@
             height: 100%;
             max-height: 80vh;
             object-fit: contain;
-            border: 2px solid #00ff00; /* Green border to see Lottie player area */
         }
 
-        /* Fallback animation - HIGHLIGHTED for debugging */
+        /* Fallback animation */
         .fallback-animation {
-            display: block;
+            display: none;
             font-size: 80px;
             position: fixed;
             bottom: 10vh;
@@ -129,15 +111,6 @@
             text-align: center;
             z-index: 101;
             animation: bounce 2s infinite;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            border: 3px solid #0000ff; /* Blue border for fallback */
-            background-color: rgba(0, 0, 255, 0.1); /* Light blue background */
-            pointer-events: none;
-        }
-        
-        .fallback-animation.show {
-            opacity: 1;
         }
         
         @keyframes bounce {
@@ -145,51 +118,32 @@
             50% { transform: translateY(-20px); }
         }
 
-        /* Debug panel - Always visible for debugging */
-        .debug-panel {
+        /* Online notification */
+        .online-notification {
             position: fixed;
-            top: 10px;
-            right: 10px;
-            background: rgba(0,0,0,0.8);
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background-color: #4CAF50;
             color: white;
-            padding: 15px;
+            padding: 16px 24px;
             border-radius: 8px;
-            font-size: 14px;
-            z-index: 10000;
-            max-width: 300px;
-            text-align: left;
-            display: block; /* Always visible for debugging */
-            border: 2px solid #ffff00; /* Yellow border */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 2000;
+            transition: transform 0.5s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
-        .debug-panel h3 {
-            margin-top: 0;
-            border-bottom: 1px solid #555;
-            padding-bottom: 5px;
-            color: #ffff00; /* Yellow heading */
+        .online-notification.show {
+            transform: translateX(-50%) translateY(0);
         }
         
-        .debug-info {
-            margin: 10px 0;
-            line-height: 1.4;
+        .online-notification .icon {
+            font-size: 24px;
         }
-        
-        .device-test {
-            margin: 15px 0;
-            padding: 10px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 5px;
-        }
-        
-        /* Status indicators */
-        .status-ok {
-            color: #00ff00; /* Green for good status */
-        }
-        
-        .status-error {
-            color: #ff0000; /* Red for errors */
-        }
-        
+
         /* Mobile devices */
         @media (max-width: 768px) {
             .lottie-container {
@@ -199,13 +153,6 @@
             
             .content {
                 margin-bottom: 55vh;
-            }
-            
-            .debug-panel {
-                left: 10px;
-                right: 10px;
-                max-width: none;
-                font-size: 12px;
             }
         }
 
@@ -229,6 +176,18 @@
                 font-size: 1rem;
             }
         }
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1e1e1e;
+                color: #ffffff;
+            }
+            
+            .content {
+                background: rgba(30, 30, 30, 0.9);
+            }
+        }
     </style>
 </head>
 <body>
@@ -236,219 +195,72 @@
         <h1><span class="status-indicator"></span>Oops! You're Offline</h1>
         <p>It seems like you're not connected to the internet. Please check your connection.</p>
         <button class="retry-btn" onclick="checkAndRedirect();">Try Again</button>
-        <button class="debug-btn" onclick="toggleDebug()">Toggle Debug Info</button>
         <p id="lastOnline">Last Online: <span id="lastOnlineTime">Unknown</span></p>
     </div>
 
-    // REMOVE the current lottie-player element from your HTML and
-// REPLACE with this simpler container:
-<div class="lottie-container">
-    <div id="lottieAnimation"></div>
-</div>
+    <div class="lottie-container">
+            <lottie-player src="data:application/json,[{"nm":"appy_present","ddd":0,"h":2560,"w":1440,"meta":{"g":"@lottiefiles/toolkit-js 0.33.2"},"layers":[{"ty":3,"nm":"Nul 1","sr":1,"st":11,"op":386,"ip":11,"hd":false,"ddd":0,"bm":0,"hasMask":false,"ao":0,"ks":{"a":{"a":0,"k":[0,0,0],"ix":1},"s":{"a":0,"k":[183,183,100],"ix":6},"sk":{"a":0,"k":0},"p":{"a":1,"k":[{"o":{"x":0.167,"y":0.167},"i":{"x":0.833,"y":0.833},"s":[578,3266,0],"t":11,"ti":[0,0,0],"to":[0,0,0]},{"s":[578,2556,0],"t":24}],"ix":2},"r":{"a":0,"k":0,"ix":10},"sa":{"a":0,"k":0},"o":{"a":0,"k":0,"ix":11}},"ef":[],"ind":1},{"ty":4,"nm":"ojo izq Silhouettes","sr":1,"st":0,"op":375,"ip":0,"hd":false,"ddd":0,"bm":0,"hasMask":false,"ao":0,"ks":{"a":{"a":0,"k":[48.044,48.045,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6},"sk":{"a":0,"k":0},"p":{"a":1,"k":[{"o":{"x":0.167,"y":0.167},"i":{"x":0.833,"y":0.833},"s":[-26.17,-70.771,0],"t":30,"ti":[0,0,0],"to":[0,0,0]},{"o":{"x":0.167,"y":0.167},"i":{"x":0.833,"y":0.833},"s":[-49.121,-84.978,0],"t":35,"ti":[0,0,0],"to":[0,0,0]},{"o":{"x":0.167,"y":0.167},"i":{"x":0.833,"y":0.833},"s":[-22.891,-84.978,0],"t":62,"ti":[0,0,0],"to":[0,0,0]},{"s":[-26.17,-70.771,0],"t":67}],"ix":2},"r":{"a":0,"k":0,"ix":10},"sa":{"a":0,"k":0},"o":{"a":0,"k":100,"ix":11}},"ef":[],"shapes":[{"ty":"gr","bm":0,"hd":false,"mn":"ADBE Vector Group","nm":"Groupe 1","ix":1,"cix":2,"np":2,"it":[{"ty":"sh","bm":0,"hd":false,"mn":"ADBE Vector Shape - Group","nm":"TracÃ© 1","ix":1,"d":1,"ks":{"a":0,"k":{"c":true,"i":[[0,-26.397],[-26.396,0],[0,26.396],[26.396,0]],"o":[[0,26.396],[26.396,-0.001],[0,-26.396],[-26.397,0]],"v":[[-47.794,0],[-0.001,47.794],[47.794,-0.001],[0,-47.794]]},"ix":2}},{"ty":"fl","bm":0,"hd":false,"mn":"ADBE Vector Graphic - Fill","nm":"Fond 1","c":{"a":0,"k":[0.1294,0.1294,0.1294],"ix":4},"r":1,"o":{"a":0,"k":100,"ix":5}},{"ty":"tr","a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"sk":{"a":0,"k":0,"ix":4},"p":{"a":0,"k":[48.044,48.045],"ix":2},"r":{"a":0,"k":0,"ix":6},"sa":{"a":0,"k":0,"ix":5},"o":{"a":0,"k":100,"ix":7}}]}],"ind":2,"parent":1},{"ty":4,"nm":"ojo der Silhouettes","sr":1,"st":0,"op":375,"ip":0,"hd":false,"ddd":0,"bm":0,"hasMask":false,"ao":0,"ks":{"a":{"a":0,"k":[48.045,48.044,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6},"sk":{"a":0,"k":0},"p":{"a":1,"k":[{"o":{"x":0.167,"y":0.167},"i":{"x":0.833,"y":0.833},"s":[172.758,-68.586,0],"t":30,"ti":[0,0,0],"to":[0,0,0]},{"o":{"x":0.167,"y":0.167},"i":{"x":0.833,"y":0.833},"s":[166.201,-82.794,0],"t":35,"ti":[0,0,0],"to":[0,0,0]},{"o":{"x":0.167,"y":0.167},"i":{"x":0.833,"y":0.833},"s":[194.616,-83.887,0],"t":62,"ti":[0,0,0],"to":[0,0,0]},{"s":[172.758,-68.586,0],"t":67}],"ix":2},"r":{"a":0,"k":0,"ix":10},"sa":{"a":0,"k":0},"o":{"a":0,"k":100,"ix":11}},"ef":[],"shapes":[{"ty":"gr","bm":0,"hd":false,"mn":"ADBE Vector Group","nm":"Groupe 1","ix":1,"cix":2,"np":2,"it":[{"ty":"sh","bm":0,"hd":false,"mn":"ADBE Vector Shape - Group","nm":"TracÃ© 1","ix":1,"d":1,"ks":{"a":0,"k":{"c":true,"i":[[0,-26.397],[-26.396,0],[0,26.396],[26.396,0]],"o":[[0,26.396],[26.396,-0.001],[0,-26.396],[-26.396,0]],"v":[[-47.794,0],[-0.001,47.794],[47.794,-0.001],[-0.001,-47.794]]},"ix":2}},{"ty":"fl","bm":0,"hd":false,"mn":"ADBE Vector Graphic - Fill","nm":"Fond 1","c":{"a":0,"k":[0.1294,0.1294,0.1294],"ix":4},"r":1,"o":{"a":0,"k":100,"ix":5}},{"ty":"tr","a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"sk":{"a":0,"k":0,"ix":4},"p":{"a":0,"k":[48.045,48.045],"ix":2},"r":{"a":0,"k":0,"ix":6},"sa":{"a":0,"k":0,"ix":5},"o":{"a":0,"k":100,"ix":7}}]}],"ind":3,"parent":1},{"ty":4,"nm":"Calque 1 Silhouettes","sr":1,"st":0,"op":375,"ip":0,"hd":false,"ddd":0,"bm":0,"hasMask":false,"ao":0,"ks":{"a":{"a":0,"k":[335.986,508.493,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6},"sk":{"a":0,"k":0},"p":{"a":0,"k":[-0.076,109.585,0],"ix":2},"r":{"a":0,"k":0,"ix":10},"sa":{"a":0,"k":0},"o":{"a":0,"k":100,"ix":11}},"ef":[],"shapes":[{"ty":"gr","bm":0,"hd":false,"mn":"ADBE Vector Group","nm":"Groupe 1","ix":1,"cix":2,"np":2,"it":[{"ty":"sh","bm":0,"hd":false,"mn":"ADBE Vector Shape - Group","nm":"TracÃ© 1","ix":1,"d":1,"ks":{"a":0,"k":{"c":true,"i":[[-6.088,0],[0,-6.092],[-10.139,0],[0,10.136],[-0.003,0.101],[0,0.101],[0,0],[0,6.128],[-15.059,0],[0,-8.292],[9.56,-4.428],[0,0],[0.003,-0.1],[0,-0.101],[-10.139,0],[0,10.136],[-6.088,0],[0,-6.093],[22.296,0],[7.381,7.842],[11.591,0],[0,22.3]],"o":[[6.09,0],[0,10.137],[10.14,0],[0,-0.101],[-0.003,-0.1],[0,0],[-9.56,-4.429],[0,-8.291],[15.06,0],[0,6.128],[0,0],[0,0.101],[0.003,0.101],[0,10.136],[10.14,0],[0,-6.093],[6.089,0],[0,22.3],[-11.59,0.001],[-7.381,7.842],[-22.296,0],[0,-6.093]],"v":[[-58.824,-3.369],[-47.795,7.659],[-29.412,26.043],[-11.029,7.659],[-10.999,7.363],[-11.029,7.068],[-11.029,-13.26],[-27.266,-33.089],[0,-48.102],[27.268,-33.089],[11.03,-13.26],[11.03,7.068],[10.999,7.363],[11.03,7.659],[29.412,26.042],[47.794,7.659],[58.824,-3.37],[69.853,7.659],[29.412,48.101],[0,35.329],[-29.412,48.102],[-69.853,7.66]]},"ix":2}},{"ty":"fl","bm":0,"hd":false,"mn":"ADBE Vector Graphic - Fill","nm":"Fond 1","c":{"a":0,"k":[0.4275,0.4275,0.4275],"ix":4},"r":1,"o":{"a":0,"k":100,"ix":5}},{"ty":"tr","a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"sk":{"a":0,"k":0,"ix":4},"p":{"a":0,"k":[407.717,410.813],"ix":2},"r":{"a":0,"k":0,"ix":6},"sa":{"a":0,"k":0,"ix":5},"o":{"a":0,"k":100,"ix":7}}]},{"ty":"gr","bm":0,"hd":false,"mn":"ADBE Vector Group","nm":"Groupe 2","ix":2,"cix":2,"np":2,"it":[{"ty":"sh","bm":0,"hd":false,"mn":"ADBE Vector Shape - Group","nm":"TracÃ© 1","ix":1,"d":1,"ks":{"a":0,"k":{"c":true,"i":[[0,-37.008],[-37.009,0.001],[0,37.008],[37.008,0]],"o":[[0,37.008],[37.007,0],[0,-37.008],[-37.008,0]],"v":[[-67.008,0],[0,67.008],[67.008,-0.001],[0,-67.009]]},"ix":2}},{"ty":"fl","bm":0,"hd":false,"mn":"ADBE Vector Graphic - Fill","nm":"Fond 1","c":{"a":0,"k":[0.651,0.749,0.5686],"ix":4},"r":1,"o":{"a":0,"k":100,"ix":5}},{"ty":"tr","a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"sk":{"a":0,"k":0,"ix":4},"p":{"a":0,"k":[299.261,329.23],"ix":2},"r":{"a":0,"k":0,"ix":6},"sa":{"a":0,"k":0,"ix":5},"o":{"a":0,"k":100,"ix":7}}]},{"ty":"gr","bm":0,"hd":false,"mn":"ADBE Vector Group","nm":"Groupe 3","ix":3,"cix":2,"np":2,"it":[{"ty":"sh","bm":0,"hd":false,"mn":"ADBE Vector Shape - Group","nm":"TracÃ© 1","ix":1,"d":1,"ks":{"a":0,"k":{"c":true,"i":[[0,-37.008],[-37.008,0.001],[0,37.008],[37.008,0]],"o":[[0,37.008],[37.008,0],[0,-37.008],[-37.008,0]],"v":[[-67.009,0],[0,67.008],[67.009,-0.001],[0,-67.009]]},"ix":2}},{"ty":"fl","bm":0,"hd":false,"mn":"ADBE Vector Graphic - Fill","nm":"Fond 1","c":{"a":0,"k":[0.651,0.749,0.5686],"ix":4},"r":1,"o":{"a":0,"k":100,"ix":5}},{"ty":"tr","a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"sk":{"a":0,"k":0,"ix":4},"p":{"a":0,"k":[516.174,329.229],"ix":2},"r":{"a":0,"k":0,"ix":6},"sa":{"a":0,"k":0,"ix":5},"o":{"a":0,"k":100,"ix":7}}]},{"ty":"gr","bm":0,"hd":false,"mn":"ADBE Vector Group","nm":"Groupe 4","ix":4,"cix":2,"np":2,"it":[{"ty":"sh","bm":0,"hd":false,"mn":"ADBE Vector Shape - Group","nm":"TracÃ© 1","ix":1,"d":1,"ks":{"a":0,"k":{"c":true,"i":[[0,0],[25.902,-23.233],[0,0],[0,0],[0,0],[0.05,-34.794],[0,0],[0.392,62.222],[31.775,0.045],[0.153,-0.002],[-0.203,-31.985],[-65.704,-8.654],[-2.494,-0.004],[-1.219,0.076],[0,0],[-22.658,50.5],[0,41.875],[0,0],[0,0],[0,0]],"o":[[0.05,-34.794],[0,0],[0,0],[0,0],[-25.836,-23.307],[0,0],[-19.955,-21.872],[-0.202,-31.831],[-0.155,0],[-31.984,0.202],[1.205,190.77],[2.539,0.336],[1.233,0.002],[0,0],[58.93,0.084],[13.454,-23.624],[0,0],[0,0],[0,0],[0,0]],"v":[[335.687,-454.416],[268.651,-484.394],[156.972,-384.219],[-1.722,-384.443],[-113.113,-484.937],[-180.235,-455.147],[-181.228,361.501],[-219.71,240.436],[-277.529,182.891],[-277.988,182.891],[-335.533,241.171],[-144.049,507.373],[-136.498,507.877],[-132.831,507.714],[181.211,508.159],[313.547,422.599],[334.642,325.355],[334.996,26.531],[334.974,26.531],[335,26.531]]},"ix":2}},{"ty":"fl","bm":0,"hd":false,"mn":"ADBE Vector Graphic - Fill","nm":"Fond 1","c":{"a":0,"k":[0.1294,0.1294,0.1294],"ix":4},"r":1,"o":{"a":0,"k":100,"ix":5}},{"ty":"tr","a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"sk":{"a":0,"k":0,"ix":4},"p":{"a":0,"k":[335.986,508.494],"ix":2},"r":{"a":0,"k":0,"ix":6},"sa":{"a":0,"k":0,"ix":5},"o":{"a":0,"k":100,"ix":7}}]}],"ind":4,"parent":1}],"v":"5.1.13","fr":25,"op":77,"ip":0,"assets":[]}]" ...>
+                
+        <lottie-player
+            id="lottiePlayer"
+            src="./lottiefiles/BlackCatPeeping.json" 
+            background="transparent"
+            speed="1"
+            loop
+            autoplay
+            onerror="lottieError()">
+        </lottie-player>
+    </div>
     
-    <div class="fallback-animation" id="fallbackAnimation">😿</div>
+    <div class="fallback-animation">😿</div>
     
-    <div class="debug-panel" id="debugPanel">
-        <h3>Lottie Debug Info</h3>
-        <div class="debug-info" id="lottieDebugInfo">
-            Loading diagnostic information...
-        </div>
-        <div class="device-test">
-            <strong>Device Test:</strong>
-            <div id="deviceInfo"></div>
-        </div>
-        <div class="debug-info">
-            <strong>Visual Guide:</strong> 
-            <p><span style="color: #ff0000">Red Border</span>: Lottie Container</p>
-            <p><span style="color: #00ff00">Green Border</span>: Lottie Player</p>
-            <p><span style="color: #0000ff">Blue Border</span>: Fallback Animation</p>
-        </div>
+    <div class="online-notification" id="onlineNotification">
+        <span class="icon">✅</span>
+        <span class="message">Connection restored! You're back online.</span>
     </div>
     
     <script>
-        // Debug mode flag - start with debug enabled
-        let debugMode = true;
-        
-        // Toggle debug panel
-        function toggleDebug() {
-            const panel = document.getElementById('debugPanel');
-            debugMode = !debugMode;
-            panel.style.display = debugMode ? 'block' : 'none';
-            
-            if (debugMode) {
-                updateDebugInfo();
+        // ===== OFFLINE DETECTION & REDIRECTION =====
+        // Checks if we're on auth page and offline, redirects to offline.html
+        function setupAuthPageOfflineDetection() {
+            // Skip if we're already on the offline page
+            if (window.location.pathname.includes('offline.html')) {
+                return false;
             }
+            
+            // Check if we're on auth page and offline
+            const isAuthPage = window.location.pathname.includes('auth.html') || 
+                               window.location.pathname.includes('index.html');
+            
+            if (isAuthPage && !navigator.onLine) {
+                console.log("Auth page detected offline, redirecting...");
+                window.location.href = 'offline.html';
+                return true;
+            }
+            return false;
         }
         
-        // Update debug information
-        function updateDebugInfo() {
-            const lottieContainer = document.querySelector('.lottie-container');
-            const lottiePlayer = document.getElementById('lottiePlayer');
-            const fallbackAnimation = document.getElementById('fallbackAnimation');
-            const bounds = lottieContainer.getBoundingClientRect();
+        // ===== ONLINE STATUS MANAGEMENT =====
+        // Shows notification when connection is restored
+        function showOnlineNotification() {
+            const notification = document.getElementById('onlineNotification');
+            notification.classList.add('show');
             
-            // Get device info
-            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-            const screenSize = `${window.innerWidth} x ${window.innerHeight}`;
-            
-            let debugHTML = `
-                <strong>Container Visibility:</strong> <span class="${bounds.width > 0 && bounds.height > 0 ? 'status-ok' : 'status-error'}">${bounds.width > 0 && bounds.height > 0 ? '✅ Visible' : '❌ Hidden'}</span><br>
-                <strong>Dimensions:</strong> ${bounds.width.toFixed(0)}px x ${bounds.height.toFixed(0)}px<br>
-                <strong>Position:</strong> (${bounds.left.toFixed(0)}px, ${bounds.top.toFixed(0)}px)<br>
-                <strong>Lottie Status:</strong> <span id="lottieStatus">Checking...</span><br>
-                <strong>Fallback Status:</strong> <span class="${fallbackAnimation.classList.contains('show') ? 'status-ok' : 'status-error'}">${fallbackAnimation.classList.contains('show') ? '✅ Visible' : '❌ Hidden'}</span>
-            `;
-            
-            let deviceHTML = `
-                <strong>Device:</strong> ${isMobile ? 'Mobile/Tablet' : 'Desktop'}<br>
-                <strong>Screen:</strong> ${screenSize}<br>
-                <strong>User Agent:</strong> ${navigator.userAgent}
-            `;
-            
-            document.getElementById('lottieDebugInfo').innerHTML = debugHTML;
-            document.getElementById('deviceInfo').innerHTML = deviceHTML;
-            
-            // Check Lottie player status
-            if (lottiePlayer && typeof lottiePlayer.getLottie === 'function' && lottiePlayer.getLottie()) {
-                document.getElementById('lottieStatus').textContent = '✅ Loaded';
-                document.getElementById('lottieStatus').className = 'status-ok';
-            } else {
-                document.getElementById('lottieStatus').textContent = '❌ Not loaded';
-                document.getElementById('lottieStatus').className = 'status-error';
-                
-                // If Lottie not loaded after 3 seconds, show fallback
-                setTimeout(() => {
-                    if (!lottiePlayer.getLottie || !lottiePlayer.getLottie()) {
-                        lottieError();
-                    }
-                }, 3000);
-            }
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
         }
         
-        // REPLACE your current Lottie player implementation with this:
-    function loadLottieAnimation() {
-    const container = document.querySelector('.lottie-container');
-    const fallback = document.getElementById('fallbackAnimation');
-    
-    // First, try to detect if Lottie player is supported
-    if (typeof lottie === 'undefined') {
-        console.log("Lottie library not loaded, using fallback");
-        fallback.classList.add('show');
-        return;
-    }
-    
-    // Create a div for the animation instead of lottie-player web component
-    const animationContainer = document.createElement('div');
-    animationContainer.id = 'lottieAnimation';
-    animationContainer.style.width = '100%';
-    animationContainer.style.height = '100%';
-    
-    // Clear previous content
-    container.innerHTML = '';
-    container.appendChild(animationContainer);
-    
-    // TEST FILE ACCESS FIRST before trying to load animation
-    testLottieFileAccess().then(isAccessible => {
-        if (isAccessible) {
-            try {
-                // Load animation using the standard Lottie method
-                const animation = lottie.loadAnimation({
-                    container: animationContainer,
-                    renderer: 'svg',
-                    loop: true,
-                    autoplay: true,
-                path: window.location.origin + '/Pet-Health-Tracker/lottiefiles/BlackCatPeeping.json'
-                });
-                
-                animation.addEventListener('DOMLoaded', function() {
-                    console.log("Lottie animation loaded successfully");
-                    fallback.classList.remove('show');
-                });
-                
-                animation.addEventListener('error', function(e) {
-                    console.error("Lottie animation error:", e);
-                    fallback.classList.add('show');
-                });
-                
-            } catch (error) {
-                console.error("Failed to load Lottie animation:", error);
-                fallback.classList.add('show');
-            }
-        } else {
-            console.log("Lottie file not accessible, using fallback");
-            fallback.classList.add('show');
-        }
-    });
-}
-
-        
-        // Lottie error handler
+        // ===== LOTTIE ANIMATION HANDLING =====
+        // Handles Lottie animation errors by showing fallback
         function lottieError() {
             console.error('Lottie animation failed to load');
-            const fallback = document.getElementById('fallbackAnimation');
-            fallback.classList.add('show');
-            
-            if (debugMode) {
-                document.getElementById('lottieStatus').textContent = '❌ Error loading';
-                document.getElementById('lottieStatus').className = 'status-error';
-            }
-        }
-
-        // Update this function to return a promise
-function testLottieFileAccess() {
-    return new Promise((resolve) => {
-        fetch('./lottiefiles/BlackCatPeeping.json')
-            .then(response => {
-                if (response.ok) {
-                    console.log("Lottie JSON file is accessible");
-                    resolve(true);
-                    return response.json();
-                }
-                throw new Error('File not found or inaccessible');
-            })
-            .then(data => {
-                console.log("Lottie JSON is valid");
-            })
-            .catch(error => {
-                console.error("Lottie file access error:", error);
-                document.getElementById('fallbackAnimation').classList.add('show');
-                resolve(false);
-            });
-    });
-}
-        
-        // Function to fix animation visibility
-        function fixAnimationVisibility() {
-            const lottieContainer = document.querySelector('.lottie-container');
-            const lottiePlayer = document.getElementById('lottiePlayer');
-            const fallbackAnimation = document.getElementById('fallbackAnimation');
-            
-            console.log("Lottie container state:", {
-                visible: lottieContainer.offsetWidth > 0 && lottieContainer.offsetHeight > 0,
-                dimensions: {width: lottieContainer.offsetWidth, height: lottieContainer.offsetHeight}
-            });
-            
-            // Check if Lottie player is working
-            if (lottiePlayer) {
-                setTimeout(() => {
-                    if (!lottiePlayer.getLottie || !lottiePlayer.getLottie()) {
-                        console.log("Lottie player not functional, showing fallback");
-                        lottieError();
-                    }
-                }, 2000);
-            } else {
-                console.log("Lottie player not found, showing fallback");
-                lottieError();
-            }
-        }
-
-        
-        // Store last online time when going offline
-        if (navigator.onLine) {
-            localStorage.setItem("lastOnline", new Date().toLocaleString());
+            document.querySelector('.fallback-animation').style.display = 'block';
         }
         
-        // Update last online time display
+        // ===== LAST ONLINE TIME TRACKING =====
+        // Stores and displays when the user was last online
         function updateLastOnlineTime() {
             const lastOnline = localStorage.getItem("lastOnline");
             if (lastOnline) {
@@ -458,7 +270,8 @@ function testLottieFileAccess() {
             }
         }
         
-        // Reliable online check
+        // ===== MANUAL CONNECTION CHECK =====
+        // Triggered when user clicks "Try Again" button
         function checkAndRedirect() {
             const btn = document.querySelector('.retry-btn');
             const originalText = btn.textContent;
@@ -470,66 +283,86 @@ function testLottieFileAccess() {
                 cache: 'no-store'
             })
             .then(() => {
-                window.location.href = 'index.html?t=' + Date.now();
+                // Show success notification before redirecting
+                showOnlineNotification();
+                
+                // Wait a moment so user sees the notification
+                setTimeout(() => {
+                    window.location.href = 'index.html?t=' + Date.now();
+                }, 1500);
             })
             .catch(() => {
+                // Still offline
                 btn.textContent = originalText;
                 btn.disabled = false;
                 alert('Still offline. Please check your internet connection.');
             });
         }
         
-        // Auto-check every 5 seconds
-        setInterval(() => {
+        // ===== AUTOMATIC CONNECTION CHECKING =====
+        // Checks connection status every 5 seconds
+        let checkInterval = setInterval(() => {
             if (navigator.onLine) {
                 fetch('https://httpbin.org/status/200', {
                     method: 'HEAD', 
                     cache: 'no-store'
                 })
                 .then(() => {
-                    window.location.href = 'index.html?t=' + Date.now();
+                    // Show notification and redirect
+                    showOnlineNotification();
+                    clearInterval(checkInterval);
+                    setTimeout(() => {
+                        window.location.href = 'index.html?t=' + Date.now();
+                    }, 2000);
                 })
                 .catch(() => {
                     // Silently fail - still offline
                 });
             }
-        }, 5000);
+        }, 4000);
         
-        // Initial setup
-        // Replace your current Lottie initialization with:
-     window.addEventListener('load', function() {
-    updateLastOnlineTime();
-    loadLottieAnimation(); // REPLACES fixAnimationVisibility()
-    updateDebugInfo();
-});
-
-// Also call it if the Lottie library loads later
-if (typeof lottie !== 'undefined') {
-    loadLottieAnimation();
-} else {
-    window.addEventListener('lottieLoaded', loadLottieAnimation);
-}
-        
-        // Update debug info periodically
-        setInterval(() => {
-            if (debugMode) {
-                updateDebugInfo();
+        // ===== INITIALIZATION =====
+        // Runs when page loads to set up everything
+        function initializeOfflinePage() {
+            // Store last online time when going offline
+            if (navigator.onLine) {
+                localStorage.setItem("lastOnline", new Date().toLocaleString());
             }
-        }, 2000);
-        
-        // Add event listener for online status changes
-        window.addEventListener('online', function() {
-            fetch('https://httpbin.org/status/200', {
-                method: 'HEAD', 
-                cache: 'no-store'
-            })
-            .then(() => {
-                window.location.href = 'index.html?t=' + Date.now();
-            })
-            .catch(() => {
-                // Not really online or request failed
+            
+            // Update last online time display
+            updateLastOnlineTime();
+            
+            // Set up auth page offline detection
+            if (!setupAuthPageOfflineDetection()) {
+                // Listen for offline events if not redirected
+                window.addEventListener('offline', function() {
+                    if (setupAuthPageOfflineDetection()) {
+                        console.log("Went offline on auth page, redirected to offline.html");
+                    }
+                });
+            }
+            
+            // Listen for online events to show notification
+            window.addEventListener('online', function() {
+                fetch('https://httpbin.org/status/200', {
+                    method: 'HEAD', 
+                    cache: 'no-store'
+                })
+                .then(() => {
+                    showOnlineNotification();
+                    clearInterval(checkInterval);
+                    setTimeout(() => {
+                        window.location.href = 'index.html?t=' + Date.now();
+                    }, 2000);
+                })
+                .catch(() => {
+                    // Not really online or request failed
+                });
             });
-        });
+        }
+        
+        // Start everything when page loads
+        window.addEventListener('load', initializeOfflinePage);
     </script>
 </body>
 </html>
