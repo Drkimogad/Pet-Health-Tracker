@@ -2327,6 +2327,14 @@ Global circular close button for all devices
     gap: 0.3rem;
   }
 }
+@media (max-width: 600px) {
+  .community-chat-modal {
+    width: 92vw;   /* slightly less than screen width */
+    max-width: 92vw;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
 
 
 
