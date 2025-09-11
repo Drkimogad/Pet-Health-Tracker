@@ -1753,62 +1753,108 @@ body.modal-active {
 /* ===== DESKTOP OPTIMIZATION (≥1024px) ===== */
 @media (min-width: 1024px) {
   .modal-content {
-    max-width: 520px; /* Slightly wider for desktop */
-    max-height: 88vh; /* More height for reminders */
-    padding: 25px;
+    max-width: 500px;
+    max-height: 90vh; /* Increased height allowance */
+    padding: 20px 25px;
+    border: none; /* Remove border for cleaner look */
+    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.25); /* Stronger shadow instead of border */
   }
 
   .pet-details-modal {
-    max-width: 450px; /* More content space */
-    padding: 1.2rem;
+    max-width: 100%; /* Use full modal width */
+    padding: 0.8rem 0;
   }
 
   .detail-photo {
-    max-width: 220px; /* Larger photo on desktop */
+    max-width: 180px; /* Slightly smaller to save space */
+    margin: 0 auto 0.8rem;
   }
 
-  /* Specific fixes for reminders section */
-  .section-break:last-of-type {
-    margin-top: 1.5rem;
-    margin-bottom: 0.8rem;
-  }
-
+  /* Compact grid layout */
   .details-grid {
-    gap: 0.7rem; /* More spacing between items */
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem; /* Reduced gap */
+    margin: 0 -0.2rem; /* Compensate for reduced gap */
   }
 
-  /* Ensure reminders have enough room */
+  /* More compact section breaks */
+  .section-break {
+    margin-top: 0.8rem;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid #eee;
+    font-size: 0.95rem;
+  }
+
+  /* Ensure all content fits */
   .modal-content {
-    overflow-y: auto; /* Keep scroll if needed */
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
   }
 
-  /* Button adjustments for desktop */
+  /* Compact reminders */
+  .reminders-list {
+    padding-left: 1.1rem;
+    margin: 0.3rem 0 0.8rem;
+  }
+
+  .reminders-list li {
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+    line-height: 1.3;
+  }
+
+  /* Compact buttons */
   .modal-actions {
-    margin-top: 2rem;
+    margin-top: 1.2rem;
+    gap: 0.6rem;
   }
 
   .modal-actions button {
-    padding: 0.7rem 1.4rem;
-    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
   }
 }
 
 /* ===== LARGE DESKTOP ENHANCEMENT (≥1280px) ===== */
 @media (min-width: 1280px) {
   .modal-content {
-    max-width: 550px;
-    padding: 30px;
+    max-width: 520px;
+    padding: 25px 30px;
   }
-
-  .pet-details-modal {
-    max-width: 480px;
+  
+  /* Two-column layout for better space utilization */
+  .details-grid {
+    gap: 0.5rem;
   }
 }
 
-/* ===== HEIGHT OPTIMIZATION FOR TALL SCREENS ===== */
-@media (min-height: 900px) and (min-width: 1024px) {
+/* ===== CONTENT PROTECTION - ENSURES FULL CAPTURE ===== */
+@media (min-width: 1024px) {
   .modal-content {
-    max-height: 82vh; /* More proportional for tall screens */
+    /* Force minimum padding to ensure content doesn't touch edges */
+    min-height: 300px;
+  }
+  
+  /* Protection for last elements */
+  .modal-actions {
+    margin-bottom: 0.5rem;
+  }
+  
+  .reminders-list {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  
+  /* Visual indicator of content area (can remove after testing) */
+  .pet-details-modal::after {
+    content: '';
+    display: block;
+    height: 5px;
+    background: rgba(76, 175, 80, 0.1);
+    margin-top: 0.5rem;
+    border-radius: 2px;
   }
 }
 
