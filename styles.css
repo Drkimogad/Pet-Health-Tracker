@@ -1618,6 +1618,40 @@ body.modal-active {
   100% { transform: rotate(360deg); }
 }
 
+
+/* Styles specifically for modal PDF capture */
+.modal-pdf-capture {
+  position: absolute !important;
+  left: -9999px !important;
+  top: 0 !important;
+  width: auto !important;
+  background: white !important;
+}
+
+.modal-pdf-capture .modal-content {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+  border: 1px solid #ccc !important; /* Subtle border for capture */
+}
+
+/* Ensure reminders have enough space */
+.modal-pdf-capture .section-break:last-of-type {
+  margin-bottom: 20px !important;
+}
+
+.modal-pdf-capture .reminders-list {
+  padding-bottom: 10px !important;
+  max-height: none !important; /* Remove any height limits */
+}
+
+/* Force visible overflow for capture */
+.modal-pdf-capture .pet-details-modal {
+  overflow: visible !important;
+  max-height: none !important;
+}
 /* ===== PHONE-SPECIFIC MODAL STYLES ===== */
 @media (max-width: 600px) {
   body.modal-active {
@@ -1691,6 +1725,37 @@ body.modal-active {
     gap: 0.4rem;
   }
 }
+/* ===== DESKTOP MODAL FIXES ===== */
+@media (min-width: 1024px) {
+  /* Adjust modal for desktop to prevent cutoff */
+  .modal-content {
+    max-width: 500px !important; /* Slightly wider for desktop */
+    max-height: 80vh !important; /* More height allowance */
+  }
+  
+  /* Specific fixes for PDF capture on desktop */
+  .modal-pdf-capture .modal-content {
+    max-height: none !important; /* Remove height restriction for capture */
+    overflow: visible !important; /* Ensure all content is visible */
+  }
+  
+  /* Extra spacing for reminders section */
+  .modal-pdf-capture .section-break:last-of-type {
+    margin-bottom: 25px !important;
+  }
+  
+  .modal-pdf-capture .reminders-list {
+    margin-bottom: 15px !important;
+  }
+}
+
+/* ===== LARGE DESKTOP ENHANCEMENTS ===== */
+@media (min-width: 1280px) {
+  .modal-content {
+    max-width: 550px !important; /* Even wider for large screens */
+  }
+}
+
 
 
 
