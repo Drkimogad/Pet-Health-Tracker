@@ -1446,318 +1446,6 @@ lottie-player:not([style*="display:none"]) {
   display: block !important;
 }
 
-/* =====Details Modal========== */
-/* Modal Styles */
-/* 👇 Add this new rule */  
-body.modal-active {
-  overflow: hidden;
-  position: fixed;
-  width: 100%;
-  height: 100vh;
-} 
-.modal-overlay {
-  position: fixed;
-  top: 0;       /* ← FIX: Start from top edge */
-  left: 0;      /* ← FIX: Start from left edge */
-  width: 100vw; /* ← FIX: Full viewport width */
-  height: 100vh; /* ← FIX: Full viewport height */
-  padding-bottom: 2rem; /* 👈 pushes the card up inside the overlay */  
-  background: rgba(0, 0, 0, 0.9); /* dark overlay */
-  z-index: 9999; /* ensure it's above everything */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  isolation: isolate; /* 👈 Creates new stacking context */
-  will-change: opacity; /* 👈 Optimizes fade performance */
-  transform: translateZ(0); /* Forces hardware acceleration */
-  contain: strict; /* Prevents bleed */
-}
-
-.modal-overlay.active {
-  opacity: 1;
-  visibility: visible;
-}
-
-.modal-content {
-  background: #fff;
-  padding: 20px;
-  padding-top: 40px; /* ⬅️ Add this or increase if needed */
-  max-width: 480px; /*modified*/
-  width: 90%;
-  max-height: 85vh;     /* 👈 Slightly reduced */
-  min-height: auto;     /* 👈 Allow shrinkage if content is short */
-  overflow-y: auto;
-  border-radius: 12px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.2);
-  position: relative;
-  margin-bottom: 3rem;  /* 👈 Adds visual gap from footer */
-  min-width: 320px; /* added*/
-  margin: auto;
-    /* 👇 ADD THESE TWO LINES FOR THE BORDER */
-  border: 2px solid var(--accent-color);
-  border-radius: 12px;
-}
-
-/* blur card behind spinner during loading*/
-.modal-content.loading {
-  backdrop-filter: blur(2px); /* 👈 New line - creates visual separation */
-  pointer-events: none;
-}
-
-.modal-overlay.active .modal-content {
-  transform: translateY(0);
-}
-
-.close-modal {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-}
-
-.pet-details-modal {
-  max-width: 400px;
-  padding: 1rem;
-}
-
-.detail-photo {
-  max-width: 200px;
-  display: block;
-  margin: 0 auto 1rem;
-}
-
-.details-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
-}
-
-.section-break {
-  grid-column: 1 / -1;
-  margin-top: 1rem;
-  font-weight: bold;
-}
-
-/* === Modal Button Styles (including new Share) === */
-.modal-actions {
-  display: flex;
-  justify-content: center;
-  flex-direction: row;    /* Explicit row layout (default, but ensures consistency) */
-  flex-wrap: nowrap;  
-  gap: 0.75rem;
-  margin-top: 1.5rem;
-  width: 100%; /* ✅ Ensures container takes full width */
-}
-
-.modal-actions button {
-  padding: 0.6rem 1.2rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-/* Specific Buttons */
-.close-btn {
-  background-color: var(--mustard, #fbc02d);
-  color: black;
-}
-.pdf-btn {
-  background-color: var(--mustard, #fbc02d);
-  color: black;
-}
-
-/*======================================
-  Ensure reminders have proper spacing
-====================================*/
-.reminders-list {
-  padding-left: 1.2rem;
-  margin-bottom: 0.5rem;
-}
-
-.reminders-list li {
-  margin-bottom: 0.3rem;
-  word-break: break-word;
-}
-
-/* Add extra padding at the bottom of modal for reminders */
-.pet-details-modal {
-  padding-bottom: 1.5rem;
-}
-
-/* ===== ERROR STATES ===== */
-/* Custom notification styles (optional) */
-#error-message {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  transition: opacity 0.3s ease;
-  font-family: inherit;
-  border: none;
-}
-
-#error-message.success-message {
-  background: #4CAF50 !important; /* Green */
-}
-
-#error-message.error-message {
-  background: #f44336 !important; /* Red */
-}
-
-/* ===== ANIMATIONS ===== */
-@keyframes formEntrance {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-
-/* Styles specifically for modal PDF capture */
-.modal-pdf-capture {
-  position: absolute !important;
-  left: -9999px !important;
-  top: 0 !important;
-  width: auto !important;
-  background: white !important;
-}
-
-.modal-pdf-capture .modal-content {
-  width: 100% !important;
-  max-width: 100% !important;
-  height: auto !important;
-  margin: 0 !important;
-  box-shadow: none !important;
-  border: 1px solid #ccc !important; /* Subtle border for capture */
-}
-
-/* Ensure reminders have enough space */
-.modal-pdf-capture .section-break:last-of-type {
-  margin-bottom: 20px !important;
-}
-
-.modal-pdf-capture .reminders-list {
-  padding-bottom: 10px !important;
-  max-height: none !important; /* Remove any height limits */
-}
-
-/* Force visible overflow for capture */
-.modal-pdf-capture .pet-details-modal {
-  overflow: visible !important;
-  max-height: none !important;
-}
-/* ===== PHONE-SPECIFIC MODAL STYLES ===== */
-@media (max-width: 600px) {
-  body.modal-active {
-    overflow: hidden;
-    position: fixed;
-    width: 100%;
-    height: 100%;
-  }
-  
-  .modal-overlay {
-    padding: 0;
-    align-items: flex-start; /* Start from top to use full height */
-    padding-top: 2.5vh; /* Small top margin */
-  }
-  
-  .modal-content {
-    width: 95vw !important;
-    height: 95vh !important;
-    max-width: 95vw !important;
-    max-height: 95vh !important;
-    margin: 0;
-    padding: 1rem;
-    overflow-y: auto;
-    border-radius: 12px;
-  }
-  
-  /* Ensure content fits properly */
-  .pet-details-modal {
-    max-width: 100%;
-    padding: 0.5rem;
-  }
-  
-  /* Adjust font sizes for better fit */
-  .detail-label {
-    font-size: 0.9rem;
-  }
-  
-  .detail-value {
-    font-size: 0.95rem;
-  }
-  
-  /* Make sure reminders section has extra space */
-  .section-break:last-of-type {
-    margin-top: 1.5rem;
-    margin-bottom: 0.5rem;
-  }
-  
-  /* Button adjustments */
-  .modal-actions {
-    margin-top: 1rem;
-    flex-direction: column;
-  }
-  
-  .modal-actions button {
-    width: 100%;
-    margin-bottom: 0.5rem;
-  }
-}
-
-/* Extra small devices */
-@media (max-width: 380px) {
-  .modal-content {
-    padding: 0.75rem;
-  }
-  
-  .detail-photo {
-    max-width: 110px;
-  }
-  
-  .details-grid {
-    gap: 0.4rem;
-  }
-}
-/* ===== DESKTOP MODAL FIXES ===== */
-@media (min-width: 1024px) {
-  /* Adjust modal for desktop to prevent cutoff */
-  .modal-content {
-    max-width: 500px !important; /* Slightly wider for desktop */
-    max-height: 80vh !important; /* More height allowance */
-  }
-  
-  /* Specific fixes for PDF capture on desktop */
-  .modal-pdf-capture .modal-content {
-    max-height: none !important; /* Remove height restriction for capture */
-    overflow: visible !important; /* Ensure all content is visible */
-  }
-  
-  /* Extra spacing for reminders section */
-  .modal-pdf-capture .section-break:last-of-type {
-    margin-bottom: 25px !important;
-  }
-  
-  .modal-pdf-capture .reminders-list {
-    margin-bottom: 15px !important;
-  }
-}
-
-/* ===== LARGE DESKTOP ENHANCEMENTS ===== */
-@media (min-width: 1280px) {
-  .modal-content {
-    max-width: 550px !important; /* Even wider for large screens */
-  }
-}
-
-
-
 
 
 /* ====== PDF Export Styles (Complete) ======= */
@@ -1906,6 +1594,300 @@ body.modal-active {
     line-height: 1.3 !important;
   }
 }
+
+/* =====Details Modal========== */
+/* Modal Styles */
+/* 👇 Add this new rule */  
+body.modal-active {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+} 
+.modal-overlay {
+  position: fixed;
+  top: 0;       /* ← FIX: Start from top edge */
+  left: 0;      /* ← FIX: Start from left edge */
+  width: 100vw; /* ← FIX: Full viewport width */
+  height: 100vh; /* ← FIX: Full viewport height */
+  padding-bottom: 2rem; /* 👈 pushes the card up inside the overlay */  
+  background: rgba(0, 0, 0, 0.9); /* dark overlay */
+  z-index: 9999; /* ensure it's above everything */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  isolation: isolate; /* 👈 Creates new stacking context */
+  will-change: opacity; /* 👈 Optimizes fade performance */
+  transform: translateZ(0); /* Forces hardware acceleration */
+  contain: strict; /* Prevents bleed */
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  padding-top: 40px; /* ⬅️ Add this or increase if needed */
+  max-width: 480px; /*modified*/
+  width: 90%;
+  max-height: 85vh;     /* 👈 Slightly reduced */
+  min-height: auto;     /* 👈 Allow shrinkage if content is short */
+  overflow-y: auto;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+  position: relative;
+  margin-bottom: 3rem;  /* 👈 Adds visual gap from footer */
+  min-width: 320px; /* added*/
+  margin: auto;
+    /* 👇 ADD THESE TWO LINES FOR THE BORDER */
+  border: 2px solid var(--accent-color);
+  border-radius: 12px;
+}
+
+/* blur card behind spinner during loading*/
+.modal-content.loading {
+  backdrop-filter: blur(2px); /* 👈 New line - creates visual separation */
+  pointer-events: none;
+}
+
+.modal-overlay.active .modal-content {
+  transform: translateY(0);
+}
+
+.close-modal {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.pet-details-modal {
+  max-width: 400px;
+  padding: 1rem;
+}
+
+.detail-photo {
+  max-width: 200px;
+  display: block;
+  margin: 0 auto 1rem;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.section-break {
+  grid-column: 1 / -1;
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+/* === Modal Button Styles (including new Share) === */
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;    /* Explicit row layout (default, but ensures consistency) */
+  flex-wrap: nowrap;  
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  width: 100%; /* ✅ Ensures container takes full width */
+}
+
+.modal-actions button {
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+/* Specific Buttons */
+.close-btn {
+  background-color: var(--mustard, #fbc02d);
+  color: black;
+}
+.pdf-btn {
+  background-color: var(--mustard, #fbc02d);
+  color: black;
+}
+
+
+/* ===== ERROR STATES ===== */
+/* Custom notification styles (optional) */
+#error-message {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  transition: opacity 0.3s ease;
+  font-family: inherit;
+  border: none;
+}
+
+#error-message.success-message {
+  background: #4CAF50 !important; /* Green */
+}
+
+#error-message.error-message {
+  background: #f44336 !important; /* Red */
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes formEntrance {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ===== DESKTOP OPTIMIZATION (≥1024px) ===== */
+@media (min-width: 1024px) {
+  .modal-content {
+    max-width: 520px; /* Slightly wider for desktop */
+    max-height: 88vh; /* More height for reminders */
+    padding: 25px;
+  }
+
+  .pet-details-modal {
+    max-width: 450px; /* More content space */
+    padding: 1.2rem;
+  }
+
+  .detail-photo {
+    max-width: 220px; /* Larger photo on desktop */
+  }
+
+  /* Specific fixes for reminders section */
+  .section-break:last-of-type {
+    margin-top: 1.5rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .details-grid {
+    gap: 0.7rem; /* More spacing between items */
+  }
+
+  /* Ensure reminders have enough room */
+  .modal-content {
+    overflow-y: auto; /* Keep scroll if needed */
+  }
+
+  /* Button adjustments for desktop */
+  .modal-actions {
+    margin-top: 2rem;
+  }
+
+  .modal-actions button {
+    padding: 0.7rem 1.4rem;
+    font-size: 1rem;
+  }
+}
+
+/* ===== LARGE DESKTOP ENHANCEMENT (≥1280px) ===== */
+@media (min-width: 1280px) {
+  .modal-content {
+    max-width: 550px;
+    padding: 30px;
+  }
+
+  .pet-details-modal {
+    max-width: 480px;
+  }
+}
+
+/* ===== HEIGHT OPTIMIZATION FOR TALL SCREENS ===== */
+@media (min-height: 900px) and (min-width: 1024px) {
+  .modal-content {
+    max-height: 82vh; /* More proportional for tall screens */
+  }
+}
+
+
+/* ===== PHONE-SPECIFIC MODAL STYLES ===== */
+@media (max-width: 600px) {
+  body.modal-active {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .modal-overlay {
+    padding: 0;
+    align-items: flex-start; /* Start from top to use full height */
+    padding-top: 2.5vh; /* Small top margin */
+  }
+  
+  .modal-content {
+    width: 95vw !important;
+    height: 95vh !important;
+    max-width: 95vw !important;
+    max-height: 95vh !important;
+    margin: 0;
+    padding: 1rem;
+    overflow-y: auto;
+    border-radius: 12px;
+  }
+  
+  /* Ensure content fits properly */
+  .pet-details-modal {
+    max-width: 100%;
+    padding: 0.5rem;
+  }
+  
+  /* Adjust font sizes for better fit */
+  .detail-label {
+    font-size: 0.9rem;
+  }
+  
+  .detail-value {
+    font-size: 0.95rem;
+  }
+  
+  /* Make sure reminders section has extra space */
+  .section-break:last-of-type {
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Button adjustments */
+  .modal-actions {
+    margin-top: 1rem;
+    flex-direction: column;
+  }
+  
+  .modal-actions button {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 380px) {
+  .modal-content {
+    padding: 0.75rem;
+  }
+  
+  .detail-photo {
+    max-width: 110px;
+  }
+  
+  .details-grid {
+    gap: 0.4rem;
+  }
+}
+
+
 
 /* ===== RESPONSIVE DESIGNS============== */
 /* Prevent header/footer from shrinking on phones*/
