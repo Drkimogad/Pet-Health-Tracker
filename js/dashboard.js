@@ -595,10 +595,9 @@ requestAnimationFrame(() => {
       // 1. Wait for modal to be fully rendered
       await new Promise(resolve => setTimeout(resolve, 300));
       
-      // 2. Clone and sanitize modal content
       // 2. Clone and sanitize modal content - REPLACE THIS SECTION
 const pdfContainer = document.createElement('div');
-pdfContainer.className = 'pdf-export-container';
+pdfContainer.className = 'modal-pdf-capture'; // Changed from 'pdf-export-container'
 
 // Get the original modal dimensions
 const modalRect = modal.getBoundingClientRect();
@@ -688,7 +687,7 @@ const canvas = await html2canvas(pdfContainer, {
     console.log("🚪 Modal closed");
    console.log("🧹 Cleaning up loader");
       loader.remove();
-      document.querySelector('.pdf-export-container')?.remove();
+   document.querySelector('.modal-pdf-capture')?.remove();
     }
   }
 
