@@ -2253,7 +2253,85 @@ body.modal-active {
   color: white;
 }
 
-/* ===== RESPONSIVE DESIGNS============== */
+/*=================
+Global circular close button for all devices
+====================*/
+.close-community-chat {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #eee;
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: var(--main-color, #333);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.close-community-chat:hover {
+  background: var(--accent-color, #fbc02d);
+  color: #000;
+}
+
+
+/* media for phone*/
+@media (max-width: 480px) {
+  /* Smaller input area */
+  #chatInput {
+    height: 36px;
+    font-size: 0.9rem;
+    padding: 0.4rem 0.6rem;
+  }
+
+  /* Circle close button, top-right */
+  .close-community-chat {
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #eee;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .close-community-chat:hover {
+    background: var(--accent-color, #fbc02d);
+    color: #000;
+  }
+
+  /* Slightly reduce modal height */
+  .community-modal-content {
+    height: 80vh;
+    padding: 0.8rem;
+  }
+
+  /* Align pet names, dark mode toggle, and admin controls on one line */
+  .chat-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.4rem;
+    text-align: left;
+  }
+
+  .chat-controls {
+    flex-wrap: nowrap;
+    gap: 0.3rem;
+  }
+}
+
+
+
+
+/* =====GENERAL RESPONSIVE DESIGNS============== */
 /* Prevent header/footer from shrinking on phones*/
 header, footer {
   padding: 1rem;
@@ -2469,7 +2547,7 @@ header, footer {
     padding: 1rem;
   }
   #chatInput {
-    height: 40px; /* Larger input area for mobile changed⛔️ */
+    height: 36px; /* Larger input area for mobile changed⛔️ */
   }
 }
 
