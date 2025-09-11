@@ -1375,6 +1375,7 @@ button.delete-btn:hover {
   color: #E6C300; /* Darker gold */
 }
 
+
 /* ======LOADER SPINNER======= */
 /* CSS spinner fallback */
 .css-spinner-fallback {
@@ -1446,7 +1447,21 @@ lottie-player:not([style*="display:none"]) {
   display: block !important;
 }
 
-/* =====Details Modal========== */
+/* to reduce loader on ohones*/
+@media (max-width: 600px) {
+  .loader-text {
+    font-size: 14px;
+  }
+  #dashboard-loader[style*="display: block"] > div {
+    padding: 1rem;
+    min-width: 200px;
+  }
+}
+
+
+/* =======================
+    Details Modal
+======================== */
 /* Modal Styles */
 /* 👇 Add this new rule */  
 body.modal-active {
