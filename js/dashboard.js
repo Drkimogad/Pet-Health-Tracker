@@ -632,7 +632,7 @@ document.body.appendChild(pdfContainer);
 await Promise.race([
   new Promise(resolve => {
     const checkRender = () => {
-      const lastElement = document.querySelector('.pdf-export-container .section-break:last-child + div');
+      const lastElement = document.querySelector('.modal-pdf-capture .section-break:last-child + div');
       if (lastElement?.offsetHeight > 0) {
         resolve();
       } else {
