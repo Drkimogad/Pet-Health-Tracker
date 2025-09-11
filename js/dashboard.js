@@ -576,6 +576,7 @@ requestAnimationFrame(() => {
   
   console.log("🖼️ Modal ready. Photo loaded:", photo?.complete); 
   
+  
   // Refactored PDF saving logic specifically for the modal
   async function saveModalAsPDF() {
         console.log("💾 PDF button clicked - function started");
@@ -595,44 +596,35 @@ requestAnimationFrame(() => {
       // 1. Wait for modal to be fully rendered
       await new Promise(resolve => setTimeout(resolve, 300));
       
-      // 2. Clone and sanitize modal content - REPLACE THIS SECTION
-const pdfContainer = document.createElement('div');
-pdfContainer.className = 'modal-pdf-capture'; // Changed from 'pdf-export-container'
-
-// Get the original modal dimensions
-const modalRect = modal.getBoundingClientRect();
-
-// Set container sizing based on the original modal
-pdfContainer.style.cssText = `
-  position: absolute;
-  left: -9999px;
-  width: ${modalRect.width}px;
-  max-width: ${modalRect.width}px;
-  background: white;
-  padding: 15mm;
-  box-sizing: border-box;
-  font-size: 16pt;
-  line-height: 1.5;
-`;
-
-const modalClone = modal.cloneNode(true);
-// Remove interactive elements
-modalClone.querySelectorAll('button, [onclick]').forEach(el => el.remove());
-
-// Preserve the original modal's styling in the clone
-modalClone.style.width = '100%';
-modalClone.style.maxWidth = '100%';
-modalClone.style.margin = '0';
-modalClone.style.padding = '0';
-
-pdfContainer.appendChild(modalClone);
-document.body.appendChild(pdfContainer);
+      // 2. Clone and sanitize modal content
+      const pdfContainer = document.createElement('div');
+      pdfContainer.className = 'pdf-export-container';
+      // Add responsive PDF container styling
+      pdfContainer.style.cssText = `
+        position: absolute;
+        left: -9999px;
+        width: 100%;
+        max-width: 210mm;
+        background: white;
+        padding: 15mm;
+        box-sizing: border-box;
+      `;   
+      // Force font scaling for PDF
+      modalClone.style.cssText = `
+     font-size: 16pt;
+     line-height: 1.5;
+     `;
+      const modalClone = modal.cloneNode(true);
+      // Remove interactive elements
+      modalClone.querySelectorAll('button, [onclick]').forEach(el => el.remove());
+      pdfContainer.appendChild(modalClone);
+      document.body.appendChild(pdfContainer);
 
    // 3. Wait for final rendering with reminders-specific checks
 await Promise.race([
   new Promise(resolve => {
     const checkRender = () => {
-      const lastElement = document.querySelector('.modal-pdf-capture .section-break:last-child + div');
+      const lastElement = document.querySelector('.pdf-export-container .section-break:last-child + div');
       if (lastElement?.offsetHeight > 0) {
         resolve();
       } else {
@@ -646,14 +638,10 @@ await Promise.race([
 
 // 4. CAPTURE IMAGE - ONLY ADD THIS ONE FIX
 const canvas = await html2canvas(pdfContainer, {
-  scale: 2,  // Keep your original scale
+  scale: 2,
   useCORS: true,
   logging: true,
   backgroundColor: '#FFFFFF',
-  width: pdfContainer.scrollWidth,
-  height: pdfContainer.scrollHeight,
-  x: 0,
-  y: 0,
   scrollX: 0,
   scrollY: 0,
   windowWidth: pdfContainer.scrollWidth,
@@ -661,11 +649,11 @@ const canvas = await html2canvas(pdfContainer, {
 });
         
       // 5. Generate PDF
-   //   if (!window.jspdf) {   NO NEED FOR THIS ANYMORE
-   //     await loadScriptWithRetry('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
-    //  }
+      if (!window.jspdf) {
+        await loadScriptWithRetry('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+      }
 
-       const { jsPDF } = window.jspdf; // already loaded from ./js/lib/jspdf.umd.min.js
+      const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
       doc.addImage(canvas, 'PNG', 0, 0, 210, 297);
       doc.save(`PetProfile_${new Date().getTime()}.pdf`);
@@ -687,7 +675,7 @@ const canvas = await html2canvas(pdfContainer, {
     console.log("🚪 Modal closed");
    console.log("🧹 Cleaning up loader");
       loader.remove();
-   document.querySelector('.modal-pdf-capture')?.remove();
+      document.querySelector('.pdf-export-container')?.remove();
     }
   }
 
