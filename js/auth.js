@@ -698,41 +698,41 @@ window.addEventListener('offline', checkOnlineStatus);
 
 // ======== FIREBASE OFFLINE HANDLING ========
 /* it will have to be upgraded in the future alongside higher firebase */
-//function setupFirebaseOfflinePersistence() {
-  // Use compat API
-//  firebase.firestore().enablePersistence()
-//    .then(() => {
-//      console.log('✅ Firebase offline persistence enabled');
-//    })
-//    .catch((err) => {
-//      if (err.code === 'failed-precondition') {
-//        console.warn('⚠️ Multiple tabs open — persistence can only be enabled in one tab at a time.');
-//      } else if (err.code === 'unimplemented') {
-//        console.warn('⚠️ Browser does not support all required features for persistence.');
-//      } else {
-//        console.warn('⚠️ Firestore persistence error:', err);
-//      }
-//    });
-//} 
-// ======== FIREBASE OFFLINE HANDLING UPDATED FUNCTION ========
 function setupFirebaseOfflinePersistence() {
-  try {
-    firebase.firestore().settings({
-      cache: { sizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED },
-      merge: true
+  // Use compat API
+  firebase.firestore().enablePersistence()
+    .then(() => {
+      console.log('✅ Firebase offline persistence enabled');
+    })
+    .catch((err) => {
+      if (err.code === 'failed-precondition') {
+        console.warn('⚠️ Multiple tabs open — persistence can only be enabled in one tab at a time.');
+      } else if (err.code === 'unimplemented') {
+        console.warn('⚠️ Browser does not support all required features for persistence.');
+      } else {
+        console.warn('⚠️ Firestore persistence error:', err);
+      }
     });
+} 
+// ======== FIREBASE OFFLINE HANDLING UPDATED FUNCTION ========
+//function setupFirebaseOfflinePersistence() {
+//  try {
+//    firebase.firestore().settings({
+//      cache: { sizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED },
+//      merge: true
+//    });*/
 
-    console.log('✅ Firebase offline cache enabled (multi-tab safe)');
-  } catch (err) {
-    if (err.code === 'failed-precondition') {
-      console.warn('⚠️ Persistence can only be enabled in one tab at a time. Multi-tab detected.');
-    } else if (err.code === 'unimplemented') {
-      console.warn('⚠️ Browser does not support all required features for persistence.');
-    } else {
-      console.warn('⚠️ Firestore cache settings error:', err);
-    }
-  }
-}
+ //   console.log('✅ Firebase offline cache enabled (multi-tab safe)');
+//  } catch (err) {
+//    if (err.code === 'failed-precondition') {
+  //    console.warn('⚠️ Persistence can only be enabled in one tab at a time. Multi-tab detected.');
+ //   } else if (err.code === 'unimplemented') {
+  /    console.warn('⚠️ Browser does not support all required features for persistence.');
+  //  } else {
+  //    console.warn('⚠️ Firestore cache settings error:', err);
+ //   }
+//  }
+//}  
 
 
 
