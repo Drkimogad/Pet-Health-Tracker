@@ -1434,9 +1434,9 @@ if (!pet) {
   function loadMessages() {
     const chatMessagesDiv = modal.querySelector('#chatMessages'); // moved up for defining it
       
-    chatDocRef.onSnapshot(doc => {
-        chatMessagesDiv.innerHTML = '<div class="loading">Loading messages...</div>'; // ← ADD LOADING STATE
-      
+       const unsubscribe = chatDocRef.onSnapshot(doc => {
+    chatMessagesDiv.innerHTML = '<div class="loading">Loading messages...</div>';
+  
         if (!doc.exists) {
         chatMessagesDiv.innerHTML = `<p class="no-messages">No feedback yet. Be the first to share!</p>`;
         return;
@@ -1505,6 +1505,9 @@ if (!pet) {
     chatMessagesDiv.innerHTML = '<div class="error">Failed to load messages</div>';
     console.error("Chat load error:", error);
     });
+    
+  // ✅ STORE unsubscribe **IMMEDIATELY AFTER onSnapshot**
+  modal._chatUnsubscribe = unsubscribe;
   }
 
   // INITIAL LOAD
@@ -1690,10 +1693,14 @@ if (!isAdmin) {
   });
 
   // CLOSE HANDLER
-  modal.querySelector('.close-community-chat').addEventListener('click', () => {
+ modal.querySelector('.close-community-chat').addEventListener('click', () => {
     modal.classList.remove('active');
-    setTimeout(() => modal.remove(), 300);
-  });
+    setTimeout(() => {
+        // DETACH the snapshot listener
+        if (modal._chatUnsubscribe) modal._chatUnsubscribe(); // call unsubscribe to kill the listener before closing
+        modal.remove();
+    }, 300);
+ });    
 }
 
 
