@@ -1299,12 +1299,19 @@ function createCommunityChatButton(profileId) {
   badge.style.display = 'none';
   chatBtn.appendChild(badge);
   
-  // Check if user is admin and set up notification listener
+  //1.  Check if user is admin and set up notification listener
   const user = firebase.auth().currentUser;
   if (user && user.email === 'drkimogad@gmail.com') { // Replace with your admin email check
     // Listen for pending messages
     setupAdminNotificationListener(profileId);
   }
+  //2. Fallback to ensure listener attaches once Firebase finishes loading auth
+firebase.auth().onAuthStateChanged(user => {
+  if (user && user.email === 'drkimogad@gmail.com') {
+    setupAdminNotificationListener(profileId);
+  }
+});
+  
   
   document.addEventListener('click', e => {
     if (e.target.closest('.communityChat-btn')) {
@@ -1329,39 +1336,45 @@ async function getPetProfile(petId) {
   return localProfiles.find(p => p.id === petId) || {};
 }
 
-
+// 2. Setup admin notification listener
 // 2. Setup admin notification listener
 function setupAdminNotificationListener(petId) {
-try {
-  // Listen to the SINGLE DOCUMENT, not the collection
-  firebase.firestore()
-    .collection("Community_Chat")
-    .doc("feedback_thread")  // ← ADD THIS LINE
-    .onSnapshot(doc => {
-      if (!doc.exists) return;
-      
-      const data = doc.data();
-      const messages = Array.isArray(data.messages) ? data.messages : [];
-      
-      // Count unapproved messages
-      const unapprovedCount = messages.filter(msg => 
-        msg.approved === false && msg.type !== 'admin'
-      ).length;
+  try {
+    // Listen to the SINGLE DOCUMENT, not the collection
+    const unsubscribe = firebase.firestore()
+      .collection("Community_Chat")
+      .doc("feedback_thread")
+      .onSnapshot(doc => {
+        if (!doc.exists) return;
 
-      const notificationBadge = document.getElementById('community-chat-notification');
-      if (notificationBadge) {
-        if (unapprovedCount > 0) {
-          notificationBadge.textContent = unapprovedCount;
-          notificationBadge.style.display = 'inline-block';
-        } else {
-          notificationBadge.style.display = 'none';
+        const data = doc.data();
+        const messages = Array.isArray(data.messages) ? data.messages : [];
+
+        // Count unapproved messages
+        const unapprovedCount = messages.filter(msg =>
+          msg.approved === false && msg.type !== 'admin'
+        ).length;
+
+        const notificationBadge = document.getElementById('community-chat-notification');
+        if (notificationBadge) {
+          if (unapprovedCount > 0) {
+            notificationBadge.textContent = unapprovedCount;
+            notificationBadge.style.display = 'inline-block';
+          } else {
+            notificationBadge.style.display = 'none';
+          }
         }
-      }
-    });
- } catch (error) {
+      });
+
+    // 🆕 Store unsubscribe globally so close handler can clean it up
+    window._chatAdminUnsubscribe = unsubscribe;
+
+  } catch (error) {
     console.error("Failed to setup notification listener:", error);
-  } // closes try block
-} // closes function
+  }
+}
+
+
 
 //======================≈=============================
 // 3. MODIFIED: open chat window using SINGLE DOCUMENT approach
@@ -1429,10 +1442,17 @@ if (!pet) {
 
     //GET THE SINGLE DOCUMENT CHAT REFERENCE
   const chatDocRef = firebase.firestore().collection("Community_Chat").doc("feedback_thread");
-
+    
+//=======================================================
   // LOAD MESSAGES FROM SINGLE DOCUMENT
+//=====================================
   function loadMessages() {
     const chatMessagesDiv = modal.querySelector('#chatMessages'); // moved up for defining it
+   // check if user is authenticated 
+    if (!firebase.auth().currentUser) {
+    chatMessagesDiv.innerHTML = '<div class="error">You must be signed in to view messages.</div>';
+    return; // prevent onSnapshot call
+  }
       
        const unsubscribe = chatDocRef.onSnapshot(doc => {
     chatMessagesDiv.innerHTML = '<div class="loading">Loading messages...</div>';
@@ -1692,15 +1712,26 @@ if (!isAdmin) {
     }
   });
 
-  // CLOSE HANDLER
- modal.querySelector('.close-community-chat').addEventListener('click', () => {
-    modal.classList.remove('active');
-    setTimeout(() => {
-        // DETACH the snapshot listener
-        if (modal._chatUnsubscribe) modal._chatUnsubscribe(); // call unsubscribe to kill the listener before closing
-        modal.remove();
-    }, 300);
- });    
+// CLOSE HANDLER ✅ This fixes the memory leak and avoids multiple listeners stacking up.
+// CLOSE HANDLER ✅ Cleans up listeners to prevent memory leaks
+modal.querySelector('.close-community-chat').addEventListener('click', () => {
+  modal.classList.remove('active');
+  setTimeout(() => {
+    // 🔹 Unsubscribe from chat messages
+    if (modal._chatUnsubscribe) {
+      modal._chatUnsubscribe();
+      modal._chatUnsubscribe = null;
+    }
+
+    // 🔹 Unsubscribe from admin badge listener (if running)
+    if (window._chatAdminUnsubscribe) {
+      window._chatAdminUnsubscribe();
+      window._chatAdminUnsubscribe = null;
+    }
+
+    modal.remove();
+  }, 300);
+});
 }
 
 
