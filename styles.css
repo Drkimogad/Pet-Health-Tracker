@@ -1462,6 +1462,7 @@ lottie-player:not([style*="display:none"]) {
 /* =======================
     Details Modal
 ======================== */
+/* =====Details Modal========== */
 /* Modal Styles */
 /* 👇 Add this new rule */  
 body.modal-active {
@@ -1472,10 +1473,10 @@ body.modal-active {
 } 
 .modal-overlay {
   position: fixed;
-  top: 0;       /* ← FIX: Start from top edge */
-  left: 0;      /* ← FIX: Start from left edge */
-  width: 100vw; /* ← FIX: Full viewport width */
-  height: 100vh; /* ← FIX: Full viewport height */
+  top: 5vh; /* 👈 Adds top/bottom spacing */
+  left: 5vh; /* 👈 Adds top/bottom spacing */
+  width: 90vw; /* modified*/
+  height: 90vh; /*modified*/
   padding-bottom: 2rem; /* 👈 pushes the card up inside the overlay */  
   background: rgba(0, 0, 0, 0.9); /* dark overlay */
   z-index: 9999; /* ensure it's above everything */
@@ -1508,9 +1509,6 @@ body.modal-active {
   margin-bottom: 3rem;  /* 👈 Adds visual gap from footer */
   min-width: 320px; /* added*/
   margin: auto;
-    /* 👇 ADD THESE TWO LINES FOR THE BORDER */
-  border: 2px solid var(--accent-color);
-  border-radius: 12px;
 }
 
 /* blur card behind spinner during loading*/
@@ -1521,6 +1519,16 @@ body.modal-active {
 
 .modal-overlay.active .modal-content {
   transform: translateY(0);
+}
+
+.close-modal {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
 }
 
 .pet-details-modal {
@@ -1545,21 +1553,7 @@ body.modal-active {
   margin-top: 1rem;
   font-weight: bold;
 }
-/* Default (desktop/tablet) → clean top-right X */
-.close-modal {
-  position: absolute;
-  top: 0;
-  right: 0;
-  background: none;
-  border: none;
-  font-size: 1rem;
-  font-weight: bold;
-  color: #333;
-  cursor: pointer;
-}
-.close-modal:hover {
-  color: var(--accent-color, #fbc02d);
-}
+
 /* === Modal Button Styles (including new Share) === */
 .modal-actions {
   display: flex;
@@ -1591,22 +1585,12 @@ body.modal-active {
   color: black;
 }
 
-
 /* ===== ERROR STATES ===== */
-/* Custom notification styles (optional) */
-#error-message {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  transition: opacity 0.3s ease;
-  font-family: inherit;
-  border: none;
-}
-
-#error-message.success-message {
-  background: #4CAF50 !important; /* Green */
-}
-
-#error-message.error-message {
-  background: #f44336 !important; /* Red */
+.error-message {
+  color: var(--error-color);
+  font-size: 0.9rem;
+  margin-top: 0.3rem;
+  display: none;
 }
 
 /* ===== ANIMATIONS ===== */
@@ -1618,24 +1602,6 @@ body.modal-active {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-}
-
-/* Phones → circular tappable button */
-@media (max-width: 600px) {
-  .close-modal {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: #eee;
-    font-size: 0.8rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .close-modal:hover {
-    background: var(--accent-color, #fbc02d);
-    color: #000;
-  }
 }
 
 
