@@ -648,11 +648,11 @@ const canvas = await html2canvas(pdfContainer, {
 });
         
       // 5. Generate PDF
-      if (!window.jspdf) {
-        await loadScriptWithRetry('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
-      }
+   //   if (!window.jspdf) {   NO NEED FOR THIS ANYMORE
+   //     await loadScriptWithRetry('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+    //  }
 
-      const { jsPDF } = window.jspdf;
+       const { jsPDF } = window.jspdf; // already loaded from ./js/lib/jspdf.umd.min.js
       const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
       doc.addImage(canvas, 'PNG', 0, 0, 210, 297);
       doc.save(`PetProfile_${new Date().getTime()}.pdf`);
