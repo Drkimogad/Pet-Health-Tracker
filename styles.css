@@ -1548,11 +1548,11 @@ body.modal-active {
 /* Default (desktop/tablet) → clean top-right X */
 .close-modal {
   position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
+  top: 0.2rem;
+  right: 0.2rem;
   background: none;
   border: none;
-  font-size: 1.8rem;
+  font-size: 1rem;
   font-weight: bold;
   color: #333;
   cursor: pointer;
@@ -1627,7 +1627,7 @@ body.modal-active {
     height: 36px;
     border-radius: 50%;
     background: #eee;
-    font-size: 1.4rem;
+    font-size: 0.8rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1941,11 +1941,12 @@ body.modal-active {
 }
 
 #chatInput {
+  width: 100%;             /* fill parent modal width */
+  box-sizing: border-box;  /* include padding & border in width */
   resize: none;
   height: 50px;
-  padding-top: 0.5rem;
-  padding: 0.75rem;
-  margin-top: auto; /* Push to bottom */
+  padding: 0.5rem 0.75rem;
+  margin-top: auto;
   font-size: 1rem;
   border-radius: 6px;
   border: 1px solid var(--border-card);
@@ -2265,32 +2266,9 @@ body.modal-active {
   color: #999999;
 }
 
-
-/* ONLINE AND OFFLINE STATUS CHECK*/
-.online-status {
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  padding: 5px 10px;
-  border-radius: 4px;
-  font-size: 12px;
-  z-index: 10000;
-  opacity: 0.9;
-}
-
-.online-status.online {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.online-status.offline {
-  background-color: #f44336;
-  color: white;
-}
-
-/*=================
+/*===========================================
 Global circular close button for all devices
-====================*/
+=============================================*/
 .close-community-chat {
   position: absolute;
   top: 0.75rem;
@@ -2319,10 +2297,10 @@ Global circular close button for all devices
 @media (max-width: 480px) {
   /* Smaller input area */
   #chatInput {
-    height: 36px;
-    width: 92vw;  /* to check this out */
-    font-size: 0.9rem;
+    height: 36px;       /* smaller input height */
+    font-size: 0.9rem;  /* smaller text */
     padding: 0.4rem 0.6rem;
+    width: 100%;        /* respect modal width */
   }
 
   /* Circle close button, top-right */
@@ -2372,6 +2350,31 @@ Global circular close button for all devices
   }
 }
 
+
+
+/*============================================
+    ONLINE AND OFFLINE STATUS CHECK
+==============================================*/
+.online-status {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  z-index: 10000;
+  opacity: 0.9;
+}
+
+.online-status.online {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.online-status.offline {
+  background-color: #f44336;
+  color: white;
+}
 
 /* =====GENERAL RESPONSIVE DESIGNS============== */
 /* Prevent header/footer from shrinking on phones*/
