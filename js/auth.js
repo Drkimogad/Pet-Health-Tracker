@@ -716,19 +716,24 @@ window.addEventListener('offline', checkOnlineStatus);
 //} 
 // ======== FIREBASE OFFLINE HANDLING UPDATED FUNCTION ========
 function setupFirebaseOfflinePersistence() {
-  // Use the new cache settings instead of enablePersistence()
   try {
-  firebase.firestore().settings({
-    cache: {
-      sizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED
-    },
-    merge: true // ← ADD THIS to fix the warning
-  });
-  console.log('✅ Firebase offline cache enabled');
-} catch (err) {
-  console.warn('⚠️ Firestore cache settings error:', err);
- }
+    firebase.firestore().settings({
+      cache: { sizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED },
+      merge: true
+    });
+
+    console.log('✅ Firebase offline cache enabled (multi-tab safe)');
+  } catch (err) {
+    if (err.code === 'failed-precondition') {
+      console.warn('⚠️ Persistence can only be enabled in one tab at a time. Multi-tab detected.');
+    } else if (err.code === 'unimplemented') {
+      console.warn('⚠️ Browser does not support all required features for persistence.');
+    } else {
+      console.warn('⚠️ Firestore cache settings error:', err);
+    }
+  }
 }
+
 
 
 // ====== Core Initialization ======
