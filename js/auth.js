@@ -697,7 +697,7 @@ window.addEventListener('online', checkOnlineStatus);
 window.addEventListener('offline', checkOnlineStatus);
 
 // ======== FIREBASE OFFLINE HANDLING ========
-/* it will have to be upgraded in the future alongside higher firebase */
+// it will have to be upgraded in the future alongside higher firebase 
 function setupFirebaseOfflinePersistence() {
   // Use compat API
   firebase.firestore().enablePersistence()
@@ -727,7 +727,7 @@ function setupFirebaseOfflinePersistence() {
 //    if (err.code === 'failed-precondition') {
   //    console.warn('⚠️ Persistence can only be enabled in one tab at a time. Multi-tab detected.');
  //   } else if (err.code === 'unimplemented') {
-  /    console.warn('⚠️ Browser does not support all required features for persistence.');
+  //    console.warn('⚠️ Browser does not support all required features for persistence.');
   //  } else {
   //    console.warn('⚠️ Firestore cache settings error:', err);
  //   }
