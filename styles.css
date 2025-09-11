@@ -1548,8 +1548,8 @@ body.modal-active {
 /* Default (desktop/tablet) → clean top-right X */
 .close-modal {
   position: absolute;
-  top: 0.2rem;
-  right: 0.2rem;
+  top: 0;
+  right: 0;
   background: none;
   border: none;
   font-size: 1rem;
