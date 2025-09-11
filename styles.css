@@ -1523,14 +1523,38 @@ body.modal-active {
   transform: translateY(0);
 }
 
+/* Default (desktop/tablet) → clean top-right X */
 .close-modal {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  top: 0.75rem;
+  right: 0.75rem;
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
   cursor: pointer;
+}
+.close-modal:hover {
+  color: var(--accent-color, #fbc02d);
+}
+
+/* Phones → circular tappable button */
+@media (max-width: 600px) {
+  .close-modal {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #eee;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .close-modal:hover {
+    background: var(--accent-color, #fbc02d);
+    color: #000;
+  }
 }
 
 .pet-details-modal {
@@ -2445,7 +2469,7 @@ header, footer {
     padding: 1rem;
   }
   #chatInput {
-    height: 80px; /* Larger input area for mobile */
+    height: 40px; /* Larger input area for mobile changed⛔️ */
   }
 }
 
