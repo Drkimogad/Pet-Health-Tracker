@@ -637,7 +637,7 @@ await Promise.race([
 
 // 4. CAPTURE IMAGE - ONLY ADD THIS ONE FIX
 const canvas = await html2canvas(pdfContainer, {
-  scale: 1.8,  // it was 2
+  scale: 2,  // it was 2
   useCORS: true,
   logging: true,
   backgroundColor: '#FFFFFF',
