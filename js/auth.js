@@ -700,10 +700,10 @@ window.addEventListener('offline', checkOnlineStatus);
 // it will have to be upgraded in the future alongside higher firebase 
 function setupFirebaseOfflinePersistence() {
   // Use compat API
-//  firebase.firestore().enablePersistence() THE OLD ONE 
+  firebase.firestore().enablePersistence() // THE OLD ONE 
   
 // Use compat API with multi-tab synchronization
-  firebase.firestore().enablePersistence({ synchronizeTabs: true })
+//  firebase.firestore().enablePersistence({ synchronizeTabs: true })
     
     .then(() => {
       console.log('✅ Firebase offline persistence enabled');
