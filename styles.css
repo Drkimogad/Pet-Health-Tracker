@@ -1523,40 +1523,6 @@ body.modal-active {
   transform: translateY(0);
 }
 
-/* Default (desktop/tablet) → clean top-right X */
-.close-modal {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  background: none;
-  border: none;
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: #333;
-  cursor: pointer;
-}
-.close-modal:hover {
-  color: var(--accent-color, #fbc02d);
-}
-
-/* Phones → circular tappable button */
-@media (max-width: 600px) {
-  .close-modal {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: #eee;
-    font-size: 1.4rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .close-modal:hover {
-    background: var(--accent-color, #fbc02d);
-    color: #000;
-  }
-}
-
 .pet-details-modal {
   max-width: 400px;
   padding: 1rem;
@@ -1579,7 +1545,21 @@ body.modal-active {
   margin-top: 1rem;
   font-weight: bold;
 }
-
+/* Default (desktop/tablet) → clean top-right X */
+.close-modal {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+}
+.close-modal:hover {
+  color: var(--accent-color, #fbc02d);
+}
 /* === Modal Button Styles (including new Share) === */
 .modal-actions {
   display: flex;
@@ -1638,6 +1618,24 @@ body.modal-active {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* Phones → circular tappable button */
+@media (max-width: 600px) {
+  .close-modal {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #eee;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .close-modal:hover {
+    background: var(--accent-color, #fbc02d);
+    color: #000;
+  }
 }
 
 
