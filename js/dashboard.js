@@ -7,6 +7,7 @@ let currentProfile = null;
 // 👇 Add here
 let editingProfileId = null
 
+
 // 🌍 Load from localStorage and expose globally
 let petProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
 window.petProfiles = petProfiles;
@@ -520,8 +521,6 @@ console.log("🧱 Preparing modal content...");
 console.log("🖼️ profile.petPhoto:", profile.petPhoto);
 console.log("🔗 profile.shareableUrl:", profile.shareableUrl);
 
-// 🆕 ADD THIS - Store cleanup reference
-  let pdfButtonClickListener = null;
     
 // old code
 const emergencyContact = profile.emergencyContacts?.[0] || {};
@@ -682,19 +681,15 @@ const canvas = await html2canvas(pdfContainer, {
     }
   }
 
-  // Make the function available globally
-  window.saveModalAsPDF = saveModalAsPDF;
-
-// Update the PDF button to use our new function UPDATED
-const pdfBtn = modal?.querySelector('.pdf-btn');
-if (pdfBtn) {
-  // 🆕 REMOVE any existing listener first
-  pdfBtn.removeEventListener('click', pdfButtonClickListener);
-  
-  // 🆕 Create new listener and store reference for cleanup
-  pdfButtonClickListener = saveModalAsPDF;
-  pdfBtn.addEventListener('click', pdfButtonClickListener);
-}
+// Update the PDF button to use our new function
+//const pdfBtn = modal?.querySelector('.pdf-btn');
+//if (pdfBtn) {
+//  pdfBtn.onclick = saveModalAsPDF;
+//}
+    
+// 🆕 USE THE CENTRALIZED PDF HANDLER FROM UTILS.JS
+// The utils.js system automatically handles PDF buttons with class "pdf-btn"
+console.log("✅ PDF handling delegated to centralized system");
 
 }); // closes request animation frame
 } // Closes showdetails()
