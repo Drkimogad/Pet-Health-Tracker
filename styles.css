@@ -1751,26 +1751,79 @@ body.modal-active {
 }
 
 /* ===== DESKTOP MODAL POSITION FIX ===== */
+/* ===== ENHANCED DESKTOP RESPONSIVE DESIGN ===== */
 @media (min-width: 1024px) {
-  .modal-overlay {
-    align-items: flex-start !important; /* Change from center to top */
-    padding-top: 5vh !important; /* Small top margin instead of centering */
-  }
-  
+  /* Maintain your successful scaling approach */
   .modal-content {
-    margin-top: 2rem !important; /* Space from top */
-    max-height: 90vh !important; /* Use more available height */
+    transform: scale(0.88); /* Slightly adjusted from 0.85 for better fit */
+    transform-origin: top center;
+    font-size: 0.95rem;
+    line-height: 1.35; /* Slightly increased for better readability */
+    max-height: 88vh; /* Added to ensure content fits */
+  }
+
+  .details-grid {
+    gap: 0.45rem; /* Slightly increased from 0.4rem for better spacing */
+  }
+
+  /* Ensure modal overlay utilizes full space properly */
+  .modal-overlay {
+    align-items: flex-start;
+    padding-top: 3vh;
+    justify-content: flex-start;
+  }
+
+  /* Additional space for last elements to prevent cutoff */
+  .modal-content {
+    padding-bottom: 35px;
+  }
+
+  .section-break:last-of-type {
+    margin-bottom: 1rem;
+  }
+
+  /* Optimize button spacing */
+  .modal-actions {
+    margin-top: 2rem;
+    gap: 1rem;
+  }
+}
+
+/* ===== LARGE DESKTOP ENHANCEMENT (≥1280px) ===== */
+@media (min-width: 1280px) {
+  .modal-content {
+    transform: scale(0.9); /* Slightly larger scale for bigger screens */
+    max-width: 520px;
   }
   
-  /* Optional: Compact the header area if needed */
-  .pet-details-modal h3 {
-    margin-top: 0.5rem !important;
-    margin-bottom: 0.8rem !important;
+  .details-grid {
+    gap: 0.5rem;
+  }
+}
+
+/* ===== HEIGHT OPTIMIZATION FOR TALL SCREENS ===== */
+@media (min-height: 900px) and (min-width: 1024px) {
+  .modal-content {
+    transform: scale(0.92);
+    max-height: 85vh;
   }
   
-  .detail-photo {
-    margin-bottom: 0.8rem !important; /* Reduce photo spacing */
+  .modal-overlay {
+    align-items: center; /* Re-center on very tall screens */
+    padding-top: 0;
   }
+}
+
+/* ===== PDF CAPTURE OPTIMIZATION ===== */
+/* Ensure PDF export uses non-scaled version */
+.pdf-export-container .modal-content {
+  transform: none !important;
+  max-height: none !important;
+  padding: 20px;
+}
+
+.pdf-export-container .details-grid {
+  gap: 0.5rem !important;
 }
 
 
