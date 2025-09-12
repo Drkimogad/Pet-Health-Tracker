@@ -1837,10 +1837,10 @@ body.modal-active {
   }
   
   .modal-overlay {
-    padding: 0;
-    align-items: flex-start; /* Start from top to use full height */
-    padding-top: 2.5vh; /* Small top margin */
-  }
+  align-items: center; /* ← Center vertically */
+  justify-content: center; /* ← Center horizontally */
+  padding: 2.5vh 2.5vw; /* ← Add equal spacing on all sides */
+}
   
   .modal-content {
     width: 95vw !important;
