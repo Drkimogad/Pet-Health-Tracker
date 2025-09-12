@@ -444,11 +444,8 @@ function setupLogout() {
         // Online logout - normal behavior
         await firebase.auth().signOut();
         console.log("👋 User signed out");
-       showSuccessNotification("You're logged out.");  // ADDED 
-        
-       setTimeout(() => {
+       showSuccessNotification("You're logged out.");  // ADDED   
        window.location.reload();  // CAN BE REMOVED IF NOT NEEDED
-       }, 2000); // Reload after 2 seconds
         
       } catch (error) {
         console.error("Logout failed:", error);
