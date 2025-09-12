@@ -254,6 +254,37 @@ function loadScriptWithRetry(url, maxRetries = 2, delayMs = 1000) {
   });
 }
 
+
+
+// 🆕 ADD THIS CLEANUP FUNCTION
+function cleanupExportResources() {
+  // 1. Remove all temporary containers
+  const containers = document.querySelectorAll('div[style*="left: -9999px"]');
+  containers.forEach(container => container.remove());
+  
+  // 2. Clean up canvases
+  document.querySelectorAll('canvas').forEach(canvas => {
+    if (canvas.parentNode) {
+      canvas.width = 0;
+      canvas.height = 0;
+      canvas.remove();
+    }
+  });
+  
+  // 3. Revoke object URLs
+  const links = document.querySelectorAll('a[href^="blob:"]');
+  links.forEach(link => {
+    URL.revokeObjectURL(link.href);
+    link.remove();
+  });
+  
+  // 4. Remove any leftover loaders
+  const loaders = document.querySelectorAll('.pdf-loader, .loader');
+  loaders.forEach(loader => loader.remove());
+  
+  console.log("🧹 Export resources cleaned up");
+}
+
 //===================================
 // ✅ Dashboard-specific loader helper
 // - show: true/false (overlay visible?)
