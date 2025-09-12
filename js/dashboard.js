@@ -1152,6 +1152,9 @@ showDashboardLoader(true, "exporting");
    // fallback the same
 
   } finally {
+ // 🆕 ADD THIS LINE TO YOUR EXISTING FINALLY BLOCK
+  cleanupExportResources();
+      
     // ✅ safe now, container always exists (or is null)/so no undefined error
     if (container && container.parentNode) {
       container.remove();
