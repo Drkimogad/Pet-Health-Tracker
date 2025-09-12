@@ -714,7 +714,7 @@ const canvas = await html2canvas(pdfContainer, {
       loader.remove();
       document.querySelector('.pdf-export-container')?.remove();
     }
-  }
+  } // ← CLOSING save PDF modal function brace
 
 // Update the PDF button to use our new function
 //const pdfBtn = modal?.querySelector('.pdf-btn');
@@ -727,7 +727,7 @@ const canvas = await html2canvas(pdfContainer, {
 console.log("✅ PDF handling delegated to centralized system");
 
   }); // closes request animation frame
- } // closes enque brace
+}); // closes enque brace
 } // Closes showdetails()
 
 //=========================================
@@ -1210,7 +1210,7 @@ showDashboardLoader(true, "exporting");
   }, 100);     
       
   } // closes finally 
- } // closes enqueue brace
+ });   // ← CLOSING enqueue brace
 } // closes the function 
 
 // Its Listener
