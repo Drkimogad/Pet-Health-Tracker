@@ -114,6 +114,7 @@ function trapFocus(modal) {
   });
 }
 
+// ✅ YOUR ORIGINAL hideModal (KEEP THIS)
 window.hideModal = function() {
   const overlay = document.getElementById('modal-overlay');
   if (overlay) {
@@ -123,16 +124,14 @@ window.hideModal = function() {
   }
 };
 
-// 🆕 MODIFY YOUR hideModal TO USE QUEUE
+// ✅ YOUR QUEUE-ENABLED hideModal (KEEP THIS TOO)
 const originalHideModal = window.hideModal;
 window.hideModal = function() {
   if (typeof originalHideModal === 'function') {
-    originalHideModal();  // ← Original cleanup
+    originalHideModal();  // ← This calls YOUR ORIGINAL function above!
   }
-  dequeueModal();         // ← Process next modal in queue
+  dequeueModal();         // ← Then processes the next modal
 };
-
-
 
 
 function showModal(content) {
