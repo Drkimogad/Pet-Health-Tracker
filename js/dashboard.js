@@ -21,6 +21,7 @@ if (typeof currentEditIndex === 'undefined') {
 }
 
 // 🆕 ADD THIS MODAL QUEUE SYSTEM AT THE TOP OF YOUR JS
+// 1. Queue System (add this)
 window.modalQueue = [];
 window.activeModal = null;
 
@@ -36,9 +37,11 @@ function enqueueModal(modalFunction) {
 function dequeueModal() {
   window.activeModal = null;
   if (window.modalQueue.length > 0) {
-    const nextModal = window.modalQueue.shift();
-    window.activeModal = nextModal;
-    nextModal();
+    setTimeout(() => {
+      const nextModal = window.modalQueue.shift();
+      window.activeModal = nextModal;
+      nextModal();
+    }, 100);
   }
 }
 
@@ -1184,14 +1187,24 @@ showDashboardLoader(true, "exporting");
 
   } finally {
  // 🆕 ADD THIS LINE TO YOUR EXISTING FINALLY BLOCK
-  cleanupExportResources();
-  dequeueModal(); // 🆕 TELL QUEUE WE'RE DONE
-      
+  cleanupExportResources();      
     // ✅ safe now, container always exists (or is null)/so no undefined error
     if (container && container.parentNode) {
       container.remove();
     }
-  }     
+} finally {
+  cleanupExportResources();
+      
+  if (container && container.parentNode) {
+    container.remove();
+  }
+  
+  // 🆕 MOVE dequeueModal TO AFTER ALL CLEANUP IS DONE
+  setTimeout(() => {
+    dequeueModal(); // ✅ Now it's safe to call next modal
+  }, 100);     
+      
+  } // closes finally 
  } // closes enqueue brace
 } // closes the function 
 
