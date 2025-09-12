@@ -704,6 +704,11 @@ const canvas = await html2canvas(pdfContainer, {
         
     } finally {
      hideModal(); // ← HIDE MODAL HERE ONCE for both success and error
+        // 🆕 ADD DEQUEUE AFTER hideModal
+   setTimeout(() => {
+    dequeueModal(); // ← PROCESS NEXT MODAL IN QUEUE
+  }, 100);
+        
     console.log("🚪 Modal closed");
    console.log("🧹 Cleaning up loader");
       loader.remove();
