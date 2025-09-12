@@ -1750,33 +1750,26 @@ body.modal-active {
   100% { transform: rotate(360deg); }
 }
 
-/* ===== DESKTOP MODAL CAPTURE FIX ===== */
+/* ===== DESKTOP MODAL POSITION FIX ===== */
 @media (min-width: 1024px) {
-  /* 1. More height for content */
-  .modal-content {
-    max-height: 88vh !important; /* Increased from 85vh */
-    padding-bottom: 30px !important; /* Extra space at bottom */
-  }
-
-  /* 2. Compact layout to fit more content */
-  .details-grid {
-    gap: 0.3rem !important; /* Reduced from 0.4rem */
+  .modal-overlay {
+    align-items: flex-start !important; /* Change from center to top */
+    padding-top: 5vh !important; /* Small top margin instead of centering */
   }
   
-  .section-break {
-    margin-top: 0.7rem !important; /* Reduced from 0.8rem */
-    margin-bottom: 0.4rem !important; /* Reduced from 0.5rem */
+  .modal-content {
+    margin-top: 2rem !important; /* Space from top */
+    max-height: 90vh !important; /* Use more available height */
   }
-
-  /* 3. Ensure reminders don't get cut off */
-  .reminders-list {
-    margin-bottom: 1rem !important; /* Extra space for last items */
+  
+  /* Optional: Compact the header area if needed */
+  .pet-details-modal h3 {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.8rem !important;
   }
-
-  /* 4. Slightly smaller text for better fit */
-  .details-grid div {
-    font-size: 0.95rem !important;
-    line-height: 1.35 !important;
+  
+  .detail-photo {
+    margin-bottom: 0.8rem !important; /* Reduce photo spacing */
   }
 }
 
