@@ -519,6 +519,9 @@ console.log("🔍 showPetDetails() triggered", profile); // added
 console.log("🧱 Preparing modal content...");
 console.log("🖼️ profile.petPhoto:", profile.petPhoto);
 console.log("🔗 profile.shareableUrl:", profile.shareableUrl);
+
+// 🆕 ADD THIS - Store cleanup reference
+  let pdfButtonClickListener = null;
     
 // old code
 const emergencyContact = profile.emergencyContacts?.[0] || {};
@@ -649,9 +652,9 @@ const canvas = await html2canvas(pdfContainer, {
 });
         
       // 5. Generate PDF
-      if (!window.jspdf) {
-        await loadScriptWithRetry('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
-      }
+  //    if (!window.jspdf) {
+   //     await loadScriptWithRetry('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+  //    }
 
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
@@ -682,11 +685,16 @@ const canvas = await html2canvas(pdfContainer, {
   // Make the function available globally
   window.saveModalAsPDF = saveModalAsPDF;
 
-  // Update the PDF button to use our new function
-  const pdfBtn = modal?.querySelector('.pdf-btn');
-  if (pdfBtn) {
-    pdfBtn.onclick = saveModalAsPDF;
-  }
+// Update the PDF button to use our new function UPDATED
+const pdfBtn = modal?.querySelector('.pdf-btn');
+if (pdfBtn) {
+  // 🆕 REMOVE any existing listener first
+  pdfBtn.removeEventListener('click', pdfButtonClickListener);
+  
+  // 🆕 Create new listener and store reference for cleanup
+  pdfButtonClickListener = saveModalAsPDF;
+  pdfBtn.addEventListener('click', pdfButtonClickListener);
+}
 
 }); // closes request animation frame
 } // Closes showdetails()
