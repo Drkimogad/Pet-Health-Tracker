@@ -123,6 +123,18 @@ window.hideModal = function() {
   }
 };
 
+// 🆕 MODIFY YOUR hideModal TO USE QUEUE
+const originalHideModal = window.hideModal;
+window.hideModal = function() {
+  if (typeof originalHideModal === 'function') {
+    originalHideModal();  // ← Original cleanup
+  }
+  dequeueModal();         // ← Process next modal in queue
+};
+
+
+
+
 function showModal(content) {
   // 1. Remove existing modal
   const oldModal = document.getElementById('modal-overlay');
