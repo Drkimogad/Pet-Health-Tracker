@@ -19,6 +19,30 @@ if (typeof isEditing === 'undefined') {
 if (typeof currentEditIndex === 'undefined') {
     window.currentEditIndex = -1;
 }
+
+// 🆕 ADD THIS MODAL QUEUE SYSTEM AT THE TOP OF YOUR JS
+window.modalQueue = [];
+window.activeModal = null;
+
+function enqueueModal(modalFunction) {
+  if (window.activeModal) {
+    window.modalQueue.push(modalFunction);
+  } else {
+    window.activeModal = modalFunction;
+    modalFunction();
+  }
+}
+
+function dequeueModal() {
+  window.activeModal = null;
+  if (window.modalQueue.length > 0) {
+    const nextModal = window.modalQueue.shift();
+    window.activeModal = nextModal;
+    nextModal();
+  }
+}
+
+
 // ====== DOM ELEMENTS ======
 const DOM = {
   // Main containers
@@ -500,6 +524,9 @@ async function loadSavedPetProfile() {
 //=================================
 // ✅ UPDATED showPetDetails() with Share Button in Modal
 function showPetDetails(profile) {
+      // 🆕 WRAP IN QUEUE
+  enqueueModal(() => {
+    // YOUR EXISTING showPetDetails CODE GOES HERE
     // 🆕 ADD THIS LINE AT THE VERY TOP:
   if (!profile) return showErrorNotification("No profile data available.");
   // === START CRITICAL FIXES ===
@@ -691,7 +718,8 @@ const canvas = await html2canvas(pdfContainer, {
 // The utils.js system automatically handles PDF buttons with class "pdf-btn"
 console.log("✅ PDF handling delegated to centralized system");
 
-}); // closes request animation frame
+  }); // closes request animation frame
+ } // closes enque brace
 } // Closes showdetails()
 
 //=========================================
@@ -1031,6 +1059,9 @@ showDashboardLoader(false, "success-deleting");
  * @param {boolean} asZip - Set true to export as ZIP, false for individual downloads
  */
 async function exportAllPetCards(asZip = false) {
+ // 🆕 WRAP MODAL PARTS IN QUEUE
+  enqueueModal(async () => {
+
 // ✅ move container declaration outside try to avoid undefined in finally block
   let container = null; 
     
@@ -1154,12 +1185,14 @@ showDashboardLoader(true, "exporting");
   } finally {
  // 🆕 ADD THIS LINE TO YOUR EXISTING FINALLY BLOCK
   cleanupExportResources();
+  dequeueModal(); // 🆕 TELL QUEUE WE'RE DONE
       
     // ✅ safe now, container always exists (or is null)/so no undefined error
     if (container && container.parentNode) {
       container.remove();
     }
-  }      
+  }     
+ } // closes enqueue brace
 } // closes the function 
 
 // Its Listener
