@@ -1840,7 +1840,9 @@ body.modal-active {
   .modal-overlay {
   align-items: center; /* ← Center vertically */
   justify-content: center; /* ← Center horizontally */
-  padding: 2.5vh 2.5vw; /* ← Add equal spacing on all sides */
+  /* Removed horizontal padding (2.5vw → 0) */
+  /*padding: 2.5vh 2.5vw; /* ← Add equal spacing on all sides */
+   padding: 2.5vh 0 !important;  /* ← CHANGED from 2.5vh 2.5vw */ 
 }
   
   .modal-content {
@@ -1848,7 +1850,6 @@ body.modal-active {
     height: 95vh !important;
     max-width: 95vw !important;
     max-height: 95vh !important;
-/*  margin: 0;*/
     margin: 0 auto !important; /* ← Ensures horizontal centering */
     transform: scale(0.98);    /* ← Optional: slight visual scaling */
     transform-origin: center;  /* ← Scale from center, not corner */
@@ -1856,6 +1857,10 @@ body.modal-active {
     padding: 1rem;         /* ← Internal spacing */
     overflow-y: auto;      /* ← Scroll if content overflows */
     border-radius: 12px;   /* ← Visual styling */
+    box-sizing: border-box !important;          /* 🆕 ADDED */
+    border: 2px solid var(--accent-color) !important; /* 🆕 ADDED */
+    left: 0 !important;                         /* 🆕 ADDED */
+   right: 0 !important;                        /* 🆕 ADDED */
   }
   
   /* Ensure content fits properly */
@@ -1894,7 +1899,8 @@ body.modal-active {
 /* Extra small devices */
 @media (max-width: 380px) {
   .modal-content {
-    padding: 0.75rem;
+    width: 92vw !important;                 /* ← CHANGED from 95vw */
+    transform: scale(0.96);                 /* 🆕 ADDED */
   }
   
   .detail-photo {
