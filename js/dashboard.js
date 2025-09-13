@@ -2274,6 +2274,13 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
           petData.public_id = existingProfile.cloudinaryPath || '';
         }
       }
+        
+    // this is where to handle the orphaned image deletion NEW
+    // 1. Save old image ID (before upload)
+    // 2. Upload new image & update profile
+    // 3. ✅ saveProfile() - CRITICAL: Save first!
+    // 4. ✅ Delete old image - Safe to do now
+    // 5. Update UI - Show success
 
 
 // 🆕 ORPHAN IMAGE PREVENTION - Save old image info before update
@@ -2286,7 +2293,7 @@ if (editingProfileId !== null && fileInput.files[0]) {
   console.log("📸 Old image marked for deletion:", oldImagePublicId);
 }
         
-
+     // old cod
       // 2️⃣ In the new image uploaded
       if (fileInput.files[0]) {
         try {
@@ -2315,7 +2322,7 @@ if (editingProfileId !== null && fileInput.files[0]) {
   // 🟢 REPLACE all the manual saving with this single call:
    await saveProfile(petData); // call it to handle the saving and updating 
 
-// 🆕 ADD OLD IMAGE DELETION RIGHT HERE
+// 🆕 ADD OLD IMAGE DELETION RIGHT HERE NEWLY ADDED
 if (oldImagePublicId) {
   try {
     const user = firebase.auth().currentUser;
