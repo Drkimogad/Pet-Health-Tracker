@@ -2275,6 +2275,18 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
         }
       }
 
+
+// 🆕 ORPHAN IMAGE PREVENTION - Save old image info before update
+let oldImagePublicId = null;
+if (editingProfileId !== null && fileInput.files[0]) {
+  // We're editing AND uploading new image - save old image info for cleanup
+  const existingProfiles = await loadPets();
+  const existingProfile = existingProfiles.find(p => p.id === newId);
+  oldImagePublicId = existingProfile?.public_id; // Save for deletion later
+  console.log("📸 Old image marked for deletion:", oldImagePublicId);
+}
+        
+
       // 2️⃣ In the new image uploaded
       if (fileInput.files[0]) {
         try {
@@ -2302,7 +2314,37 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
       
   // 🟢 REPLACE all the manual saving with this single call:
    await saveProfile(petData); // call it to handle the saving and updating 
-        
+
+// 🆕 ADD OLD IMAGE DELETION RIGHT HERE
+if (oldImagePublicId) {
+  try {
+    const user = firebase.auth().currentUser;
+    const token = await user.getIdToken();
+    
+    const response = await fetch(
+      'https://us-central1-pet-health-tracker-4ec31.cloudfunctions.net/deleteImage',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ public_id: oldImagePublicId })
+      }
+    );
+    
+    if (response.ok) {
+      console.log("✅ Old Cloudinary image deleted:", oldImagePublicId);
+    } else {
+      console.warn("⚠️ Could not delete old image (non-critical)");
+    }
+  } catch (error) {
+    console.warn("⚠️ Old image deletion failed (non-critical):", error);
+    // Non-critical - don't fail the entire operation
+  }
+}
+
+// THEN continue with UI update                
 // AFTER SAVING IN LOCALSTORAGE AND FIRESTORE
 await new Promise(r => setTimeout(r, 2000)); //✅️ adjust this for faster or slower saving or updating display 
 
