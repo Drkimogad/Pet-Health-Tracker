@@ -1828,12 +1828,13 @@ body.modal-active {
 
 
 /* ===== PHONE-SPECIFIC MODAL STYLES ===== */
+/* Body stays full-screen for proper capture */
 @media (max-width: 600px) {
   body.modal-active {
     overflow: hidden;
     position: fixed;
-    width: 100%;
-    height: 100%;
+  /*  width: 100%;  */
+ /*   height: 100%;*/
   }
   
   .modal-overlay {
@@ -1847,10 +1848,14 @@ body.modal-active {
     height: 95vh !important;
     max-width: 95vw !important;
     max-height: 95vh !important;
-    margin: 0;
-    padding: 1rem;
-    overflow-y: auto;
-    border-radius: 12px;
+/*  margin: 0;*/
+    margin: 0 auto !important; /* ← Ensures horizontal centering */
+    transform: scale(0.98);    /* ← Optional: slight visual scaling */
+    transform-origin: center;  /* ← Scale from center, not corner */
+    
+    padding: 1rem;         /* ← Internal spacing */
+    overflow-y: auto;      /* ← Scroll if content overflows */
+    border-radius: 12px;   /* ← Visual styling */
   }
   
   /* Ensure content fits properly */
