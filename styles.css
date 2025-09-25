@@ -558,20 +558,34 @@ affect their colour in the footer */
 }
 
 /* ====== Reset Password Container RECENTLY ADDED ===== */
+/* ====== Reset Password Overlay ===== */
+#resetPasswordOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2); /* subtle overlay */
+  backdrop-filter: blur(4px);
+  z-index: 9998; /* just below bubble */
+  display: none; /* hidden by default */
+}
+
+/* ====== Reset Password Speech Bubble ===== */
 #resetPasswordContainer {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  max-width: 90%;
   width: 350px;
-  height: auto;
   padding: 25px 20px;
   background: var(--bg-card);
-  border-radius: 50px / 25px; /* oval ends like bone */
+  border-radius: 20px;
   border: 3px solid var(--accent-green);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-  z-index: 9999;
-  display: flex;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  z-index: 9999; /* topmost */
+  display: none; /* hidden by default */
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -579,7 +593,165 @@ affect their colour in the footer */
   animation: fadeIn 0.3s ease;
 }
 
+/* Optional speech bubble pointer */
+#resetPasswordContainer::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 10px 10px 0 10px;
+  border-style: solid;
+  border-color: var(--bg-card) transparent transparent transparent;
+}
 
+/* Heading */
+#resetPasswordContainer h2 {
+  font-size: 1rem;
+  color: var(--main-color);
+  margin-bottom: 12px;
+}
+
+/* Inputs */
+#resetPasswordContainer input {
+  width: 80%;
+  margin: 6px 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--main-color);
+  font-size: 0.9rem;
+}
+
+/* Buttons */
+#resetPasswordContainer button {
+  width: 60%;
+  padding: 8px 0;
+  margin-top: 10px;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background-color: var(--accent-green);
+  color: var(--text-inverse);
+  transition: background-color 0.3s ease;
+}
+
+#resetPasswordContainer button:hover {
+  background-color: var(--main-color);
+}
+
+/* Legal / info text */
+#resetPasswordContainer .auth-legal {
+  font-size: 0.6rem;
+  margin-top: 6px;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+/* ====== Forgot Password Prompt Styling ===== */
+#forgotPasswordPromptContainer {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 90%;
+  width: 320px;
+  padding: 20px;
+  background: var(--bg-card);
+  border-radius: 12px;
+  border: 2px solid var(--accent-green);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  z-index: 9999;
+  display: none; /* hidden until clicked */
+  text-align: center;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Inputs inside forgot password prompt */
+#forgotPasswordPromptContainer input {
+  width: 80%;
+  margin: 6px 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--main-color);
+  font-size: 0.9rem;
+}
+
+/* Button inside forgot password prompt */
+#forgotPasswordPromptContainer button {
+  width: 60%;
+  padding: 8px 0;
+  margin-top: 10px;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background-color: var(--accent-green);
+  color: var(--text-inverse);
+  transition: background-color 0.3s ease;
+}
+
+#forgotPasswordPromptContainer button:hover {
+  background-color: var(--main-color);
+}
+
+/* Notification / error messages (softer red) */
+.reset-error-message,
+.forgot-error-message {
+  background-color: #f8d7da; /* soft red */
+  color: #842029;
+  padding: 6px 10px;
+  border-radius: 6px;
+  margin-top: 8px;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* Notification / success messages */
+.reset-success-message,
+.forgot-success-message {
+  background-color: var(--success);
+  color: var(--text-inverse);
+  padding: 6px 10px;
+  border-radius: 6px;
+  margin-top: 8px;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* ====== Responsive adjustments ===== */
+@media (max-width: 480px) {
+  #resetPasswordContainer,
+  #forgotPasswordPromptContainer {
+    width: 90%;
+    padding: 20px;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 1024px) {
+  #resetPasswordContainer,
+  #forgotPasswordPromptContainer {
+    width: 320px;
+    padding: 22px;
+  }
+}
+
+@media (min-width: 1025px) {
+  #resetPasswordContainer,
+  #forgotPasswordPromptContainer {
+    width: 350px;
+    padding: 25px;
+  }
+}
+
+/* ====== Fade-in animation ===== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%, -48%); }
+  to   { opacity: 1; transform: translate(-50%, -50%); }
+}
+/* end of it */
 
 /*===========================*/
 /*AUTH RESPONSIVE DESIGNS*/
