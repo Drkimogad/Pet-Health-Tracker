@@ -665,19 +665,24 @@ function handlePasswordResetLink() {
   const mode = params.get('mode');
   const oobCode = params.get('oobCode');
 
-  if (mode === 'resetPassword' && oobCode) {
+if (mode === 'resetPassword' && oobCode) {
   // ===== Auto-hide login/signup balls =====
   const loginWrapper = document.getElementById("emailLoginWrapper");
   const signupWrapper = document.getElementById("emailSignupWrapper");
   if (loginWrapper) loginWrapper.style.display = "none";
   if (signupWrapper) signupWrapper.style.display = "none";
 
+  // ===== Show reset password bubble + overlay =====
+  const container = document.getElementById('resetPasswordContainer');
+  const overlay = document.getElementById('resetPasswordOverlay');
+  if (!container || !overlay) return;
+
+  container.style.display = "flex";   // show bubble
+  overlay.style.display = "block";    // show blur overlay
+
+    
   // Optional: hide via toggleEmailForms(false)
   toggleEmailForms(false);
-
-    // Show a simple reset password form
-    const container = document.getElementById('resetPasswordContainer');
-    if (!container) return;
 
     container.innerHTML = `
       <h2>Set a new password</h2>
@@ -703,8 +708,12 @@ function handlePasswordResetLink() {
       try {
         await auth.confirmPasswordReset(oobCode, newPassword);
         showSuccessNotification('Password reset successfully! You can now log in.');
-        toggleEmailForms(true); // show login form
-        container.innerHTML = ''; // clear reset form
+        // ✅ Show login form again
+        toggleEmailForms(true);
+        // ✅ Clear and hide reset container + overlay
+       container.innerHTML = '';
+       container.style.display = "none"; //hides the bubble.
+       overlay.style.display = "none"; //hides the blurred background.
       } catch (error) {
         console.error('❌ Password reset failed:', error);
         showErrorToUser(error.message || 'Failed to reset password.');
