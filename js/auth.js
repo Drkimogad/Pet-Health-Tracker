@@ -666,8 +666,14 @@ function handlePasswordResetLink() {
   const oobCode = params.get('oobCode');
 
   if (mode === 'resetPassword' && oobCode) {
-    // Hide login/signup forms
-    toggleEmailForms(false); // optional: hide both or show reset form placeholder
+  // ===== Auto-hide login/signup balls =====
+  const loginWrapper = document.getElementById("emailLoginWrapper");
+  const signupWrapper = document.getElementById("emailSignupWrapper");
+  if (loginWrapper) loginWrapper.style.display = "none";
+  if (signupWrapper) signupWrapper.style.display = "none";
+
+  // Optional: hide via toggleEmailForms(false)
+  toggleEmailForms(false);
 
     // Show a simple reset password form
     const container = document.getElementById('resetPasswordContainer');
