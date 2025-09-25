@@ -713,13 +713,8 @@ if (mode === 'resetPassword' && oobCode) {
         // ✅ Clear and hide reset container + overlay
        container.innerHTML = '';
        container.style.display = "none"; //hides the bubble.
-       overlay.style.display = "none"; //hides the blurred background.
-      
-      // Then only populate if mode + oobCode exist
-      if (mode === 'resetPassword' && oobCode) {
-        // Show container + overlay
-        container.style.display = "flex";
-        overlay.style.display = "block";        
+       overlay.style.display = "none"; //hides the blurred background. 
+           
       } catch (error) {
         console.error('❌ Password reset failed:', error);
         showErrorToUser(error.message || 'Failed to reset password.');
