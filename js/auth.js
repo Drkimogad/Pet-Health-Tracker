@@ -658,6 +658,58 @@ function triggerServiceWorkerSync() {
   }
 }
 
+
+// ====== Handle password reset link ======
+function handlePasswordResetLink() {
+  const params = new URLSearchParams(window.location.search);
+  const mode = params.get('mode');
+  const oobCode = params.get('oobCode');
+
+  if (mode === 'resetPassword' && oobCode) {
+    // Hide login/signup forms
+    toggleEmailForms(false); // optional: hide both or show reset form placeholder
+
+    // Show a simple reset password form
+    const container = document.getElementById('resetPasswordContainer');
+    if (!container) return;
+
+    container.innerHTML = `
+      <h2>Set a new password</h2>
+      <input type="password" id="newPasswordInput" placeholder="New password" />
+      <input type="password" id="confirmNewPasswordInput" placeholder="Confirm new password" />
+      <button id="submitNewPasswordBtn">Set Password</button>
+    `;
+
+    document.getElementById('submitNewPasswordBtn').addEventListener('click', async () => {
+      const newPassword = document.getElementById('newPasswordInput').value;
+      const confirmPassword = document.getElementById('confirmNewPasswordInput').value;
+
+      if (!newPassword || !confirmPassword) {
+        showErrorToUser('Please enter and confirm your new password.');
+        return;
+      }
+      if (newPassword !== confirmPassword) {
+        showErrorToUser('Passwords do not match.');
+        return;
+      }
+
+      showLoading(true, 'Resetting password...');
+      try {
+        await auth.confirmPasswordReset(oobCode, newPassword);
+        showSuccessNotification('Password reset successfully! You can now log in.');
+        toggleEmailForms(true); // show login form
+        container.innerHTML = ''; // clear reset form
+      } catch (error) {
+        console.error('❌ Password reset failed:', error);
+        showErrorToUser(error.message || 'Failed to reset password.');
+      } finally {
+        showLoading(false);
+      }
+    });
+  }
+}
+
+
 // ======== OFFLINE STATUS DETECTION ========
 // Call this when coming online instead of manual sync
 function checkOnlineStatus() {
@@ -790,6 +842,9 @@ async function initializeAuth() {
 
     // 8. Wire up toggle links (between login/signup)
     wireAuthToggleLinks();
+    
+   // 11. Handle password reset links
+     handlePasswordResetLink();
 
     // 9. Decide which form to show first (default = login)
     toggleEmailForms(true); // pass false if you want to start with Sign-Up
