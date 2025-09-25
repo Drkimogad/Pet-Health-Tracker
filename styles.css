@@ -604,10 +604,6 @@ affect their colour in the footer */
   border-style: solid;
   border-color: var(--bg-card) transparent transparent transparent;
 }
-/* to remove if conflicting*/
-#resetPasswordContainer, #resetPasswordOverlay {
-  display: none; /* hidden by default */
-}
 
 /* Heading */
 #resetPasswordContainer h2 {
