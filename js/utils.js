@@ -514,7 +514,7 @@ async function removeOfflineProfile(db, id) {
 }
 
 // ======================
-// SUPPORT MANAGER - Add to utils.js
+// ENHANCED SUPPORT MANAGER - Add to utils.js
 // ======================
 
 class SupportManager {
@@ -527,6 +527,53 @@ class SupportManager {
             "Follow us for updates on new features!"
         ];
         this.isInitialized = false;
+        this.isUserAuthenticated = false;
+        this.authCheckInterval = null;
+        
+        // Setup auth monitoring
+        this.setupAuthListener();
+    }
+
+    setupAuthListener() {
+        console.log('🔐 Setting up auth monitoring for support messages...');
+        
+        // Method 1: Check Firebase auth state
+        if (typeof firebase !== 'undefined' && firebase.auth) {
+            firebase.auth().onAuthStateChanged((user) => {
+                const wasAuthenticated = this.isUserAuthenticated;
+                this.isUserAuthenticated = !!user;
+                
+                if (this.isUserAuthenticated && !wasAuthenticated) {
+                    console.log('✅ User authenticated - support messages enabled');
+                    this.tryInitialize();
+                } else if (!this.isUserAuthenticated && wasAuthenticated) {
+                    console.log('🚫 User signed out - support messages disabled');
+                    this.stopMessageTimers();
+                }
+            });
+        }
+        
+        // Method 2: Fallback - check dashboard visibility
+        this.authCheckInterval = setInterval(() => {
+            if (!this.isUserAuthenticated) {
+                const dashboard = document.getElementById('dashboard');
+                const authContainer = document.getElementById('authContainer');
+                
+                if (dashboard && !dashboard.classList.contains('hidden') && 
+                    authContainer && authContainer.classList.contains('hidden')) {
+                    console.log('✅ Dashboard active - enabling support messages');
+                    this.isUserAuthenticated = true;
+                    this.tryInitialize();
+                }
+            }
+        }, 3000);
+    }
+
+    tryInitialize() {
+        if (this.isInitialized || !this.isUserAuthenticated) return;
+        
+        console.log('🎯 Initializing support messages for authenticated user');
+        this.init();
     }
 
     init() {
@@ -535,18 +582,35 @@ class SupportManager {
         // Inject CSS once
         this.injectStyles();
         
-        // Show first message after 45 seconds
-        setTimeout(() => this.showSupportMessage(), 45000);
-        
-        // Show occasionally after that
-        setInterval(() => {
-            if (Math.random() < 0.2) { // 20% chance
-                this.showSupportMessage();
-            }
-        }, 120000); // Every 2 minutes
+        // Start message timers
+        this.startMessageTimers();
         
         this.isInitialized = true;
-        console.log('✅ SupportManager initialized');
+        console.log('✅ SupportManager initialized for authenticated user');
+    }
+
+    startMessageTimers() {
+        // Show first message after 45 seconds
+        setTimeout(() => {
+            if (this.isUserAuthenticated) {
+                this.showSupportMessage();
+            }
+        }, 45000);
+        
+        // Show occasionally after that (every 2 minutes, 20% chance)
+        this.messageInterval = setInterval(() => {
+            if (this.isUserAuthenticated && Math.random() < 0.2) {
+                this.showSupportMessage();
+            }
+        }, 120000);
+    }
+
+    stopMessageTimers() {
+        if (this.messageInterval) {
+            clearInterval(this.messageInterval);
+            this.messageInterval = null;
+        }
+        this.isInitialized = false;
     }
 
     injectStyles() {
@@ -609,8 +673,17 @@ class SupportManager {
     }
 
     showSupportMessage() {
+        // Double-check user is still authenticated and in dashboard
+        if (!this.isUserAuthenticated || !this.isInDashboard()) {
+            console.log('🚫 Suppressing message - user not in dashboard');
+            return;
+        }
+        
         // Don't show if user is in the middle of something important
-        if (this.shouldSuppressMessage()) return;
+        if (this.shouldSuppressMessage()) {
+            console.log('🚫 Suppressing message - critical operation in progress');
+            return;
+        }
         
         // Don't show if user just dismissed one recently
         const lastShow = localStorage.getItem('lastSupportShow');
@@ -650,6 +723,14 @@ class SupportManager {
         }, 10000);
     }
 
+    isInDashboard() {
+        const dashboard = document.getElementById('dashboard');
+        const authContainer = document.getElementById('authContainer');
+        
+        return dashboard && !dashboard.classList.contains('hidden') && 
+               authContainer && authContainer.classList.contains('hidden');
+    }
+
     shouldSuppressMessage() {
         // Don't show during form editing, modals, or critical operations
         const isEditing = window.isEditing || window.editingProfileId !== null;
@@ -658,7 +739,18 @@ class SupportManager {
         
         return isEditing || hasModal || isProcessing;
     }
+    
+    // Cleanup method (optional)
+    destroy() {
+        if (this.authCheckInterval) {
+            clearInterval(this.authCheckInterval);
+        }
+        if (this.messageInterval) {
+            clearInterval(this.messageInterval);
+        }
+    }
 }
 
 // Create global instance
 window.supportManager = new SupportManager();
+
