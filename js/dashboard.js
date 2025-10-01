@@ -2465,23 +2465,35 @@ editingSessionKeys.forEach(key => {
   ensureCancelEditButton();
 });
 }
+
+
 // ======================
-// 🆕 ADD THIS RIGHT HERE - at the VERY END for support message 
+// SUPPORT MESSAGES INIT - Add to end of dashboard.js
 // ======================
 
-// Initialize support messages after dashboard is completely loaded
-//setTimeout(() => {
-//    if (window.supportManager && !window.supportManager.isInitialized) {
- //       console.log('🚀 Initializing support messages...');
-//        window.supportManager.init();
-//    }
-//}, 3000);
+// Force enable support messages when dashboard initializes
+function initializeSupportMessages() {
+    setTimeout(() => {
+        if (window.supportManager) {
+            console.log('🚀 Dashboard loaded - enabling support messages');
+            window.supportManager.isUserAuthenticated = true;
+            window.supportManager.tryInitialize();
+        }
+    }, 2000);
+}
 
-// Quick test - add this temporarily to check it works
-console.log('🔧 Testing SupportManager...');
+// Initialize when dashboard is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeSupportMessages);
+} else {
+    initializeSupportMessages();
+}
+
+// Safety net
 setTimeout(() => {
-    if (window.supportManager) {
-        window.supportManager.showSupportMessage();
-        console.log('✅ SupportManager test successful');
+    if (window.supportManager && !window.supportManager.isInitialized) {
+        console.log('🔧 Support messages safety net activated');
+        window.supportManager.isUserAuthenticated = true;
+        window.supportManager.tryInitialize();
     }
 }, 5000);
