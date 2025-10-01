@@ -2465,3 +2465,23 @@ editingSessionKeys.forEach(key => {
   ensureCancelEditButton();
 });
 }
+// ======================
+// 🆕 ADD THIS RIGHT HERE - at the VERY END for support message 
+// ======================
+
+// Initialize support messages after dashboard is completely loaded
+//setTimeout(() => {
+//    if (window.supportManager && !window.supportManager.isInitialized) {
+ //       console.log('🚀 Initializing support messages...');
+//        window.supportManager.init();
+//    }
+//}, 3000);
+
+// Quick test - add this temporarily to check it works
+console.log('🔧 Testing SupportManager...');
+setTimeout(() => {
+    if (window.supportManager) {
+        window.supportManager.showSupportMessage();
+        console.log('✅ SupportManager test successful');
+    }
+}, 5000);
