@@ -513,4 +513,152 @@ async function removeOfflineProfile(db, id) {
   });
 }
 
+// ======================
+// SUPPORT MANAGER - Add to utils.js
+// ======================
 
+class SupportManager {
+    constructor() {
+        this.messages = [
+            "Love this app? Share with other pet lovers! 🐾",
+            "Your support helps us improve faster!",
+            "Premium features coming soon - stay tuned! ⭐",
+            "Rate our app to help other pet owners find us!",
+            "Follow us for updates on new features!"
+        ];
+        this.isInitialized = false;
+    }
+
+    init() {
+        if (this.isInitialized) return;
+        
+        // Inject CSS once
+        this.injectStyles();
+        
+        // Show first message after 45 seconds
+        setTimeout(() => this.showSupportMessage(), 45000);
+        
+        // Show occasionally after that
+        setInterval(() => {
+            if (Math.random() < 0.2) { // 20% chance
+                this.showSupportMessage();
+            }
+        }, 120000); // Every 2 minutes
+        
+        this.isInitialized = true;
+        console.log('✅ SupportManager initialized');
+    }
+
+    injectStyles() {
+        if (document.getElementById('support-manager-styles')) return;
+        
+        const styles = `
+        .support-message-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            animation: fadeIn 0.3s ease-in;
+        }
+        .support-message {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            max-width: 300px;
+            text-align: center;
+            animation: slideUp 0.3s ease-out;
+        }
+        .support-content .support-emoji {
+            font-size: 2em;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .support-content p {
+            margin: 10px 0;
+            color: #333;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .support-close-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        .support-close-btn:hover { background: #45a049; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { 
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        `;
+        
+        const styleEl = document.createElement('style');
+        styleEl.id = 'support-manager-styles';
+        styleEl.textContent = styles;
+        document.head.appendChild(styleEl);
+    }
+
+    showSupportMessage() {
+        // Don't show if user is in the middle of something important
+        if (this.shouldSuppressMessage()) return;
+        
+        // Don't show if user just dismissed one recently
+        const lastShow = localStorage.getItem('lastSupportShow');
+        const now = Date.now();
+        if (lastShow && (now - parseInt(lastShow)) < 3600000) { // 1 hour cooldown
+            return;
+        }
+
+        const randomMessage = this.messages[Math.floor(Math.random() * this.messages.length)];
+        
+        const supportDiv = document.createElement('div');
+        supportDiv.className = 'support-message-overlay';
+        supportDiv.innerHTML = `
+            <div class="support-message">
+                <div class="support-content">
+                    <span class="support-emoji">🐾</span>
+                    <p>${randomMessage}</p>
+                    <button class="support-close-btn">Got it!</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(supportDiv);
+        
+        // Add event listener
+        supportDiv.querySelector('.support-close-btn').addEventListener('click', () => {
+            supportDiv.remove();
+            localStorage.setItem('lastSupportShow', Date.now().toString());
+        });
+        
+        // Auto-remove after 10 seconds
+        setTimeout(() => {
+            if (supportDiv.parentElement) {
+                supportDiv.remove();
+                localStorage.setItem('lastSupportShow', Date.now().toString());
+            }
+        }, 10000);
+    }
+
+    shouldSuppressMessage() {
+        // Don't show during form editing, modals, or critical operations
+        const isEditing = window.isEditing || window.editingProfileId !== null;
+        const hasModal = document.querySelector('.modal, [class*="modal"], [class*="overlay"]');
+        const isProcessing = document.getElementById('processing-loader')?.style.display !== 'none';
+        
+        return isEditing || hasModal || isProcessing;
+    }
+}
+
+// Create global instance
+window.supportManager = new SupportManager();
