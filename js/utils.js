@@ -516,6 +516,9 @@ async function removeOfflineProfile(db, id) {
 // ======================
 // ENHANCED SUPPORT MANAGER - Add to utils.js
 // ======================
+// ======================
+// FIXED SUPPORT MANAGER - Add to utils.js
+// ======================
 
 class SupportManager {
     constructor() {
@@ -529,31 +532,39 @@ class SupportManager {
         this.isInitialized = false;
         this.isUserAuthenticated = false;
         this.authCheckInterval = null;
+        this.messageInterval = null;
         
-        // Setup auth monitoring
-        this.setupAuthListener();
+        // Don't setup auth listener immediately - wait for dashboard
+        console.log('🔧 SupportManager created - waiting for dashboard initialization');
     }
 
     setupAuthListener() {
-        console.log('🔐 Setting up auth monitoring for support messages...');
+        console.log('🔐 Setting up auth monitoring...');
         
-        // Method 1: Check Firebase auth state
+        // Method 1: Check if Firebase is available and initialized
         if (typeof firebase !== 'undefined' && firebase.auth) {
-            firebase.auth().onAuthStateChanged((user) => {
-                const wasAuthenticated = this.isUserAuthenticated;
-                this.isUserAuthenticated = !!user;
-                
-                if (this.isUserAuthenticated && !wasAuthenticated) {
-                    console.log('✅ User authenticated - support messages enabled');
-                    this.tryInitialize();
-                } else if (!this.isUserAuthenticated && wasAuthenticated) {
-                    console.log('🚫 User signed out - support messages disabled');
-                    this.stopMessageTimers();
-                }
-            });
+            try {
+                firebase.auth().onAuthStateChanged((user) => {
+                    const wasAuthenticated = this.isUserAuthenticated;
+                    this.isUserAuthenticated = !!user;
+                    
+                    if (this.isUserAuthenticated && !wasAuthenticated) {
+                        console.log('✅ User authenticated - support messages enabled');
+                        this.tryInitialize();
+                    } else if (!this.isUserAuthenticated && wasAuthenticated) {
+                        console.log('🚫 User signed out - support messages disabled');
+                        this.stopMessageTimers();
+                    }
+                });
+                console.log('✅ Firebase auth listener registered');
+                return;
+            } catch (error) {
+                console.log('⚠️ Firebase not ready yet, using fallback method');
+            }
         }
         
         // Method 2: Fallback - check dashboard visibility
+        console.log('🔄 Using dashboard visibility fallback');
         this.authCheckInterval = setInterval(() => {
             if (!this.isUserAuthenticated) {
                 const dashboard = document.getElementById('dashboard');
@@ -564,6 +575,7 @@ class SupportManager {
                     console.log('✅ Dashboard active - enabling support messages');
                     this.isUserAuthenticated = true;
                     this.tryInitialize();
+                    clearInterval(this.authCheckInterval); // Stop checking once authenticated
                 }
             }
         }, 3000);
@@ -590,16 +602,18 @@ class SupportManager {
     }
 
     startMessageTimers() {
+        console.log('⏰ Starting message timers (first message in 45 seconds)');
+        
         // Show first message after 45 seconds
         setTimeout(() => {
-            if (this.isUserAuthenticated) {
+            if (this.isUserAuthenticated && this.isInDashboard()) {
                 this.showSupportMessage();
             }
         }, 45000);
         
         // Show occasionally after that (every 2 minutes, 20% chance)
         this.messageInterval = setInterval(() => {
-            if (this.isUserAuthenticated && Math.random() < 0.2) {
+            if (this.isUserAuthenticated && this.isInDashboard() && Math.random() < 0.2) {
                 this.showSupportMessage();
             }
         }, 120000);
@@ -609,6 +623,7 @@ class SupportManager {
         if (this.messageInterval) {
             clearInterval(this.messageInterval);
             this.messageInterval = null;
+            console.log('⏹️ Message timers stopped');
         }
         this.isInitialized = false;
     }
@@ -707,11 +722,13 @@ class SupportManager {
         `;
         
         document.body.appendChild(supportDiv);
+        console.log('💬 Showing support message:', randomMessage);
         
         // Add event listener
         supportDiv.querySelector('.support-close-btn').addEventListener('click', () => {
             supportDiv.remove();
             localStorage.setItem('lastSupportShow', Date.now().toString());
+            console.log('✅ Support message closed by user');
         });
         
         // Auto-remove after 10 seconds
@@ -719,6 +736,7 @@ class SupportManager {
             if (supportDiv.parentElement) {
                 supportDiv.remove();
                 localStorage.setItem('lastSupportShow', Date.now().toString());
+                console.log('⏰ Support message auto-closed');
             }
         }, 10000);
     }
@@ -740,7 +758,13 @@ class SupportManager {
         return isEditing || hasModal || isProcessing;
     }
     
-    // Cleanup method (optional)
+    // Manual initialization method (call this from dashboard.js)
+    initializeFromDashboard() {
+        console.log('🚀 Manual initialization from dashboard');
+        this.setupAuthListener();
+    }
+    
+    // Cleanup method
     destroy() {
         if (this.authCheckInterval) {
             clearInterval(this.authCheckInterval);
@@ -751,6 +775,6 @@ class SupportManager {
     }
 }
 
-// Create global instance
+// Create global instance but DON'T auto-initialize
 window.supportManager = new SupportManager();
 
