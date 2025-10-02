@@ -720,10 +720,10 @@ const canvas = await html2canvas(pdfContainer, {
   } // ← CLOSING save PDF modal function brace
 
 // Update the PDF button to use our new function
-//const pdfBtn = modal?.querySelector('.pdf-btn');
-//if (pdfBtn) {
-//  pdfBtn.onclick = saveModalAsPDF;
-//}
+const pdfBtn = modal?.querySelector('.pdf-btn');
+if (pdfBtn) {
+  pdfBtn.onclick = saveModalAsPDF;
+}
     
 // 🆕 USE THE CENTRALIZED PDF HANDLER FROM UTILS.JS
 // The utils.js system automatically handles PDF buttons with class "pdf-btn"
