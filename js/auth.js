@@ -4,6 +4,29 @@ if (window.location.pathname.includes('offline.html') && navigator.onLine) {
   window.location.href = 'index.html'; // Auto-redirect if online
 }
 
+// Add this at the VERY START of your auth.js
+function focusExistingTab() {
+  // Try to communicate with other tabs
+  if ('BroadcastChannel' in window) {
+    const channel = new BroadcastChannel('app_tab_control');
+    
+    // Ask if another tab is already running our app
+    channel.postMessage({ type: 'tab_check', url: window.location.href });
+    
+    // If we get a response, close this new tab
+    channel.onmessage = (event) => {
+      if (event.data.type === 'tab_exists') {
+        window.close(); // Close this new tab
+        // Optional: Show message before closing
+        setTimeout(() => {
+          alert('Opening password reset in your existing app tab...');
+          window.close();
+        }, 500);
+      }
+    };
+  }
+}
+
 // GLOBAL DECLARATIONS - AUTH-INITIALIZATION
 const CLOUDINARY_CONFIG = {
   cloudName: 'dh7d6otgu',
@@ -954,14 +977,30 @@ function triggerServiceWorkerSync() {
   }
 }
 
-
-// ====== Handle password reset link ======
+//==================================
+// reset password functions
+//handlePasswordResetLink() - Called in initializeAuth() (already there)
+//setupTabCoordination() - Need to call in initializeAuth() (add this)
+//showPasswordResetUI(oobCode) - Called by both systems
+//=============================================================
+// 🆕 NEW FUNCTION - REPLACES THE OLD ONE FOR RESETTING PASWWORD
+// SCENARIO 1: New tab opens with reset link
+//handlePasswordResetLink() → showPasswordResetUI(oobCode)
 function handlePasswordResetLink() {
   const params = new URLSearchParams(window.location.search);
   const mode = params.get('mode');
   const oobCode = params.get('oobCode');
 
-if (mode === 'resetPassword' && oobCode) {
+  if (mode === 'resetPassword' && oobCode) {
+    // 🆕 CALL YOUR RENAMED FUNCTION
+    showPasswordResetUI(oobCode); //called in handlepasswordresetlink
+    
+    // 🆕 CLEAR URL PARAMS TO PREVENT REFRESH ISSUES
+    window.history.replaceState({}, '', window.location.pathname);
+  }
+}
+// ====== Handle password reset link ======
+function showPasswordResetUI(oobCode) {
   // ===== Auto-hide login/signup balls =====
   const loginWrapper = document.getElementById("emailLoginWrapper");
   const signupWrapper = document.getElementById("emailSignupWrapper");
@@ -1154,9 +1193,11 @@ async function initializeAuth() {
 
     // 8. Wire up toggle links (between login/signup)
     wireAuthToggleLinks();
+    // 13.  call handle resetlinks
+    handlePasswordResetLink();
     
    // 11. Handle password reset links
-     handlePasswordResetLink();
+    setupTabCoordination(); // ← JUST CALL IT HERE, DON'T DEFINE IT HERE
 
     // 9. Decide which form to show first (default = login)
     toggleEmailForms(true); // pass false if you want to start with Sign-Up
@@ -1168,10 +1209,37 @@ async function initializeAuth() {
         // 🆕 12. Create Support Manager (but don't initialize yet)
     window.supportManager = new SupportManager();
     console.log("✅ Support Manager created - waiting for auth state");
-
-
+  
   } catch (error) {
     console.error("Auth initialization failed:", error);
     disableUI();
+  }
+} // ← initializeAuth CLOSES HERE
+
+
+   //added recently
+    // Add this to your existing tab
+// SCENARIO 2: Existing tab receives reset request  
+//setupTabCoordination() → showPasswordResetUI(oobCode)
+function setupTabCoordination() {
+  if ('BroadcastChannel' in window) {
+    const channel = new BroadcastChannel('app_tab_control');
+    
+    channel.onmessage = (event) => {
+      if (event.data.type === 'tab_check') {
+        // We're the existing tab - respond and handle the reset
+        channel.postMessage({ type: 'tab_exists' });
+        
+        // Extract reset params from the new tab's URL and handle them
+        const urlParams = new URL(event.data.url).searchParams;
+        const mode = urlParams.get('mode');
+        const oobCode = urlParams.get('oobCode');
+        
+        if (mode === 'resetPassword' && oobCode) {
+          // Handle the reset in THIS tab
+         showPasswordResetUI(oobCode);
+        }
+      }
+    };
   }
 }
