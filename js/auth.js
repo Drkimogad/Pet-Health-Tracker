@@ -244,13 +244,34 @@ function initializeFirebase() {
 // ======================
 class SupportManager {
     constructor() {
-        this.messages = [
-            "Love this app? Share with other pet lovers! 🐾",
-            "Your support helps us improve faster!",
-            "Premium features coming soon - stay tuned! ⭐",
-            "Rate our app to help other pet owners find us!",
-            "Follow us for updates on new features!"
-        ];
+            this.messages = [
+    // TIER 1: Core Value & Differentiation (First impressions)
+    "🌐 Works completely offline - perfect for rural areas or vet visits!",
+    "🐾 Free forever - manage vaccinations, moods & medical history without subscriptions",
+    "💬 The only app with mood tracking + community chat - understand your pet better!",
+    
+    // TIER 2: Critical Features & Navigation (Usage guidance)
+    "💡 Tip: Download any pet profile as PDF - click 'Profile Details' then 'Save as PDF'",
+    "🔔 Set reminders for vaccinations, checkups & birthdays - never miss important dates!",
+    "🚨 Emergency ready! Generate QR codes for pet profiles - critical if pet gets lost",
+    
+    // TIER 3: Advanced Features & Benefits (Power user tips)
+    "📊 Track mood patterns over time - spot behavior changes early!",
+    "📱 Offline pet health tracking with QR emergency profiles - your pet's safety net!",
+    "🔄 Synced across devices - your pet data stays safe in the cloud!",
+    
+    // TIER 4: Action & Engagement (Community & sharing)
+    "🗣️ Feedback? Use 'Community Chat' - we respond to every message!",
+    "📋 Found all pet cards? Click 'Save All Cards' to export everything as ZIP!",
+    "🎯 Editing a profile? Click the pet card, then 'Edit Profile' to update info!",
+    
+    // TIER 5: Support & Growth (Original messages - keep for variety)
+    "Love this app? Share with other pet lovers! 🐾",
+    "Your support helps us improve faster!",
+    "Rate our app to help other pet owners find us!",
+    "Follow us for updates on new features!",
+    "More apps are coming soon - stay tuned! ⭐"
+];
         this.isInitialized = false;
         this.isUserAuthenticated = false;
         this.authCheckInterval = null;
