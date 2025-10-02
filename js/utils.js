@@ -213,6 +213,10 @@ async function generateModalPDF(modalElement) {
   loader.className = 'pdf-loader';
   document.body.appendChild(loader);
 
+  //ADDED 
+  let pdfContainer = null;
+  let canvas = null;
+
   try {
     // 1. Create PDF container
     const pdfContainer = document.createElement('div');
@@ -240,12 +244,16 @@ async function generateModalPDF(modalElement) {
       scale: 2,
       useCORS: true,
       logging: true,
-      backgroundColor: '#FFFFFF'
+      backgroundColor: '#FFFFFF',
+      onclone: (clonedDoc, element) => {
+        // Clean up any temporary elements in clone
+        element.querySelectorAll('canvas').forEach(c => c.remove());
+      }
     });
 
-    if (!window.jspdf) {
-      await loadScriptWithRetry('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
-    }
+  //  if (!window.jspdf) {
+  //    await loadScriptWithRetry('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+  //  }
 
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ 
@@ -258,14 +266,34 @@ async function generateModalPDF(modalElement) {
     doc.addImage(canvas, 'PNG', 0, 0, 210, 297);
     doc.save(`PetProfile_${new Date().toISOString().slice(0,10)}.pdf`);
 
-  } catch (error) {
+   } catch (error) {
     console.error("PDF generation failed:", error);
     alert("Could not generate PDF. Please ensure all content has loaded.");
+    
   } finally {
+    // PROPER CLEANUP
     loader.remove();
-    document.querySelector('.pdf-export-container')?.remove();
-  }
-}
+    
+    if (pdfContainer && pdfContainer.parentElement) {
+      pdfContainer.remove();
+    }
+    
+    if (canvas) {
+      // Release canvas memory
+      const context = canvas.getContext('2d');
+      if (context) context.clearRect(0, 0, canvas.width, canvas.height);
+      canvas.width = 1;
+      canvas.height = 1;
+      if (canvas.parentElement) canvas.remove();
+    }
+    
+    // Force garbage collection hint
+    if (window.gc) window.gc();
+    
+    console.log("🧹 PDF generation cleanup completed");
+  } // CLOSES FINALLY 
+}  // CLOSES THE FUNCTION 
+
 
 // Helper function (keep existing implementation)
 function loadScriptWithRetry(url, maxRetries = 2, delayMs = 1000) {
@@ -292,8 +320,9 @@ function loadScriptWithRetry(url, maxRetries = 2, delayMs = 1000) {
 }
 
 
-
+//=========================================
 // 🆕 ADD THIS CLEANUP FUNCTION
+//=====================================
 function cleanupExportResources() {
   // 1. Remove all temporary containers
   const containers = document.querySelectorAll('div[style*="left: -9999px"]');
