@@ -200,10 +200,10 @@ function showModal(content) {
       const modalContent = overlay.querySelector('.modal-content');
       if (modalContent) {
         // Attach PDF handler to any existing PDF button
-        const pdfBtn = modalContent.querySelector('.pdf-btn');
-        if (pdfBtn) {
-          pdfBtn.onclick = () => generateModalPDF(modalContent);
-        }
+      //  const pdfBtn = modalContent.querySelector('.pdf-btn');
+     //   if (pdfBtn) {
+     //     pdfBtn.onclick = () => generateModalPDF(modalContent);
+     //   }
       }
     }, 100);
   }
