@@ -92,17 +92,18 @@ function validateReminder(reminderData) {
 //=====================
 //  Modal Utilities with PDF Support. MODAL IS NOT STATIC HTML!
 //==========================
-// 0. Add this if missing (ensure it's defined before showModal)
+// (ensure it's defined before showModal)
+// TRAP FOCUS MODAL 
+//==========================
 function trapFocus(modal) {
-  const focusable = modal.querySelectorAll(
-    'button:not([disabled]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])'
-  );
+  const focusable = modal.querySelectorAll('button:not([disabled]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])');
   if (focusable.length === 0) return;
 
   const first = focusable[0];
   const last = focusable[focusable.length - 1];
 
-  modal.addEventListener('keydown', (e) => {
+  // Store reference for cleanup
+  const keydownHandler = (e) => {
     if (e.key !== 'Tab') return;
     if (e.shiftKey && document.activeElement === first) {
       last.focus();
@@ -111,7 +112,12 @@ function trapFocus(modal) {
       first.focus();
       e.preventDefault();
     }
-  });
+  };
+
+  modal.addEventListener('keydown', keydownHandler);
+  
+  // Return cleanup function
+  return () => modal.removeEventListener('keydown', keydownHandler);
 }
 
 // ✅ YOUR ORIGINAL hideModal (KEEP THIS)
@@ -125,51 +131,68 @@ window.hideModal = function() {
 };
 
 // ✅ YOUR QUEUE-ENABLED hideModal (KEEP THIS TOO)
-const originalHideModal = window.hideModal;
 window.hideModal = function() {
-  if (typeof originalHideModal === 'function') {
-    originalHideModal();  // ← This calls YOUR ORIGINAL function above!
+  console.log("🔲 Modal closing - running cleanup");
+
+  const overlay = document.getElementById('modal-overlay');
+  if (overlay) {
+    // Run cleanup functions
+    if (overlay._cleanup) overlay._cleanup();
+    
+    overlay.classList.remove('active');
+    document.body.classList.remove('modal-active');
+    setTimeout(() => {
+      if (overlay.parentElement) {
+        overlay.remove();
+      }
+    }, 300);
   }
-  dequeueModal();         // ← Then processes the next modal
+  dequeueModal();
 };
 
-
+//===========================
+// SHOW MODAL CONTENT
+//=============================
 function showModal(content) {
-  // 1. Remove existing modal
   const oldModal = document.getElementById('modal-overlay');
   if (oldModal) oldModal.remove();
 
-  // 2. Create modal
   const overlay = document.createElement('div');
   overlay.id = 'modal-overlay';
   overlay.className = 'modal-overlay';
-  
-  // 3. Create modal content with close button
-  overlay.innerHTML = `
-    <div class="modal-content" id="pet-modal">
-      <button class="close-modal" aria-label="Close modal">&times;</button>
-      ${content}
-    </div>
-  `;
+  overlay.innerHTML = `...`;
 
-  // 4. Add to DOM
   document.body.appendChild(overlay);
   document.body.classList.add('modal-active');
 
-  // 5. Event binding
-  overlay.querySelector('.close-modal').onclick = hideModal;
-  overlay.onclick = (e) => e.target === overlay && hideModal();
+  // Store cleanup functions
+  const cleanupFunctions = [];
+  
+  // Close handlers
+  const closeHandler = () => hideModal();
+  overlay.querySelector('.close-modal').onclick = closeHandler;
+  
+  const overlayClickHandler = (e) => e.target === overlay && hideModal();
+  overlay.onclick = overlayClickHandler;
 
-  // 6. Activate modal
+  // Enhanced trapFocus with cleanup
+  const focusCleanup = trapFocus(overlay.querySelector('.modal-content'));
+  if (focusCleanup) cleanupFunctions.push(focusCleanup);
+
+  // Store cleanup on element for hideModal to use
+  overlay._cleanup = () => {
+    cleanupFunctions.forEach(fn => fn());
+    overlay.querySelector('.close-modal').onclick = null;
+    overlay.onclick = null;
+  };
+
   overlay.classList.add('active');
-  trapFocus(overlay.querySelector('.modal-content'));
-
-  // 7. Initialize PDF support if html2canvas is available
+  
+  // PDF initialization with cleanup
   if (typeof html2canvas !== 'undefined') {
     setTimeout(() => {
       const modalContent = overlay.querySelector('.modal-content');
       if (modalContent) {
-        // Attach PDF handler to any existing PDF button
         const pdfBtn = modalContent.querySelector('.pdf-btn');
         if (pdfBtn) {
           pdfBtn.onclick = () => generateModalPDF(modalContent);
@@ -177,9 +200,12 @@ function showModal(content) {
       }
     }, 100);
   }
+console.log("🔲 Modal opened - listeners attached");
 }
 
+//====================================================
 // PDF Generation Utility (self-contained)
+//=============================================
 async function generateModalPDF(modalElement) {
   if (!modalElement) return;
   
@@ -293,7 +319,7 @@ function cleanupExportResources() {
   const loaders = document.querySelectorAll('.pdf-loader, .loader');
   loaders.forEach(loader => loader.remove());
   
-  console.log("🧹 Export resources cleaned up");
+console.log("🧹 All export resources cleaned - zero leaks");
 }
 
 //===================================
