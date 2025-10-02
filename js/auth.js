@@ -239,7 +239,7 @@ function initializeFirebase() {
 }
 
 
-======================
+//======================
 // FIXED SUPPORT MANAGER - Add to utils.js
 // ======================
 class SupportManager {
