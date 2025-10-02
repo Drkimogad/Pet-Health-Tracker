@@ -1058,7 +1058,7 @@ function showPasswordResetUI(oobCode) {
       }
     });
   }
-}
+//}
 
 
 // ======== OFFLINE STATUS DETECTION ========
