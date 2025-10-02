@@ -2470,30 +2470,38 @@ editingSessionKeys.forEach(key => {
 // ======================
 // SUPPORT MESSAGES INIT - Add to end of dashboard.js
 // ======================
+// ======================
+// UPDATED DASHBOARD.JS INIT - Add to end of dashboard.js
+// ======================
 
-// Force enable support messages when dashboard initializes
 function initializeSupportMessages() {
+    console.log('🎯 Initializing support messages from dashboard...');
+    
+    // Wait a bit to ensure Firebase is fully initialized
     setTimeout(() => {
         if (window.supportManager) {
-            console.log('🚀 Dashboard loaded - enabling support messages');
-            window.supportManager.isUserAuthenticated = true;
-            window.supportManager.tryInitialize();
+            // Manual initialization - this ensures Firebase is ready
+            window.supportManager.initializeFromDashboard();
         }
     }, 2000);
 }
 
-// Initialize when dashboard is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeSupportMessages);
-} else {
+// Call this when your dashboard is definitely ready
+function onDashboardReady() {
+    console.log('🏠 Dashboard fully ready - starting support messages');
     initializeSupportMessages();
 }
 
-// Safety net
+// Initialize when dashboard is ready
+document.addEventListener('DOMContentLoaded', () => {
+    // Wait a bit longer to ensure everything is loaded
+    setTimeout(onDashboardReady, 3000);
+});
+
+// Extra safety net
 setTimeout(() => {
     if (window.supportManager && !window.supportManager.isInitialized) {
         console.log('🔧 Support messages safety net activated');
-        window.supportManager.isUserAuthenticated = true;
-        window.supportManager.tryInitialize();
+        window.supportManager.initializeFromDashboard();
     }
 }, 5000);
