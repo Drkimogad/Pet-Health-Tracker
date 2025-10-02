@@ -642,12 +642,14 @@ requestAnimationFrame(() => {
         padding: 15mm;
         box-sizing: border-box;
       `;   
+
+    const modalClone = modal.cloneNode(true); // 🆕 MOVE THIS UP
       // Force font scaling for PDF
       modalClone.style.cssText = `
      font-size: 16pt;
      line-height: 1.5;
      `;
-      const modalClone = modal.cloneNode(true);
+        
       // Remove interactive elements
       modalClone.querySelectorAll('button, [onclick]').forEach(el => el.remove());
       pdfContainer.appendChild(modalClone);
