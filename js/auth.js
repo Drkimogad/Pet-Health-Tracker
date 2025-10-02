@@ -473,7 +473,7 @@ class SupportManager {
 
     shouldSuppressMessage() {
         // Don't show during form editing, modals, or critical operations
-        const isEditing = window.isEditing || window.editingProfileId !== null;
+        const isEditing = !!window.isEditing || !!window.editingProfileId;
         const hasModal = document.querySelector('.modal, [class*="modal"], [class*="overlay"]');
         const isProcessing = document.getElementById('processing-loader')?.style.display !== 'none';
         
