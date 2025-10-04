@@ -720,7 +720,6 @@ affect their colour in the footer */
   font-size: 0.85rem;
   text-align: center;
 }
-
 /* ====== Responsive adjustments ===== */
 @media (max-width: 480px) {
   #resetPasswordContainer,
@@ -752,6 +751,27 @@ affect their colour in the footer */
   to   { opacity: 1; transform: translate(-50%, -50%); }
 }
 /* end of it */
+
+
+/* FOR PRIVACY AND TERMS OF SERVICE LINKS IN EMAIL SIGN UP AND IN  BALLS ADDED RECENTLY */
+/* FOR SIGN UP*/
+#emailSignupWrapper .auth-legal a {
+  color: #1a5276; /* Deep blue - contrasts well with green */
+}
+
+#emailSignupWrapper .auth-legal a:hover {
+  color: #154360; /* Darker blue on hover */
+  text-decoration: underline;
+}
+/* FOR SIGN IN */
+#emailLoginWrapper .auth-legal a {
+  color: #b03a2e; /* Deep red - contrasts well with blue */
+}
+
+#emailLoginWrapper .auth-legal a:hover {
+  color: #922b21; /* Darker red on hover */
+  text-decoration: underline;
+}
 
 /*===========================*/
 /*AUTH RESPONSIVE DESIGNS*/
