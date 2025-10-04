@@ -251,6 +251,7 @@ class SupportManager {
     "💬 The only app with mood tracking + community chat - understand your pet better!",
     
     // TIER 2: Critical Features & Navigation (Usage guidance)
+    "🔔 Push notifications coming soon! Reminders will be more reliable in the next update",
     "💡 Tip: Download any pet profile as PDF - click 'Profile Details' then 'Save as PDF'",
     "🔔 Set reminders for vaccinations, checkups & birthdays - never miss important dates!",
     "🚨 Emergency ready! Generate QR codes for pet profiles - critical if pet gets lost",
@@ -268,9 +269,7 @@ class SupportManager {
     // TIER 5: Support & Growth (Original messages - keep for variety)
     "Love this app? Share with other pet lovers! 🐾",
     "Your support helps us improve faster!",
-    "Rate our app to help other pet owners find us!",
-    "Follow us for updates on new features!",
-    "More apps are coming soon - stay tuned! ⭐"
+    "Rate our app to help other pet owners find us!"
 ];
         this.isInitialized = false;
         this.isUserAuthenticated = false;
