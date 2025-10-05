@@ -673,14 +673,14 @@ await Promise.race([
 
 // 4. CAPTURE IMAGE - ONLY ADD THIS ONE FIX
 const canvas = await html2canvas(pdfContainer, {
-  scale: 1.5,  // was 2
+  scale: 2,  
   useCORS: true,
   logging: true,
   backgroundColor: '#FFFFFF',
   scrollX: 0,
   scrollY: 0,
-  windowWidth: pdfContainer.scrollWidth,
-  windowHeight: pdfContainer.scrollHeight
+//  windowWidth: pdfContainer.scrollWidth,
+//  windowHeight: pdfContainer.scrollHeight
 });
         
       // 5. Generate PDF
