@@ -11,6 +11,7 @@
             --text-color: #333;
             --light-bg: #f9f9f9;
             --border-color: #ddd;
+            --warning-color: #ff9800;
         }
         
         * {
@@ -92,6 +93,23 @@
             color: #777;
         }
         
+        .review-note {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-left: 4px solid var(--warning-color);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        
+        .critical-item {
+            background-color: #f8d7da;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
@@ -118,6 +136,16 @@
             <p><strong>Please read these Terms of Service carefully before using the Pet Health Tracker application.</strong></p>
             <p>By accessing or using our service, you agree to be bound by these Terms. If you disagree with any part of the terms, you may not access the service.</p>
         </div>
+
+        <!-- CRITICAL: Business Information -->
+        <div class="review-note">
+            <strong>REVIEW NEEDED:</strong> Please update the following business information:
+            <ul>
+                <li>Your business name and legal structure</li>
+                <li>Jurisdiction and governing law specifics</li>
+                <li>Any business registration information</li>
+            </ul>
+        </div>
         
         <h2>1. Definitions</h2>
         <p>For the purposes of these Terms of Service:</p>
@@ -126,6 +154,7 @@
             <li><strong>"Service"</strong> refers to the Application.</li>
             <li><strong>"You"</strong> and <strong>"Your"</strong> refer to the individual accessing or using the Service.</li>
             <li><strong>"Content"</strong> refers to all information, data, text, photographs, videos, and other materials that you upload to the Service.</li>
+            <li><strong>"Company,"</strong> <strong>"We,"</strong> <strong>"Us,"</strong> or <strong>"Our"</strong> refers to <span class="critical-item">[Your Business Name/Dr. Karim Gad]</span>.</li>
         </ul>
         
         <h2>2. Accounts</h2>
@@ -136,61 +165,142 @@
             <li>You will maintain the security of your account credentials</li>
             <li>You are responsible for all activities that occur under your account</li>
             <li>You will notify us immediately of any unauthorized use of your account</li>
+            <li>We reserve the right to refuse service, terminate accounts, or remove content at our sole discretion</li>
         </ul>
+
+        <!-- NEW SECTION: Service Description -->
+        <h2>3. Service Description</h2>
+        <p>Pet Health Tracker provides a digital platform for pet owners to track and manage their pets' health information, including medical records, vaccination schedules, appointments, and general health monitoring.</p>
         
-        <h2>3. License Grant</h2>
+        <div class="review-note">
+            <strong>IMPORTANT DISCLAIMER:</strong> The Service is designed for informational and organizational purposes only and is not a substitute for professional veterinary care.
+        </div>
+        
+        <h2>4. License Grant</h2>
         <p>Subject to your compliance with these Terms, we grant you a limited, non-exclusive, non-transferable, non-sublicensable license to access and use the Service solely for your personal, non-commercial purposes.</p>
         
-        <h2>4. User Content</h2>
+        <h2>5. User Content</h2>
         <p>Our Service allows you to post, link, store, share, and otherwise make available certain information, text, graphics, videos, or other material. You are responsible for the Content that you post to the Service, including its legality, reliability, and appropriateness.</p>
         
         <p>By posting Content to the Service, you grant us the right and license to use, modify, publicly perform, publicly display, reproduce, and distribute such Content on and through the Service for the purpose of operating and providing the Service.</p>
         
         <p>You retain any and all of your rights to any Content you submit, post, or display on or through the Service and you are responsible for protecting those rights.</p>
         
-        <h2>5. Prohibited Uses</h2>
-        <p>You may use the Service only for lawful purposes and in accordance with these Terms. You agree not to use the Service:</p>
+        <h3>Content Restrictions</h3>
+        <p>You agree not to upload Content that:</p>
+        <ul>
+            <li>Is illegal, offensive, or promotes illegal activity</li>
+            <li>Infringes on any third party's intellectual property rights</li>
+            <li>Contains malicious code, viruses, or other harmful components</li>
+            <li>Is false, misleading, or inaccurate health information</li>
+            <li>Violates any person's privacy rights</li>
+        </ul>
+
+        <!-- NEW SECTION: Acceptable Use Policy -->
+        <h2>6. Acceptable Use Policy</h2>
+        <p>You agree to use the Service only for lawful purposes and in accordance with these Terms. You agree not to use the Service:</p>
         <ul>
             <li>In any way that violates any applicable federal, state, local, or international law or regulation</li>
             <li>To transmit, or procure the sending of, any advertising or promotional material without our prior written consent</li>
             <li>To impersonate or attempt to impersonate the Company, a Company employee, another user, or any other person or entity</li>
             <li>To engage in any other conduct that restricts or inhibits anyone's use or enjoyment of the Service, or which may harm the Company or users of the Service</li>
+            <li>To attempt to gain unauthorized access to any portion of the Service</li>
+            <li>To use any device, software, or routine that interferes with the proper working of the Service</li>
         </ul>
         
-        <h2>6. Intellectual Property</h2>
-        <p>The Service and its original content, features, and functionality are and will remain the exclusive property of Dr. Karim Gad and its licensors. The Service is protected by copyright, trademark, and other laws of both the United States and foreign countries. Our trademarks and trade dress may not be used in connection with any product or service without the prior written consent of Dr. Karim Gad.</p>
+        <h2>7. Intellectual Property</h2>
+        <p>The Service and its original content, features, and functionality are and will remain the exclusive property of <span class="critical-item">[Your Business Name/Dr. Karim Gad]</span> and its licensors. The Service is protected by copyright, trademark, and other laws of both the United States and foreign countries. Our trademarks and trade dress may not be used in connection with any product or service without the prior written consent.</p>
         
-        <h2>7. Links to Other Websites</h2>
-        <p>Our Service may contain links to third-party websites or services that are not owned or controlled by Dr. Karim Gad. We have no control over, and assume no responsibility for, the content, privacy policies, or practices of any third-party websites or services. You acknowledge and agree that Dr. Karim Gad shall not be responsible or liable for any damage or loss caused by or in connection with the use of any such content, goods, or services available on or through any such websites or services.</p>
-        
-        <h2>8. Termination</h2>
+        <h2>8. Links to Other Websites</h2>
+        <p>Our Service may contain links to third-party websites or services that are not owned or controlled by us. We have no control over, and assume no responsibility for, the content, privacy policies, or practices of any third-party websites or services. You acknowledge and agree that we shall not be responsible or liable for any damage or loss caused by or in connection with the use of any such content, goods, or services available on or through any such websites or services.</p>
+
+        <!-- NEW SECTION: Fees and Payments -->
+        <h2>9. Fees and Payments</h2>
+        <p>Currently, the Pet Health Tracker service is provided free of charge. We reserve the right to introduce fees for certain features or premium services in the future. If we decide to charge for any services, we will provide you with advance notice and obtain your consent before charging you.</p>
+
+        <!-- NEW SECTION: Termination -->
+        <h2>10. Termination</h2>
         <p>We may terminate or suspend your account immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms. Upon termination, your right to use the Service will immediately cease.</p>
         
-        <h2>9. Limitation of Liability</h2>
-        <p>In no event shall Dr. Karim Gad, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from:</p>
+        <h3>User-Initiated Termination</h3>
+        <p>You may terminate your account at any time by contacting us or using the account deletion feature within the application. Upon termination, your data will be handled in accordance with our Privacy Policy.</p>
+
+        <!-- NEW SECTION: Disclaimer of Warranties -->
+        <h2>11. Disclaimer of Warranties</h2>
+        <p>YOUR USE OF THE SERVICE IS AT YOUR SOLE RISK. THE SERVICE IS PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS. THE SERVICE IS PROVIDED WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, OR COURSE OF PERFORMANCE.</p>
+        
+        <p><strong>CRITICAL MEDICAL DISCLAIMER:</strong> THE SERVICE IS NOT A SUBSTITUTE FOR PROFESSIONAL VETERINARY ADVICE, DIAGNOSIS, OR TREATMENT. ALWAYS SEEK THE ADVICE OF YOUR VETERINARIAN OR OTHER QUALIFIED HEALTH PROVIDER WITH ANY QUESTIONS YOU MAY HAVE REGARDING YOUR PET'S HEALTH CONDITION. NEVER DISREGARD PROFESSIONAL VETERINARY ADVICE OR DELAY IN SEEKING IT BECAUSE OF SOMETHING YOU HAVE READ ON OR THROUGH THE SERVICE.</p>
+        
+        <p>We do not warrant that:</p>
+        <ul>
+            <li>The Service will function uninterrupted, secure, or available at any particular time or location</li>
+            <li>Any errors or defects will be corrected</li>
+            <li>The Service is free of viruses or other harmful components</li>
+            <li>The results of using the Service will meet your requirements</li>
+        </ul>
+
+        <!-- NEW SECTION: Limitation of Liability -->
+        <h2>12. Limitation of Liability</h2>
+        <p>TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL <span class="critical-item">[YOUR BUSINESS NAME/DR. KARIM GAD]</span>, NOR ITS DIRECTORS, EMPLOYEES, PARTNERS, AGENTS, SUPPLIERS, OR AFFILIATES, BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING WITHOUT LIMITATION, LOSS OF PROFITS, DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES, RESULTING FROM:</p>
         <ul>
             <li>Your access to or use of or inability to access or use the Service</li>
             <li>Any conduct or content of any third party on the Service</li>
             <li>Any content obtained from the Service</li>
             <li>Unauthorized access, use, or alteration of your transmissions or content</li>
+            <li>Decisions made or actions taken based on information provided by the Service</li>
+            <li>Failure to seek appropriate veterinary care for your pet</li>
         </ul>
         
-        <h2>10. Disclaimer</h2>
-        <p>Your use of the Service is at your sole risk. The Service is provided on an "AS IS" and "AS AVAILABLE" basis. The Service is provided without warranties of any kind, whether express or implied, including, but not limited to, implied warranties of merchantability, fitness for a particular purpose, non-infringement, or course of performance.</p>
+        <p>OUR TOTAL CUMULATIVE LIABILITY TO YOU FOR ALL CLAIMS ARISING FROM OR RELATED TO THE SERVICE SHALL NOT EXCEED THE AMOUNT YOU HAVE PAID US IN THE PAST SIX MONTHS, OR IF NO PAYMENT HAS BEEN MADE, <span class="critical-item">[AMOUNT]</span>.</p>
+
+        <!-- NEW SECTION: Indemnification -->
+        <h2>13. Indemnification</h2>
+        <p>You agree to defend, indemnify, and hold harmless <span class="critical-item">[Your Business Name/Dr. Karim Gad]</span>, its affiliates, licensors, and service providers, and its and their respective officers, directors, employees, contractors, agents, licensors, suppliers, successors, and assigns from and against any claims, liabilities, damages, judgments, awards, losses, costs, expenses, or fees (including reasonable attorneys' fees) arising out of or relating to your violation of these Terms or your use of the Service.</p>
+
+        <!-- NEW SECTION: Governing Law and Dispute Resolution -->
+        <h2>14. Governing Law and Dispute Resolution</h2>
+        <div class="review-note">
+            <strong>CRITICAL: </strong> You must specify your jurisdiction and dispute resolution process.
+        </div>
         
-        <p><strong>The Service is not a substitute for professional veterinary advice, diagnosis, or treatment.</strong> Always seek the advice of your veterinarian or other qualified health provider with any questions you may have regarding your pet's health condition.</p>
+        <h3>Governing Law</h3>
+        <p>These Terms shall be governed and construed in accordance with the laws of <span class="critical-item">[Your State/Country]</span>, without regard to its conflict of law provisions.</p>
         
-        <h2>11. Governing Law</h2>
-        <p>These Terms shall be governed and construed in accordance with the laws, without regard to its conflict of law provisions. Our failure to enforce any right or provision of these Terms will not be considered a waiver of those rights.</p>
+        <h3>Dispute Resolution</h3>
+        <p>Before filing a claim, you agree to try to resolve the dispute informally by contacting us at the email provided below. If we cannot resolve the dispute within 60 days, you may resort to the formal dispute resolution options available in your jurisdiction.</p>
         
-        <h2>12. Changes to Terms</h2>
+        <h3>Arbitration</h3>
+        <p>Any dispute arising from these Terms or your use of the Service shall be resolved through binding arbitration in <span class="critical-item">[Your City/State]</span> rather than in court, except that you may assert claims in small claims court if your claims qualify.</p>
+
+        <!-- NEW SECTION: Severability -->
+        <h2>15. Severability</h2>
+        <p>If any provision of these Terms is held to be unenforceable or invalid, such provision will be changed and interpreted to accomplish the objectives of such provision to the greatest extent possible under applicable law and the remaining provisions will continue in full force and effect.</p>
+
+        <!-- NEW SECTION: Entire Agreement -->
+        <h2>16. Entire Agreement</h2>
+        <p>These Terms constitute the entire agreement between you and us regarding our Service and supersede and replace any prior agreements we might have had between us regarding the Service.</p>
+
+        <h2>17. Changes to Terms</h2>
         <p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material, we will provide at least 30 days' notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion.</p>
         
-        <h2>13. Contact Information</h2>
+        <p>By continuing to access or use our Service after any revisions become effective, you agree to be bound by the revised terms. If you do not agree to the new terms, you are no longer authorized to use the Service.</p>
+
+        <!-- NEW SECTION: Contact Information -->
+        <h2>18. Contact Information</h2>
+        <div class="review-note">
+            <strong>CRITICAL REVIEW NEEDED:</strong> Update contact information:
+            <ul>
+                <li>Use professional email addresses instead of personal ones</li>
+                <li>Consider adding a contact form on your website</li>
+                <li>Specify response time expectations</li>
+            </ul>
+        </div>
+        
         <div class="contact-info">
             <p>If you have any questions about these Terms, please contact us at:</p>
             <p>Email: <strong>dr_kimogad@yahoo.com</strong></p>
             <p>Email: <strong>Petkit2023@gmail.com</strong></p>
+            <p>Response Time: We aim to respond to all legitimate inquiries within <strong>30 days</strong>.</p>
         </div>
         
         <footer>
