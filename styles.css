@@ -2064,12 +2064,13 @@ body.modal-active {
   
   .modal-content {
     width: 95vw !important;
-    height: 95vh !important;           /* ← RESTORE fixed height */
+ /*   height: 95vh !important;  */         /* ← RESTORE fixed height */
     max-width: 95vw !important;
-    max-height: 95vh !important;       /* ← RESTORE max-height */
+  /*  max-height: 95vh !important;*/       /* ← RESTORE max-height */
     margin: 0 auto !important;
     padding: 1rem;
-    overflow-y: auto;
+   /* overflow-y: auto;*/
+    overflow-y: visible !important;
     border-radius: 12px;
     
     /* Border properties */
