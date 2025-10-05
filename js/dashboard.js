@@ -673,17 +673,18 @@ await Promise.race([
 
 // 4. CAPTURE IMAGE - ONLY ADD THIS ONE FIX
 const canvas = await html2canvas(pdfContainer, {
-  scale: 2,  
+  scale: 2,
   useCORS: true,
   logging: true,
   backgroundColor: '#FFFFFF',
-  scrollX: 0,
-  scrollY: 0,
-//  windowWidth: pdfContainer.scrollWidth,
-//  windowHeight: pdfContainer.scrollHeight
-  width: 210 * 3.78,      // ← 210mm to pixels (approx)
-  height: pdfContainer.scrollHeight
+  width: pdfContainer.scrollWidth,
+  height: pdfContainer.scrollHeight,
+  onclone: function(clonedDoc) {
+    // Force mobile rendering to calculate proper height
+    clonedDoc.querySelector('.pdf-export-container').style.minHeight = '297mm';
+  }
 });
+        
         
       // 5. Generate PDF
   //    if (!window.jspdf) {
