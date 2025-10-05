@@ -634,14 +634,14 @@ requestAnimationFrame(() => {
       pdfContainer.className = 'pdf-export-container';
       // Add responsive PDF container styling
       pdfContainer.style.cssText = `
-        position: absolute;
-        left: -9999px;
-        width: 100%;
-        max-width: 210mm;
-        background: white;
-        padding: 15mm;
-        box-sizing: border-box;
-      `;   
+  position: absolute;
+  left: -9999px;
+  width: 210mm;           
+  min-width: 210mm;      
+  background: white;
+  padding: 15mm;
+  box-sizing: border-box;
+`;
 
     const modalClone = modal.cloneNode(true); // 🆕 MOVE THIS UP
       // Force font scaling for PDF
@@ -681,6 +681,8 @@ const canvas = await html2canvas(pdfContainer, {
   scrollY: 0,
 //  windowWidth: pdfContainer.scrollWidth,
 //  windowHeight: pdfContainer.scrollHeight
+  width: 210 * 3.78,      // ← 210mm to pixels (approx)
+  height: pdfContainer.scrollHeight
 });
         
       // 5. Generate PDF
