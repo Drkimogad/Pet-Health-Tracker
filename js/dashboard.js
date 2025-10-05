@@ -676,7 +676,7 @@ await Promise.race([
   scale: 2,
   useCORS: true,
   logging: true,
-  backgroundColor: '#FFFFFF'
+  backgroundColor: '#FFFFFF',
   scrollX: 0,
   scrollY: 0
 });
