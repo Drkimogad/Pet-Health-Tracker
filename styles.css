@@ -1204,51 +1204,50 @@ transform: translateY(-2px); /* Optional lift effect */
   text-align: center;  /* centralize */
   height: 44px;       /* fixed height for both buttons for uniformity */
 }
+
 /* NEWPROFILE AND LOGOUT BUTTONS ADJUSTMENTS ON PHONES */
-/* Mobile fix for dashboard actions */
+/* Mobile fix for all action buttons */
 @media (max-width: 767px) {
   .dashboard-actions {
-    justify-content: center; /* Center the buttons */
-    gap: 1rem; /* Space between buttons */
-    margin-right: 20px; /* Reduce margins */
+    justify-content: center;
+    gap: 1rem;
+    margin-right: 20px;
     margin-left: 20px;
-    padding: 0 1rem; /* Reduce padding */
-    flex-wrap: nowrap; /* Keep buttons in one line */
+    padding: 0 1rem;
+    flex-wrap: nowrap;
   }
 
-  .primary-action {
-    min-width: 140px; /* Slightly smaller but consistent */
-    padding: 8px 16px; /* Reduce padding */
-    font-size: 0.9rem; /* Slightly smaller text */
-    white-space: nowrap; /* Prevent text wrapping */
-  }
-
-  /* Make logout button match the style */
-  #logoutButton.primary-action {
-    min-width: 140px; /* Same as new profile button */
+  .primary-action,
+  #logoutButton.primary-action,
+  #cancelEditBtn,
+  .form-actions button[type="submit"] {
+    min-width: 140px;
     padding: 8px 16px;
     font-size: 0.9rem;
+    white-space: nowrap;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
 /* Extra small phones */
 @media (max-width: 480px) {
   .dashboard-actions {
-    gap: 0.5rem; /* Even smaller gap */
+    gap: 0.5rem;
     margin-right: 10px;
     margin-left: 10px;
   }
 
-  .primary-action {
-    min-width: 130px; /* Even smaller for tiny screens */
-    padding: 6px 12px;
-    font-size: 0.85rem;
-  }
-
-  #logoutButton.primary-action {
+  .primary-action,
+  #logoutButton.primary-action,
+  #cancelEditBtn,
+  .form-actions button[type="submit"] {
     min-width: 130px;
     padding: 6px 12px;
     font-size: 0.85rem;
+    height: 40px;
   }
 }
 
