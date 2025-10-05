@@ -1204,6 +1204,53 @@ transform: translateY(-2px); /* Optional lift effect */
   text-align: center;  /* centralize */
   height: 44px;       /* fixed height for both buttons for uniformity */
 }
+/* NEWPROFILE AND LOGOUT BUTTONS ADJUSTMENTS ON PHONES */
+/* Mobile fix for dashboard actions */
+@media (max-width: 767px) {
+  .dashboard-actions {
+    justify-content: center; /* Center the buttons */
+    gap: 1rem; /* Space between buttons */
+    margin-right: 20px; /* Reduce margins */
+    margin-left: 20px;
+    padding: 0 1rem; /* Reduce padding */
+    flex-wrap: nowrap; /* Keep buttons in one line */
+  }
+
+  .primary-action {
+    min-width: 140px; /* Slightly smaller but consistent */
+    padding: 8px 16px; /* Reduce padding */
+    font-size: 0.9rem; /* Slightly smaller text */
+    white-space: nowrap; /* Prevent text wrapping */
+  }
+
+  /* Make logout button match the style */
+  #logoutButton.primary-action {
+    min-width: 140px; /* Same as new profile button */
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Extra small phones */
+@media (max-width: 480px) {
+  .dashboard-actions {
+    gap: 0.5rem; /* Even smaller gap */
+    margin-right: 10px;
+    margin-left: 10px;
+  }
+
+  .primary-action {
+    min-width: 130px; /* Even smaller for tiny screens */
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+
+  #logoutButton.primary-action {
+    min-width: 130px;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+}
 
 /* 2️⃣ Tablet (768px – 1199px)*/
 @media (min-width: 768px) and (max-width: 1199px) {
