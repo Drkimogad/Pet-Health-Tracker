@@ -1351,11 +1351,11 @@ function createCommunityChatButton(profileId) {
   chatBtn.appendChild(badge);
   
   //1.  Check if user is admin and set up notification listener
-  const user = firebase.auth().currentUser;
-  if (user && user.email === 'drkimogad@gmail.com') { // Replace with your admin email check
+ // const user = firebase.auth().currentUser;
+ // if (user && user.email === 'drkimogad@gmail.com') { // Replace with your admin email check
     // Listen for pending messages
-    setupAdminNotificationListener(profileId);
-  }
+  //  setupAdminNotificationListener(profileId);
+ // }
   //2. Fallback to ensure listener attaches once Firebase finishes loading auth
 firebase.auth().onAuthStateChanged(user => {
   if (user && user.email === 'drkimogad@gmail.com') {
