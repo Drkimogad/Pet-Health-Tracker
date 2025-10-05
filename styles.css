@@ -1812,6 +1812,25 @@ lottie-player:not([style*="display:none"]) {
 }
 
 
+/* Force full height for mobile PDF */
+/*The Root Cause
+On mobile, the container height is being calculated based on the viewport, 
+not the actual content. The min-height: 297mm forces it to use full A4 height, 
+and the onclone ensures html2canvas captures everything.*/
+@media (max-width: 767px) {
+  .pdf-export-container {
+    min-height: 297mm !important;
+    height: auto !important;
+  }
+  
+  .pdf-export-container .details-grid {
+    display: block !important;
+  }
+  
+  .pdf-export-container .section-break:last-child {
+    margin-top: 10mm !important;
+  }
+}
 
 
 /* =====Details Modal========== */
