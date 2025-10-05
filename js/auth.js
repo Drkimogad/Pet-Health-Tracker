@@ -563,6 +563,17 @@ function initAuthListeners() {
         if (typeof showDashboard === 'function') {
           showDashboard();
         }
+        // 🆕 ADD ADMIN NOTIFICATION SETUP RIGHT HERE
+if (user.email === 'drkimogad@gmail.com') {
+  setTimeout(() => {
+    const profiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+    profiles.forEach(profile => {
+      if (profile.id) {
+        setupAdminNotificationListener(profile.id);
+      }
+    });
+  }, 500); // Shorter delay - 500ms
+}
         
         // ✅ Hide loader
         showLoading(false);
