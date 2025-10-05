@@ -1485,6 +1485,73 @@ transform: translateY(-2px); /* Optional lift effect */
 }
 
 
+/*===========================*/
+/* Mobile reminders section */
+@media (max-width: 767px) {
+  .pet-reminders {
+    padding: 8px 12px;
+    margin-top: 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  .reminder {
+    padding-left: 4px;
+    gap: 8px;
+    flex-wrap: wrap; /* Allow wrapping on very small screens */
+  }
+
+  .reminder-text {
+    font-size: 0.85rem;
+    line-height: 1.3;
+    flex: 1;
+    min-width: 150px; /* Ensure text has minimum space */
+  }
+
+  .reminder-emoji {
+    font-size: 1rem;
+    margin-right: 4px;
+  }
+
+  /* Reduce border thickness for mobile */
+  .reminder.overdue,
+  .reminder.today,
+  .reminder.upcoming {
+    border-left-width: 3px;
+  }
+
+  /* Smaller delete buttons */
+  .deleteReminderButton {
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    margin-left: 8px;
+    min-width: 60px; /* Consistent button width */
+    text-align: center;
+  }
+}
+
+/* Extra small phones */
+@media (max-width: 480px) {
+  .pet-reminders {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+
+  .reminder {
+    gap: 6px;
+  }
+
+  .reminder-text {
+    font-size: 0.8rem;
+    min-width: 120px;
+  }
+
+  .deleteReminderButton {
+    padding: 3px 6px;
+    font-size: 0.7rem;
+    min-width: 55px;
+  }
+}
+
 /* ======== Pet Card Action & Buttons =========== */
 .pet-actions {
   display: flex;
