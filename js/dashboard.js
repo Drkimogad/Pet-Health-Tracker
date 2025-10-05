@@ -630,20 +630,18 @@ requestAnimationFrame(() => {
       await new Promise(resolve => setTimeout(resolve, 300));
       
       // 2. Clone and sanitize modal content
-      const pdfContainer = document.createElement('div');
-      pdfContainer.className = 'pdf-export-container';
-      // Add responsive PDF container styling
+           // 1. Create PDF container (EXACT copy from working version)
+const pdfContainer = document.createElement('div');
+pdfContainer.className = 'pdf-export-container';
 pdfContainer.style.cssText = `
   position: absolute;
   left: -9999px;
   width: 210mm;
-  min-height: 297mm !important;  
-  height: auto !important;      
   background: white;
   padding: 15mm;
-  box-sizing: border-box;
-  overflow: visible !important; 
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
 `;
+
 
     const modalClone = modal.cloneNode(true); // 🆕 MOVE THIS UP
       // Force font scaling for PDF
@@ -674,20 +672,13 @@ await Promise.race([
 ]);
 
 // 4. CAPTURE IMAGE - ONLY ADD THIS ONE FIX
-const canvas = await html2canvas(pdfContainer, {
+        const canvas = await html2canvas(pdfContainer, {
   scale: 2,
   useCORS: true,
   logging: true,
-  backgroundColor: '#FFFFFF',
-  width: pdfContainer.scrollWidth,
-  height: pdfContainer.scrollHeight, // Capture actual content height
+  backgroundColor: '#FFFFFF'
   scrollX: 0,
-  scrollY: 0,
-  onclone: function(clonedDoc) {
-    const container = clonedDoc.querySelector('.pdf-export-container');
-    container.style.minHeight = '297mm';
-    container.style.height = 'auto';
-  }
+  scrollY: 0
 });
               
       // 5. Generate PDF
