@@ -2069,8 +2069,7 @@ body.modal-active {
   /*  max-height: 95vh !important;*/       /* ← RESTORE max-height */
     margin: 0 auto !important;
     padding: 1rem;
-   /* overflow-y: auto;*/
-    overflow-y: visible !important;
+    overflow-y: auto;
     border-radius: 12px;
     
     /* Border properties */
