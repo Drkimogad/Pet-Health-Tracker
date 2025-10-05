@@ -1812,34 +1812,6 @@ lottie-player:not([style*="display:none"]) {
 }
 
 
-/* Force full height for mobile PDF */
-/*The Root Cause
-On mobile, the container height is being calculated based on the viewport, 
-not the actual content. The min-height: 297mm forces it to use full A4 height, 
-and the onclone ensures html2canvas captures everything.*/
-/*Add This Emergency CSS*/
-.pdf-export-container {
-  min-height: 297mm !important;
-  height: auto !important;
-  contain: none !important;
-}
-
-.pdf-export-container .details-grid > div {
-  break-inside: avoid !important;
-  page-break-inside: avoid !important;
-}
-
-/* Force all sections to render */
-.pdf-export-container .section-break,
-.pdf-export-container .section-break + div {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-
-
-
-
 /* =====Details Modal========== */
 /* Modal Styles */
 /* 👇 Add this new rule */  
