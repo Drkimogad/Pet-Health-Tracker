@@ -11,6 +11,7 @@
             --text-color: #333;
             --light-bg: #f9f9f9;
             --border-color: #ddd;
+            --warning-color: #ff9800;
         }
         
         * {
@@ -92,6 +93,23 @@
             color: #777;
         }
         
+        .review-note {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-left: 4px solid var(--warning-color);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        
+        .critical-item {
+            background-color: #f8d7da;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
@@ -115,6 +133,16 @@
         </header>
         
         <div class="last-updated">This Privacy Policy describes how your personal information is collected, used, and shared when you use the Pet Health Tracker application.</div>
+
+        <!-- CRITICAL: Add your business information -->
+        <div class="review-note">
+            <strong>REVIEW NEEDED:</strong> Please update the following business information:
+            <ul>
+                <li>Your business name and structure (LLC, sole proprietorship, etc.)</li>
+                <li>Your jurisdiction/country of operation</li>
+                <li>Any business registration numbers if applicable</li>
+            </ul>
+        </div>
         
         <h2>1. Information We Collect</h2>
         
@@ -144,9 +172,35 @@
             <li>Browser type</li>
             <li>Operating system</li>
             <li>Pages visited and time spent on the application</li>
+            <li>Cookie data and similar tracking technologies</li>
+        </ul>
+
+        <!-- NEW SECTION: Cookies and Tracking -->
+        <h2>2. Cookies and Tracking Technologies</h2>
+        <p>We use cookies and similar tracking technologies to track activity on our application and hold certain information. Cookies are files with small amount of data which may include an anonymous unique identifier.</p>
+        
+        <h3>Types of Cookies We Use:</h3>
+        <ul>
+            <li><strong>Essential Cookies:</strong> Required for the basic functionality of the application</li>
+            <li><strong>Functionality Cookies:</strong> Remember your preferences and settings</li>
+            <li><strong>Analytics Cookies:</strong> Help us understand how users interact with our application</li>
         </ul>
         
-        <h2>2. How We Use Your Information</h2>
+        <p>You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent. However, if you do not accept cookies, you may not be able to use some portions of our service.</p>
+
+        <!-- NEW SECTION: Legal Basis for Processing -->
+        <h2>3. Legal Basis for Processing (GDPR)</h2>
+        <p>If you are from the European Economic Area (EEA), our legal basis for collecting and using your personal information depends on the data we collect and the specific context in which we collect it.</p>
+        
+        <p>We may process your personal data because:</p>
+        <ul>
+            <li>We need to perform a contract with you</li>
+            <li>You have given us permission to do so</li>
+            <li>The processing is in our legitimate interests and not overridden by your rights</li>
+            <li>To comply with the law</li>
+        </ul>
+
+        <h2>4. How We Use Your Information</h2>
         <p>We use the information we collect to:</p>
         <ul>
             <li>Provide, maintain, and improve our services</li>
@@ -155,21 +209,42 @@
             <li>Respond to your comments and questions</li>
             <li>Monitor and analyze trends, usage, and activities in connection with our services</li>
             <li>Detect, investigate, and prevent fraudulent transactions and other illegal activities</li>
+            <li>Communicate with you about products, services, offers, and events</li>
         </ul>
         
-        <h2>3. Data Storage and Security</h2>
+        <h2>5. Data Storage and Security</h2>
         <p>Your data is stored securely using Firebase services. We implement appropriate technical and organizational measures to protect your personal information against unauthorized or unlawful processing, accidental loss, destruction, or damage.</p>
         
-        <h2>4. Data Sharing and Disclosure</h2>
+        <h3>Specific Security Measures:</h3>
+        <ul>
+            <li>Data encryption in transit (SSL/TLS)</li>
+            <li>Secure authentication via Google Sign-In</li>
+            <li>Regular security assessments of our infrastructure</li>
+            <li>Access controls and authentication mechanisms</li>
+        </ul>
+
+        <!-- NEW SECTION: Data Breach Notification -->
+        <h2>6. Data Breach Notification</h2>
+        <p>In the event of a data breach that compromises your personal information, we will notify you and relevant regulatory authorities as required by applicable law. We will make reasonable efforts to notify you within <span class="critical-item">[72 hours]</span> of becoming aware of the breach.</p>
+
+        <h2>7. Data Sharing and Disclosure</h2>
         <p>We do not sell, trade, or otherwise transfer your personal information to third parties without your consent, except in the following circumstances:</p>
         <ul>
             <li>To comply with legal obligations</li>
             <li>To protect and defend our rights and property</li>
             <li>With service providers who assist in operating our application (e.g., Firebase, Cloudinary)</li>
             <li>In connection with a business transfer, such as a merger or acquisition</li>
+            <li>To prevent or investigate possible wrongdoing in connection with the service</li>
+            <li>To protect the personal safety of users of the service or the public</li>
         </ul>
+
+        <!-- NEW SECTION: International Data Transfers -->
+        <h2>8. International Data Transfers</h2>
+        <p>Your information, including personal data, may be transferred to — and maintained on — computers located outside of your state, province, country, or other governmental jurisdiction where the data protection laws may differ than those from your jurisdiction.</p>
         
-        <h2>5. Third-Party Services</h2>
+        <p>We will take all steps reasonably necessary to ensure that your data is treated securely and in accordance with this Privacy Policy. This may include using approved standard contractual clauses or other legally approved mechanisms for data transfers.</p>
+
+        <h2>9. Third-Party Services</h2>
         <p>Our application uses the following third-party services:</p>
         <ul>
             <li><strong>Google Authentication:</strong> For user authentication</li>
@@ -177,8 +252,22 @@
             <li><strong>Cloudinary:</strong> For image storage and optimization</li>
         </ul>
         <p>These third parties have access to your information only to perform specific tasks on our behalf and are obligated not to disclose or use it for any other purpose.</p>
+
+        <!-- NEW SECTION: California Privacy Rights -->
+        <h2>10. Your California Privacy Rights (CCPA/CPRA)</h2>
+        <p>If you are a California resident, you have the right to:</p>
+        <ul>
+            <li>Know what personal information is collected, used, shared, or sold</li>
+            <li>Delete personal information</li>
+            <li>Opt-out of the sale or sharing of personal information</li>
+            <li>Non-discrimination for exercising your CCPA rights</li>
+            <li>Correct inaccurate personal information</li>
+            <li>Limit use and disclosure of sensitive personal information</li>
+        </ul>
         
-        <h2>6. Your Rights</h2>
+        <p>To exercise these rights, please contact us using the information below. We do not sell your personal information.</p>
+
+        <h2>11. Your Rights</h2>
         <p>You have the right to:</p>
         <ul>
             <li>Access the personal information we hold about you</li>
@@ -187,22 +276,54 @@
             <li>Object to processing of your personal information</li>
             <li>Request the transfer of your personal information to another party</li>
             <li>Withdraw consent at any time where we rely on consent to process your personal information</li>
+            <li>Restrict processing of your personal information</li>
         </ul>
         
-        <h2>7. Data Retention</h2>
+        <p>To exercise any of these rights, please contact us using the details provided below.</p>
+
+        <!-- NEW SECTION: Data Retention Periods -->
+        <h2>12. Data Retention</h2>
         <p>We will retain your personal information only for as long as necessary to fulfill the purposes for which we collected it, including to satisfy any legal, accounting, or reporting requirements.</p>
         
-        <h2>8. Children's Privacy</h2>
-        <p>Our application is not intended for use by children under the age of 13. We do not knowingly collect personal information from children under 13.</p>
-        
-        <h2>9. Changes to This Privacy Policy</h2>
+        <h3>Specific Retention Periods:</h3>
+        <ul>
+            <li><strong>Account data:</strong> Until account deletion request or 3 years of inactivity</li>
+            <li><strong>Pet health data:</strong> Until account deletion or as required by law</li>
+            <li><strong>Technical logs:</strong> Up to 12 months</li>
+            <li><strong>Marketing data:</strong> Until consent withdrawal or 2 years of inactivity</li>
+        </ul>
+
+        <h2>13. Children's Privacy</h2>
+        <p>Our application is not intended for use by children under the age of 13. We do not knowingly collect personal information from children under 13. If you are a parent or guardian and you are aware that your child has provided us with personal data, please contact us.</p>
+
+        <!-- NEW SECTION: Automated Decision Making -->
+        <h2>14. Automated Decision Making</h2>
+        <p>We do not use fully automated decision-making that would produce legal effects concerning you or similarly significantly affect you. If we use any automated processing in the future, we will implement suitable measures to safeguard your rights and freedoms.</p>
+
+        <h2>15. Changes to This Privacy Policy</h2>
         <p>We may update this Privacy Policy from time to time to reflect changes to our practices or for other operational, legal, or regulatory reasons. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date.</p>
         
-        <h2>10. Contact Us</h2>
+        <p>We will let you know via email and/or a prominent notice on our service prior to the change becoming effective and update the "last updated" date at the top of this Privacy Policy.</p>
+
+        <!-- NEW SECTION: Complaints -->
+        <h2>16. Complaints</h2>
+        <p>If you have any concerns about our use of your personal information, you can make a complaint to us using the contact details below. You also have the right to complain to your local data protection authority if you're unhappy with how we've used your data.</p>
+
+        <h2>17. Contact Us</h2>
+        <div class="review-note">
+            <strong>CRITICAL REVIEW NEEDED:</strong> Update contact information and consider:
+            <ul>
+                <li>Using a dedicated support email instead of personal emails</li>
+                <li>Adding a contact form on your website</li>
+                <li>Specifying response timeframes</li>
+                <li>Consider adding a Data Protection Officer if required by GDPR</li>
+            </ul>
+        </div>
+        
         <div class="contact-info">
-            <p>If you have any questions about this Privacy Policy, please contact us at:</p>
-            <p>Email: <strong>dr_kimogad@yahoo.com</strong></p>
+            <p>If you have any questions about this Privacy Policy or wish to exercise any of your rights, please contact us at:</p>
             <p>Email: <strong>Petkit2023@gmail.com</strong></p>
+            <p>Response Time: We aim to respond to all legitimate requests within <strong>30 days</strong>.</p>
         </div>
         
         <footer>
