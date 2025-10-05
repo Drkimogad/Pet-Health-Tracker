@@ -2062,7 +2062,7 @@ body.modal-active {
    padding: 2.5vh 0 !important;  /* ← CHANGED from 2.5vh 2.5vw */ 
 }
   
-  .modal-content {
+  .modal-content {  /* this is the area fixed pdf container height on phones*/
     width: 95vw !important;
  /*   height: 95vh !important;  */         /* ← RESTORE fixed height */
     max-width: 95vw !important;
