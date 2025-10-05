@@ -1349,7 +1349,8 @@ function createCommunityChatButton(profileId) {
   badge.id = 'community-chat-notification';
   badge.style.display = 'none';
   chatBtn.appendChild(badge);
-  
+
+// The check runs in Onauthstatchanged in AUTH.JS NOW.
   //1.  Check if user is admin and set up notification listener
  // const user = firebase.auth().currentUser;
  // if (user && user.email === 'drkimogad@gmail.com') { // Replace with your admin email check
@@ -1357,11 +1358,11 @@ function createCommunityChatButton(profileId) {
   //  setupAdminNotificationListener(profileId);
  // }
   //2. Fallback to ensure listener attaches once Firebase finishes loading auth
-firebase.auth().onAuthStateChanged(user => {
-  if (user && user.email === 'drkimogad@gmail.com') {
-    setupAdminNotificationListener(profileId);
-  }
-});
+//firebase.auth().onAuthStateChanged(user => {
+//  if (user && user.email === 'drkimogad@gmail.com') {
+//    setupAdminNotificationListener(profileId);
+//  }
+//});
   
   
   document.addEventListener('click', e => {
@@ -1390,6 +1391,7 @@ async function getPetProfile(petId) {
 // 2. Setup admin notification listener
 // 2. Setup admin notification listener
 function setupAdminNotificationListener(petId) {
+      console.log("🔔 SETUP ADMIN NOTIFICATION LISTENER CALLED for pet:", petId);
   try {
     // Listen to the SINGLE DOCUMENT, not the collection
     const unsubscribe = firebase.firestore()
