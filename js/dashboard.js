@@ -633,14 +633,16 @@ requestAnimationFrame(() => {
       const pdfContainer = document.createElement('div');
       pdfContainer.className = 'pdf-export-container';
       // Add responsive PDF container styling
-      pdfContainer.style.cssText = `
+pdfContainer.style.cssText = `
   position: absolute;
   left: -9999px;
-  width: 210mm;           
-  min-width: 210mm;      
+  width: 210mm;
+  min-height: 297mm !important;  
+  height: auto !important;      
   background: white;
   padding: 15mm;
   box-sizing: border-box;
+  overflow: visible !important; 
 `;
 
     const modalClone = modal.cloneNode(true); // 🆕 MOVE THIS UP
@@ -678,14 +680,16 @@ const canvas = await html2canvas(pdfContainer, {
   logging: true,
   backgroundColor: '#FFFFFF',
   width: pdfContainer.scrollWidth,
-  height: pdfContainer.scrollHeight,
+  height: pdfContainer.scrollHeight, // Capture actual content height
+  scrollX: 0,
+  scrollY: 0,
   onclone: function(clonedDoc) {
-    // Force mobile rendering to calculate proper height
-    clonedDoc.querySelector('.pdf-export-container').style.minHeight = '297mm';
+    const container = clonedDoc.querySelector('.pdf-export-container');
+    container.style.minHeight = '297mm';
+    container.style.height = 'auto';
   }
 });
-        
-        
+              
       // 5. Generate PDF
   //    if (!window.jspdf) {
    //     await loadScriptWithRetry('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
