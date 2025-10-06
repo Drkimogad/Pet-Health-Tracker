@@ -1292,44 +1292,6 @@ transform: translateY(-2px); /* Optional lift effect */
   }
 }
 
-/*  recently added activity logging*/
-.activity-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 10px;
-    margin: 15px 0;
-}
-
-.activity-option {
-    display: flex;
-    align-items: center;
-    padding: 8px;
-    border: 2px solid var(--border-card);
-    border-radius: 8px;
-    cursor: pointer;
-    background: var(--bg-card);
-    transition: all 0.2s;
-}
-
-.activity-option:hover {
-    border-color: var(--accent-green);
-    background: var(--bg-page);
-}
-
-.activity-option:has(input:checked) {
-    border-color: var(--accent-green);
-    background: rgba(76, 175, 80, 0.1);
-}
-
-.activity-option input {
-    margin-right: 8px;
-}
-
-.activity-option span {
-    color: var(--text-main);
-    font-weight: 500;
-}
-
 
 /*================================================*/
 /* Pet Cards all styles SPLIT LAYOUT */
@@ -1428,6 +1390,31 @@ transform: translateY(-2px); /* Optional lift effect */
   font-size: 1.5rem;
 }
 
+/*======== Activity Section Styling============= */
+.activity-section {
+  border: 1px solid var(--border-card);
+  border-radius: 8px;
+  padding: 0.75rem;
+  background: #fafafa;
+  margin: 0.5rem 0;
+}
+
+.activity-section strong {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--text-main);
+  font-size: 1rem;
+}
+
+.recent-activity {
+  padding: 0.25rem 0;
+  font-size: 0.9rem;
+  border-bottom: 1px solid #eee;
+}
+
+.recent-activity:last-child {
+  border-bottom: none;
+}
 /* ======= all reminders related styles ============ */
 .pet-reminders {
   background: var(--bg-page); /* Light gray */
