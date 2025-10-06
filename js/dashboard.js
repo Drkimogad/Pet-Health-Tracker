@@ -790,7 +790,12 @@ async function editPetProfile(petId) {
     setValue('allergies', profile.allergies);
     setValue('medicalHistory', profile.medicalHistory);
     setValue('dietPlan', profile.dietPlan);
-    setValue('moodSelector', profile.mood);
+ //   setValue('moodSelector', profile.mood);
+      // Instead of: setValue('moodSelector', profile.mood);
+   // Use:
+    setValue('moodSelector', ''); // Clear mood selector
+    if (DOM.moodNote) DOM.moodNote.value = ''; // Clear mood note
+      
     setValue('emergencyContactName', profile.emergencyContacts?.[0]?.name);
     setValue('emergencyContactPhone', profile.emergencyContacts?.[0]?.phone);
     setValue('emergencyContactRelationship', profile.emergencyContacts?.[0]?.relationship);
@@ -855,7 +860,11 @@ function handleCancelEdit() {
       setValue('allergies', originalProfile.allergies);
       setValue('medicalHistory', originalProfile.medicalHistory);
       setValue('dietPlan', originalProfile.dietPlan);
-      setValue('moodSelector', originalProfile.mood);
+    //  setValue('moodSelector', originalProfile.mood);
+        // Instead of: setValue('moodSelector', originalProfile.mood);
+// Use:
+setValue('moodSelector', ''); // Clear mood selector
+if (DOM.moodNote) DOM.moodNote.value = ''; // Clear mood note
 
       // Emergency Contact
       const ec = originalProfile.emergencyContacts?.[0] || {};
