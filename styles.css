@@ -1292,7 +1292,43 @@ transform: translateY(-2px); /* Optional lift effect */
   }
 }
 
+/*  recently added activity logging*/
+.activity-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 10px;
+    margin: 15px 0;
+}
 
+.activity-option {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border: 2px solid var(--border-card);
+    border-radius: 8px;
+    cursor: pointer;
+    background: var(--bg-card);
+    transition: all 0.2s;
+}
+
+.activity-option:hover {
+    border-color: var(--accent-green);
+    background: var(--bg-page);
+}
+
+.activity-option:has(input:checked) {
+    border-color: var(--accent-green);
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.activity-option input {
+    margin-right: 8px;
+}
+
+.activity-option span {
+    color: var(--text-main);
+    font-weight: 500;
+}
 
 
 /*================================================*/
