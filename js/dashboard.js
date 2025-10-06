@@ -577,9 +577,9 @@ async function loadSavedPetProfile() {
   }
 }
 
-// ================================
-// HELPER: Get Last Activity for Details Modal
-// ================================
+// ====================================================================================
+// HELPER: Get Last Activity for Details Modal it only displays the last activity
+// =====================================================================================
 function getLastActivity(petId) {
   const profile = window.petProfiles.find(p => p.id === petId);
   let activities = [];
@@ -598,7 +598,6 @@ function getLastActivity(petId) {
   const timeAgo = getTimeAgo(lastActivity.timestamp);
   return `<div>${lastActivity.activity} - ${timeAgo}</div>`;
 }
-
 
 //================================
 // Helper function to show petcard details via details button
