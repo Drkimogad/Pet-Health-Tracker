@@ -82,7 +82,10 @@ const DOM = {
   birthdayReminder: document.getElementById('birthdayReminder'), 
   vaccinationsAndDewormingReminder: document.getElementById('vaccinationsAndDewormingReminder'),
   medicalCheckupsReminder: document.getElementById('medicalCheckupsReminder'),
-  groomingReminder: document.getElementById('groomingReminder')
+  groomingReminder: document.getElementById('groomingReminder'),
+    // added recently 
+  moodNote: document.getElementById('moodNote'),
+  moodDate: document.getElementById('moodDate')
 };
 
 // Safety check (optional)
@@ -1314,6 +1317,53 @@ function showShareFallback(inviteMessage) {
   shareContainer.querySelector('input').select();
 }
 
+//===================================
+// Standalone Mood Tracking System
+//===================================
+function trackMoodEntry(petId, mood, note) {
+  const historyKey = `moodHistory_${petId}`;
+  const moodEntry = {
+    mood: mood,
+    note: note || '',
+    date: new Date().toISOString()
+  };
+  
+  // Get existing history or create new
+  const existingHistory = JSON.parse(localStorage.getItem(historyKey)) || [];
+  
+  // Add new entry to beginning
+  const updatedHistory = [moodEntry, ...existingHistory];
+  
+  // Keep only last 5 entries
+  const trimmedHistory = updatedHistory.slice(0, 5);
+  
+  // Save back to localStorage
+  localStorage.setItem(historyKey, JSON.stringify(trimmedHistory));
+  
+  // Check if we reached 5 entries for behavioral insights
+  if (trimmedHistory.length === 5) {
+    showBehavioralInsights(petId, trimmedHistory);
+  }
+}
+
+function showBehavioralInsights(petId, moodHistory) {
+  // Simple behavioral analysis
+  const moodCounts = {};
+  moodHistory.forEach(entry => {
+    moodCounts[entry.mood] = (moodCounts[entry.mood] || 0) + 1;
+  });
+  
+  const mostCommonMood = Object.keys(moodCounts).reduce((a, b) => 
+    moodCounts[a] > moodCounts[b] ? a : b
+  );
+  
+  // Show popup notification
+  setTimeout(() => {
+    if (confirm(`🐾 Behavioral Insight for your pet!\n\nYou've tracked 5 mood entries. Most common mood: ${mostCommonMood}\n\nConsider discussing persistent mood patterns with your vet if concerned.`)) {
+      // User acknowledged
+    }
+  }, 1000);
+}
 
 //=========================
 // Join Pet Community - ENHANCED VERSION
@@ -2247,7 +2297,11 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
           phone: DOM.emergencyContactPhone?.value,
           relationship: DOM.emergencyContactRelationship?.value
         }],
-        mood: DOM.moodSelector?.value,
+          // With this combined mood string:
+        mood: DOM.moodSelector?.value ? 
+         `${DOM.moodSelector.value} - ${DOM.moodNote?.value || 'No note'} - ${new Date().toLocaleDateString()}` 
+          : '',
+    
         reminders: {
           birthdayReminder: DOM.birthdayReminder?.value,
           vaccinations: DOM.vaccinationsAndDewormingReminder?.value,
@@ -2323,6 +2377,11 @@ if (editingProfileId !== null && fileInput.files[0]) {
       
   // 🟢 REPLACE all the manual saving with this single call:
    await saveProfile(petData); // call it to handle the saving and updating 
+    // After saveProfile(petData); call, add:
+    // Track mood entry if mood was selected
+if (DOM.moodSelector?.value) {
+  trackMoodEntry(petData.id, DOM.moodSelector.value, DOM.moodNote?.value);
+}
 
 // 🆕 ADD OLD IMAGE DELETION RIGHT HERE NEWLY ADDED
 if (oldImagePublicId) {
