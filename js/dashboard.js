@@ -83,9 +83,11 @@ const DOM = {
   vaccinationsAndDewormingReminder: document.getElementById('vaccinationsAndDewormingReminder'),
   medicalCheckupsReminder: document.getElementById('medicalCheckupsReminder'),
   groomingReminder: document.getElementById('groomingReminder'),
-    // added recently 
+    // added recently for mood tracking
   moodNote: document.getElementById('moodNote'),
-  moodDate: document.getElementById('moodDate')
+  moodDate: document.getElementById('moodDate'),
+    // added for dynamic age display
+  petBirthday: document.getElementById('petBirthday')
 };
 
 // Safety check (optional)
@@ -780,7 +782,9 @@ async function editPetProfile(petId) {
    };
     setValue('petName', profile.petName);
     setValue('breed', profile.breed);
-    setValue('age', profile.age);
+    //setValue('age', profile.age);
+    setValue('petBirthday', profile.birthday); // Pre-fill birthday
+
     setValue('weight', profile.weight);
     setValue('petType', profile?.type || '');  
     setValue('petGender', profile?.gender || '');
@@ -2303,7 +2307,10 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
         // 🔁 Rest of your form fields here (no changes needed)
         petName: DOM.petName?.value,
         breed: DOM.breed?.value,
-        age: DOM.age?.value,
+        // USE:
+        age: calculateAge(DOM.petBirthday?.value),
+        birthday: DOM.petBirthday?.value, // Store both for editing  
+          
         weight: DOM.weight?.value,
         type: DOM.petType?.value || 'Unknown',
         gender: DOM.petGender?.value || 'Unknown',
@@ -2320,7 +2327,7 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
           phone: DOM.emergencyContactPhone?.value,
           relationship: DOM.emergencyContactRelationship?.value
         }],
-          // With this combined mood string:
+          // combined mood string for mood tracking:
         mood: DOM.moodSelector?.value ? 
          `${DOM.moodSelector.value} - ${DOM.moodNote?.value || 'No note'} - ${new Date().toLocaleDateString()}` 
           : '',
