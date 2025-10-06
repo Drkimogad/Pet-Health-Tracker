@@ -293,20 +293,40 @@ async function loadPets() {
 // age calculation utility
 //==================================
 function calculateAge(birthday) {
-  console.log("🟢 CALCULATEAGE CALLED with birthday:", birthday);
+  if (!birthday) return 'N/A';
   
-  if (!birthday) return 0;
   const birthDate = new Date(birthday);
   const today = new Date();
-  let age = today.getFullYear() - birthDate.getFullYear();
-  const monthDiff = today.getMonth() - birthDate.getMonth();
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-    age--;
+  
+  let years = today.getFullYear() - birthDate.getFullYear();
+  let months = today.getMonth() - birthDate.getMonth();
+  let days = today.getDate() - birthDate.getDate();
+  
+  // Adjust for negative months/days
+  if (days < 0) {
+    months--;
+    // Get days in previous month
+    const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+    days += prevMonth.getDate();
   }
   
-  console.log("📅 CALCULATEAGE RESULT:", age, "years old");
-  return age;
+  if (months < 0) {
+    years--;
+    months += 12;
+  }
+  
+  // Format based on age
+  if (years === 0 && months === 0) {
+    return `${days} day${days !== 1 ? 's' : ''}`;
+  } else if (years === 0) {
+    return `${months} month${months !== 1 ? 's' : ''}`;
+  } else if (years === 1 && months === 0) {
+    return '1 year';
+  } else {
+    return `${years} year${years !== 1 ? 's' : ''} ${months} month${months !== 1 ? 's' : ''}`;
+  }
 }
+
 //=========================================
 // Ensure canceledit function recently added
 //=========================================
