@@ -87,7 +87,9 @@ const DOM = {
   moodNote: document.getElementById('moodNote'),
   moodDate: document.getElementById('moodDate'),
     // added for dynamic age display
-  petBirthday: document.getElementById('petBirthday')
+  petBirthday: document.getElementById('petBirthday'),
+    // for logging activity
+  activityCheckboxes: document.querySelectorAll('input[name="activity"]')
 };
 
 // Safety check (optional)
@@ -476,6 +478,12 @@ async function loadSavedPetProfile() {
         </div>
       `;
 
+          // ✅ ADD ACTIVITIES DISPLAY RIGHT HERE
+      const activitiesHtml = getRecentActivities(profile.id);
+      if (activitiesHtml) {
+        petCard.innerHTML += activitiesHtml;
+      }
+        
       // 🔁 Dynamic Reminders Container (INJECTED AFTER innerHTML)
       const remindersDiv = document.createElement('div');
       remindersDiv.innerHTML = '<h4>Reminders</h4>';
@@ -2261,6 +2269,64 @@ function showBehavioralInsights(petId, moodHistory) {
   }, 1000);
 }
 
+//=============================================
+// Helper functions for activity logging
+function getRecentActivities(petId) {
+  const historyKey = `activityHistory_${petId}`;
+  const history = JSON.parse(localStorage.getItem(historyKey)) || [];
+  if (history.length === 0) return '';
+  
+  const recent = history.slice(0, 3); // Show last 3 activities
+  const activitiesHtml = recent.map(entry => {
+    const timeAgo = getTimeAgo(entry.timestamp);
+    return `<div class="recent-activity">${entry.activity} - ${timeAgo}</div>`;
+  }).join('');
+  
+  return `<div class="activity-section"><strong>Recent Activities:</strong>${activitiesHtml}</div>`;
+}
+
+function getTimeAgo(timestamp) {
+  const now = new Date();
+  const activityTime = new Date(timestamp);
+  const diffMs = now - activityTime;
+  const diffMins = Math.floor(diffMs / (1000 * 60));
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  
+  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  return `${diffDays}d ago`;
+}
+//============================================
+// Activity Tracking System RECENTLY IMPLEMENTED
+//====================================================
+function trackActivities(petId, selectedActivities) {
+  if (!selectedActivities.length) return;
+  
+  const historyKey = `activityHistory_${petId}`;
+  const activityEntries = selectedActivities.map(activity => ({
+    activity: activity,
+    timestamp: new Date().toISOString()
+  }));
+  
+  // Get existing history
+  const existingHistory = JSON.parse(localStorage.getItem(historyKey)) || [];
+  
+  // Add new entries to beginning
+  const updatedHistory = [...activityEntries, ...existingHistory];
+  
+  // Keep only last 50 entries
+  const trimmedHistory = updatedHistory.slice(0, 50);
+  
+  // Save back to localStorage
+  localStorage.setItem(historyKey, JSON.stringify(trimmedHistory));
+  
+  // Check for 30-day insights
+  checkActivityInsights(petId, trimmedHistory);
+}
+
+
+
 // ======== EVENT DELEGATION (FIXED) ========
 // ✅ Keep this block to handle profile actions (WIRING) ALL THE BUTTONS IN LOADSAVEDPETPROFILES FUNCTION✅
 DOM.savedProfilesList?.addEventListener('click', (e) => {
@@ -2379,7 +2445,18 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
           checkups: DOM.medicalCheckupsReminder?.value,
           grooming: DOM.groomingReminder?.value
         }
-      };
+      }; // ← petData object ends here
+
+    // Track activities if any selected
+         const selectedActivities = Array.from(DOM.activityCheckboxes)
+          .filter(checkbox => checkbox.checked)
+         .map(checkbox => checkbox.value);
+  
+        if (selectedActivities.length > 0) {
+      trackActivities(petData.id, selectedActivities);
+        }
+     // Clear activity checkboxes after submission
+      DOM.activityCheckboxes.forEach(checkbox => checkbox.checked = false);
 
       // photo handling/Cloudinary section     
       const fileInput = DOM.petPhotoInput;
