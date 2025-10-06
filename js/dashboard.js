@@ -240,7 +240,9 @@ function getPetDataFromForm() {
     // === Basic Information ===
     name: DOM.petName.value,
     breed: DOM.breed.value,
-    age: parseFloat(DOM.age.value) || 0,
+    age: calculateAge(DOM.petBirthday?.value), // ← CHANGED
+    birthday: DOM.petBirthday?.value,           // ← ADDED
+      
     weight: parseFloat(DOM.weight.value) || 0,
     gender: 'Unknown',
     type: 'Unknown',
@@ -291,6 +293,9 @@ async function loadPets() {
 // age calculation utility
 //==================================
 function calculateAge(birthday) {
+  console.log("🟢 CALCULATEAGE CALLED with birthday:", birthday);
+  
+  if (!birthday) return 0;
   const birthDate = new Date(birthday);
   const today = new Date();
   let age = today.getFullYear() - birthDate.getFullYear();
@@ -298,6 +303,8 @@ function calculateAge(birthday) {
   if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
     age--;
   }
+  
+  console.log("📅 CALCULATEAGE RESULT:", age, "years old");
   return age;
 }
 //=========================================
@@ -2418,6 +2425,11 @@ if (editingProfileId !== null && fileInput.files[0]) {
         }
       }
       console.log("🖼️ Using photo:", petData.petPhoto);
+
+        console.log("🎂 DEBUG - Birthday field value:", DOM.petBirthday?.value);
+console.log("🔢 DEBUG - Calculated age:", calculateAge(DOM.petBirthday?.value));
+console.log("📝 DEBUG - petData.age being saved:", petData.age);
+console.log("📝 DEBUG - petData.birthday being saved:", petData.birthday);
       
   // 🟢 REPLACE all the manual saving with this single call:
    await saveProfile(petData); // call it to handle the saving and updating 
