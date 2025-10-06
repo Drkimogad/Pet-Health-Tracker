@@ -2208,33 +2208,61 @@ if (typeof loadSavedPetProfile === 'function') {
 } // CLOSES FUNCTION
 
 
+//=============================================
+// helper functions forgetting mood update
+async function getUpdatedMoodHistory(petId, mood, note) {
+  if (!mood) return []; // Return existing history if no new mood
+  
+  const newEntry = {
+    mood: mood,
+    note: note || '',
+    date: new Date().toISOString()
+  };
+  
+  // Get existing history
+  const existing = await getMoodHistory(petId);
+  return [newEntry, ...existing].slice(0, 5);
+}
 
+async function getUpdatedActivityHistory(petId, newActivities) {
+  if (!newActivities.length) return []; // Return existing if no new activities
+  
+  const newEntries = newActivities.map(activity => ({
+    activity: activity,
+    timestamp: new Date().toISOString()
+  }));
+  
+  // Get existing history
+  const existing = await getActivityHistory(petId);
+  return [...newEntries, ...existing].slice(0, 50);
+}
 //===================================
 // Standalone Mood Tracking System
 //===================================
-function trackMoodEntry(petId, mood, note) {
-  const historyKey = `moodHistory_${petId}`;
+async function trackMoodEntry(petId, mood, note) {
   const moodEntry = {
     mood: mood,
     note: note || '',
     date: new Date().toISOString()
   };
   
-  // Get existing history or create new
+  // Save to Firestore
+  if (firebase.auth().currentUser) {
+    const db = firebase.firestore();
+    await db.collection("profiles").doc(petId).update({
+      moodHistory: firebase.firestore.FieldValue.arrayUnion(moodEntry)
+    });
+  }
+  
+  // Also save to localStorage for offline/fallback
+  const historyKey = `moodHistory_${petId}`;
   const existingHistory = JSON.parse(localStorage.getItem(historyKey)) || [];
+  const updatedHistory = [moodEntry, ...existingHistory].slice(0, 5);
+  localStorage.setItem(historyKey, JSON.stringify(updatedHistory));
   
-  // Add new entry to beginning
-  const updatedHistory = [moodEntry, ...existingHistory];
-  
-  // Keep only last 5 entries
-  const trimmedHistory = updatedHistory.slice(0, 5);
-  
-  // Save back to localStorage
-  localStorage.setItem(historyKey, JSON.stringify(trimmedHistory));
-  
-  // Check if we reached 5 entries for behavioral insights
-  if (trimmedHistory.length === 5) {
-    showBehavioralInsights(petId, trimmedHistory);
+  // Check for insights
+  if (updatedHistory.length === 5) {
+    showBehavioralInsights(petId, updatedHistory);
   }
 }
 
@@ -2270,14 +2298,23 @@ function showBehavioralInsights(petId, moodHistory) {
 }
 
 //=============================================
-// Helper functions for activity logging
 function getRecentActivities(petId) {
-  const historyKey = `activityHistory_${petId}`;
-  const history = JSON.parse(localStorage.getItem(historyKey)) || [];
-  if (history.length === 0) return '';
+  // Try to get from profile data first (Firestore)
+  const profile = window.petProfiles.find(p => p.id === petId);
+  let activities = [];
   
-  const recent = history.slice(0, 3); // Show last 3 activities
-  const activitiesHtml = recent.map(entry => {
+  if (profile?.activityHistory?.length > 0) {
+    activities = profile.activityHistory.slice(0, 3);
+  } else {
+    // Fallback to localStorage
+    const historyKey = `activityHistory_${petId}`;
+    const history = JSON.parse(localStorage.getItem(historyKey)) || [];
+    activities = history.slice(0, 3);
+  }
+  
+  if (activities.length === 0) return '';
+  
+  const activitiesHtml = activities.map(entry => {
     const timeAgo = getTimeAgo(entry.timestamp);
     return `<div class="recent-activity">${entry.activity} - ${timeAgo}</div>`;
   }).join('');
@@ -2300,30 +2337,29 @@ function getTimeAgo(timestamp) {
 //============================================
 // Activity Tracking System RECENTLY IMPLEMENTED
 //====================================================
-function trackActivities(petId, selectedActivities) {
-  if (!selectedActivities.length) return;
-  
-  const historyKey = `activityHistory_${petId}`;
+async function trackActivities(petId, selectedActivities) {
   const activityEntries = selectedActivities.map(activity => ({
     activity: activity,
     timestamp: new Date().toISOString()
   }));
   
-  // Get existing history
+  // Save to Firestore
+  if (firebase.auth().currentUser) {
+    const db = firebase.firestore();
+    await db.collection("profiles").doc(petId).update({
+      activityHistory: firebase.firestore.FieldValue.arrayUnion(...activityEntries)
+    });
+  }
+  
+  // Also save to localStorage
+  const historyKey = `activityHistory_${petId}`;
   const existingHistory = JSON.parse(localStorage.getItem(historyKey)) || [];
+  const updatedHistory = [...activityEntries, ...existingHistory].slice(0, 50);
+  localStorage.setItem(historyKey, JSON.stringify(updatedHistory));
   
-  // Add new entries to beginning
-  const updatedHistory = [...activityEntries, ...existingHistory];
-  
-  // Keep only last 50 entries
-  const trimmedHistory = updatedHistory.slice(0, 50);
-  
-  // Save back to localStorage
-  localStorage.setItem(historyKey, JSON.stringify(trimmedHistory));
-  
-  // Check for 30-day insights
-  checkActivityInsights(petId, trimmedHistory);
+  checkActivityInsights(petId, updatedHistory);
 }
+
 
 
 
@@ -2402,6 +2438,10 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
       // Get all form data (preserving your existing structure)
       // 🔑 Generate ID once
       const newId = editingProfileId || generateUniqueId();
+        // 1. First, define selectedActivities
+          const selectedActivities = Array.from(DOM.activityCheckboxes)
+            .filter(checkbox => checkbox.checked)
+                .map(checkbox => checkbox.value);
 
       // 🐶 Full petData object
       const petData = {
@@ -2438,6 +2478,10 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
         mood: DOM.moodSelector?.value ? 
          `${DOM.moodSelector.value} - ${DOM.moodNote?.value || 'No note'} - ${new Date().toLocaleDateString()}` 
           : '',
+       // ✅ CORRECT - use newId:
+         moodHistory: await getUpdatedMoodHistory(newId, DOM.moodSelector?.value, DOM.moodNote?.value),
+         activityHistory: await getUpdatedActivityHistory(newId, selectedActivities),
+
     
         reminders: {
           birthdayReminder: DOM.birthdayReminder?.value,
@@ -2446,15 +2490,7 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
           grooming: DOM.groomingReminder?.value
         }
       }; // ← petData object ends here
-
-    // Track activities if any selected
-         const selectedActivities = Array.from(DOM.activityCheckboxes)
-          .filter(checkbox => checkbox.checked)
-         .map(checkbox => checkbox.value);
-  
-        if (selectedActivities.length > 0) {
-      trackActivities(petData.id, selectedActivities);
-        }
+    
      // Clear activity checkboxes after submission
       DOM.activityCheckboxes.forEach(checkbox => checkbox.checked = false);
 
@@ -2532,9 +2568,7 @@ console.log("📝 DEBUG - petData.birthday being saved:", petData.birthday);
    await saveProfile(petData); // call it to handle the saving and updating 
     // After saveProfile(petData); call, add:
     // Track mood entry if mood was selected
-if (DOM.moodSelector?.value) {
-  trackMoodEntry(petData.id, DOM.moodSelector.value, DOM.moodNote?.value);
-}
+
 
 // 🆕 ADD OLD IMAGE DELETION RIGHT HERE NEWLY ADDED
 if (oldImagePublicId) {
