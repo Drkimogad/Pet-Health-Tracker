@@ -577,6 +577,29 @@ async function loadSavedPetProfile() {
   }
 }
 
+// ================================
+// HELPER: Get Last Activity for Details Modal
+// ================================
+function getLastActivity(petId) {
+  const profile = window.petProfiles.find(p => p.id === petId);
+  let activities = [];
+  
+  if (profile?.activityHistory?.length > 0) {
+    activities = profile.activityHistory;
+  } else {
+    // Fallback to localStorage
+    const historyKey = `activityHistory_${petId}`;
+    activities = JSON.parse(localStorage.getItem(historyKey)) || [];
+  }
+  
+  if (activities.length === 0) return '<div>No activities recorded</div>';
+  
+  const lastActivity = activities[0]; // Most recent is first in array
+  const timeAgo = getTimeAgo(lastActivity.timestamp);
+  return `<div>${lastActivity.activity} - ${timeAgo}</div>`;
+}
+
+
 //================================
 // Helper function to show petcard details via details button
 //=================================
@@ -631,6 +654,9 @@ const emergencyContact = profile.emergencyContacts?.[0] || {};
       <div>Medical History: ${profile.medicalHistory || 'N/A'}</div>
       <div>Diet Plan: ${profile.dietPlan || 'N/A'}</div>
       <div>Current Mood: ${profile.mood || 'N/A'}</div>
+     <!-- ADD ACTIVITIES SECTION -->
+       <div class="section-break"><strong>Last Activity:</strong></div>
+           ${getLastActivity(profile.id)}
 
       <div class="section-break"><strong>Emergency Contact:</strong></div>
       <div>Name: ${profile.emergencyContacts?.[0]?.name || 'N/A'}</div>
@@ -2298,18 +2324,19 @@ function showBehavioralInsights(petId, moodHistory) {
 }
 
 //=============================================
+// IT SERVES LOADSAVEDPROFILES AND SHOWS THE LAST 5 ACTIVITIES
 function getRecentActivities(petId) {
   // Try to get from profile data first (Firestore)
   const profile = window.petProfiles.find(p => p.id === petId);
   let activities = [];
   
   if (profile?.activityHistory?.length > 0) {
-    activities = profile.activityHistory.slice(0, 3);
+    activities = profile.activityHistory.slice(0, 5); // CHANGED: 3 → 5
   } else {
     // Fallback to localStorage
     const historyKey = `activityHistory_${petId}`;
     const history = JSON.parse(localStorage.getItem(historyKey)) || [];
-    activities = history.slice(0, 3);
+    activities = history.slice(0, 5); // CHANGED: 3 → 5
   }
   
   if (activities.length === 0) return '';
