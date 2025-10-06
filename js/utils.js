@@ -59,6 +59,8 @@ async function uploadToCloudinary(file, userId, petProfileId) {
 function resetForm() {
   const form = DOM.petList;
   if (form) form.reset();
+    // ADD THIS LINE for mood tracking
+  if (DOM.moodNote) DOM.moodNote.value = '';
   const preview = DOM.petPhotoPreview;
   if (preview) {
     preview.src = '';
