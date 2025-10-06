@@ -1317,53 +1317,6 @@ function showShareFallback(inviteMessage) {
   shareContainer.querySelector('input').select();
 }
 
-//===================================
-// Standalone Mood Tracking System
-//===================================
-function trackMoodEntry(petId, mood, note) {
-  const historyKey = `moodHistory_${petId}`;
-  const moodEntry = {
-    mood: mood,
-    note: note || '',
-    date: new Date().toISOString()
-  };
-  
-  // Get existing history or create new
-  const existingHistory = JSON.parse(localStorage.getItem(historyKey)) || [];
-  
-  // Add new entry to beginning
-  const updatedHistory = [moodEntry, ...existingHistory];
-  
-  // Keep only last 5 entries
-  const trimmedHistory = updatedHistory.slice(0, 5);
-  
-  // Save back to localStorage
-  localStorage.setItem(historyKey, JSON.stringify(trimmedHistory));
-  
-  // Check if we reached 5 entries for behavioral insights
-  if (trimmedHistory.length === 5) {
-    showBehavioralInsights(petId, trimmedHistory);
-  }
-}
-
-function showBehavioralInsights(petId, moodHistory) {
-  // Simple behavioral analysis
-  const moodCounts = {};
-  moodHistory.forEach(entry => {
-    moodCounts[entry.mood] = (moodCounts[entry.mood] || 0) + 1;
-  });
-  
-  const mostCommonMood = Object.keys(moodCounts).reduce((a, b) => 
-    moodCounts[a] > moodCounts[b] ? a : b
-  );
-  
-  // Show popup notification
-  setTimeout(() => {
-    if (confirm(`🐾 Behavioral Insight for your pet!\n\nYou've tracked 5 mood entries. Most common mood: ${mostCommonMood}\n\nConsider discussing persistent mood patterns with your vet if concerned.`)) {
-      // User acknowledged
-    }
-  }, 1000);
-}
 
 //=========================
 // Join Pet Community - ENHANCED VERSION
@@ -2192,6 +2145,55 @@ if (typeof loadSavedPetProfile === 'function') {
  }
 } // CLOSES FUNCTION
 
+
+
+//===================================
+// Standalone Mood Tracking System
+//===================================
+function trackMoodEntry(petId, mood, note) {
+  const historyKey = `moodHistory_${petId}`;
+  const moodEntry = {
+    mood: mood,
+    note: note || '',
+    date: new Date().toISOString()
+  };
+  
+  // Get existing history or create new
+  const existingHistory = JSON.parse(localStorage.getItem(historyKey)) || [];
+  
+  // Add new entry to beginning
+  const updatedHistory = [moodEntry, ...existingHistory];
+  
+  // Keep only last 5 entries
+  const trimmedHistory = updatedHistory.slice(0, 5);
+  
+  // Save back to localStorage
+  localStorage.setItem(historyKey, JSON.stringify(trimmedHistory));
+  
+  // Check if we reached 5 entries for behavioral insights
+  if (trimmedHistory.length === 5) {
+    showBehavioralInsights(petId, trimmedHistory);
+  }
+}
+
+function showBehavioralInsights(petId, moodHistory) {
+  // Simple behavioral analysis
+  const moodCounts = {};
+  moodHistory.forEach(entry => {
+    moodCounts[entry.mood] = (moodCounts[entry.mood] || 0) + 1;
+  });
+  
+  const mostCommonMood = Object.keys(moodCounts).reduce((a, b) => 
+    moodCounts[a] > moodCounts[b] ? a : b
+  );
+  
+  // Show popup notification
+  setTimeout(() => {
+    if (confirm(`🐾 Behavioral Insight for your pet!\n\nYou've tracked 5 mood entries. Most common mood: ${mostCommonMood}\n\nConsider discussing persistent mood patterns with your vet if concerned.`)) {
+      // User acknowledged
+    }
+  }, 1000);
+}
 
 // ======== EVENT DELEGATION (FIXED) ========
 // ✅ Keep this block to handle profile actions (WIRING) ALL THE BUTTONS IN LOADSAVEDPETPROFILES FUNCTION✅
