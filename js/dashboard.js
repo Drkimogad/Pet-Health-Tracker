@@ -2334,6 +2334,23 @@ function getTimeAgo(timestamp) {
   if (diffHours < 24) return `${diffHours}h ago`;
   return `${diffDays}d ago`;
 }
+
+
+function checkActivityInsights(petId, history) {
+  // Simple 30-day activity insights
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  
+  const recentActivities = history.filter(activity => 
+    new Date(activity.timestamp) > thirtyDaysAgo
+  );
+  
+  if (recentActivities.length >= 10) {
+    setTimeout(() => {
+      alert(`📊 Activity Insight: Your pet has been active ${recentActivities.length} times in the last 30 days! 🐾`);
+    }, 1500);
+  }
+}
 //============================================
 // Activity Tracking System RECENTLY IMPLEMENTED
 //====================================================
