@@ -2186,7 +2186,7 @@ function trackMoodEntry(petId, mood, note) {
 }
 
 function showBehavioralInsights(petId, moodHistory) {
-  // Simple behavioral analysis
+  // Simple pattern recognition
   const moodCounts = {};
   moodHistory.forEach(entry => {
     moodCounts[entry.mood] = (moodCounts[entry.mood] || 0) + 1;
@@ -2195,10 +2195,22 @@ function showBehavioralInsights(petId, moodHistory) {
   const mostCommonMood = Object.keys(moodCounts).reduce((a, b) => 
     moodCounts[a] > moodCounts[b] ? a : b
   );
-  
-  // Show popup notification
+
+  // Generate practical insights based on common moods
+  let insight = "";
+  if (mostCommonMood.includes("😊") || mostCommonMood.includes("🤩") || mostCommonMood.includes("😍")) {
+    insight = "Your pet shows mostly positive moods! Great job maintaining a happy environment.";
+  } else if (mostCommonMood.includes("😢") || mostCommonMood.includes("😰") || mostCommonMood.includes("😨")) {
+    insight = "You've recorded several anxious/sad moods. Consider noting what triggers these patterns.";
+  } else if (mostCommonMood.includes("🥱") || mostCommonMood.includes("😴") || mostCommonMood.includes("🤒")) {
+    insight = "Multiple tired/sick mood entries. Monitor energy levels, appetite changes and general health.";
+  } else {
+    insight = "You've tracked 5 mood patterns. Look for trends in daily activities and mood connections.";
+  }
+
+  // Show popup with disclaimer
   setTimeout(() => {
-    if (confirm(`🐾 Behavioral Insight for your pet!\n\nYou've tracked 5 mood entries. Most common mood: ${mostCommonMood}\n\nConsider discussing persistent mood patterns with your vet if concerned.`)) {
+    if (confirm(`🐾 Mood Tracking Insights\n\n${insight}\n\nMost frequent mood: ${mostCommonMood}\n\n💡 This is a simple tracking guide. For health concerns, please consult your veterinarian.`)) {
       // User acknowledged
     }
   }, 1000);
