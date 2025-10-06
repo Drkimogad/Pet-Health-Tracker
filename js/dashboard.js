@@ -2479,8 +2479,8 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
          `${DOM.moodSelector.value} - ${DOM.moodNote?.value || 'No note'} - ${new Date().toLocaleDateString()}` 
           : '',
        // ✅ CORRECT - use newId:
-         moodHistory: await getUpdatedMoodHistory(newId, DOM.moodSelector?.value, DOM.moodNote?.value),
-         activityHistory: await getUpdatedActivityHistory(newId, selectedActivities),
+       //  moodHistory: await getUpdatedMoodHistory(newId, DOM.moodSelector?.value, DOM.moodNote?.value),
+       //  activityHistory: await getUpdatedActivityHistory(newId, selectedActivities),
 
     
         reminders: {
@@ -2490,7 +2490,12 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
           grooming: DOM.groomingReminder?.value
         }
       }; // ← petData object ends here
-    
+
+
+        // KEEP THESE:
+if (selectedActivities.length > 0) {
+  trackActivities(petData.id, selectedActivities);
+}
      // Clear activity checkboxes after submission
       DOM.activityCheckboxes.forEach(checkbox => checkbox.checked = false);
 
@@ -2568,6 +2573,9 @@ console.log("📝 DEBUG - petData.birthday being saved:", petData.birthday);
    await saveProfile(petData); // call it to handle the saving and updating 
     // After saveProfile(petData); call, add:
     // Track mood entry if mood was selected
+    if (DOM.moodSelector?.value) {
+  trackMoodEntry(petData.id, DOM.moodSelector.value, DOM.moodNote?.value);
+}
 
 
 // 🆕 ADD OLD IMAGE DELETION RIGHT HERE NEWLY ADDED
