@@ -2213,6 +2213,7 @@ if (typeof loadSavedPetProfile === 'function') {
 
 
 //=============================================
+// Mood tracking logic
 // helper functions forgetting mood update
 async function getUpdatedMoodHistory(petId, mood, note) {
   if (!mood) return []; // Return existing history if no new mood
@@ -2301,7 +2302,9 @@ function showBehavioralInsights(petId, moodHistory) {
   }, 1000);
 }
 
+
 //=============================================
+// al, activity logging logic
 // Unified getRecentActivities works for both loadSavedPetProfile and showdetails 
 // =====================================================================================
 function getActivityDisplay(petId, mode = 'card') {
@@ -2360,6 +2363,65 @@ function checkActivityInsights(petId, history) {
     }, 1500);
   }
 }
+
+
+function checkMonthlyActivityReport(petId) {
+  const profile = window.petProfiles.find(p => p.id === petId);
+  const activities = profile?.activityHistory || [];
+  
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  
+  const monthlyActivities = activities.filter(activity => 
+    new Date(activity.timestamp) > thirtyDaysAgo
+  );
+  
+  if (monthlyActivities.length === 0) {
+    showActivityReport(petId, {});
+    return;
+  }
+  
+  // Count exact activities user logged
+  const activityCounts = {};
+  monthlyActivities.forEach(entry => {
+    activityCounts[entry.activity] = (activityCounts[entry.activity] || 0) + 1;
+  });
+  
+  showActivityReport(petId, activityCounts);
+}
+
+
+function showActivityReport(petId, activityCounts) {
+  const totalActivities = Object.values(activityCounts).reduce((sum, count) => sum + count, 0);
+  const profile = window.petProfiles.find(p => p.id === petId);
+  const petName = profile?.petName || 'your pet';
+  
+  let message = '';
+  
+  if (totalActivities === 0) {
+    message = `📊 Monthly Activity Report for ${petName}:\n\nYou logged 0 activities this month. Start tracking to monitor your pet's routine! 📝`;
+  } else {
+    const activityList = Object.entries(activityCounts)
+      .map(([activity, count]) => `${count} ${activity}`)
+      .join(', ');
+    
+    message = `📊 Monthly Activity Report for ${petName}:\n\n${activityList} this month. `;
+    
+    if (totalActivities >= 20) {
+      message += "Amazing consistency! 🏆";
+    } else if (totalActivities >= 10) {
+      message += "Great job tracking! 🌟";
+    } else {
+      message += "Every activity counts! 🐾";
+    }
+  }
+  
+  setTimeout(() => {
+    if (confirm(message + "\n\nView full activity history in pet details?")) {
+      // Optional: Open details modal
+    }
+  }, 2000);
+}
 //============================================
 // Activity Tracking System RECENTLY IMPLEMENTED
 //====================================================
@@ -2382,12 +2444,21 @@ async function trackActivities(petId, selectedActivities) {
   const existingHistory = JSON.parse(localStorage.getItem(historyKey)) || [];
   const updatedHistory = [...activityEntries, ...existingHistory].slice(0, 50);
   localStorage.setItem(historyKey, JSON.stringify(updatedHistory));
+    
+    // Add to trackActivities() function, after saving activities:
+const lastReportKey = `lastActivityReport_${petId}`;
+const lastReport = localStorage.getItem(lastReportKey);
+const now = new Date();
+
+if (!lastReport || (now - new Date(lastReport)) >= 30 * 24 * 60 * 60 * 1000) {
+  checkMonthlyActivityReport(petId);
+  localStorage.setItem(lastReportKey, now.toISOString());
+}
   
   checkActivityInsights(petId, updatedHistory);
 }
 
-
-
+// end track activity section 
 
 // ======== EVENT DELEGATION (FIXED) ========
 // ✅ Keep this block to handle profile actions (WIRING) ALL THE BUTTONS IN LOADSAVEDPETPROFILES FUNCTION✅
