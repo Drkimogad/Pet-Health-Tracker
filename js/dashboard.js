@@ -2312,13 +2312,15 @@ function getActivityDisplay(petId, mode = 'card') {
   const count = mode === 'card' ? 5 : 1;
   const title = mode === 'card' ? 'Recent Activities:' : 'Last Activity:';
   
-  // Get activities from profile data or localStorage
+  // Get activities from CURRENT profile data (Firestore)
   const profile = window.petProfiles.find(p => p.id === petId);
   let activities = [];
   
+  // ✅ FIX: Always use profile.activityHistory if it exists
   if (profile?.activityHistory?.length > 0) {
     activities = profile.activityHistory.slice(0, count);
   } else {
+    // Fallback to localStorage (legacy)
     const historyKey = `activityHistory_${petId}`;
     const history = JSON.parse(localStorage.getItem(historyKey)) || [];
     activities = history.slice(0, count);
