@@ -2435,21 +2435,7 @@ function checkWeeklyActivityReport(petId) {
   showWeeklyReport(petId, activityCounts, weeklyActivities.length);
 }
 
-//===========Helper to get updated activity history==============
-async function getUpdatedActivityHistory(petId, newActivities) {
-  // Get existing activities from current profile data
-  const profile = window.petProfiles.find(p => p.id === petId);
-  const existingHistory = profile?.activityHistory || [];
-  
-  // Create new activity entries
-  const newEntries = newActivities.map(activity => ({
-    activity: activity,
-    timestamp: new Date().toISOString()
-  }));
-  
-  // Merge and limit to 50 entries
-  return [...newEntries, ...existingHistory].slice(0, 50);
-}
+
 // SHOW WEEKLY REPORT FUNCTION
 function showWeeklyReport(petId, activityCounts, totalActivities) {
   const profile = window.petProfiles.find(p => p.id === petId);
@@ -2481,44 +2467,7 @@ function showWeeklyReport(petId, activityCounts, totalActivities) {
     }
   }, 2000);
 }
-//============================================
-// Activity Tracking System RECENTLY IMPLEMENTED
-//====================================================
-async function trackActivities(petId, selectedActivities) {
-  const activityEntries = selectedActivities.map(activity => ({
-    activity: activity,
-    timestamp: new Date().toISOString()
-  }));
-  
-  // Save to Firestore
-  if (firebase.auth().currentUser) {
-    const db = firebase.firestore();
-    await db.collection("profiles").doc(petId).update({
-      activityHistory: firebase.firestore.FieldValue.arrayUnion(...activityEntries)
-    });
-  }
-  
-  // Also save to localStorage
-  const historyKey = `activityHistory_${petId}`;
-  const existingHistory = JSON.parse(localStorage.getItem(historyKey)) || [];
-  const updatedHistory = [...activityEntries, ...existingHistory].slice(0, 50);
-  localStorage.setItem(historyKey, JSON.stringify(updatedHistory));
-    
-    // Add to trackActivities() function, after saving activities:
-const lastReportKey = `lastActivityReport_${petId}`;
-const lastReport = localStorage.getItem(lastReportKey);
-const now = new Date();
-
-// REPLACE the monthly check with weekly:
-if (!lastReport || (now - new Date(lastReport)) >= 7 * 24 * 60 * 60 * 1000) {
-  checkWeeklyActivityReport(petId); // Rename function
-  localStorage.setItem(lastReportKey, now.toISOString());
-}
-  
-  checkActivityInsights(petId, updatedHistory);
-}
-
-// end track activity section 
+ // trackActivitiesrun inside savedProfiles() now
 
 // ======== EVENT DELEGATION (FIXED) ========
 // ✅ Keep this block to handle profile actions (WIRING) ALL THE BUTTONS IN LOADSAVEDPETPROFILES FUNCTION✅
