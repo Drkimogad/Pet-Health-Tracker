@@ -2116,7 +2116,14 @@ showErrorNotification("❌ Failed to generate QR code. Please try again.")
 
 //=================================================
 // Enhanced helper function for saving offline
-//===============================================
+/*What Happens Inside saveProfile:
+📋 Core Profile Data - Saves name, breed, age, etc.
+😊 Mood Tracking - If mood provided, adds to history + checks 5-entry insights
+🐾 Activity Tracking - If activities provided, adds to history + checks weekly report
+📊 Weekly Report Check - Determines if it's time for weekly activity summary
+🔥 Firestore - Single write with everything
+💾 LocalStorage - Updates all local data
+🔄 UI Update - Refreshes display*/
 //=================================================
 // Enhanced helper function for saving offline
 //===============================================
