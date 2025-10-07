@@ -2369,8 +2369,9 @@ function checkWeeklyActivityReport(petId) {
   
   showWeeklyReport(petId, activityCounts, weeklyActivities.length);
 }
-//===========Helper to get updated activity history==============
-async function getUpdatedActivityHistory(petId, newActivities) {
+//===========Helper to get updated activity history NOT NEEDED ANYMORE???==============
+// IT WAS USED TO BUILD ACTIVITY HISTORY ARRAY IN PETDATA WHICH IS NOT USED ANYMORE
+/*async function getUpdatedActivityHistory(petId, newActivities) {
   // Get existing activities from current profile data
   const profile = window.petProfiles.find(p => p.id === petId);
   const existingHistory = profile?.activityHistory || [];
@@ -2383,7 +2384,8 @@ async function getUpdatedActivityHistory(petId, newActivities) {
   
   // Merge and limit to 50 entries
   return [...newEntries, ...existingHistory].slice(0, 50);
-}
+}*/
+
 // SHOW WEEKLY REPORT FUNCTION
 function showWeeklyReport(petId, activityCounts, totalActivities) {
   const profile = window.petProfiles.find(p => p.id === petId);
@@ -2415,16 +2417,24 @@ function showWeeklyReport(petId, activityCounts, totalActivities) {
     }
   }, 2000);
 }
+
 //============================================
 // Activity Tracking System RECENTLY IMPLEMENTED
 //====================================================
 async function trackActivities(petId, selectedActivities) {
+  if (selectedActivities.length === 0) return;
+  
   const activityEntries = selectedActivities.map(activity => ({
     activity: activity,
     timestamp: new Date().toISOString()
   }));
   
-  // Save to Firestore
+  // ✅ Use window.petProfiles as single source of truth
+  const profile = window.petProfiles.find(p => p.id === petId);
+  const existingHistory = profile?.activityHistory || [];
+  const updatedHistory = [...activityEntries, ...existingHistory].slice(0, 50);
+  
+  // ✅ Update Firestore
   if (firebase.auth().currentUser) {
     const db = firebase.firestore();
     await db.collection("profiles").doc(petId).update({
@@ -2432,22 +2442,24 @@ async function trackActivities(petId, selectedActivities) {
     });
   }
   
-  // Also save to localStorage
+  // ✅ Update localStorage
   const historyKey = `activityHistory_${petId}`;
-  const existingHistory = JSON.parse(localStorage.getItem(historyKey)) || [];
-  const updatedHistory = [...activityEntries, ...existingHistory].slice(0, 50);
   localStorage.setItem(historyKey, JSON.stringify(updatedHistory));
-    
-    // Add to trackActivities() function, after saving activities:
-const lastReportKey = `lastActivityReport_${petId}`;
-const lastReport = localStorage.getItem(lastReportKey);
-const now = new Date();
+  
+  // ✅ Update window.petProfiles immediately
+  if (profile) {
+    profile.activityHistory = updatedHistory;
+  }
+  
+  // ✅ Weekly check (use UPDATED data)
+  const lastReportKey = `lastActivityReport_${petId}`;
+  const lastReport = localStorage.getItem(lastReportKey);
+  const now = new Date();
 
-// REPLACE the monthly check with weekly:
-if (!lastReport || (now - new Date(lastReport)) >= 7 * 24 * 60 * 60 * 1000) {
-  checkWeeklyActivityReport(petId); // Rename function
-  localStorage.setItem(lastReportKey, now.toISOString());
-}
+  if (!lastReport || (now - new Date(lastReport)) >= 7 * 24 * 60 * 60 * 1000) {
+    checkWeeklyActivityReport(petId); // Now uses fresh data
+    localStorage.setItem(lastReportKey, now.toISOString());
+  }
   
   checkActivityInsights(petId, updatedHistory);
 }
@@ -2569,7 +2581,7 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
         mood: DOM.moodSelector?.value ? 
          `${DOM.moodSelector.value} - ${DOM.moodNote?.value || 'No note'} - ${new Date().toLocaleDateString()}` 
           : '',
-        activityHistory: await getUpdatedActivityHistory(newId, selectedActivities),
+       // activityHistory: await getUpdatedActivityHistory(newId, selectedActivities),
   
         reminders: {
           birthdayReminder: DOM.birthdayReminder?.value,
@@ -2658,7 +2670,7 @@ console.log("📝 DEBUG - petData.birthday being saved:", petData.birthday);
 
 // Activities are already in petData, but we might still want insights
 if (selectedActivities.length > 0) {
-  checkActivityInsights(petData.id, petData.activityHistory);
+  await trackActivities(petData.id, selectedActivities);
 }
         // Clear activity checkboxes after submission
 DOM.activityCheckboxes.forEach(checkbox => checkbox.checked = false);
