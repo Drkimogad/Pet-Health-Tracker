@@ -2230,18 +2230,18 @@ async function getUpdatedMoodHistory(petId, mood, note) {
   return [newEntry, ...existing].slice(0, 5);
 }
 
-async function getUpdatedActivityHistory(petId, newActivities) {
-  if (!newActivities.length) return []; // Return existing if no new activities
+//async function getUpdatedActivityHistory(petId, newActivities) {
+//  if (!newActivities.length) return []; // Return existing if no new activities
   
-  const newEntries = newActivities.map(activity => ({
-    activity: activity,
-    timestamp: new Date().toISOString()
-  }));
+//  const newEntries = newActivities.map(activity => ({
+//    activity: activity,
+//    timestamp: new Date().toISOString()
+//  }));
   
   // Get existing history
-  const existing = await getActivityHistory(petId);
-  return [...newEntries, ...existing].slice(0, 50);
-}
+//  const existing = await getActivityHistory(petId);
+//  return [...newEntries, ...existing].slice(0, 50);
+//}
 //===================================
 // Standalone Mood Tracking System
 //===================================
@@ -2664,13 +2664,29 @@ console.log("📝 DEBUG - petData.age being saved:", petData.age);
 console.log("📝 DEBUG - petData.birthday being saved:", petData.birthday);
       
   // 🟢 REPLACE all the manual saving with this single call:
-   await saveProfile(petData); // call it to handle the saving and updating 
-    // Track mood entry if mood was selected
+   await saveProfile(petData); // call it to handle the saving and updating
+        
+    // ✅Track mood entry if mood was selected
     if (DOM.moodSelector?.value) {
   trackMoodEntry(petData.id, DOM.moodSelector.value, DOM.moodNote?.value);
 }
+    // for future consideration to log mood once a day only
+// ✅ ENHANCED: Track mood entry if mood was selected AND no mood logged today
+/*if (DOM.moodSelector?.value) {
+  const profile = window.petProfiles.find(p => p.id === petData.id);
+  const lastMoodDate = profile?.moodHistory?.[0]?.date;
+  const today = new Date().toDateString();
+  
+  // Only track if no mood logged today//
+  if (!lastMoodDate || new Date(lastMoodDate).toDateString() !== today) {
+    trackMoodEntry(petData.id, DOM.moodSelector.value, DOM.moodNote?.value);
+  } else {
+    console.log("📝 Mood already logged today - not creating duplicate");
+    // Optional: Show subtle feedback to user//
+  }
+} */
 
-// Activities are already in petData, but we might still want insights
+// CALL TRACK ACTIVITIES HERE 
 if (selectedActivities.length > 0) {
   await trackActivities(petData.id, selectedActivities);
 }
