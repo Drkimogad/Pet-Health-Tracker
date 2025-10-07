@@ -2377,7 +2377,7 @@ function checkWeeklyActivityReport(petId) {
 }
 //===========Helper to get updated activity history NOT NEEDED ANYMORE???==============
 // IT WAS USED TO BUILD ACTIVITY HISTORY ARRAY IN PETDATA WHICH IS NOT USED ANYMORE
-/*async function getUpdatedActivityHistory(petId, newActivities) {
+async function getUpdatedActivityHistory(petId, newActivities) {
   // Get existing activities from current profile data
   const profile = window.petProfiles.find(p => p.id === petId);
   const existingHistory = profile?.activityHistory || [];
@@ -2390,7 +2390,7 @@ function checkWeeklyActivityReport(petId) {
   
   // Merge and limit to 50 entries
   return [...newEntries, ...existingHistory].slice(0, 50);
-}*/
+}
 
 // SHOW WEEKLY REPORT FUNCTION
 function showWeeklyReport(petId, activityCounts, totalActivities) {
@@ -2470,6 +2470,10 @@ async function trackActivities(petId, selectedActivities) {
   }
   
   checkActivityInsights(petId, updatedHistory);
+    // ✅ ADD THIS: Force UI update after activities saved
+  if (typeof loadSavedPetProfile === 'function') {
+    loadSavedPetProfile();
+  }
 }
 
 // end track activity section 
