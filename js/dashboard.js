@@ -2213,8 +2213,11 @@ if (typeof loadSavedPetProfile === 'function') {
 } // CLOSES FUNCTION
 
 
-//=============================================
-// Mood tracking logic
+//=========================================================================================
+/* Mood tracking logic: i am using dual mood system, in petdata i am saving mood as a string to show only
+the latest mood logged. couldn't add more than one entry in rendered petcard for CANVAS CAPTURE.
+while in mood tracking i am using array of 5+ insight for behavioural tracking after 5 enteries
+and mood tracking only runs if there is a selected mood in dropdown menu. */
 // helper functions forgetting mood update
 async function getUpdatedMoodHistory(petId, mood, note) {
   if (!mood) return []; // Return existing history if no new mood
@@ -2305,8 +2308,11 @@ function showBehavioralInsights(petId, moodHistory) {
 
 
 //=============================================
-// al, activity logging logic
-// Unified getRecentActivities works for both loadSavedPetProfile and showdetails 
+// All activity logging logic
+/* Unified and works for both loadSavedPetProfile and showdetails 
+Trackactivity logic only runs after saveprofiles() is called in form submission. if activity boxes are ticked/selected
+it runs and updates firestore, localstorage and keep tracking. if edit has taken place without any activity logging
+the function stays silent */
 // =====================================================================================
 function getLastActivity(petId) {
   const profile = window.petProfiles.find(p => p.id === petId);
