@@ -2436,12 +2436,7 @@ async function trackActivities(petId, selectedActivities) {
     activity: activity,
     timestamp: new Date().toISOString()
   }));
-  
-  // ✅ Use window.petProfiles as single source of truth
-  const profile = window.petProfiles.find(p => p.id === petId);
-  const existingHistory = profile?.activityHistory || [];
-  const updatedHistory = [...activityEntries, ...existingHistory].slice(0, 50);
-  
+
   // ✅ Update Firestore
   if (firebase.auth().currentUser) {
     const db = firebase.firestore();
@@ -2449,16 +2444,36 @@ async function trackActivities(petId, selectedActivities) {
       activityHistory: firebase.firestore.FieldValue.arrayUnion(...activityEntries)
     });
   }
+
+ // ✅ FIX: Update localStorage with SAME key name
+  const existingProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+  const profileIndex = existingProfiles.findIndex(p => p.id === petId);
   
-  // ✅ Update localStorage
-  const historyKey = `activityHistory_${petId}`;
-  localStorage.setItem(historyKey, JSON.stringify(updatedHistory));
-  
-  // ✅ Update window.petProfiles immediately
-  if (profile) {
-    profile.activityHistory = updatedHistory;
+  if (profileIndex !== -1) {
+    if (!existingProfiles[profileIndex].activityHistory) {
+      existingProfiles[profileIndex].activityHistory = [];
+    }
+    existingProfiles[profileIndex].activityHistory = 
+      [...activityEntries, ...existingProfiles[profileIndex].activityHistory].slice(0, 50);
+    
+    localStorage.setItem('petProfiles', JSON.stringify(existingProfiles));
   }
-  
+
+    // ✅ Update window.petProfiles immediately
+  const profileIndexWindow = window.petProfiles.findIndex(p => p.id === petId);
+  if (profileIndexWindow !== -1) {
+    if (!window.petProfiles[profileIndexWindow].activityHistory) {
+      window.petProfiles[profileIndexWindow].activityHistory = [];
+    }
+    window.petProfiles[profileIndexWindow].activityHistory = 
+      [...activityEntries, ...window.petProfiles[profileIndexWindow].activityHistory].slice(0, 50);
+  }
+    
+    // ✅ FORCE UI REFRESH
+  if (typeof loadSavedPetProfile === 'function') {
+    loadSavedPetProfile();
+  }
+   
   // ✅ Weekly check (use UPDATED data)
   const lastReportKey = `lastActivityReport_${petId}`;
   const lastReport = localStorage.getItem(lastReportKey);
@@ -2469,11 +2484,7 @@ async function trackActivities(petId, selectedActivities) {
     localStorage.setItem(lastReportKey, now.toISOString());
   }
   
-  checkActivityInsights(petId, updatedHistory);
-    // ✅ ADD THIS: Force UI update after activities saved
-  if (typeof loadSavedPetProfile === 'function') {
-    loadSavedPetProfile();
-  }
+checkActivityInsights(petId, window.petProfiles[profileIndexWindow]?.activityHistory || []);
 }
 
 // end track activity section 
