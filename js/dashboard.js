@@ -411,6 +411,9 @@ async function loadSavedPetProfile() {
       savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
     }
 
+      // In loadSavedPetProfile(), add this after loading profiles:
+console.log("🔄 REFRESHED PROFILE ACTIVITIES:", savedProfiles[1]?.activityHistory);
+      
     // ✅ RENDER THE PROFILES (whether from Firestore or localStorage)
     const savedProfilesList = DOM.savedProfilesList;
     if (!savedProfilesList) return;
