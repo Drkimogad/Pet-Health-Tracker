@@ -2575,9 +2575,9 @@ if (selectedActivities.length > 0) {
 }
 
         // KEEP THESE:
-if (selectedActivities.length > 0) {
-  trackActivities(petData.id, selectedActivities);
-}
+//if (selectedActivities.length > 0) {
+//  trackActivities(petData.id, selectedActivities);
+//}
      // Clear activity checkboxes after submission
       DOM.activityCheckboxes.forEach(checkbox => checkbox.checked = false);
 
