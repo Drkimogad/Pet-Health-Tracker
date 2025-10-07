@@ -2662,6 +2662,19 @@ console.log("📝 DEBUG - petData.birthday being saved:", petData.birthday);
   trackMoodEntry(petData.id, DOM.moodSelector.value, DOM.moodNote?.value);
 }
 
+// ✅ ADD WEEKLY CHECK HERE:
+const lastReportKey = `lastActivityReport_${petData.id}`;
+const lastReport = localStorage.getItem(lastReportKey);
+const now = new Date();
+
+if (!lastReport || (now - new Date(lastReport)) >= 7 * 24 * 60 * 60 * 1000) {
+  checkWeeklyActivityReport(petData.id);
+  localStorage.setItem(lastReportKey, now.toISOString());
+}
+
+// Debug to verify it's working:
+console.log("📅 WEEKLY CHECK - Last report:", lastReport, "Days since:", lastReport ? (now - new Date(lastReport)) / (24 * 60 * 60 * 1000) : 'First time');
+
 
 // 🆕 ADD OLD IMAGE DELETION RIGHT HERE NEWLY ADDED
 if (oldImagePublicId) {
