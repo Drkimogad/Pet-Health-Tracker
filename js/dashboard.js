@@ -2117,7 +2117,72 @@ showErrorNotification("❌ Failed to generate QR code. Please try again.")
 //=================================================
 // Enhanced helper function for saving offline
 //===============================================
-async function saveProfile(profile) {
+//=================================================
+// Enhanced helper function for saving offline
+//===============================================
+async function saveProfile(profile, moodData = null, selectedActivities = []) {
+  // ✅ WEEKLY REPORT CHECK
+  const now = new Date();
+  const sevenDaysAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+  
+  if (!profile.lastWeeklyReport || new Date(profile.lastWeeklyReport) < sevenDaysAgo) {
+    console.log("📊 Generating weekly activity report");
+    checkWeeklyActivityReport(profile.id);
+    profile.lastWeeklyReport = now.toISOString();
+  }
+  
+  // ✅ MOOD TRACKING INTEGRATION
+  if (moodData && moodData.mood) {
+    const moodEntry = {
+      mood: moodData.mood,
+      note: moodData.note || '',
+      date: new Date().toISOString()
+    };
+    
+    if (!profile.moodHistory) profile.moodHistory = [];
+    profile.moodHistory = [moodEntry, ...profile.moodHistory].slice(0, 5);
+    
+    const historyKey = `moodHistory_${profile.id}`;
+    const existingHistory = JSON.parse(localStorage.getItem(historyKey)) || [];
+    const updatedHistory = [moodEntry, ...existingHistory].slice(0, 5);
+    localStorage.setItem(historyKey, JSON.stringify(updatedHistory));
+    
+    if (updatedHistory.length === 5) {
+      showBehavioralInsights(profile.id, updatedHistory);
+    }
+  }
+  
+  // ✅ ACTIVITY TRACKING INTEGRATION
+  if (selectedActivities.length > 0) {
+    const activityEntries = selectedActivities.map(activity => ({
+      activity: activity,
+      timestamp: new Date().toISOString()
+    }));
+    
+    if (!profile.activityHistory) profile.activityHistory = [];
+    profile.activityHistory = [...activityEntries, ...profile.activityHistory].slice(0, 50);
+    
+    // Also save to localStorage
+    const historyKey = `activityHistory_${profile.id}`;
+    const existingHistory = JSON.parse(localStorage.getItem(historyKey)) || [];
+    const updatedHistory = [...activityEntries, ...existingHistory].slice(0, 50);
+    localStorage.setItem(historyKey, JSON.stringify(updatedHistory));
+    
+    // Weekly report check for activities
+    const lastReportKey = `lastActivityReport_${profile.id}`;
+    const lastReport = localStorage.getItem(lastReportKey);
+    
+    if (!lastReport || (now - new Date(lastReport)) >= 7 * 24 * 60 * 60 * 1000) {
+      checkWeeklyActivityReport(profile.id);
+      localStorage.setItem(lastReportKey, now.toISOString());
+    }
+    
+    checkActivityInsights(profile.id, updatedHistory);
+  }
+  
+
+
+    
   // ✅ DETERMINE IF THIS IS AN UPDATE OR ADD OPERATION
   const existingProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
   const isUpdate = existingProfiles.some(p => p.id === profile.id);
@@ -2165,7 +2230,7 @@ async function saveProfile(profile) {
 if (typeof loadSavedPetProfile === 'function') {
   loadSavedPetProfile(); // Update UI NOW
  }
-} // CLOSES THE FUNCTION
+} // closes the function 
 
 //===============================================
 // HELPER FOR OFFLINE DELETE ONLY
@@ -2305,7 +2370,7 @@ function showBehavioralInsights(petId, moodHistory) {
 
 
 //=============================================
-// al, activity logging logic
+// all activity logging logic
 // Unified getRecentActivities works for both loadSavedPetProfile and showdetails 
 // =====================================================================================
 function getLastActivity(petId) {
@@ -2369,6 +2434,7 @@ function checkWeeklyActivityReport(petId) {
   
   showWeeklyReport(petId, activityCounts, weeklyActivities.length);
 }
+
 //===========Helper to get updated activity history==============
 async function getUpdatedActivityHistory(petId, newActivities) {
   // Get existing activities from current profile data
@@ -2565,15 +2631,9 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
           phone: DOM.emergencyContactPhone?.value,
           relationship: DOM.emergencyContactRelationship?.value
         }],
-          // combined mood string for mood tracking:
-        mood: DOM.moodSelector?.value ? 
-         `${DOM.moodSelector.value} - ${DOM.moodNote?.value || 'No note'} - ${new Date().toLocaleDateString()}` 
-          : '',
+
        // ✅ CORRECT - use newId:
-       //  moodHistory: await getUpdatedMoodHistory(newId, DOM.moodSelector?.value, DOM.moodNote?.value),
-        activityHistory: await getUpdatedActivityHistory(newId, selectedActivities),
-          // In petData object:
-        lastWeeklyReport: firestoreTimestamp, // Store in Firestore
+     //   activityHistory: await getUpdatedActivityHistory(newId, selectedActivities),
   
         reminders: {
           birthdayReminder: DOM.birthdayReminder?.value,
@@ -2582,9 +2642,6 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
           grooming: DOM.groomingReminder?.value
         }
       }; // ← petData object ends here
-
-     // Clear activity checkboxes after submission
-      DOM.activityCheckboxes.forEach(checkbox => checkbox.checked = false);
 
       // photo handling/Cloudinary section     
       const fileInput = DOM.petPhotoInput;
@@ -2650,33 +2707,16 @@ if (editingProfileId !== null && fileInput.files[0]) {
         }
       }
       console.log("🖼️ Using photo:", petData.petPhoto);
-
-        console.log("🎂 DEBUG - Birthday field value:", DOM.petBirthday?.value);
-console.log("🔢 DEBUG - Calculated age:", calculateAge(DOM.petBirthday?.value));
-console.log("📝 DEBUG - petData.age being saved:", petData.age);
-console.log("📝 DEBUG - petData.birthday being saved:", petData.birthday);
       
-  // 🟢 REPLACE all the manual saving with this single call:
-   await saveProfile(petData); // call it to handle the saving and updating 
-    // Track mood entry if mood was selected
-    if (DOM.moodSelector?.value) {
-  trackMoodEntry(petData.id, DOM.moodSelector.value, DOM.moodNote?.value);
-}
+// 🟢 In form submission - FINAL CLEAN VERSION:
+await saveProfile(petData, {
+  mood: DOM.moodSelector?.value,
+  note: DOM.moodNote?.value
+}, selectedActivities);
+// removed track activity inside savedProfiles  as well as mood tracking
+// Clear activity checkboxes after submission
+DOM.activityCheckboxes.forEach(checkbox => checkbox.checked = false);
 
-// ✅ FIREBASE-BASED WEEKLY CHECK
-const now = new Date();
-const lastReport = profile?.lastWeeklyReport; // From Firestore data
-const sevenDaysAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
-
-if (!lastReport || new Date(lastReport) < sevenDaysAgo) {
-  checkWeeklyActivityReport(petData.id);
-  
-  // Update Firestore with new report date
-  const db = firebase.firestore();
-  await db.collection("profiles").doc(petData.id).update({
-    lastWeeklyReport: now.toISOString()
-  });
-}
         
 
 // 🆕 ADD OLD IMAGE DELETION RIGHT HERE NEWLY ADDED
