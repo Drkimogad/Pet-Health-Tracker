@@ -2565,6 +2565,11 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
         }
       }; // ← petData object ends here
 
+           console.log("🔄 ACTIVITY DEBUG - Editing:", editingProfileId !== null, "ID:", petData.id, "Activities:", selectedActivities);
+
+if (selectedActivities.length > 0) {
+  trackActivities(petData.id, selectedActivities);
+}
 
         // KEEP THESE:
 if (selectedActivities.length > 0) {
