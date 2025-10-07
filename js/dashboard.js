@@ -2369,7 +2369,21 @@ function checkWeeklyActivityReport(petId) {
   
   showWeeklyReport(petId, activityCounts, weeklyActivities.length);
 }
-
+//===========Helper to get updated activity history==============
+async function getUpdatedActivityHistory(petId, newActivities) {
+  // Get existing activities from current profile data
+  const profile = window.petProfiles.find(p => p.id === petId);
+  const existingHistory = profile?.activityHistory || [];
+  
+  // Create new activity entries
+  const newEntries = newActivities.map(activity => ({
+    activity: activity,
+    timestamp: new Date().toISOString()
+  }));
+  
+  // Merge and limit to 50 entries
+  return [...newEntries, ...existingHistory].slice(0, 50);
+}
 // SHOW WEEKLY REPORT FUNCTION
 function showWeeklyReport(petId, activityCounts, totalActivities) {
   const profile = window.petProfiles.find(p => p.id === petId);
@@ -2557,9 +2571,8 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
           : '',
        // ✅ CORRECT - use newId:
        //  moodHistory: await getUpdatedMoodHistory(newId, DOM.moodSelector?.value, DOM.moodNote?.value),
-       //  activityHistory: await getUpdatedActivityHistory(newId, selectedActivities),
-
-    
+        activityHistory: await getUpdatedActivityHistory(newId, selectedActivities),
+  
         reminders: {
           birthdayReminder: DOM.birthdayReminder?.value,
           vaccinations: DOM.vaccinationsAndDewormingReminder?.value,
@@ -2568,16 +2581,6 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
         }
       }; // ← petData object ends here
 
-           console.log("🔄 ACTIVITY DEBUG - Editing:", editingProfileId !== null, "ID:", petData.id, "Activities:", selectedActivities);
-
-if (selectedActivities.length > 0) {
-  trackActivities(petData.id, selectedActivities);
-}
-
-        // KEEP THESE:
-//if (selectedActivities.length > 0) {
-//  trackActivities(petData.id, selectedActivities);
-//}
      // Clear activity checkboxes after submission
       DOM.activityCheckboxes.forEach(checkbox => checkbox.checked = false);
 
