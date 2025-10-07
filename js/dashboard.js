@@ -479,10 +479,8 @@ async function loadSavedPetProfile() {
       `;
 
           // ✅ ADD ACTIVITIES DISPLAY RIGHT HERE
-      const activitiesHtml = getActivityDisplay(profile.id, 'card');
-      if (activitiesHtml) {
-        petCard.innerHTML += activitiesHtml;
-      }
+       const lastActivityHtml = getLastActivity(profile.id);
+       petCard.innerHTML += lastActivityHtml;
         
       // 🔁 Dynamic Reminders Container (INJECTED AFTER innerHTML)
       const remindersDiv = document.createElement('div');
@@ -634,7 +632,7 @@ const emergencyContact = profile.emergencyContacts?.[0] || {};
       <div>Diet Plan: ${profile.dietPlan || 'N/A'}</div>
       <div>Current Mood: ${profile.mood || 'N/A'}</div>
       <div class="section-break"><strong>Activities:</strong></div>
-         ${getActivityDisplay(profile.id, 'details')}
+         ${getLastActivity(profile.id)}
 
       <div class="section-break"><strong>Emergency Contact:</strong></div>
       <div>Name: ${profile.emergencyContacts?.[0]?.name || 'N/A'}</div>
@@ -2307,33 +2305,16 @@ function showBehavioralInsights(petId, moodHistory) {
 // al, activity logging logic
 // Unified getRecentActivities works for both loadSavedPetProfile and showdetails 
 // =====================================================================================
-function getActivityDisplay(petId, mode = 'card') {
-  // mode: 'card' (5 activities) or 'details' (1 activity)
-  const count = mode === 'card' ? 5 : 1;
-  const title = mode === 'card' ? 'Recent Activities:' : 'Last Activity:';
-  
-  // Get activities from CURRENT profile data (Firestore)
+function getLastActivity(petId) {
   const profile = window.petProfiles.find(p => p.id === petId);
-  let activities = [];
+  const activities = profile?.activityHistory || [];
   
-  // ✅ FIX: Always use profile.activityHistory if it exists
-  if (profile?.activityHistory?.length > 0) {
-    activities = profile.activityHistory.slice(0, count);
-  } else {
-    // Fallback to localStorage (legacy)
-    const historyKey = `activityHistory_${petId}`;
-    const history = JSON.parse(localStorage.getItem(historyKey)) || [];
-    activities = history.slice(0, count);
-  }
+  if (activities.length === 0) return '<div class="activity-section"><strong>Last Activity:</strong><div>No activities recorded</div></div>';
   
-  if (activities.length === 0) return '';
+  const lastActivity = activities[0]; // Most recent is first
+  const timeAgo = getTimeAgo(lastActivity.timestamp);
   
-  const activitiesHtml = activities.map(entry => {
-    const timeAgo = getTimeAgo(entry.timestamp);
-    return `<div class="recent-activity">${entry.activity} - ${timeAgo}</div>`;
-  }).join('');
-  
-  return `<div class="activity-section"><strong>${title}</strong>${activitiesHtml}</div>`;
+  return `<div class="activity-section"><strong>Last Activity:</strong><div class="recent-activity">${lastActivity.activity} - ${timeAgo}</div></div>`;
 }
 
 function getTimeAgo(timestamp) {
@@ -2366,60 +2347,53 @@ function checkActivityInsights(petId, history) {
   }
 }
 
-
-function checkMonthlyActivityReport(petId) {
+//Create weekly report function:
+function checkWeeklyActivityReport(petId) {
   const profile = window.petProfiles.find(p => p.id === petId);
   const activities = profile?.activityHistory || [];
   
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
   
-  const monthlyActivities = activities.filter(activity => 
-    new Date(activity.timestamp) > thirtyDaysAgo
+  const weeklyActivities = activities.filter(activity => 
+    new Date(activity.timestamp) > sevenDaysAgo
   );
   
-  if (monthlyActivities.length === 0) {
-    showActivityReport(petId, {});
-    return;
-  }
-  
-  // Count exact activities user logged
   const activityCounts = {};
-  monthlyActivities.forEach(entry => {
+  weeklyActivities.forEach(entry => {
     activityCounts[entry.activity] = (activityCounts[entry.activity] || 0) + 1;
   });
   
-  showActivityReport(petId, activityCounts);
+  showWeeklyReport(petId, activityCounts, weeklyActivities.length);
 }
 
-
-function showActivityReport(petId, activityCounts) {
-  const totalActivities = Object.values(activityCounts).reduce((sum, count) => sum + count, 0);
+// SHOW WEEKLY REPORT FUNCTION
+function showWeeklyReport(petId, activityCounts, totalActivities) {
   const profile = window.petProfiles.find(p => p.id === petId);
   const petName = profile?.petName || 'your pet';
   
   let message = '';
   
   if (totalActivities === 0) {
-    message = `📊 Monthly Activity Report for ${petName}:\n\nYou logged 0 activities this month. Start tracking to monitor your pet's routine! 📝`;
+    message = `📊 Weekly Activity Report for ${petName}:\n\nYou logged 0 activities this week. Consider tracking walks, grooming, or training sessions! 📝`;
   } else {
     const activityList = Object.entries(activityCounts)
       .map(([activity, count]) => `${count} ${activity}`)
       .join(', ');
     
-    message = `📊 Monthly Activity Report for ${petName}:\n\n${activityList} this month. `;
+    message = `📊 Weekly Activity Report for ${petName}:\n\n${activityList} this week. `;
     
-    if (totalActivities >= 20) {
-      message += "Amazing consistency! 🏆";
-    } else if (totalActivities >= 10) {
-      message += "Great job tracking! 🌟";
+    if (totalActivities >= 10) {
+      message += "Excellent activity level! 🏆";
+    } else if (totalActivities >= 5) {
+      message += "Good consistency! 🌟";
     } else {
-      message += "Every activity counts! 🐾";
+      message += "Keep building those healthy habits! 🐾";
     }
   }
   
   setTimeout(() => {
-    if (confirm(message + "\n\nView full activity history in pet details?")) {
+    if (confirm(message + "\n\nView activity history in pet details?")) {
       // Optional: Open details modal
     }
   }, 2000);
@@ -2452,8 +2426,9 @@ const lastReportKey = `lastActivityReport_${petId}`;
 const lastReport = localStorage.getItem(lastReportKey);
 const now = new Date();
 
-if (!lastReport || (now - new Date(lastReport)) >= 30 * 24 * 60 * 60 * 1000) {
-  checkMonthlyActivityReport(petId);
+// REPLACE the monthly check with weekly:
+if (!lastReport || (now - new Date(lastReport)) >= 7 * 24 * 60 * 60 * 1000) {
+  checkWeeklyActivityReport(petId); // Rename function
   localStorage.setItem(lastReportKey, now.toISOString());
 }
   
