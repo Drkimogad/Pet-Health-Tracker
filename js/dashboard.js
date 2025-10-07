@@ -2572,6 +2572,8 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
        // ✅ CORRECT - use newId:
        //  moodHistory: await getUpdatedMoodHistory(newId, DOM.moodSelector?.value, DOM.moodNote?.value),
         activityHistory: await getUpdatedActivityHistory(newId, selectedActivities),
+          // In petData object:
+        lastWeeklyReport: firestoreTimestamp, // Store in Firestore
   
         reminders: {
           birthdayReminder: DOM.birthdayReminder?.value,
@@ -2656,25 +2658,26 @@ console.log("📝 DEBUG - petData.birthday being saved:", petData.birthday);
       
   // 🟢 REPLACE all the manual saving with this single call:
    await saveProfile(petData); // call it to handle the saving and updating 
-    // After saveProfile(petData); call, add:
     // Track mood entry if mood was selected
     if (DOM.moodSelector?.value) {
   trackMoodEntry(petData.id, DOM.moodSelector.value, DOM.moodNote?.value);
 }
 
-// ✅ ADD WEEKLY CHECK HERE:
-const lastReportKey = `lastActivityReport_${petData.id}`;
-const lastReport = localStorage.getItem(lastReportKey);
+// ✅ FIREBASE-BASED WEEKLY CHECK
 const now = new Date();
+const lastReport = profile?.lastWeeklyReport; // From Firestore data
+const sevenDaysAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
 
-if (!lastReport || (now - new Date(lastReport)) >= 7 * 24 * 60 * 60 * 1000) {
+if (!lastReport || new Date(lastReport) < sevenDaysAgo) {
   checkWeeklyActivityReport(petData.id);
-  localStorage.setItem(lastReportKey, now.toISOString());
+  
+  // Update Firestore with new report date
+  const db = firebase.firestore();
+  await db.collection("profiles").doc(petData.id).update({
+    lastWeeklyReport: now.toISOString()
+  });
 }
-
-// Debug to verify it's working:
-console.log("📅 WEEKLY CHECK - Last report:", lastReport, "Days since:", lastReport ? (now - new Date(lastReport)) / (24 * 60 * 60 * 1000) : 'First time');
-
+        
 
 // 🆕 ADD OLD IMAGE DELETION RIGHT HERE NEWLY ADDED
 if (oldImagePublicId) {
