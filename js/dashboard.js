@@ -482,12 +482,8 @@ console.log("🔄 REFRESHED PROFILE ACTIVITIES:", savedProfiles[1]?.activityHist
       `;
 
           // ✅ ADD ACTIVITIES DISPLAY RIGHT HERE
-       // ✅ ADD LAST ACTIVITY DISPLAY RIGHT HERE
-setTimeout(() => {
   const lastActivityHtml = getLastActivity(profile.id);
-    console.log("🔄 INJECTING ACTIVITY HTML:", lastActivityHtml);
   petCard.innerHTML += lastActivityHtml;
-}, 100);
         
       // 🔁 Dynamic Reminders Container (INJECTED AFTER innerHTML)
       const remindersDiv = document.createElement('div');
