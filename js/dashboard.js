@@ -2422,8 +2422,10 @@ function showWeeklyReport(petId, activityCounts, totalActivities) {
 // Activity Tracking System RECENTLY IMPLEMENTED
 //====================================================
 async function trackActivities(petId, selectedActivities) {
+      // Only runs if user actually checked activity boxes
   if (selectedActivities.length === 0) return;
-  
+   
+    // Creates new activity entries
   const activityEntries = selectedActivities.map(activity => ({
     activity: activity,
     timestamp: new Date().toISOString()
@@ -2674,20 +2676,6 @@ if (selectedActivities.length > 0) {
 }
         // Clear activity checkboxes after submission
 DOM.activityCheckboxes.forEach(checkbox => checkbox.checked = false);
-
-// ✅ ADD WEEKLY CHECK HERE:
-const lastReportKey = `lastActivityReport_${petData.id}`;
-const lastReport = localStorage.getItem(lastReportKey);
-const now = new Date();
-
-if (!lastReport || (now - new Date(lastReport)) >= 7 * 24 * 60 * 60 * 1000) {
-  checkWeeklyActivityReport(petData.id);
-  localStorage.setItem(lastReportKey, now.toISOString());
-}
-
-// Debug to verify it's working:
-console.log("📅 WEEKLY CHECK - Last report:", lastReport, "Days since:", lastReport ? (now - new Date(lastReport)) / (24 * 60 * 60 * 1000) : 'First time');
-
         
 
 // 🆕 ADD OLD IMAGE DELETION RIGHT HERE NEWLY ADDED
