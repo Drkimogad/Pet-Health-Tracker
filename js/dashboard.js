@@ -2116,11 +2116,45 @@ showErrorNotification("❌ Failed to generate QR code. Please try again.")
 //=================================================
 // Enhanced helper function for saving offline
 //===============================================
-async function saveProfile(profile) {
+async function saveProfile(profile, moodData = null, selectedActivities = []) {
   // ✅ DETERMINE IF THIS IS AN UPDATE OR ADD OPERATION
   const existingProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
   const isUpdate = existingProfiles.some(p => p.id === profile.id);
   
+  // ✅ ADD: MOOD TRACKING INTEGRATION
+  if (moodData && moodData.mood) {
+    const moodEntry = {
+      mood: moodData.mood,
+      note: moodData.note || '',
+      date: new Date().toISOString()
+    };
+    
+    // Initialize or update moodHistory
+    if (!profile.moodHistory) profile.moodHistory = [];
+    profile.moodHistory = [moodEntry, ...profile.moodHistory].slice(0, 5);
+    
+    // Check for mood insights
+    if (profile.moodHistory.length === 5) {
+      setTimeout(() => showBehavioralInsights(profile.id, profile.moodHistory), 1000);
+    }
+  }
+  
+  // ✅ ADD: ACTIVITY TRACKING INTEGRATION
+  if (selectedActivities.length > 0) {
+    const activityEntries = selectedActivities.map(activity => ({
+      activity: activity,
+      timestamp: new Date().toISOString()
+    }));
+    
+    // Initialize or update activityHistory
+    if (!profile.activityHistory) profile.activityHistory = [];
+    profile.activityHistory = [...activityEntries, ...profile.activityHistory].slice(0, 50);
+    
+    // Check for activity reports
+    setTimeout(() => checkScheduledReports(profile.id), 1500);
+  }
+  
+  // ✅ EXISTING OFFLINE/ONLINE LOGIC CONTINUES HERE...  
   // Online: save directly to Firestore
   if (navigator.onLine && firebase.auth().currentUser) {
     const db = firebase.firestore();
@@ -2678,6 +2712,9 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
           grooming: DOM.groomingReminder?.value
         }
       }; // ← petData object ends here
+        
+              // Clear activity checkboxes after submission
+       DOM.activityCheckboxes.forEach(checkbox => checkbox.checked = false);
 
       // photo handling/Cloudinary section     
       const fileInput = DOM.petPhotoInput;
@@ -2752,34 +2789,6 @@ console.log("📝 DEBUG - petData.birthday being saved:", petData.birthday);
               
   // 🟢 REPLACE all the manual saving with this single call:
    await saveProfile(petData); // call it to handle the saving and updating
-        
-    // ✅Track mood entry if mood was selected
-    if (DOM.moodSelector?.value) {
-  trackMoodEntry(petData.id, DOM.moodSelector.value, DOM.moodNote?.value);
-}
-        
-// CALL TRACK ACTIVITIES HERE  before saveprofile is called
-if (selectedActivities.length > 0) {
-  await trackActivities(petData.id, selectedActivities);
-}  
-        // Clear activity checkboxes after submission
-DOM.activityCheckboxes.forEach(checkbox => checkbox.checked = false);
-        
-    // for future consideration to log mood once a day only
-// ✅ ENHANCED: Track mood entry if mood was selected AND no mood logged today
-/*if (DOM.moodSelector?.value) {
-  const profile = window.petProfiles.find(p => p.id === petData.id);
-  const lastMoodDate = profile?.moodHistory?.[0]?.date;
-  const today = new Date().toDateString();
-  
-  // Only track if no mood logged today//
-  if (!lastMoodDate || new Date(lastMoodDate).toDateString() !== today) {
-    trackMoodEntry(petData.id, DOM.moodSelector.value, DOM.moodNote?.value);
-  } else {
-    console.log("📝 Mood already logged today - not creating duplicate");
-    // Optional: Show subtle feedback to user//
-  }
-} */
      
 
 // 🆕 ADD OLD IMAGE DELETION RIGHT HERE NEWLY ADDED
