@@ -2456,27 +2456,31 @@ function showWeeklyReport(petId, activityCounts, totalActivities) {
 // Activity Tracking System RECENTLY IMPLEMENTED
 //====================================================
 async function trackActivities(petId, selectedActivities) {
+    // runs only if activity box is checked and update 
   if (selectedActivities.length === 0) return;
   
-  // Only handles immediate activity insights
   const activityEntries = selectedActivities.map(activity => ({
     activity: activity,
     timestamp: new Date().toISOString()
   }));
 
-  // Quick immediate feedback (optional)
+  // ✅ ADD: Backup to localStorage (like mood)
+  const historyKey = `activityHistory_${petId}`;
+  const existingHistory = JSON.parse(localStorage.getItem(historyKey)) || [];
+  const updatedHistory = [...activityEntries, ...existingHistory].slice(0, 50);
+  localStorage.setItem(historyKey, JSON.stringify(updatedHistory));
+
+  // Quick feedback
   if (selectedActivities.length >= 3) {
     setTimeout(() => {
       alert(`🎉 Great! You logged ${selectedActivities.length} activities today!`);
     }, 1000);
   }
-  
-  // Let checkScheduledReports handle weekly/monthly
 }
-
 
 //========================================
 // the brain that handles regular checks
+// it handles weekly and monthly insights now
 //=============================================
 function checkScheduledReports(petId) {
   const profile = window.petProfiles.find(p => p.id === petId);
