@@ -2121,38 +2121,28 @@ async function saveProfile(profile, moodData = null, selectedActivities = []) {
   const existingProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
   const isUpdate = existingProfiles.some(p => p.id === profile.id);
   
-// ✅ MOOD TRIGGER CHECK
-if (moodData && moodData.mood) {
-  const moodEntry = {
-    mood: moodData.mood,
-    note: moodData.note || '',
-    date: new Date().toISOString()
-  };
-  
-  if (!profile.moodHistory) profile.moodHistory = [];
-  const had4Entries = profile.moodHistory.length === 4;
-  profile.moodHistory = [moodEntry, ...profile.moodHistory].slice(0, 5);
-  
-  // Trigger ONLY when reaching exactly 5 entries
-  if (had4Entries && profile.moodHistory.length === 5) {
-    setTimeout(() => showBehavioralInsights(profile.id, profile.moodHistory), 1000);
+  // ✅ 1. UPDATE ARRAYS FIRST
+  if (moodData && moodData.mood) {
+    const moodEntry = {
+      mood: moodData.mood,
+      note: moodData.note || '',
+      date: new Date().toISOString()
+    };
+    
+    if (!profile.moodHistory) profile.moodHistory = [];
+    const had4Entries = profile.moodHistory.length === 4;
+    profile.moodHistory = [moodEntry, ...profile.moodHistory].slice(0, 5);
   }
-}
   
-  // ✅ ADD: ACTIVITY TRACKING INTEGRATION
-// ✅ ACTIVITY TRIGGER CHECK  
-if (selectedActivities.length > 0) {
-  const activityEntries = selectedActivities.map(activity => ({
-    activity: activity,
-    timestamp: new Date().toISOString()
-  }));
-  
-  if (!profile.activityHistory) profile.activityHistory = [];
-  profile.activityHistory = [...activityEntries, ...profile.activityHistory].slice(0, 50);
-  
-  // Always check reports when activities are logged
-  setTimeout(() => checkScheduledReports(profile.id), 1500);
-}
+  if (selectedActivities.length > 0) {
+    const activityEntries = selectedActivities.map(activity => ({
+      activity: activity,
+      timestamp: new Date().toISOString()
+    }));
+    
+    if (!profile.activityHistory) profile.activityHistory = [];
+    profile.activityHistory = [...activityEntries, ...profile.activityHistory].slice(0, 50);
+  }
   
   // ✅ EXISTING OFFLINE/ONLINE LOGIC CONTINUES HERE...  
   // Online: save directly to Firestore
@@ -2197,6 +2187,16 @@ if (selectedActivities.length > 0) {
 // ✅ ADD THIS - Force immediate UI refresh
 if (typeof loadSavedPetProfile === 'function') {
   loadSavedPetProfile(); // Update UI NOW
+ }
+  // ✅ 4. NOW SHOW TRIGGERS (after data is saved & UI updated)
+  if (moodData && moodData.mood) {
+    if (had4Entries && profile.moodHistory.length === 5) {
+      setTimeout(() => showBehavioralInsights(profile.id, profile.moodHistory), 1000);
+    }
+  }
+  
+  if (selectedActivities.length > 0) {
+    setTimeout(() => checkScheduledReports(profile.id), 1500);
  }
 } // CLOSES THE FUNCTION
 
