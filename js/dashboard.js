@@ -2121,28 +2121,30 @@ async function saveProfile(profile, moodData = null, selectedActivities = []) {
   const existingProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
   const isUpdate = existingProfiles.some(p => p.id === profile.id);
   
-  // ✅ 1. UPDATE ARRAYS FIRST
-  if (moodData && moodData.mood) {
-    const moodEntry = {
-      mood: moodData.mood,
-      note: moodData.note || '',
-      date: new Date().toISOString()
-    };
-    
-    if (!profile.moodHistory) profile.moodHistory = [];
-    const had4Entries = profile.moodHistory.length === 4;
-    profile.moodHistory = [moodEntry, ...profile.moodHistory].slice(0, 5);
-  }
+// ✅ 1. UPDATE ARRAYS FIRST
+let had4Entries = false;
+
+if (moodData && moodData.mood) {
+  const moodEntry = {
+    mood: moodData.mood,
+    note: moodData.note || '',
+    date: new Date().toISOString()
+  };
   
-  if (selectedActivities.length > 0) {
-    const activityEntries = selectedActivities.map(activity => ({
-      activity: activity,
-      timestamp: new Date().toISOString()
-    }));
-    
-    if (!profile.activityHistory) profile.activityHistory = [];
-    profile.activityHistory = [...activityEntries, ...profile.activityHistory].slice(0, 50);
-  }
+  if (!profile.moodHistory) profile.moodHistory = [];
+  had4Entries = profile.moodHistory.length === 4;
+  profile.moodHistory = [moodEntry, ...profile.moodHistory].slice(0, 5);
+}
+
+if (selectedActivities.length > 0) {
+  const activityEntries = selectedActivities.map(activity => ({
+    activity: activity,
+    timestamp: new Date().toISOString()
+  }));
+  
+  if (!profile.activityHistory) profile.activityHistory = [];
+  profile.activityHistory = [...activityEntries, ...profile.activityHistory].slice(0, 50);
+}
   
   // ✅ EXISTING OFFLINE/ONLINE LOGIC CONTINUES HERE...  
   // Online: save directly to Firestore
