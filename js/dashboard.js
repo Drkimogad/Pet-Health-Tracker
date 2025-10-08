@@ -2389,7 +2389,7 @@ async function getUpdatedActivityHistory(petId, newActivities) {
   }));
   
   // Merge and limit to 50 entries
-  return [...newEntries, ...existingHistory].slice(0, 50);
+  return [...newEntries, ...existingHistory].slice(0, 50); // show upto 50 mood enteries
 }
 
 // SHOW WEEKLY REPORT FUNCTION
@@ -2428,63 +2428,32 @@ function showWeeklyReport(petId, activityCounts, totalActivities) {
 // Activity Tracking System RECENTLY IMPLEMENTED
 //====================================================
 async function trackActivities(petId, selectedActivities) {
-      // Only runs if user actually checked activity boxes
+  // Only runs if user actually checked activity boxes
   if (selectedActivities.length === 0) return;
-   
-    // Creates new activity entries
+  
+  // ✅ 1. NO DATA SAVING HERE - just prepare for insights
   const activityEntries = selectedActivities.map(activity => ({
     activity: activity,
     timestamp: new Date().toISOString()
   }));
 
-  // ✅ Update Firestore
-  if (firebase.auth().currentUser) {
-    const db = firebase.firestore();
-    await db.collection("profiles").doc(petId).update({
-      activityHistory: firebase.firestore.FieldValue.arrayUnion(...activityEntries)
-    });
-  }
+  // ✅ 2. Get current activity history for insights
+  const profile = window.petProfiles.find(p => p.id === petId);
+  const currentHistory = profile?.activityHistory || [];
+  const updatedHistory = [...activityEntries, ...currentHistory].slice(0, 50);
 
- // ✅ FIX: Update localStorage with SAME key name
-  const existingProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-  const profileIndex = existingProfiles.findIndex(p => p.id === petId);
-  
-  if (profileIndex !== -1) {
-    if (!existingProfiles[profileIndex].activityHistory) {
-      existingProfiles[profileIndex].activityHistory = [];
-    }
-    existingProfiles[profileIndex].activityHistory = 
-      [...activityEntries, ...existingProfiles[profileIndex].activityHistory].slice(0, 50);
-    
-    localStorage.setItem('petProfiles', JSON.stringify(existingProfiles));
-  }
-
-    // ✅ Update window.petProfiles immediately
-  const profileIndexWindow = window.petProfiles.findIndex(p => p.id === petId);
-  if (profileIndexWindow !== -1) {
-    if (!window.petProfiles[profileIndexWindow].activityHistory) {
-      window.petProfiles[profileIndexWindow].activityHistory = [];
-    }
-    window.petProfiles[profileIndexWindow].activityHistory = 
-      [...activityEntries, ...window.petProfiles[profileIndexWindow].activityHistory].slice(0, 50);
-  }
-    
-    // ✅ FORCE UI REFRESH
-  if (typeof loadSavedPetProfile === 'function') {
-    loadSavedPetProfile();
-  }
-   
-  // ✅ Weekly check (use UPDATED data)
+  // ✅ 3. Insights/Reports (use current + new activities)
   const lastReportKey = `lastActivityReport_${petId}`;
   const lastReport = localStorage.getItem(lastReportKey);
   const now = new Date();
 
   if (!lastReport || (now - new Date(lastReport)) >= 7 * 24 * 60 * 60 * 1000) {
-    checkWeeklyActivityReport(petId); // Now uses fresh data
+    checkWeeklyActivityReport(petId);  // 🎯 Runs weekly
     localStorage.setItem(lastReportKey, now.toISOString());
   }
-  
-checkActivityInsights(petId, window.petProfiles[profileIndexWindow]?.activityHistory || []);
+    
+  // ✅ Monthly insights - runs EVERY time activities are logged  
+  checkActivityInsights(petId, updatedHistory);  // 🎯 Runs monthly check
 }
 
 // end track activity section 
@@ -2604,7 +2573,7 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
         mood: DOM.moodSelector?.value ? 
          `${DOM.moodSelector.value} - ${DOM.moodNote?.value || 'No note'} - ${new Date().toLocaleDateString()}` 
           : '',
-       // activityHistory: await getUpdatedActivityHistory(newId, selectedActivities),
+        activityHistory: await getUpdatedActivityHistory(newId, selectedActivities), // keep it like mood string and array.
   
         reminders: {
           birthdayReminder: DOM.birthdayReminder?.value,
@@ -2683,7 +2652,8 @@ if (editingProfileId !== null && fileInput.files[0]) {
 console.log("🔢 DEBUG - Calculated age:", calculateAge(DOM.petBirthday?.value));
 console.log("📝 DEBUG - petData.age being saved:", petData.age);
 console.log("📝 DEBUG - petData.birthday being saved:", petData.birthday);
-      
+        
+              
   // 🟢 REPLACE all the manual saving with this single call:
    await saveProfile(petData); // call it to handle the saving and updating
         
@@ -2691,6 +2661,14 @@ console.log("📝 DEBUG - petData.birthday being saved:", petData.birthday);
     if (DOM.moodSelector?.value) {
   trackMoodEntry(petData.id, DOM.moodSelector.value, DOM.moodNote?.value);
 }
+        
+// CALL TRACK ACTIVITIES HERE  before saveprofile is called
+if (selectedActivities.length > 0) {
+  await trackActivities(petData.id, selectedActivities);
+}  
+        // Clear activity checkboxes after submission
+DOM.activityCheckboxes.forEach(checkbox => checkbox.checked = false);
+        
     // for future consideration to log mood once a day only
 // ✅ ENHANCED: Track mood entry if mood was selected AND no mood logged today
 /*if (DOM.moodSelector?.value) {
@@ -2706,14 +2684,7 @@ console.log("📝 DEBUG - petData.birthday being saved:", petData.birthday);
     // Optional: Show subtle feedback to user//
   }
 } */
-
-// CALL TRACK ACTIVITIES HERE 
-if (selectedActivities.length > 0) {
-  await trackActivities(petData.id, selectedActivities);
-}
-        // Clear activity checkboxes after submission
-DOM.activityCheckboxes.forEach(checkbox => checkbox.checked = false);
-        
+     
 
 // 🆕 ADD OLD IMAGE DELETION RIGHT HERE NEWLY ADDED
 if (oldImagePublicId) {
