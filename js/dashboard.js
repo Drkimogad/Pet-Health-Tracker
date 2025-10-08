@@ -2487,35 +2487,6 @@ function resetMonthlyActivityData(petId) {
   }
 }
 
-//============================================
-// Activity Tracking System RECENTLY IMPLEMENTED
-//====================================================
-async function trackActivities(petId, selectedActivities) {
-  if (selectedActivities.length === 0) return;
-  
-  const activityEntries = selectedActivities.map(activity => ({
-    activity: activity,
-    timestamp: new Date().toISOString()
-  }));
-
-  // ✅ SAVE TO FIRESTORE (like mood tracking)
-  if (firebase.auth().currentUser) {
-    const db = firebase.firestore();
-    await db.collection("profiles").doc(petId).update({
-      activityHistory: firebase.firestore.FieldValue.arrayUnion(...activityEntries)
-    });
-  }
-
-  // ✅ SAVE TO LOCALSTORAGE (like mood tracking)
-  const historyKey = `activityHistory_${petId}`;
-  const existingHistory = JSON.parse(localStorage.getItem(historyKey)) || [];
-  const updatedHistory = [...activityEntries, ...existingHistory].slice(0, 50);
-  localStorage.setItem(historyKey, JSON.stringify(updatedHistory));
-
-  // ✅ CALL SCHEDULED REPORTS (replaces quick feedback)
-  checkScheduledReports(petId);
-}
-
 //========================================
 // the brain that handles regular checks
 // it handles weekly and monthly insights now
@@ -2550,6 +2521,35 @@ function checkScheduledReports(petId) {
     
     localStorage.setItem(lastMonthlyKey, now.toISOString());
   }
+}
+
+//============================================
+// Activity Tracking System RECENTLY IMPLEMENTED
+//====================================================
+async function trackActivities(petId, selectedActivities) {
+  if (selectedActivities.length === 0) return;
+  
+  const activityEntries = selectedActivities.map(activity => ({
+    activity: activity,
+    timestamp: new Date().toISOString()
+  }));
+
+  // ✅ SAVE TO FIRESTORE (like mood tracking)
+  if (firebase.auth().currentUser) {
+    const db = firebase.firestore();
+    await db.collection("profiles").doc(petId).update({
+      activityHistory: firebase.firestore.FieldValue.arrayUnion(...activityEntries)
+    });
+  }
+
+  // ✅ SAVE TO LOCALSTORAGE (like mood tracking)
+  const historyKey = `activityHistory_${petId}`;
+  const existingHistory = JSON.parse(localStorage.getItem(historyKey)) || [];
+  const updatedHistory = [...activityEntries, ...existingHistory].slice(0, 50);
+  localStorage.setItem(historyKey, JSON.stringify(updatedHistory));
+
+  // ✅ CALL SCHEDULED REPORTS (replaces quick feedback)
+  checkScheduledReports(petId);
 }
 
 // end track activity section 
