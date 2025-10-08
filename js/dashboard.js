@@ -2457,32 +2457,56 @@ function showWeeklyReport(petId, activityCounts, totalActivities) {
 // Activity Tracking System RECENTLY IMPLEMENTED
 //====================================================
 async function trackActivities(petId, selectedActivities) {
-  // Only runs if user actually checked activity boxes
   if (selectedActivities.length === 0) return;
   
-  // ✅ 1. NO DATA SAVING HERE - just prepare for insights
+  // Only handles immediate activity insights
   const activityEntries = selectedActivities.map(activity => ({
     activity: activity,
     timestamp: new Date().toISOString()
   }));
 
-  // ✅ 2. Get current activity history for insights
-  const profile = window.petProfiles.find(p => p.id === petId);
-  const currentHistory = profile?.activityHistory || [];
-  const updatedHistory = [...activityEntries, ...currentHistory].slice(0, 50);
-
-  // ✅ 3. Insights/Reports (use current + new activities)
-  const lastReportKey = `lastActivityReport_${petId}`;
-  const lastReport = localStorage.getItem(lastReportKey);
-  const now = new Date();
-
-  if (!lastReport || (now - new Date(lastReport)) >= 7 * 24 * 60 * 60 * 1000) {
-    checkWeeklyActivityReport(petId);  // 🎯 Runs weekly
-    localStorage.setItem(lastReportKey, now.toISOString());
+  // Quick immediate feedback (optional)
+  if (selectedActivities.length >= 3) {
+    setTimeout(() => {
+      alert(`🎉 Great! You logged ${selectedActivities.length} activities today!`);
+    }, 1000);
   }
+  
+  // Let checkScheduledReports handle weekly/monthly
+}
+
+
+//========================================
+// the brain that handles regular checks
+//=============================================
+function checkScheduledReports(petId) {
+  const profile = window.petProfiles.find(p => p.id === petId);
+  const activities = profile?.activityHistory || [];
+  
+  // ✅ IF: User logged activities recently
+  if (activities.length > 0) {
+    // Use activity-based reporting (current system)
+    const lastActivity = new Date(activities[0].timestamp);
+    const daysSinceLastActivity = (new Date() - lastActivity) / (24 * 60 * 60 * 1000);
     
-  // ✅ Monthly insights - runs EVERY time activities are logged  
-  checkActivityInsights(petId, updatedHistory);  // 🎯 Runs monthly check
+    if (daysSinceLastActivity <= 7) {
+      checkWeeklyActivityReport(petId);
+    }
+    if (daysSinceLastActivity <= 30) {
+      checkActivityInsights(petId, activities);
+    }
+  } 
+  // ✅ ELSE: User never logged activities - use time-based
+  else {
+    const lastReportKey = `lastReport_${petId}`;
+    const lastReport = localStorage.getItem(lastReportKey);
+    const daysSinceLastReport = lastReport ? (new Date() - new Date(lastReport)) / (24 * 60 * 60 * 1000) : 999;
+    
+    if (daysSinceLastReport >= 7) {
+      showEncouragementMessage(petId, "weekly");
+      localStorage.setItem(lastReportKey, new Date().toISOString());
+    }
+  }
 }
 
 // end track activity section 
