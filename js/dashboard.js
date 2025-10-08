@@ -2506,7 +2506,7 @@ function checkScheduledReports(petId) {
     const daysSinceLastReport = lastReport ? (new Date() - new Date(lastReport)) / (24 * 60 * 60 * 1000) : 999;
     
     if (daysSinceLastReport >= 7) {
-      showEncouragementMessage(petId, "weekly");
+    //  showEncouragementMessage(petId, "weekly");
       localStorage.setItem(lastReportKey, new Date().toISOString());
     }
   }
