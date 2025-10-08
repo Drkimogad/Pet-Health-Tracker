@@ -2483,6 +2483,7 @@ async function trackActivities(petId, selectedActivities) {
 // it handles weekly and monthly insights now
 //=============================================
 function checkScheduledReports(petId) {
+      console.log("🔍 CHECK SCHEDULED REPORTS RUNNING for:", petId);
   const profile = window.petProfiles.find(p => p.id === petId);
   const activities = profile?.activityHistory || [];
   
