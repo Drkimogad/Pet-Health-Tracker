@@ -2457,34 +2457,34 @@ function showWeeklyReport(petId, activityCounts, totalActivities) {
 function resetMonthlyActivityData(petId) {
   console.log("🔄 Resetting monthly activity data for:", petId);
   
-  const profile = window.petProfiles.find(p => p.id === petId);
-  if (!profile) return;
+  // 1. Keep only the most recent activity
+  const profileIndex = window.petProfiles.findIndex(p => p.id === petId);
+  if (profileIndex === -1) return;
   
-  // Keep only the most recent activity for UI display
-  const recentActivities = profile.activityHistory?.slice(0, 1) || [];
-  
-  // Update window.petProfiles
-  profile.activityHistory = recentActivities;
-  
-  // Update localStorage
-  const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-  const profileIndex = savedProfiles.findIndex(p => p.id === petId);
-  if (profileIndex !== -1) {
-    savedProfiles[profileIndex].activityHistory = recentActivities;
-    localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+  const currentProfile = window.petProfiles[profileIndex];
+  if (currentProfile?.activityHistory?.length > 0) {
+    const mostRecentActivity = [currentProfile.activityHistory[0]]; // Keep only latest
+    
+    // 2. Update ALL data sources
+    // ✅ UPDATE window.petProfiles (critical for UI)
+    window.petProfiles[profileIndex].activityHistory = mostRecentActivity;
+    
+    // ✅ UPDATE localStorage
+    const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+    const savedProfileIndex = savedProfiles.findIndex(p => p.id === petId);
+    if (savedProfileIndex !== -1) {
+      savedProfiles[savedProfileIndex].activityHistory = mostRecentActivity;
+      localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+    }
+    
+    // ✅ UPDATE Firestore
+    if (firebase.auth().currentUser) {
+      const db = firebase.firestore();
+      db.collection("profiles").doc(petId).update({
+        activityHistory: mostRecentActivity
+      });
+    }
   }
-  
-  // Update Firestore (if user is online)
-  if (firebase.auth().currentUser) {
-    const db = firebase.firestore();
-    db.collection("profiles").doc(petId).update({
-      activityHistory: recentActivities
-    }).catch(error => {
-      console.error("Firestore reset failed:", error);
-    });
-  }
-  
-  console.log("✅ Monthly activity data reset - kept", recentActivities.length, "most recent activities");
 }
 
 //============================================
