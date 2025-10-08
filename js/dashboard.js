@@ -2452,11 +2452,45 @@ function showWeeklyReport(petId, activityCounts, totalActivities) {
     }
   }, 1500);
 }
+
+//==============reset monthly activity function=======
+function resetMonthlyActivityData(petId) {
+  console.log("🔄 Resetting monthly activity data for:", petId);
+  
+  const profile = window.petProfiles.find(p => p.id === petId);
+  if (!profile) return;
+  
+  // Keep only the most recent activity for UI display
+  const recentActivities = profile.activityHistory?.slice(0, 1) || [];
+  
+  // Update window.petProfiles
+  profile.activityHistory = recentActivities;
+  
+  // Update localStorage
+  const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+  const profileIndex = savedProfiles.findIndex(p => p.id === petId);
+  if (profileIndex !== -1) {
+    savedProfiles[profileIndex].activityHistory = recentActivities;
+    localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+  }
+  
+  // Update Firestore (if user is online)
+  if (firebase.auth().currentUser) {
+    const db = firebase.firestore();
+    db.collection("profiles").doc(petId).update({
+      activityHistory: recentActivities
+    }).catch(error => {
+      console.error("Firestore reset failed:", error);
+    });
+  }
+  
+  console.log("✅ Monthly activity data reset - kept", recentActivities.length, "most recent activities");
+}
+
 //============================================
 // Activity Tracking System RECENTLY IMPLEMENTED
 //====================================================
 async function trackActivities(petId, selectedActivities) {
-    // runs only if activity box is checked and update 
   if (selectedActivities.length === 0) return;
   
   const activityEntries = selectedActivities.map(activity => ({
@@ -2464,18 +2498,22 @@ async function trackActivities(petId, selectedActivities) {
     timestamp: new Date().toISOString()
   }));
 
-  // ✅ ADD: Backup to localStorage (like mood)
+  // ✅ SAVE TO FIRESTORE (like mood tracking)
+  if (firebase.auth().currentUser) {
+    const db = firebase.firestore();
+    await db.collection("profiles").doc(petId).update({
+      activityHistory: firebase.firestore.FieldValue.arrayUnion(...activityEntries)
+    });
+  }
+
+  // ✅ SAVE TO LOCALSTORAGE (like mood tracking)
   const historyKey = `activityHistory_${petId}`;
   const existingHistory = JSON.parse(localStorage.getItem(historyKey)) || [];
   const updatedHistory = [...activityEntries, ...existingHistory].slice(0, 50);
   localStorage.setItem(historyKey, JSON.stringify(updatedHistory));
 
-  // Quick feedback
-  if (selectedActivities.length >= 3) {
-    setTimeout(() => {
-      alert(`🎉 Great! You logged ${selectedActivities.length} activities today!`);
-    }, 1000);
-  }
+  // ✅ CALL SCHEDULED REPORTS (replaces quick feedback)
+  checkScheduledReports(petId);
 }
 
 //========================================
@@ -2483,33 +2521,34 @@ async function trackActivities(petId, selectedActivities) {
 // it handles weekly and monthly insights now
 //=============================================
 function checkScheduledReports(petId) {
-      console.log("🔍 CHECK SCHEDULED REPORTS RUNNING for:", petId);
+  console.log("🔍 CHECK SCHEDULED REPORTS RUNNING for:", petId);
   const profile = window.petProfiles.find(p => p.id === petId);
   const activities = profile?.activityHistory || [];
   
-  // ✅ IF: User logged activities recently
-  if (activities.length > 0) {
-    // Use activity-based reporting (current system)
-    const lastActivity = new Date(activities[0].timestamp);
-    const daysSinceLastActivity = (new Date() - lastActivity) / (24 * 60 * 60 * 1000);
+  const now = new Date();
+  
+  // ✅ WEEKLY REPORT CHECK (7 days)
+  const lastWeeklyKey = `lastWeeklyReport_${petId}`;
+  const lastWeeklyReport = localStorage.getItem(lastWeeklyKey);
+  const daysSinceWeekly = lastWeeklyReport ? (now - new Date(lastWeeklyReport)) / (24 * 60 * 60 * 1000) : 999;
+  
+  if (daysSinceWeekly >= 7) {
+    checkWeeklyActivityReport(petId);
+    localStorage.setItem(lastWeeklyKey, now.toISOString());
+  }
+  
+  // ✅ MONTHLY REPORT CHECK (30 days) 
+  const lastMonthlyKey = `lastMonthlyReport_${petId}`;
+  const lastMonthlyReport = localStorage.getItem(lastMonthlyKey);
+  const daysSinceMonthly = lastMonthlyReport ? (now - new Date(lastMonthlyReport)) / (24 * 60 * 60 * 1000) : 999;
+  
+  if (daysSinceMonthly >= 30) {
+    checkActivityInsights(petId, activities);
     
-    if (daysSinceLastActivity <= 7) {
-      checkWeeklyActivityReport(petId);
-    }
-    if (daysSinceLastActivity <= 30) {
-      checkActivityInsights(petId, activities);
-    }
-  } 
-  // ✅ ELSE: User never logged activities - use time-based
-  else {
-    const lastReportKey = `lastReport_${petId}`;
-    const lastReport = localStorage.getItem(lastReportKey);
-    const daysSinceLastReport = lastReport ? (new Date() - new Date(lastReport)) / (24 * 60 * 60 * 1000) : 999;
+    // ✅ CALL MONTHLY RESET FUNCTION (to be implemented)
+    resetMonthlyActivityData(petId);
     
-    if (daysSinceLastReport >= 7) {
-    //  showEncouragementMessage(petId, "weekly");
-      localStorage.setItem(lastReportKey, new Date().toISOString());
-    }
+    localStorage.setItem(lastMonthlyKey, now.toISOString());
   }
 }
 
