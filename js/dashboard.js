@@ -634,8 +634,7 @@ const emergencyContact = profile.emergencyContacts?.[0] || {};
       <div>Medical History: ${profile.medicalHistory || 'N/A'}</div>
       <div>Diet Plan: ${profile.dietPlan || 'N/A'}</div>
       <div>Current Mood: ${profile.mood || 'N/A'}</div>
-      <div class="section-break"><strong>Activities:</strong></div>
-         ${getLastActivity(profile.id)}
+      <div><strong>Activities:</strong> ${getLastActivityText(profile.id)}</div>
 
       <div class="section-break"><strong>Emergency Contact:</strong></div>
       <div>Name: ${profile.emergencyContacts?.[0]?.name || 'N/A'}</div>
