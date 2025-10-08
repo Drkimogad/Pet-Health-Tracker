@@ -2339,24 +2339,71 @@ function getTimeAgo(timestamp) {
   return `${diffDays}d ago`;
 }
 
-
+//============================================
+// for monthly insight /report
 function checkActivityInsights(petId, history) {
-  // Simple 30-day activity insights
+  const lastMonthlyReportKey = `lastMonthlyReport_${petId}`;
+  const lastMonthlyReport = localStorage.getItem(lastMonthlyReportKey);
+  const now = new Date();
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-  
-  const recentActivities = history.filter(activity => 
+
+  // ✅ Check if it's time for monthly report (once every 30 days)
+  if (lastMonthlyReport && (now - new Date(lastMonthlyReport)) < 30 * 24 * 60 * 60 * 1000) {
+    return; // Not time for monthly report yet
+  }
+
+  // ✅ Count activities from last 30 days
+  const monthlyActivities = history.filter(activity => 
     new Date(activity.timestamp) > thirtyDaysAgo
   );
   
-  if (recentActivities.length >= 10) {
-    setTimeout(() => {
-      alert(`📊 Activity Insight: Your pet has been active ${recentActivities.length} times in the last 30 days! 🐾`);
-    }, 1500);
+  const activityCount = monthlyActivities.length;
+  const profile = window.petProfiles.find(p => p.id === petId);
+  const petName = profile?.petName || 'your pet';
+
+  let message = '';
+  
+  // ✅ Four conditional messages
+  if (activityCount === 0) {
+    message = `📊 Monthly Activity Report for ${petName}:\n\nYou logged 0 activities this month. Consider tracking walks, grooming, or training sessions to monitor your pet's lifestyle! 📝`;
+  } else if (activityCount >= 1 && activityCount <= 9) {
+    message = `📊 Monthly Activity Report for ${petName}:\n\nYou logged ${activityCount} activities this month. Great start! Consider logging more activities to better track your pet's health patterns. 🐾`;
+  } else if (activityCount >= 10 && activityCount <= 19) {
+    message = `📊 Monthly Activity Report for ${petName}:\n\nWell done! You logged ${activityCount} activities this month. Your consistent tracking helps understand your pet's behavior! 🌟`;
+  } else if (activityCount >= 20 && activityCount <= 29) {
+    message = `📊 Monthly Activity Report for ${petName}:\n\nVery good job! You logged ${activityCount} activities this month. Excellent commitment to your pet's wellness! 🏆`;
+  } else {
+    message = `📊 Monthly Activity Report for ${petName}:\n\nExcellent! You logged ${activityCount} activities this month. Outstanding pet care tracking! 🎉`;
   }
+
+  // ✅ Show monthly report and reset timer
+  setTimeout(() => {
+    if (confirm(message + "\n\nView activity history in pet details?")) {
+      // Optional: Open details modal
+    }
+    // ✅ Reset monthly timer
+    localStorage.setItem(lastMonthlyReportKey, now.toISOString());
+  }, 2000);
 }
 
-//Create weekly report function:
+//===========Helper to get updated activity history NOT NEEDED ANYMORE???==============
+// IT WAS USED TO BUILD ACTIVITY HISTORY ARRAY IN PETDATA WHICH IS NOT USED ANYMORE
+async function getUpdatedActivityHistory(petId, newActivities) {
+  // Get existing activities from current profile data
+  const profile = window.petProfiles.find(p => p.id === petId);
+  const existingHistory = profile?.activityHistory || [];
+  
+  // Create new activity entries
+  const newEntries = newActivities.map(activity => ({
+    activity: activity,
+    timestamp: new Date().toISOString()
+  }));
+  
+  // Merge and limit to 50 entries
+  return [...newEntries, ...existingHistory].slice(0, 50); // show upto 50 mood enteries
+}
+//===============Create weekly report function=========
 function checkWeeklyActivityReport(petId) {
   const profile = window.petProfiles.find(p => p.id === petId);
   const activities = profile?.activityHistory || [];
@@ -2375,23 +2422,6 @@ function checkWeeklyActivityReport(petId) {
   
   showWeeklyReport(petId, activityCounts, weeklyActivities.length);
 }
-//===========Helper to get updated activity history NOT NEEDED ANYMORE???==============
-// IT WAS USED TO BUILD ACTIVITY HISTORY ARRAY IN PETDATA WHICH IS NOT USED ANYMORE
-async function getUpdatedActivityHistory(petId, newActivities) {
-  // Get existing activities from current profile data
-  const profile = window.petProfiles.find(p => p.id === petId);
-  const existingHistory = profile?.activityHistory || [];
-  
-  // Create new activity entries
-  const newEntries = newActivities.map(activity => ({
-    activity: activity,
-    timestamp: new Date().toISOString()
-  }));
-  
-  // Merge and limit to 50 entries
-  return [...newEntries, ...existingHistory].slice(0, 50); // show upto 50 mood enteries
-}
-
 // SHOW WEEKLY REPORT FUNCTION
 function showWeeklyReport(petId, activityCounts, totalActivities) {
   const profile = window.petProfiles.find(p => p.id === petId);
@@ -2400,30 +2430,29 @@ function showWeeklyReport(petId, activityCounts, totalActivities) {
   let message = '';
   
   if (totalActivities === 0) {
-    message = `📊 Weekly Activity Report for ${petName}:\n\nYou logged 0 activities this week. Consider tracking walks, grooming, or training sessions! 📝`;
+    message = `🐕 **Weekly Pulse Check for ${petName}**\n\nNo activities logged this week. Even short walks count toward a healthy routine! 🐕`;
   } else {
     const activityList = Object.entries(activityCounts)
       .map(([activity, count]) => `${count} ${activity}`)
       .join(', ');
     
-    message = `📊 Weekly Activity Report for ${petName}:\n\n${activityList} this week. `;
+    message = `🏃‍♂️ **Weekly Pulse Check for ${petName}**\n\nThis week: ${activityList}\n\n`;
     
     if (totalActivities >= 10) {
-      message += "Excellent activity level! 🏆";
+      message += "🔥 Active week! Your pet is getting great stimulation!";
     } else if (totalActivities >= 5) {
-      message += "Good consistency! 🌟";
+      message += "👍 Solid routine! Consistency builds healthy habits.";
     } else {
-      message += "Keep building those healthy habits! 🐾";
+      message += "🌱 Good start! Every activity contributes to wellbeing.";
     }
   }
   
   setTimeout(() => {
-    if (confirm(message + "\n\nView activity history in pet details?")) {
-      // Optional: Open details modal
+    if (confirm(message + "\n\nOpen activity tracker for more details?")) {
+      // Optional: Open activity tracking view
     }
-  }, 2000);
+  }, 1500);
 }
-
 //============================================
 // Activity Tracking System RECENTLY IMPLEMENTED
 //====================================================
