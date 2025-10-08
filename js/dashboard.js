@@ -2121,38 +2121,38 @@ async function saveProfile(profile, moodData = null, selectedActivities = []) {
   const existingProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
   const isUpdate = existingProfiles.some(p => p.id === profile.id);
   
-  // ✅ ADD: MOOD TRACKING INTEGRATION
-  if (moodData && moodData.mood) {
-    const moodEntry = {
-      mood: moodData.mood,
-      note: moodData.note || '',
-      date: new Date().toISOString()
-    };
-    
-    // Initialize or update moodHistory
-    if (!profile.moodHistory) profile.moodHistory = [];
-    profile.moodHistory = [moodEntry, ...profile.moodHistory].slice(0, 5);
-    
-    // Check for mood insights
-    if (profile.moodHistory.length === 5) {
-      setTimeout(() => showBehavioralInsights(profile.id, profile.moodHistory), 1000);
-    }
+// ✅ MOOD TRIGGER CHECK
+if (moodData && moodData.mood) {
+  const moodEntry = {
+    mood: moodData.mood,
+    note: moodData.note || '',
+    date: new Date().toISOString()
+  };
+  
+  if (!profile.moodHistory) profile.moodHistory = [];
+  const had4Entries = profile.moodHistory.length === 4;
+  profile.moodHistory = [moodEntry, ...profile.moodHistory].slice(0, 5);
+  
+  // Trigger ONLY when reaching exactly 5 entries
+  if (had4Entries && profile.moodHistory.length === 5) {
+    setTimeout(() => showBehavioralInsights(profile.id, profile.moodHistory), 1000);
   }
+}
   
   // ✅ ADD: ACTIVITY TRACKING INTEGRATION
-  if (selectedActivities.length > 0) {
-    const activityEntries = selectedActivities.map(activity => ({
-      activity: activity,
-      timestamp: new Date().toISOString()
-    }));
-    
-    // Initialize or update activityHistory
-    if (!profile.activityHistory) profile.activityHistory = [];
-    profile.activityHistory = [...activityEntries, ...profile.activityHistory].slice(0, 50);
-    
-    // Check for activity reports
-    setTimeout(() => checkScheduledReports(profile.id), 1500);
-  }
+// ✅ ACTIVITY TRIGGER CHECK  
+if (selectedActivities.length > 0) {
+  const activityEntries = selectedActivities.map(activity => ({
+    activity: activity,
+    timestamp: new Date().toISOString()
+  }));
+  
+  if (!profile.activityHistory) profile.activityHistory = [];
+  profile.activityHistory = [...activityEntries, ...profile.activityHistory].slice(0, 50);
+  
+  // Always check reports when activities are logged
+  setTimeout(() => checkScheduledReports(profile.id), 1500);
+}
   
   // ✅ EXISTING OFFLINE/ONLINE LOGIC CONTINUES HERE...  
   // Online: save directly to Firestore
@@ -2788,8 +2788,10 @@ console.log("📝 DEBUG - petData.birthday being saved:", petData.birthday);
         
               
   // 🟢 REPLACE all the manual saving with this single call:
-   await saveProfile(petData); // call it to handle the saving and updating
-     
+await saveProfile(petData, 
+  { mood: DOM.moodSelector?.value, note: DOM.moodNote?.value },
+  selectedActivities
+);     
 
 // 🆕 ADD OLD IMAGE DELETION RIGHT HERE NEWLY ADDED
 if (oldImagePublicId) {
