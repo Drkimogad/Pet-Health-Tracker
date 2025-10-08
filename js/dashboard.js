@@ -261,6 +261,8 @@ function getPetDataFromForm() {
     medicalHistory: DOM.medicalHistory.value,
     dietPlan: DOM.dietPlan.value,
     mood: DOM.moodSelector.value,
+      // === Activity Tracking ===
+    activityHistory: [], // ✅ ADD THIS - empty array by default. gets populated larer
 
     // === Emergency Contact ===
     emergencyContact: {
@@ -278,7 +280,8 @@ function getPetDataFromForm() {
     }
   };
 }
-// LoadPets function  definedrecently added
+
+// LoadPets function  definedrecently added ⛔️⛔️⛔️⛔️
 async function loadPets() {
   if (firebase.auth().currentUser) {
     const snapshot = await firebase.firestore()
@@ -410,9 +413,6 @@ async function loadSavedPetProfile() {
       console.log("📴 Offline mode: Loading from localStorage");
       savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
     }
-
-      // In loadSavedPetProfile(), add this after loading profiles:
-console.log("🔄 REFRESHED PROFILE ACTIVITIES:", savedProfiles[1]?.activityHistory);
       
     // ✅ RENDER THE PROFILES (whether from Firestore or localStorage)
     const savedProfilesList = DOM.savedProfilesList;
