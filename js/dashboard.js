@@ -2196,7 +2196,7 @@ if (typeof loadSavedPetProfile === 'function') {
   }
   
   if (selectedActivities.length > 0) {
-    setTimeout(() => checkScheduledReports(profile.id), 1500);
+    setTimeout(() => checkScheduledReports(profile.id), 1500); // calling it directly , no more for trackActivities ()
  }
 } // CLOSES THE FUNCTION
 
@@ -2281,33 +2281,6 @@ async function getUpdatedMoodHistory(petId, mood, note) {
 //===================================
 // Standalone Mood Tracking System
 //===================================
-async function trackMoodEntry(petId, mood, note) {
-  const moodEntry = {
-    mood: mood,
-    note: note || '',
-    date: new Date().toISOString()
-  };
-  
-  // Save to Firestore
-  if (firebase.auth().currentUser) {
-    const db = firebase.firestore();
-    await db.collection("profiles").doc(petId).update({
-      moodHistory: firebase.firestore.FieldValue.arrayUnion(moodEntry)
-    });
-  }
-  
-  // Also save to localStorage for offline/fallback
-  const historyKey = `moodHistory_${petId}`;
-  const existingHistory = JSON.parse(localStorage.getItem(historyKey)) || [];
-  const updatedHistory = [moodEntry, ...existingHistory].slice(0, 5);
-  localStorage.setItem(historyKey, JSON.stringify(updatedHistory));
-  
-  // Check for insights
-  if (updatedHistory.length === 5) {
-    showBehavioralInsights(petId, updatedHistory);
-  }
-}
-
 function showBehavioralInsights(petId, moodHistory) {
   // Simple pattern recognition
   const moodCounts = {};
@@ -2555,35 +2528,6 @@ function checkScheduledReports(petId) {
     
     localStorage.setItem(lastMonthlyKey, now.toISOString());
   }
-}
-
-//============================================
-// Activity Tracking System RECENTLY IMPLEMENTED
-//====================================================
-async function trackActivities(petId, selectedActivities) {
-  if (selectedActivities.length === 0) return;
-  
-  const activityEntries = selectedActivities.map(activity => ({
-    activity: activity,
-    timestamp: new Date().toISOString()
-  }));
-
-  // ✅ SAVE TO FIRESTORE (like mood tracking)
-  if (firebase.auth().currentUser) {
-    const db = firebase.firestore();
-    await db.collection("profiles").doc(petId).update({
-      activityHistory: firebase.firestore.FieldValue.arrayUnion(...activityEntries)
-    });
-  }
-
-  // ✅ SAVE TO LOCALSTORAGE (like mood tracking)
-  const historyKey = `activityHistory_${petId}`;
-  const existingHistory = JSON.parse(localStorage.getItem(historyKey)) || [];
-  const updatedHistory = [...activityEntries, ...existingHistory].slice(0, 50);
-  localStorage.setItem(historyKey, JSON.stringify(updatedHistory));
-
-  // ✅ CALL SCHEDULED REPORTS (replaces quick feedback)
-  checkScheduledReports(petId);
 }
 
 // end track activity section 
