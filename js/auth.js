@@ -562,7 +562,9 @@ function initAuthListeners() {
         }
         if (typeof showDashboard === 'function') {
           showDashboard();
+          checkScheduledReports(); // ✅ RUN weekly and monthly activity REPORTS CHECK HERE
         }
+        
         // 🆕 ADD ADMIN NOTIFICATION SETUP RIGHT HERE
 if (user.email === 'drkimogad@gmail.com') {
   setTimeout(() => {
