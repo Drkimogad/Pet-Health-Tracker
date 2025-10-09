@@ -485,7 +485,25 @@ async function removeOfflineProfile(db, id) {
   });
 }
 
+//======================================
+// Enhanced insight modal cleanup function
+//===========================================
+function closeInsightModal() {
+  const backdrop = document.querySelector('.insight-modal-backdrop');
+  if (backdrop) {
+    // Remove the backdrop and all its event listeners
+    backdrop.remove();
+  }
+  
+  // Remove the global ESC key listener
+  document.removeEventListener('keydown', handleModalKeydown);
+}
 
-
+// ESC key handler for modal
+function handleModalKeydown(e) {
+  if (e.key === 'Escape') {
+    closeInsightModal();
+  }
+}
 
 
