@@ -563,6 +563,8 @@ async function loadSavedPetProfile() {
               <button id="exportAll-btn" class="exportAll-btn">📤 Save All Cards</button>
               <button class="qr-btn" data-pet-id="${profile.id}">Generate Qr Code</button>
               <button class="delete-btn" data-pet-id="${profile.id}">Delete Profile</button>
+              <!-- ✅ ADD INSIGHT BUTTON HERE -->
+              <button class="insight-btn" data-pet-id="${profile.id}">📊 Monthly Insights</button>
             `;   
     const communityChatBtn = createCommunityChatButton(profile.id);
     actionsDiv.appendChild(communityChatBtn);
@@ -2263,6 +2265,14 @@ if (typeof loadSavedPetProfile === 'function') {
 the latest mood logged. couldn't add more than one entry in rendered petcard for CANVAS CAPTURE.
 while in mood tracking i am using array of 5+ insight for behavioural tracking after 5 enteries
 and mood tracking only runs if there is a selected mood in dropdown menu. */
+//================================================
+// ✅ GET MOOD HISTORY HELPER (used in getUpdatedMoodHistory)
+//========================================
+async function getMoodHistory(petId) {
+  const profile = window.petProfiles.find(p => p.id === petId);
+  return profile?.moodHistory || [];
+}
+
 // helper functions forgetting mood update
 async function getUpdatedMoodHistory(petId, mood, note) {
   if (!mood) return []; // Return existing history if no new mood
@@ -2277,42 +2287,6 @@ async function getUpdatedMoodHistory(petId, mood, note) {
   const existing = await getMoodHistory(petId);
   return [newEntry, ...existing].slice(0, 5);
 }
-
-//===================================
-// Standalone Mood Tracking System
-//===================================
-function showBehavioralInsights(petId, moodHistory) {
-  // Simple pattern recognition
-  const moodCounts = {};
-  moodHistory.forEach(entry => {
-    moodCounts[entry.mood] = (moodCounts[entry.mood] || 0) + 1;
-  });
-  
-  const mostCommonMood = Object.keys(moodCounts).reduce((a, b) => 
-    moodCounts[a] > moodCounts[b] ? a : b
-  );
-
-  // Generate practical insights based on common moods
-  let insight = "";
-  if (mostCommonMood.includes("😊") || mostCommonMood.includes("🤩") || mostCommonMood.includes("😍")) {
-    insight = "Your pet shows mostly positive moods! Great job maintaining a happy environment.";
-  } else if (mostCommonMood.includes("😢") || mostCommonMood.includes("😰") || mostCommonMood.includes("😨")) {
-    insight = "You've recorded several anxious/sad moods. Consider noting what triggers these patterns.";
-  } else if (mostCommonMood.includes("🥱") || mostCommonMood.includes("😴") || mostCommonMood.includes("🤒")) {
-    insight = "Multiple tired/sick mood entries. Monitor energy levels, appetite changes and general health.";
-  } else {
-    insight = "You've tracked 5 mood patterns. Look for trends in daily activities and mood connections.";
-  }
-
-  // Show popup with disclaimer
-  setTimeout(() => {
-    if (confirm(`🐾 Mood Tracking Insights\n\n${insight}\n\nMost frequent mood: ${mostCommonMood}\n\n💡 This is a simple tracking guide. For health concerns, please consult your veterinarian.`)) {
-      // User acknowledged
-    }
-  }, 1000);
-}
-
-
 //=============================================
 // All activity logging logic
 /* Unified and works for both loadSavedPetProfile and showdetails 
@@ -2345,54 +2319,6 @@ function getTimeAgo(timestamp) {
   return `${diffDays}d ago`;
 }
 
-//============================================
-// for monthly insight /report
-function checkActivityInsights(petId, history) {
-  const lastMonthlyReportKey = `lastMonthlyReport_${petId}`;
-  const lastMonthlyReport = localStorage.getItem(lastMonthlyReportKey);
-  const now = new Date();
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-  // ✅ Check if it's time for monthly report (once every 30 days)
-  if (lastMonthlyReport && (now - new Date(lastMonthlyReport)) < 30 * 24 * 60 * 60 * 1000) {
-    return; // Not time for monthly report yet
-  }
-
-  // ✅ Count activities from last 30 days
-  const monthlyActivities = history.filter(activity => 
-    new Date(activity.timestamp) > thirtyDaysAgo
-  );
-  
-  const activityCount = monthlyActivities.length;
-  const profile = window.petProfiles.find(p => p.id === petId);
-  const petName = profile?.petName || 'your pet';
-
-  let message = '';
-  
-  // ✅ Four conditional messages
-  if (activityCount === 0) {
-    message = `📊 Monthly Activity Report for ${petName}:\n\nYou logged 0 activities this month. Consider tracking walks, grooming, or training sessions to monitor your pet's lifestyle! 📝`;
-  } else if (activityCount >= 1 && activityCount <= 9) {
-    message = `📊 Monthly Activity Report for ${petName}:\n\nYou logged ${activityCount} activities this month. Great start! Consider logging more activities to better track your pet's health patterns. 🐾`;
-  } else if (activityCount >= 10 && activityCount <= 19) {
-    message = `📊 Monthly Activity Report for ${petName}:\n\nWell done! You logged ${activityCount} activities this month. Your consistent tracking helps understand your pet's behavior! 🌟`;
-  } else if (activityCount >= 20 && activityCount <= 29) {
-    message = `📊 Monthly Activity Report for ${petName}:\n\nVery good job! You logged ${activityCount} activities this month. Excellent commitment to your pet's wellness! 🏆`;
-  } else {
-    message = `📊 Monthly Activity Report for ${petName}:\n\nExcellent! You logged ${activityCount} activities this month. Outstanding pet care tracking! 🎉`;
-  }
-
-  // ✅ Show monthly report and reset timer
-  setTimeout(() => {
-    if (confirm(message + "\n\nView activity history in pet details?")) {
-      // Optional: Open details modal
-    }
-    // ✅ Reset monthly timer
-    localStorage.setItem(lastMonthlyReportKey, now.toISOString());
-  }, 2000);
-}
-
 //===========Helper to get updated activity history NOT NEEDED ANYMORE???==============
 // IT WAS USED TO BUILD ACTIVITY HISTORY ARRAY IN PETDATA WHICH IS NOT USED ANYMORE
 async function getUpdatedActivityHistory(petId, newActivities) {
@@ -2409,140 +2335,162 @@ async function getUpdatedActivityHistory(petId, newActivities) {
   // Merge and limit to 50 entries
   return [...newEntries, ...existingHistory].slice(0, 50); // show upto 50 mood enteries
 }
-//========================
-// Check weekly report with time guard
-//========================
-function checkWeeklyActivityReport(petId) {
-  const lastWeeklyKey = `lastWeeklyReport_${petId}`;
-  const lastWeeklyReport = localStorage.getItem(lastWeeklyKey);
-  const now = new Date();
-  const daysSinceWeekly = lastWeeklyReport ? (now - new Date(lastWeeklyReport)) / (24 * 60 * 60 * 1000) : 999;
-  
-  // ✅ ADD TIMING GUARD
-  if (daysSinceWeekly < 7) return;
-  
-  const profile = window.petProfiles.find(p => p.id === petId);
-  const activities = profile?.activityHistory || [];
-  
-  const sevenDaysAgo = new Date();
-  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-  
-  const weeklyActivities = activities.filter(activity => 
-    new Date(activity.timestamp) > sevenDaysAgo
-  );
-  
-  const activityCounts = {};
-  weeklyActivities.forEach(entry => {
-    activityCounts[entry.activity] = (activityCounts[entry.activity] || 0) + 1;
-  });
-  
-  showWeeklyReport(petId, activityCounts, weeklyActivities.length);
-  localStorage.setItem(lastWeeklyKey, now.toISOString()); // ✅ UPDATE TIMESTAMP
-}
 
-// SHOW WEEKLY REPORT FUNCTION
-function showWeeklyReport(petId, activityCounts, totalActivities) {
-  const profile = window.petProfiles.find(p => p.id === petId);
-  const petName = profile?.petName || 'your pet';
-  
-  let message = '';
-  
-  if (totalActivities === 0) {
-    message = `🐕 **Weekly Pulse Check for ${petName}**\n\nNo activities logged this week. Even short walks count toward a healthy routine! 🐕`;
-  } else {
-    const activityList = Object.entries(activityCounts)
-      .map(([activity, count]) => `${count} ${activity}`)
-      .join(', ');
-    
-    message = `🏃‍♂️ **Weekly Pulse Check for ${petName}**\n\nThis week: ${activityList}\n\n`;
-    
-    if (totalActivities >= 10) {
-      message += "🔥 Active week! Your pet is getting great stimulation!";
-    } else if (totalActivities >= 5) {
-      message += "👍 Solid routine! Consistency builds healthy habits.";
-    } else {
-      message += "🌱 Good start! Every activity contributes to wellbeing.";
-    }
-  }
-  
-  setTimeout(() => {
-    if (confirm(message + "\n\nOpen activity tracker for more details?")) {
-      // Optional: Open activity tracking view
-    }
-  }, 1500);
-}
-
-//==============reset monthly activity function=======
+//=======================================
+//  reset monthly activity & mood function
+//===========================================
 function resetMonthlyActivityData(petId) {
-  console.log("🔄 Resetting monthly activity data for:", petId);
+  console.log("🔄 Resetting monthly activity & mood data for:", petId);
   
-  // 1. Keep only the most recent activity
   const profileIndex = window.petProfiles.findIndex(p => p.id === petId);
   if (profileIndex === -1) return;
   
   const currentProfile = window.petProfiles[profileIndex];
+  
+  // ✅ RESET ACTIVITY HISTORY (keep only most recent)
   if (currentProfile?.activityHistory?.length > 0) {
-    const mostRecentActivity = [currentProfile.activityHistory[0]]; // Keep only latest
-    
-    // 2. Update ALL data sources
-    // ✅ UPDATE window.petProfiles (critical for UI)
-    window.petProfiles[profileIndex].activityHistory = mostRecentActivity;
-    
-    // ✅ UPDATE localStorage
-    const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
-    const savedProfileIndex = savedProfiles.findIndex(p => p.id === petId);
-    if (savedProfileIndex !== -1) {
-      savedProfiles[savedProfileIndex].activityHistory = mostRecentActivity;
-      localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
-    }
-    
-    // ✅ UPDATE Firestore
-    if (firebase.auth().currentUser) {
-      const db = firebase.firestore();
-      db.collection("profiles").doc(petId).update({
-        activityHistory: mostRecentActivity
-      });
-    }
+    const mostRecentActivity = [currentProfile.activityHistory[0]];
+    currentProfile.activityHistory = mostRecentActivity;
+  }
+  
+  // ✅ RESET MOOD HISTORY (keep only most recent)
+  if (currentProfile?.moodHistory?.length > 0) {
+    const mostRecentMood = [currentProfile.moodHistory[0]];
+    currentProfile.moodHistory = mostRecentMood;
+  }
+  
+  // ✅ UPDATE ALL DATA SOURCES
+  const savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+  const savedProfileIndex = savedProfiles.findIndex(p => p.id === petId);
+  if (savedProfileIndex !== -1) {
+    savedProfiles[savedProfileIndex] = currentProfile;
+    localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
+  }
+  
+  // ✅ UPDATE FIRESTORE
+  if (firebase.auth().currentUser) {
+    const db = firebase.firestore();
+    db.collection("profiles").doc(petId).update({
+      activityHistory: currentProfile.activityHistory || [],
+      moodHistory: currentProfile.moodHistory || []
+    });
   }
 }
 
 //========================================
-// the brain that handles regular checks
-// it handles weekly and monthly insights now
+// it handles monthly popup insights now
 //=============================================
 function checkScheduledReports(petId) {
   console.log("🔍 CHECK SCHEDULED REPORTS RUNNING for:", petId);
-  const profile = window.petProfiles.find(p => p.id === petId);
-  const activities = profile?.activityHistory || [];
   
   const now = new Date();
   
-  // ✅ WEEKLY REPORT CHECK (7 days)
-  const lastWeeklyKey = `lastWeeklyReport_${petId}`;
-  const lastWeeklyReport = localStorage.getItem(lastWeeklyKey);
-  const daysSinceWeekly = lastWeeklyReport ? (now - new Date(lastWeeklyReport)) / (24 * 60 * 60 * 1000) : 999;
-  
-  if (daysSinceWeekly >= 7) {
-    checkWeeklyActivityReport(petId);
-    localStorage.setItem(lastWeeklyKey, now.toISOString());
-  }
-  
-  // ✅ MONTHLY REPORT CHECK (30 days) 
+  // ✅ MONTHLY REPORT CHECK ONLY (30 days) 
   const lastMonthlyKey = `lastMonthlyReport_${petId}`;
   const lastMonthlyReport = localStorage.getItem(lastMonthlyKey);
   const daysSinceMonthly = lastMonthlyReport ? (now - new Date(lastMonthlyReport)) / (24 * 60 * 60 * 1000) : 999;
   
   if (daysSinceMonthly >= 30) {
-    checkActivityInsights(petId, activities);
-    
-    // ✅ CALL MONTHLY RESET FUNCTION (to be implemented)
+    showMonthlyInsights(petId);
     resetMonthlyActivityData(petId);
-    
     localStorage.setItem(lastMonthlyKey, now.toISOString());
   }
 }
 
-// end track activity section 
+//======================================================
+// ✅ generate mood insights and activity insights
+//========================================================
+function generateMoodInsight(moodHistory) {
+  if (moodHistory.length === 0) return "No mood data this month";
+  
+  const moodCounts = {};
+  moodHistory.forEach(entry => {
+    moodCounts[entry.mood] = (moodCounts[entry.mood] || 0) + 1;
+  });
+  
+  const mostCommonMood = Object.keys(moodCounts).reduce((a, b) => 
+    moodCounts[a] > moodCounts[b] ? a : b
+  );
+
+  let insight = "";
+  if (mostCommonMood.includes("😊") || mostCommonMood.includes("🤩") || mostCommonMood.includes("😍")) {
+    insight = "Your pet shows mostly positive moods! Great job maintaining a happy environment.";
+  } else if (mostCommonMood.includes("😢") || mostCommonMood.includes("😰") || mostCommonMood.includes("😨")) {
+    insight = "You've recorded several anxious/sad moods. Consider noting what triggers these patterns.";
+  } else if (mostCommonMood.includes("🥱") || mostCommonMood.includes("😴") || mostCommonMood.includes("🤒")) {
+    insight = "Multiple tired/sick mood entries. Monitor energy levels, appetite changes and general health.";
+  } else {
+    insight = `You've tracked ${moodHistory.length} mood patterns. Look for trends in daily activities and mood connections.`;
+  }
+
+  return `${insight}\nMost frequent mood: ${mostCommonMood}`;
+}
+
+function generateActivityInsight(activityHistory) {
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  
+  const monthlyActivities = activityHistory.filter(activity => 
+    new Date(activity.timestamp) > thirtyDaysAgo
+  );
+  
+  const activityCount = monthlyActivities.length;
+  
+  let message = '';
+  if (activityCount === 0) {
+    message = "You logged 0 activities this month. Consider tracking walks, grooming, or training sessions!";
+  } else if (activityCount >= 1 && activityCount <= 9) {
+    message = `You logged ${activityCount} activities this month. Great start! Consider logging more activities.`;
+  } else if (activityCount >= 10 && activityCount <= 19) {
+    message = `Well done! You logged ${activityCount} activities this month. Your consistent tracking helps understand your pet's behavior!`;
+  } else if (activityCount >= 20 && activityCount <= 29) {
+    message = `Very good job! You logged ${activityCount} activities this month. Excellent commitment to your pet's wellness!`;
+  } else {
+    message = `Excellent! You logged ${activityCount} activities this month. Outstanding pet care tracking!`;
+  }
+
+  return message;
+}
+
+//================================================
+// ✅ COMBINED INSIGHT DISPLAY FUNCTION
+//========================================
+function showCombinedInsight(petId, moodInsight, activityInsight) {
+  const profile = window.petProfiles.find(p => p.id === petId);
+  const petName = profile?.petName || 'your pet';
+  
+  const message = `📊 **Monthly Insights for ${petName}**\n\n` +
+                 `😊 **Mood Analysis:**\n${moodInsight}\n\n` +
+                 `🏃‍♂️ **Activity Summary:**\n${activityInsight}\n\n` +
+                 `💡 Track consistently for better insights next month!`;
+  
+  // Use your existing modal or confirm style
+  setTimeout(() => {
+    if (confirm(message + "\n\nDismiss this monthly report?")) {
+      // User acknowledged - could add "Don't show for 30 days" option here
+    }
+  }, 1500);
+}
+//================================================
+// ✅ MERGED MONTHLY INSIGHT FUNCTION
+//========================================
+function showMonthlyInsights(petId) {
+  const profile = window.petProfiles.find(p => p.id === petId);
+  if (!profile) return;
+  
+  // Get data from existing arrays
+  const moodHistory = profile.moodHistory || [];
+  const activityHistory = profile.activityHistory || [];
+  
+  // Use your existing logic but merged
+  const moodInsight = generateMoodInsight(moodHistory);
+  const activityInsight = generateActivityInsight(activityHistory);
+  
+  // Show combined report (repurpose your showWeeklyReport format)
+  showCombinedInsight(petId, moodInsight, activityInsight);
+}
+
+
 
 // ======== EVENT DELEGATION (FIXED) ========
 // ✅ Keep this block to handle profile actions (WIRING) ALL THE BUTTONS IN LOADSAVEDPETPROFILES FUNCTION✅
@@ -2572,6 +2520,10 @@ DOM.savedProfilesList?.addEventListener('click', (e) => {
   else if (btn.classList.contains('qr-btn')) {
     generateQRCode(petId);
   }
+    // ✅ ADD INSIGHT BUTTON HANDLER HERE
+else if (btn.classList.contains('insight-btn')) {
+  showMonthlyInsights(petId);
+}
 });
     
 // Add this to catch handled errors 
@@ -2592,6 +2544,13 @@ document.addEventListener('click', (e) => {
   }
 });
 
+// ✅ ADD MONTHLY INSIGHT BUTTON TO YOUR EXISTING EVENT DELEGATION
+document.addEventListener('click', function(e) {
+  if (e.target.classList.contains('insight-btn')) {
+    const petId = e.target.dataset.petId;
+    showMonthlyInsights(petId);
+  }
+});
 // ======================    
 // INITIALIZE DASHBOARD PRODUCTION READY
 // ======================    
