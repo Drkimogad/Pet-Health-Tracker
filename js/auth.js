@@ -569,9 +569,10 @@ const profiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
 if (profiles.length > 0) {
   for (const profile of profiles) {
     await checkScheduledReports(profile.id); // monthly check
-    await checkYearlyReport(profile.id); // yearly check
+    await showYearlyInsights(profile.id);
   }
 }
+
         
         // 🆕 ADD ADMIN NOTIFICATION SETUP RIGHT HERE
 if (user.email === 'drkimogad@gmail.com') {
