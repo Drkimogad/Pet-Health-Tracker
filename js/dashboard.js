@@ -2502,6 +2502,7 @@ async function updateLastReportInFirestore(petId) {
     
     await insightRef.set({
       lastReportDate: new Date().toISOString(),
+      ownerId: firebase.auth().currentUser.uid, // ← ADD THIS
       updatedAt: new Date().toISOString()
     }, { merge: true });
   } catch (error) {
@@ -2520,6 +2521,7 @@ async function saveMonthlyToYearly(petId, monthlyData) {
     
     await yearlyRef.set({
       monthlyReports: firebase.firestore.FieldValue.arrayUnion(monthlyData),
+      ownerId: firebase.auth().currentUser.uid, // ← ADD THIS
       updatedAt: new Date().toISOString()
     }, { merge: true });
     
