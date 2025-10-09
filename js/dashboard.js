@@ -1,4 +1,3 @@
-
 // Global declaration
 let petDB; // IndexedDB reference (if used)
 let currentQRProfile = null; // Only new declaration needed
@@ -2593,13 +2592,6 @@ document.addEventListener('click', (e) => {
   }
 });
 
-// ✅ ADD MONTHLY INSIGHT BUTTON TO YOUR EXISTING EVENT DELEGATION
-document.addEventListener('click', function(e) {
-  if (e.target.classList.contains('insight-btn')) {
-    const petId = e.target.dataset.petId;
-    showMonthlyInsights(petId);
-  }
-});
 // ======================    
 // INITIALIZE DASHBOARD PRODUCTION READY
 // ======================    
