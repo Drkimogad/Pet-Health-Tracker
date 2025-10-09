@@ -2121,7 +2121,7 @@ async function saveProfile(profile, moodData = null, selectedActivities = []) {
   const existingProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
   const isUpdate = existingProfiles.some(p => p.id === profile.id);
   
-// ✅ 1. UPDATE ARRAYS FIRST
+// ✅ 1. UPDATE ARRAYS FIRST for mood and track activity
 let had4Entries = false;
 
 if (moodData && moodData.mood) {
@@ -2190,12 +2190,22 @@ if (selectedActivities.length > 0) {
 if (typeof loadSavedPetProfile === 'function') {
   loadSavedPetProfile(); // Update UI NOW
  }
-  // ✅ 4. NOW SHOW TRIGGERS (after data is saved & UI updated)
-  if (moodData && moodData.mood) {
-    if (had4Entries && profile.moodHistory.length === 5) {
+    
+// mood track and activity track runs now after saveprofiles has saved and updated the data then the check runs.
+  // ✅ SHOW TRIGGERS (after data is saved & UI updated)
+if (moodData && moodData.mood) {
+  if (had4Entries && profile.moodHistory.length === 5) {
+    const lastMoodInsightKey = `lastMoodInsight_${profile.id}`;
+    const lastMoodInsight = localStorage.getItem(lastMoodInsightKey);
+    const daysSinceMoodInsight = lastMoodInsight ? (Date.now() - new Date(lastMoodInsight)) / (24 * 60 * 60 * 1000) : 999;
+    
+    // ✅ ADD TIMING GUARD (30 days)
+    if (daysSinceMoodInsight >= 30) {
       setTimeout(() => showBehavioralInsights(profile.id, profile.moodHistory), 1000);
+      localStorage.setItem(lastMoodInsightKey, new Date().toISOString());
     }
   }
+}
   
   if (selectedActivities.length > 0) {
     setTimeout(() => checkScheduledReports(profile.id), 1500); // calling it directly , no more for trackActivities ()
@@ -2268,18 +2278,6 @@ async function getUpdatedMoodHistory(petId, mood, note) {
   return [newEntry, ...existing].slice(0, 5);
 }
 
-//async function getUpdatedActivityHistory(petId, newActivities) {
-//  if (!newActivities.length) return []; // Return existing if no new activities
-  
-//  const newEntries = newActivities.map(activity => ({
-//    activity: activity,
-//    timestamp: new Date().toISOString()
-//  }));
-  
-  // Get existing history
-//  const existing = await getActivityHistory(petId);
-//  return [...newEntries, ...existing].slice(0, 50);
-//}
 //===================================
 // Standalone Mood Tracking System
 //===================================
@@ -2411,8 +2409,18 @@ async function getUpdatedActivityHistory(petId, newActivities) {
   // Merge and limit to 50 entries
   return [...newEntries, ...existingHistory].slice(0, 50); // show upto 50 mood enteries
 }
-//===============Create weekly report function=========
+//========================
+// Check weekly report with time guard
+//========================
 function checkWeeklyActivityReport(petId) {
+  const lastWeeklyKey = `lastWeeklyReport_${petId}`;
+  const lastWeeklyReport = localStorage.getItem(lastWeeklyKey);
+  const now = new Date();
+  const daysSinceWeekly = lastWeeklyReport ? (now - new Date(lastWeeklyReport)) / (24 * 60 * 60 * 1000) : 999;
+  
+  // ✅ ADD TIMING GUARD
+  if (daysSinceWeekly < 7) return;
+  
   const profile = window.petProfiles.find(p => p.id === petId);
   const activities = profile?.activityHistory || [];
   
@@ -2429,7 +2437,9 @@ function checkWeeklyActivityReport(petId) {
   });
   
   showWeeklyReport(petId, activityCounts, weeklyActivities.length);
+  localStorage.setItem(lastWeeklyKey, now.toISOString()); // ✅ UPDATE TIMESTAMP
 }
+
 // SHOW WEEKLY REPORT FUNCTION
 function showWeeklyReport(petId, activityCounts, totalActivities) {
   const profile = window.petProfiles.find(p => p.id === petId);
