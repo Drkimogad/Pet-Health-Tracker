@@ -2123,9 +2123,7 @@ async function saveProfile(profile, moodData = null, selectedActivities = []) {
   const existingProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
   const isUpdate = existingProfiles.some(p => p.id === profile.id);
   
-// ✅ 1. UPDATE ARRAYS FIRST for mood and track activity
-let had4Entries = false;
-
+// ✅ 1. UPDATE ARRAYS for mood and activities ONLY - NO TRIGGERS
 if (moodData && moodData.mood) {
   const moodEntry = {
     mood: moodData.mood,
@@ -2134,7 +2132,6 @@ if (moodData && moodData.mood) {
   };
   
   if (!profile.moodHistory) profile.moodHistory = [];
-  had4Entries = profile.moodHistory.length === 4;
   profile.moodHistory = [moodEntry, ...profile.moodHistory].slice(0, 5);
 }
 
@@ -2191,26 +2188,6 @@ if (selectedActivities.length > 0) {
 // ✅ ADD THIS - Force immediate UI refresh
 if (typeof loadSavedPetProfile === 'function') {
   loadSavedPetProfile(); // Update UI NOW
- }
-    
-// mood track and activity track runs now after saveprofiles has saved and updated the data then the check runs.
-  // ✅ SHOW TRIGGERS (after data is saved & UI updated)
-if (moodData && moodData.mood) {
-  if (had4Entries && profile.moodHistory.length === 5) {
-    const lastMoodInsightKey = `lastMoodInsight_${profile.id}`;
-    const lastMoodInsight = localStorage.getItem(lastMoodInsightKey);
-    const daysSinceMoodInsight = lastMoodInsight ? (Date.now() - new Date(lastMoodInsight)) / (24 * 60 * 60 * 1000) : 999;
-    
-    // ✅ ADD TIMING GUARD (30 days)
-    if (daysSinceMoodInsight >= 30) {
-      setTimeout(() => showBehavioralInsights(profile.id, profile.moodHistory), 1000);
-      localStorage.setItem(lastMoodInsightKey, new Date().toISOString());
-    }
-  }
-}
-  
-  if (selectedActivities.length > 0) {
-    setTimeout(() => checkScheduledReports(profile.id), 1500); // calling it directly , no more for trackActivities ()
  }
 } // CLOSES THE FUNCTION
 
@@ -2696,10 +2673,10 @@ if (editingProfileId !== null && fileInput.files[0]) {
       }
       console.log("🖼️ Using photo:", petData.petPhoto);
 
-        console.log("🎂 DEBUG - Birthday field value:", DOM.petBirthday?.value);
-console.log("🔢 DEBUG - Calculated age:", calculateAge(DOM.petBirthday?.value));
-console.log("📝 DEBUG - petData.age being saved:", petData.age);
-console.log("📝 DEBUG - petData.birthday being saved:", petData.birthday);
+//console.log("🎂 DEBUG - Birthday field value:", DOM.petBirthday?.value);
+//console.log("🔢 DEBUG - Calculated age:", calculateAge(DOM.petBirthday?.value));
+//console.log("📝 DEBUG - petData.age being saved:", petData.age);
+//console.log("📝 DEBUG - petData.birthday being saved:", petData.birthday);
         
               
   // 🟢 REPLACE all the manual saving with this single call:
