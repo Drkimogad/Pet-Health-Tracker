@@ -2267,34 +2267,47 @@ function exportInsightsToCSV(insightData) {
 // show insight modal
 //===========================
 function showInsightModal(insightData) {
-  const modalContent = `
-    <div class="modal-content insight-modal">
-      <h3>📊 Monthly Insights for ${insightData.petName}</h3>
-      <div class="insight-section">
-        <h4>😊 Mood Analysis</h4>
-        <p>${insightData.moodInsight.replace(/\n/g, '<br>')}</p>
-      </div>
-      <div class="insight-section">
-        <h4>🏃‍♂️ Activity Summary</h4>
-        <p>${insightData.activityInsight.replace(/\n/g, '<br>')}</p>
-      </div>
-      <div class="insight-actions">
-        <button class="export-insight-btn">Export as CSV</button>
-        <button class="dismiss-insight-btn">Dismiss</button>
+  // Close any existing modal first
+  closeInsightModal();
+
+  const modalHTML = `
+    <div class="insight-modal-backdrop">
+      <div class="insight-modal">
+        <h3>📊 Monthly Insights for ${insightData.petName}</h3>
+        <div class="insight-section">
+          <h4>😊 Mood Analysis</h4>
+          <p>${insightData.moodInsight.replace(/\n/g, '<br>')}</p>
+        </div>
+        <div class="insight-section">
+          <h4>🏃‍♂️ Activity Summary</h4>
+          <p>${insightData.activityInsight.replace(/\n/g, '<br>')}</p>
+        </div>
+        <div class="insight-actions">
+          <button class="export-insight-btn">Export as CSV</button>
+          <button class="dismiss-insight-btn">Dismiss</button>
+        </div>
       </div>
     </div>
   `;
 
-  // Use your existing modal utility
-  showModal(modalContent, () => {
-    // Setup event listeners after modal shows
-    document.querySelector('.export-insight-btn').addEventListener('click', () => {
-      exportInsightsToCSV(insightData);
-    });
-    document.querySelector('.dismiss-insight-btn').addEventListener('click', () => {
-      closeModal();
-    });
+  // Add to body
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+  
+  // Event listeners
+  document.querySelector('.export-insight-btn').addEventListener('click', () => {
+    exportInsightsToCSV(insightData);
   });
+  
+  document.querySelector('.dismiss-insight-btn').addEventListener('click', closeInsightModal);
+  
+  document.querySelector('.insight-modal-backdrop').addEventListener('click', (e) => {
+    if (e.target.classList.contains('insight-modal-backdrop')) {
+      closeInsightModal();
+    }
+  });
+  
+  // Add ESC key listener
+  document.addEventListener('keydown', handleModalKeydown);
 }
 
 //=========================================================================================
