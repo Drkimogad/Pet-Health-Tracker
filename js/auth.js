@@ -563,6 +563,14 @@ function initAuthListeners() {
         if (typeof showDashboard === 'function') {
           showDashboard();
         }
+        
+// ✅ CORRECT - pass the petId
+const profiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+if (profiles.length > 0) {
+  profiles.forEach(profile => {
+    checkScheduledReports(profile.id);
+  });
+} 
 
         // 🆕 ADD ADMIN NOTIFICATION SETUP RIGHT HERE
 if (user.email === 'drkimogad@gmail.com') {
