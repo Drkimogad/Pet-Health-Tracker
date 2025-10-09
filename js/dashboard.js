@@ -2971,6 +2971,8 @@ if (editingProfileId !== null) {
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', initializeDashboard);
+// Add modal cleanup for page unload to clean up after modal
+window.addEventListener('beforeunload', closeInsightModal);
 
 // ===== SESSION RECOVERY WITH EXPIRY =====
 function runSessionRecovery() {
