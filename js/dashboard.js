@@ -2309,6 +2309,49 @@ function showInsightModal(insightData) {
   document.addEventListener('keydown', handleModalKeydown);
 }
 
+//========================================================
+// showYearlyReportModal function
+//===============================================
+function showYearlyReportModal(petName, monthlyReports) {
+  closeInsightModal(); // Close any existing modal
+
+  let reportsHTML = '';
+  monthlyReports.forEach(report => {
+    reportsHTML += `
+      <div class="yearly-month-section">
+        <h4>${report.month}</h4>
+        <p><strong>Mood:</strong> ${report.moodInsight.replace(/\n/g, '<br>')}</p>
+        <p><strong>Activity:</strong> ${report.activityInsight.replace(/\n/g, '<br>')}</p>
+      </div>
+      <hr>
+    `;
+  });
+
+  const modalHTML = `
+    <div class="insight-modal-backdrop">
+      <div class="insight-modal yearly-report">
+        <h3>🎉 Yearly Insights for ${petName}</h3>
+        <div class="yearly-reports-container">
+          ${reportsHTML}
+        </div>
+        <div class="insight-actions">
+          <button class="dismiss-insight-btn">Close</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+  
+  // Event listeners
+  document.querySelector('.dismiss-insight-btn').addEventListener('click', closeInsightModal);
+  document.querySelector('.insight-modal-backdrop').addEventListener('click', (e) => {
+    if (e.target.classList.contains('insight-modal-backdrop')) {
+      closeInsightModal();
+    }
+  });
+}
+
 //=========================================================================================
 /* Mood tracking logic: i am using dual mood system, in petdata i am saving mood as a string to show only
 the latest mood logged. couldn't add more than one entry in rendered petcard for CANVAS CAPTURE.
@@ -2465,6 +2508,56 @@ async function updateLastReportInFirestore(petId) {
     console.error("Error saving report date:", error);
   }
 }
+//===========================================================================
+// Create saveMonthlyToYearly function
+//===================================================================
+async function saveMonthlyToYearly(petId, monthlyData) {
+  if (!firebase.auth().currentUser) return;
+  
+  try {
+    const db = firebase.firestore();
+    const yearlyRef = db.collection('yearlyInsights').doc(petId);
+    
+    await yearlyRef.set({
+      monthlyReports: firebase.firestore.FieldValue.arrayUnion(monthlyData),
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+    
+    console.log("✅ Monthly report saved to yearly insights");
+  } catch (error) {
+    console.error("Error saving to yearly insights:", error);
+  }
+}
+//=============================================================
+//  showYearlyInsights function
+//==================================================
+async function showYearlyInsights(petId) {
+  const profile = window.petProfiles.find(p => p.id === petId);
+  if (!profile) return;
+  
+  try {
+    const db = firebase.firestore();
+    const yearlyRef = db.collection('yearlyInsights').doc(petId);
+    const doc = await yearlyRef.get();
+    
+    if (!doc.exists) {
+      console.log("No yearly data found");
+      return;
+    }
+    
+    const yearlyData = doc.data();
+    const monthlyReports = yearlyData.monthlyReports || [];
+    
+    // Show yearly report modal
+    showYearlyReportModal(profile.petName, monthlyReports);
+    
+    // Reset yearly data after showing
+    await yearlyRef.delete();
+    
+  } catch (error) {
+    console.error("Error showing yearly insights:", error);
+  }
+}
 
 
 //========================================
@@ -2568,15 +2661,24 @@ function showMonthlyInsights(petId) {
   const profile = window.petProfiles.find(p => p.id === petId);
   if (!profile) return;
   
-  // Get data from existing arrays
   const moodHistory = profile.moodHistory || [];
   const activityHistory = profile.activityHistory || [];
   
-  // Use your existing logic but merged
   const moodInsight = generateMoodInsight(moodHistory);
   const activityInsight = generateActivityInsight(activityHistory);
   
-  // Show combined report (repurpose your showWeeklyReport format)
+  // Create monthly data object for yearly storage
+  const monthlyData = {
+    month: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+    moodInsight: moodInsight,
+    activityInsight: activityInsight,
+    savedAt: new Date().toISOString()
+  };
+  
+  // Save to yearly collection
+  saveMonthlyToYearly(petId, monthlyData);
+  
+  // Show to user (existing function)
   showCombinedInsight(petId, moodInsight, activityInsight);
 }
 
