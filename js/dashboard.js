@@ -2243,7 +2243,7 @@ if (typeof loadSavedPetProfile === 'function') {
 } // CLOSES FUNCTION
 
 /===========================================================
-// Export function
+// Export function production ready
 //============================================
 function exportInsightsToCSV(insightData) {
   const csvContent = [
