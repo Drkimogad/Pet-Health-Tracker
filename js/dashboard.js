@@ -2241,7 +2241,7 @@ if (typeof loadSavedPetProfile === 'function') {
  }
 } // CLOSES FUNCTION
 
-/===========================================================
+//===========================================================
 // Export function production ready
 //============================================
 function exportInsightsToCSV(insightData) {
