@@ -563,9 +563,15 @@ async function loadSavedPetProfile() {
               <button id="exportAll-btn" class="exportAll-btn">📤 Save All Cards</button>
               <button class="qr-btn" data-pet-id="${profile.id}">Generate Qr Code</button>
               <button class="delete-btn" data-pet-id="${profile.id}">Delete Profile</button>
-              <!-- ✅ ADD INSIGHT BUTTON HERE -->
-              <button class="insight-btn" data-pet-id="${profile.id}">📊 Monthly Insights</button>
             `;   
+
+        // ✅ ADD INSIGHT BUTTON SEPARATELY (like community chat)
+            const insightBtn = document.createElement('button');
+           insightBtn.className = 'insight-btn';
+           insightBtn.setAttribute('data-pet-id', profile.id);
+           insightBtn.textContent = '📊 Monthly Insights';
+           actionsDiv.appendChild(insightBtn);
+
     const communityChatBtn = createCommunityChatButton(profile.id);
     actionsDiv.appendChild(communityChatBtn);
         
