@@ -3176,3 +3176,94 @@ INSIGHT MODAL STYLES - PRODUCTION READY
 .insight-modal {
   animation: modalSlideIn 0.3s ease-out;
 }
+
+/*===============================================
+ YEARLY INSIGHTS MODAL
+===============================================*/
+/* ===== YEARLY INSIGHTS MODAL ===== */
+.yearly-report .insight-modal {
+  max-width: 800px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.yearly-reports-container {
+  padding: 1rem 0;
+}
+
+.yearly-month-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.yearly-month-section h4 {
+  color: var(--main-color);
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+  border-bottom: 2px solid var(--accent-color);
+  padding-bottom: 0.5rem;
+}
+
+.yearly-month-section p {
+  color: var(--text-main);
+  margin: 0.5rem 0;
+  line-height: 1.5;
+}
+
+.yearly-month-section strong {
+  color: var(--main-color);
+}
+
+.yearly-reports-container hr {
+  border: none;
+  height: 1px;
+  background: var(--border-card);
+  margin: 2rem 0;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+/* Phone */
+@media (max-width: 768px) {
+  .yearly-report .insight-modal {
+    max-width: 95%;
+    margin: 1rem;
+    max-height: 90vh;
+  }
+  
+  .yearly-month-section {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .yearly-month-section h4 {
+    font-size: 1.1rem;
+  }
+}
+
+/* Tablet */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .yearly-report .insight-modal {
+    max-width: 90%;
+    max-height: 80vh;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+  .yearly-report .insight-modal {
+    max-width: 800px;
+    max-height: 85vh;
+  }
+  
+  .yearly-reports-container {
+    padding: 1.5rem 0;
+  }
+}
+
+
+
+
