@@ -2960,4 +2960,219 @@ header, footer {
   footer { padding: 1.5rem; }
 }
 
+/* ==================================
+INSIGHT MODAL STYLES - PRODUCTION READY
+====================================== */
+.insight-modal {
+  background: var(--bg-card);
+  border: 2px solid var(--accent-color);
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 600px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  position: relative;
+  z-index: 1001;
+}
 
+/* Backdrop with blur */
+.insight-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.insight-modal h3 {
+  color: var(--main-color);
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-size: 1.5rem;
+  border-bottom: 3px solid var(--accent-color);
+  padding-bottom: 0.75rem;
+}
+
+.insight-section {
+  background: var(--bg-page);
+  padding: 1.25rem;
+  border-radius: 8px;
+  margin-bottom: 1.25rem;
+  border-left: 4px solid var(--accent-color);
+  transition: transform 0.2s ease;
+}
+
+.insight-section:hover {
+  transform: translateX(4px);
+}
+
+.insight-section h4 {
+  color: var(--main-color);
+  margin-bottom: 0.75rem;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.insight-section p {
+  color: var(--text-main);
+  line-height: 1.6;
+  margin: 0;
+  font-size: 1rem;
+}
+
+.insight-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  justify-content: center;
+}
+
+.export-insight-btn, .dismiss-insight-btn {
+  padding: 0.875rem 1.75rem;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+  font-size: 1rem;
+  border: 2px solid;
+  min-height: 50px;
+}
+
+.export-insight-btn {
+  background-color: var(--accent-green);
+  color: var(--text-inverse);
+  border-color: var(--accent-green);
+}
+
+.export-insight-btn:hover {
+  background-color: #3d8b40;
+  border-color: #3d8b40;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.dismiss-insight-btn {
+  background-color: var(--accent-color);
+  color: var(--text-main);
+  border-color: var(--accent-color);
+}
+
+.dismiss-insight-btn:hover {
+  background-color: #E6C300;
+  border-color: #E6C300;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Tablets (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .insight-modal {
+    max-width: 500px;
+    padding: 1.75rem;
+  }
+  
+  .insight-modal h3 {
+    font-size: 1.4rem;
+  }
+  
+  .insight-section {
+    padding: 1.125rem;
+  }
+}
+
+/* Large Desktops (1025px+) */
+@media (min-width: 1025px) {
+  .insight-modal {
+    max-width: 650px;
+    padding: 2.5rem;
+  }
+  
+  .insight-modal h3 {
+    font-size: 1.6rem;
+  }
+  
+  .insight-section h4 {
+    font-size: 1.3rem;
+  }
+  
+  .insight-section p {
+    font-size: 1.1rem;
+  }
+}
+
+/* Mobile (767px and below) */
+@media (max-width: 767px) {
+  .insight-modal {
+    padding: 1.25rem;
+    margin: 1rem;
+    width: 95%;
+  }
+  
+  .insight-modal h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1.25rem;
+  }
+  
+  .insight-section {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .insight-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+  
+  .export-insight-btn, .dismiss-insight-btn {
+    min-height: 44px; /* Better touch targets */
+    padding: 0.75rem 1.5rem;
+  }
+}
+
+/* Small Mobile (480px and below) */
+@media (max-width: 480px) {
+  .insight-modal {
+    padding: 1rem;
+    border-radius: 8px;
+  }
+  
+  .insight-modal h3 {
+    font-size: 1.2rem;
+  }
+  
+  .insight-section h4 {
+    font-size: 1.1rem;
+  }
+  
+  .insight-section p {
+    font-size: 0.95rem;
+  }
+}
+
+/* Animation for modal entrance */
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.insight-modal {
+  animation: modalSlideIn 0.3s ease-out;
+}
