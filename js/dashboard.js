@@ -2242,6 +2242,60 @@ if (typeof loadSavedPetProfile === 'function') {
  }
 } // CLOSES FUNCTION
 
+/===========================================================
+// Export function
+//============================================
+function exportInsightsToCSV(insightData) {
+  const csvContent = [
+    'Pet Name,Insight Type,Data,Date',
+    `"${insightData.petName}","Mood Analysis","${insightData.moodInsight.replace(/"/g, '""')}","${insightData.date}"`,
+    `"${insightData.petName}","Activity Summary","${insightData.activityInsight.replace(/"/g, '""')}","${insightData.date}"`
+  ].join('\n');
+
+  const blob = new Blob([csvContent], { type: 'text/csv' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${insightData.petName}_insights_${insightData.date.replace(/\//g, '-')}.csv`;
+  a.click();
+  window.URL.revokeObjectURL(url);
+  
+  console.log("✅ Insights exported as CSV");
+}
+
+//=====================================
+// show insight modal
+//===========================
+function showInsightModal(insightData) {
+  const modalContent = `
+    <div class="modal-content insight-modal">
+      <h3>📊 Monthly Insights for ${insightData.petName}</h3>
+      <div class="insight-section">
+        <h4>😊 Mood Analysis</h4>
+        <p>${insightData.moodInsight.replace(/\n/g, '<br>')}</p>
+      </div>
+      <div class="insight-section">
+        <h4>🏃‍♂️ Activity Summary</h4>
+        <p>${insightData.activityInsight.replace(/\n/g, '<br>')}</p>
+      </div>
+      <div class="insight-actions">
+        <button class="export-insight-btn">Export as CSV</button>
+        <button class="dismiss-insight-btn">Dismiss</button>
+      </div>
+    </div>
+  `;
+
+  // Use your existing modal utility
+  showModal(modalContent, () => {
+    // Setup event listeners after modal shows
+    document.querySelector('.export-insight-btn').addEventListener('click', () => {
+      exportInsightsToCSV(insightData);
+    });
+    document.querySelector('.dismiss-insight-btn').addEventListener('click', () => {
+      closeModal();
+    });
+  });
+}
 
 //=========================================================================================
 /* Mood tracking logic: i am using dual mood system, in petdata i am saving mood as a string to show only
@@ -2442,18 +2496,17 @@ function showCombinedInsight(petId, moodInsight, activityInsight) {
   const profile = window.petProfiles.find(p => p.id === petId);
   const petName = profile?.petName || 'your pet';
   
-  const message = `📊 **Monthly Insights for ${petName}**\n\n` +
-                 `😊 **Mood Analysis:**\n${moodInsight}\n\n` +
-                 `🏃‍♂️ **Activity Summary:**\n${activityInsight}\n\n` +
-                 `💡 Track consistently for better insights next month!`;
-  
-  // Use your existing modal or confirm style
-  setTimeout(() => {
-    if (confirm(message + "\n\nDismiss this monthly report?")) {
-      // User acknowledged - could add "Don't show for 30 days" option here
-    }
-  }, 1500);
+  const insightData = {
+    petName: petName,
+    moodInsight: moodInsight,
+    activityInsight: activityInsight,
+    date: new Date().toLocaleDateString()
+  };
+
+  // Use your existing modal system
+  showInsightModal(insightData);
 }
+
 //================================================
 // ✅ MERGED MONTHLY INSIGHT FUNCTION
 //========================================
