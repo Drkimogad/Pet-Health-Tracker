@@ -1322,7 +1322,7 @@ transform: translateY(-2px); /* Optional lift effect */
   display: flex;
   flex-direction: column; /* 🔁 Changed from row */
   gap: 1rem;
-  margin-bottom: 10rem; /* will give more space between saved petcards 1.5rem*/
+  margin-bottom: 10rem !important; /* will give more space between saved petcards 1.5rem*/
   box-shadow: 0 4px 6px rgba(0,0,0,0.08);
   border: 2px solid var(--border-card);       /* Light gray border */
 }
@@ -1726,7 +1726,28 @@ button.delete-btn:hover {
   }
 }
 
+/* =======================================================
+  Insight Button NEWLY IMPLEMENTED- Full Width like Community Chat
+==========================================================*/
+.insight-btn {
+  background-color: var(--accent-color); /* Gold */
+  color: var(--text-main); /* Dark text */
+  border: 2px solid var(--accent-color);
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  animation: pulse 1.6s infinite;
+  width: 100%; /* Full width */
+  margin-top: 0.5rem; /* Space from other buttons */
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
 
+.insight-btn:hover {
+  background-color: #E6C300; /* Darker gold */
+  transform: translateY(-1px);
+}
 
 /* =====QR CODE STYLES======== */
 .qr-window {
