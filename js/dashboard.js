@@ -2426,23 +2426,65 @@ function resetMonthlyActivityData(petId) {
   }
 }
 
+//=======================================================
+// Step 1: Create getLastReportFromFirestore function
+//============================
+async function getLastReportFromFirestore(petId) {
+  if (!firebase.auth().currentUser) return null;
+  
+  try {
+    const db = firebase.firestore();
+    const insightRef = db.collection('monthlyInsights').doc(petId);
+    const doc = await insightRef.get();
+    
+    if (doc.exists) {
+      return doc.data().lastReportDate;
+    }
+    return null;
+  } catch (error) {
+    console.error("Error checking last report:", error);
+    return null;
+  }
+}
+
+//=====================================================
+// Step 2: Create updateLastReportInFirestore function
+//==================================================================
+async function updateLastReportInFirestore(petId) {
+  if (!firebase.auth().currentUser) return;
+  
+  try {
+    const db = firebase.firestore();
+    const insightRef = db.collection('monthlyInsights').doc(petId);
+    
+    await insightRef.set({
+      lastReportDate: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+  } catch (error) {
+    console.error("Error saving report date:", error);
+  }
+}
+
+
 //========================================
-// it handles monthly popup insights now
+// it handles monthly popup insights now, modified to read from firestore
 //=============================================
-function checkScheduledReports(petId) {
+async function checkScheduledReports(petId) {
   console.log("🔍 CHECK SCHEDULED REPORTS RUNNING for:", petId);
   
   const now = new Date();
   
-  // ✅ MONTHLY REPORT CHECK ONLY (30 days) 
-  const lastMonthlyKey = `lastMonthlyReport_${petId}`;
-  const lastMonthlyReport = localStorage.getItem(lastMonthlyKey);
-  const daysSinceMonthly = lastMonthlyReport ? (now - new Date(lastMonthlyReport)) / (24 * 60 * 60 * 1000) : 999;
+  // Replace localStorage check with Firestore check
+  const lastReportDate = await getLastReportFromFirestore(petId);
+  const daysSinceMonthly = lastReportDate ? 
+    (now - new Date(lastReportDate)) / (24 * 60 * 60 * 1000) : 999;
   
   if (daysSinceMonthly >= 30) {
     showMonthlyInsights(petId);
     resetMonthlyActivityData(petId);
-    localStorage.setItem(lastMonthlyKey, now.toISOString());
+    // Replace localStorage save with Firestore update
+    await updateLastReportInFirestore(petId);
   }
 }
 
