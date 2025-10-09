@@ -485,25 +485,24 @@ async function removeOfflineProfile(db, id) {
   });
 }
 
-//======================================
-// Enhanced insight modal cleanup function
-//===========================================
+//=====================================
+// Enhanced monthly and yearly insights modal cleanup utility
+//=====================================
 function closeInsightModal() {
   const backdrop = document.querySelector('.insight-modal-backdrop');
+  
+  // Remove ESC key listener
+  document.removeEventListener('keydown', handleModalKeydown);
+  
+  // Remove backdrop and all its event listeners
   if (backdrop) {
-    // Remove the backdrop and all its event listeners
     backdrop.remove();
   }
-  
-  // Remove the global ESC key listener
-  document.removeEventListener('keydown', handleModalKeydown);
 }
 
-// ESC key handler for modal
+// ESC key handler
 function handleModalKeydown(e) {
   if (e.key === 'Escape') {
     closeInsightModal();
   }
 }
-
-
