@@ -400,14 +400,6 @@ let checkInterval = setInterval(() => {
 function initializeOfflinePage() {
     console.log("Initializing offline page");
     
-    // Store last online time when going offline
-    if (navigator.onLine) {
-        console.log("Currently online, storing last online time");
-        localStorage.setItem("lastOnline", new Date().toLocaleString());
-    } else {
-        console.log("Currently offline");
-    }
-    
     // Update last online time display
     updateLastOnlineTime();
     
