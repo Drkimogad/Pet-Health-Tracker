@@ -2573,28 +2573,6 @@ async function showYearlyInsights(petId) {
   }
 }
 
-
-//========================================
-// it handles monthly popup insights now, modified to read from firestore
-//=============================================
-async function checkScheduledReports(petId) {
-  console.log("🔍 CHECK SCHEDULED REPORTS RUNNING for:", petId);
-  
-  const now = new Date();
-  
-  // Replace localStorage check with Firestore check
-  const lastReportDate = await getLastReportFromFirestore(petId);
-  const daysSinceMonthly = lastReportDate ? 
-    (now - new Date(lastReportDate)) / (24 * 60 * 60 * 1000) : 999;
-  
-  if (daysSinceMonthly >= 30) {
-    showMonthlyInsights(petId);
-    resetMonthlyActivityData(petId);
-    // Replace localStorage save with Firestore update
-    await updateLastReportInFirestore(petId);
-  }
-}
-
 //======================================================
 // ✅ generate mood insights and activity insights
 //========================================================
@@ -2728,7 +2706,26 @@ async function showMonthlyInsights(petId) {
   // Show to user (existing function)
   showCombinedInsight(petId, moodInsight, activityInsight);
 }
-
+//========================================
+// it handles monthly popup insights now, modified to read from firestore
+//=============================================
+async function checkScheduledReports(petId) {
+  console.log("🔍 CHECK SCHEDULED REPORTS RUNNING for:", petId);
+  
+  const now = new Date();
+  
+  // Replace localStorage check with Firestore check
+  const lastReportDate = await getLastReportFromFirestore(petId);
+  const daysSinceMonthly = lastReportDate ? 
+    (now - new Date(lastReportDate)) / (24 * 60 * 60 * 1000) : 999;
+  
+  if (daysSinceMonthly >= 30) {
+    showMonthlyInsights(petId);
+    resetMonthlyActivityData(petId);
+    // Replace localStorage save with Firestore update
+    await updateLastReportInFirestore(petId);
+  }
+}
 
 // ======== EVENT DELEGATION (FIXED) ========
 // ✅ Keep this block to handle profile actions (WIRING) ALL THE BUTTONS IN LOADSAVEDPETPROFILES FUNCTION✅
