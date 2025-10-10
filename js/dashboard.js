@@ -2652,13 +2652,39 @@ function showCombinedInsight(petId, moodInsight, activityInsight) {
 //================================================
 // ✅ MERGED MONTHLY INSIGHT FUNCTION
 //========================================
-function showMonthlyInsights(petId) {
-  const profile = window.petProfiles.find(p => p.id === petId);
-  if (!profile) return;
-  
-  const moodHistory = profile.moodHistory || [];
-  const activityHistory = profile.activityHistory || [];
-  
+async function showMonthlyInsights(petId) {
+  let moodHistory = [];
+  let activityHistory = [];
+  let petName = 'your pet';
+
+  // Try Firestore first for latest data
+  if (navigator.onLine && firebase.auth().currentUser) {
+    try {
+      const db = firebase.firestore();
+      const profileRef = db.collection("profiles").doc(petId);
+      const doc = await profileRef.get();
+      
+      if (doc.exists) {
+        const profileData = doc.data();
+        moodHistory = profileData.moodHistory || [];
+        activityHistory = profileData.activityHistory || [];
+        petName = profileData.petName || 'your pet';
+      }
+    } catch (error) {
+      console.log("📴 Offline - using local data for monthly insights");
+    }
+  }
+
+  // Fallback to local data
+  if (moodHistory.length === 0 || activityHistory.length === 0) {
+    const profile = window.petProfiles.find(p => p.id === petId);
+    if (!profile) return;
+    
+    moodHistory = profile.moodHistory || [];
+    activityHistory = profile.activityHistory || [];
+    petName = profile.petName || 'your pet';
+  }
+
   const moodInsight = generateMoodInsight(moodHistory);
   const activityInsight = generateActivityInsight(activityHistory);
   
@@ -2671,12 +2697,11 @@ function showMonthlyInsights(petId) {
   };
   
   // Save to yearly collection
-  saveMonthlyToYearly(petId, monthlyData);
+  await saveMonthlyToYearly(petId, monthlyData);
   
   // Show to user (existing function)
   showCombinedInsight(petId, moodInsight, activityInsight);
 }
-
 
 
 // ======== EVENT DELEGATION (FIXED) ========
