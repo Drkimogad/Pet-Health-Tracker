@@ -2336,19 +2336,32 @@ the latest mood logged. couldn't add more than one entry in rendered petcard for
 while in mood tracking i am using array of 5+ insight for behavioural tracking after 5 enteries
 and mood tracking only runs if there is a selected mood in dropdown menu. */
 //================================================
-// ✅ GET MOOD HISTORY HELPER (used in getUpdatedMoodHistory)
+// ✅ GET MOOD HISTORY HELPER (used in getUpdatedMoodHistory) usese firestore now
 //========================================
 async function getMoodHistory(petId) {
+  // Try Firestore first
+  if (navigator.onLine && firebase.auth().currentUser) {
+    try {
+      const db = firebase.firestore();
+      const profileRef = db.collection("profiles").doc(petId);
+      const doc = await profileRef.get();
+      if (doc.exists) {
+        return doc.data().moodHistory || [];
+      }
+    } catch (error) {
+      console.log("📴 Offline - using local mood history");
+    }
+  }
+  
+  // Fallback to local
   const profile = window.petProfiles.find(p => p.id === petId);
   return profile?.moodHistory || [];
 }
 
-// helper functions for getting mood update
+// Update getUpdatedMoodHistory to use the Firestore-enhanced version:
 async function getUpdatedMoodHistory(petId, mood, note) {
   if (!mood) {
-    // Return existing history if no new mood
-    const profile = window.petProfiles.find(p => p.id === petId);
-    return profile?.moodHistory || [];
+    return await getMoodHistory(petId); // Now uses Firestore + fallback
   }
   
   const newEntry = {
@@ -2357,9 +2370,9 @@ async function getUpdatedMoodHistory(petId, mood, note) {
     date: new Date().toISOString()
   };
   
-  // Get existing history
+  // Get existing history (now from Firestore + fallback)
   const existing = await getMoodHistory(petId);
-  return [newEntry, ...existing]; // Remove .slice(0, 5)
+  return [newEntry, ...existing];
 }
 //=============================================
 // All activity logging logic
@@ -2396,9 +2409,8 @@ function getTimeAgo(timestamp) {
 //===========Helper to get updated activity history NOT NEEDED ANYMORE???==============
 // IT WAS USED TO BUILD ACTIVITY HISTORY ARRAY IN PETDATA WHICH IS NOT USED ANYMORE
 async function getUpdatedActivityHistory(petId, newActivities) {
-  // Get existing activities from current profile data
-  const profile = window.petProfiles.find(p => p.id === petId);
-  const existingHistory = profile?.activityHistory || [];
+  // Get existing activities from Firestore first, then local fallback
+  const existingHistory = await getMoodHistory(petId); // Reuse the same pattern
   
   // Create new activity entries
   const newEntries = newActivities.map(activity => ({
@@ -2406,8 +2418,7 @@ async function getUpdatedActivityHistory(petId, newActivities) {
     timestamp: new Date().toISOString()
   }));
   
-  // Merge and limit to 50 entries
-  return [...newEntries, ...existingHistory].slice(0, 50); // show upto 50 mood enteries
+  return [...newEntries, ...existingHistory].slice(0, 50);
 }
 
 //=======================================
