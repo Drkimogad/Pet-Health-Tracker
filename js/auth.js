@@ -1042,6 +1042,24 @@ if (mode === 'resetPassword' && oobCode) {
 }
 
 
+// ===== LAST ONLINE TIME TRACKING =====
+// NEW: Tracks when user was last online (for offline page) DEFINE IT FIRST THEN CALL IN INITIALIZATION AND ADD IT TO ONLINE STATUS CHECK FUNCTION
+function trackLastOnlineTime() {
+    // Store current time as last online
+    localStorage.setItem("lastOnline", new Date().toLocaleString());
+    console.log("📅 Last online time updated:", new Date().toLocaleString());
+    
+    // Update periodically while online
+    const onlineTracker = setInterval(() => {
+        if (navigator.onLine) {
+            localStorage.setItem("lastOnline", new Date().toLocaleString());
+        } else {
+            // Stop tracking when offline
+            clearInterval(onlineTracker);
+        }
+    }, 30000); // Update every 30 seconds
+}
+
 // ======== OFFLINE STATUS DETECTION ========
 // Call this when coming online instead of manual sync
 function checkOnlineStatus() {
@@ -1053,6 +1071,8 @@ function checkOnlineStatus() {
     statusElement.className = 'online-status online';
     console.log('✅ Online - Connected to server');
     
+    // ✅ ADD THIS: Track last online time
+    trackLastOnlineTime();
     // ✅ REPLACE MANUAL SYNC WITH MESSAGE TRIGGER
     triggerServiceWorkerSync();
     
@@ -1184,6 +1204,10 @@ async function initializeAuth() {
     // 10. Logout listener
     if (typeof setupLogout === "function") {
       setupLogout();
+    }
+     // 13.Start tracking last online time
+    if (navigator.onLine) {
+        trackLastOnlineTime();
     }
         // 🆕 12. Create Support Manager (but don't initialize yet)
     window.supportManager = new SupportManager();
