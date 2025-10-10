@@ -2682,6 +2682,7 @@ async function showMonthlyInsights(petId) {
     petName = profile.petName || 'your pet';
   }
 
+    console.log("🟡 Data for Monthly Insight:", moodHistory); // to see what's going on
   const moodInsight = generateMoodInsight(moodHistory);
   const activityInsight = generateActivityInsight(activityHistory);
   
