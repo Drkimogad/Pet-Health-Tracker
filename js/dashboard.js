@@ -2124,9 +2124,25 @@ showErrorNotification("❌ Failed to generate QR code. Please try again.")
 // Enhanced helper function for saving offline
 //===============================================
 async function saveProfile(profile) {
+      // ✅ ADD DEBUG LOGS HERE
+  console.log("🔄 saveProfile CALLED with profile:", {
+    id: profile.id,
+    mood: profile.mood,
+    moodHistory: profile.moodHistory,
+    moodHistoryLength: profile.moodHistory?.length,
+    activityHistory: profile.activityHistory,
+    activityHistoryLength: profile.activityHistory?.length
+  });
   // ✅ DETERMINE IF THIS IS AN UPDATE OR ADD OPERATION
   const existingProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
   const isUpdate = existingProfiles.some(p => p.id === profile.id);
+
+      // ✅ ADD DEBUG - Check existing data
+  const existingProfile = existingProfiles.find(p => p.id === profile.id);
+  console.log("📊 EXISTING PROFILE DATA:", {
+    existingMoodHistory: existingProfile?.moodHistory,
+    existingMoodHistoryLength: existingProfile?.moodHistory?.length
+  });
     
   // ✅ EXISTING OFFLINE/ONLINE LOGIC CONTINUES HERE...  
   // Online: save directly to Firestore
@@ -2154,7 +2170,7 @@ async function saveProfile(profile) {
     }
   }
 
-  // Update localStorage for UI - CRITICAL: Do this AFTER queue operation
+// Update localStorage for UI - CRITICAL: Do this AFTER queue operation
   let savedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
   const index = savedProfiles.findIndex(p => p.id === profile.id);
   
@@ -2167,8 +2183,15 @@ async function saveProfile(profile) {
   localStorage.setItem('petProfiles', JSON.stringify(savedProfiles));
   window.petProfiles = savedProfiles; // Keep memory in sync
   
+  // ✅ ADD DEBUG - Verify localStorage update
+  const updatedProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
+  const updatedProfile = updatedProfiles.find(p => p.id === profile.id);
+  console.log("✅ LOCALSTORAGE UPDATED:", {
+    moodHistory: updatedProfile?.moodHistory,
+    moodHistoryLength: updatedProfile?.moodHistory?.length
+  });
+  
 // Update UI immediately after localStorage is updated
-// ✅ ADD THIS - Force immediate UI refresh
 if (typeof loadSavedPetProfile === 'function') {
   loadSavedPetProfile(); // Update UI NOW
  }
@@ -2923,7 +2946,12 @@ if (editingProfileId !== null && fileInput.files[0]) {
 //console.log("📝 DEBUG - petData.age being saved:", petData.age);
 //console.log("📝 DEBUG - petData.birthday being saved:", petData.birthday);
         
-              
+       // In your form submission, before calling saveProfile()
+console.log("🎯 FORM SUBMISSION - petData being built:", {
+  mood: DOM.moodSelector?.value,
+  moodHistory: petData.moodHistory,
+  moodHistoryLength: petData.moodHistory?.length
+});       
   // 🟢 REPLACE all the manual saving with this single call
 await saveProfile(
   { ...petData } // Just pass petData - moodHistory and activityHistory are already built inside it
