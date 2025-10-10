@@ -2123,33 +2123,11 @@ showErrorNotification("❌ Failed to generate QR code. Please try again.")
 //=================================================
 // Enhanced helper function for saving offline
 //===============================================
-async function saveProfile(profile, moodData = null, selectedActivities = []) {
+async function saveProfile(profile) {
   // ✅ DETERMINE IF THIS IS AN UPDATE OR ADD OPERATION
   const existingProfiles = JSON.parse(localStorage.getItem('petProfiles')) || [];
   const isUpdate = existingProfiles.some(p => p.id === profile.id);
-  
-// ✅ 1. UPDATE ARRAYS for mood and activities ONLY - NO TRIGGERS
-if (moodData && moodData.mood) {
-  const moodEntry = {
-    mood: moodData.mood,
-    note: moodData.note || '',
-    date: new Date().toISOString()
-  };
-  
-  if (!profile.moodHistory) profile.moodHistory = [];
-  profile.moodHistory = [moodEntry, ...profile.moodHistory].slice(0, 5);
-}
-
-if (selectedActivities.length > 0) {
-  const activityEntries = selectedActivities.map(activity => ({
-    activity: activity,
-    timestamp: new Date().toISOString()
-  }));
-  
-  if (!profile.activityHistory) profile.activityHistory = [];
-  profile.activityHistory = [...activityEntries, ...profile.activityHistory].slice(0, 50);
-}
-  
+    
   // ✅ EXISTING OFFLINE/ONLINE LOGIC CONTINUES HERE...  
   // Online: save directly to Firestore
   if (navigator.onLine && firebase.auth().currentUser) {
@@ -2365,9 +2343,13 @@ async function getMoodHistory(petId) {
   return profile?.moodHistory || [];
 }
 
-// helper functions forgetting mood update
+// helper functions for getting mood update
 async function getUpdatedMoodHistory(petId, mood, note) {
-  if (!mood) return []; // Return existing history if no new mood
+  if (!mood) {
+    // Return existing history if no new mood
+    const profile = window.petProfiles.find(p => p.id === petId);
+    return profile?.moodHistory || [];
+  }
   
   const newEntry = {
     mood: mood,
@@ -2377,7 +2359,7 @@ async function getUpdatedMoodHistory(petId, mood, note) {
   
   // Get existing history
   const existing = await getMoodHistory(petId);
-  return [newEntry, ...existing].slice(0, 5);
+  return [newEntry, ...existing]; // Remove .slice(0, 5)
 }
 //=============================================
 // All activity logging logic
@@ -2802,9 +2784,9 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
           relationship: DOM.emergencyContactRelationship?.value
         }],
           // combined mood string for mood tracking:
-        mood: DOM.moodSelector?.value ? 
-         `${DOM.moodSelector.value} - ${DOM.moodNote?.value || 'No note'} - ${new Date().toLocaleDateString()}` 
-          : '',
+        mood: DOM.moodSelector?.value || '', // Keep simple mood string for UI
+        moodHistory: await getUpdatedMoodHistory(newId, DOM.moodSelector?.value, DOM.moodNote?.value),
+
         activityHistory: await getUpdatedActivityHistory(newId, selectedActivities), // keep it like mood string and array.
   
         reminders: {
@@ -2889,11 +2871,11 @@ if (editingProfileId !== null && fileInput.files[0]) {
 //console.log("📝 DEBUG - petData.birthday being saved:", petData.birthday);
         
               
-  // 🟢 REPLACE all the manual saving with this single call:
-await saveProfile(petData, 
-  { mood: DOM.moodSelector?.value, note: DOM.moodNote?.value },
-  selectedActivities
-);     
+  // 🟢 REPLACE all the manual saving with this single call
+await saveProfile(
+  { ...petData } // Just pass petData - moodHistory and activityHistory are already built inside it
+);
+
 
 // 🆕 ADD OLD IMAGE DELETION RIGHT HERE NEWLY ADDED
 if (oldImagePublicId) {
