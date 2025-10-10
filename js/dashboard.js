@@ -2756,9 +2756,9 @@ DOM.savedProfilesList?.addEventListener('click', (e) => {
     generateQRCode(petId);
   }
     // ✅ ADD INSIGHT BUTTON HANDLER HERE
-else if (btn.classList.contains('insight-btn')) {
-  showMonthlyInsights(petId);
-}
+  else if (btn.classList.contains('insight-btn')) {
+  checkScheduledReports(petId); // Use the same function as automatic check
+ }
 });
     
 // Add this to catch handled errors 
