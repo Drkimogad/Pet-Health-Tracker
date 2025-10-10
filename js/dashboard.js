@@ -2439,20 +2439,6 @@ async function getActivityHistory(petId) {
   const profile = window.petProfiles.find(p => p.id === petId);
   return profile?.activityHistory || [];
 }
-//===========Helper to get updated activity history NOT NEEDED ANYMORE???==============
-// IT WAS USED TO BUILD ACTIVITY HISTORY ARRAY IN PETDATA WHICH IS NOT USED ANYMORE
-async function getUpdatedActivityHistory(petId, newActivities) {
-  // Get existing activities from Firestore first, then local fallback
-  const existingHistory = await getActivityHistory(petId); // ← FIX THIS
-  
-  // Create new activity entries
-  const newEntries = newActivities.map(activity => ({
-    activity: activity,
-    timestamp: new Date().toISOString()
-  }));
-  
-  return [...newEntries, ...existingHistory].slice(0, 50);
-}
 
 //=======================================
 //  reset monthly activity & mood function
