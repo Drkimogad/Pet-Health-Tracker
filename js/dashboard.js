@@ -2406,11 +2406,44 @@ function getTimeAgo(timestamp) {
   return `${diffDays}d ago`;
 }
 
+async function getUpdatedActivityHistory(petId, newActivities) {
+  // ✅ CORRECT - Get ACTIVITY history, not mood history
+  const existingHistory = await getActivityHistory(petId); // ← FIX THIS
+  
+  // Create new activity entries
+  const newEntries = newActivities.map(activity => ({
+    activity: activity,
+    timestamp: new Date().toISOString()
+  }));
+  
+  return [...newEntries, ...existingHistory].slice(0, 50);
+}
+
+// ✅ get activity history
+async function getActivityHistory(petId) {
+  // Try Firestore first
+  if (navigator.onLine && firebase.auth().currentUser) {
+    try {
+      const db = firebase.firestore();
+      const profileRef = db.collection("profiles").doc(petId);
+      const doc = await profileRef.get();
+      if (doc.exists) {
+        return doc.data().activityHistory || [];
+      }
+    } catch (error) {
+      console.log("📴 Offline - using local activity history");
+    }
+  }
+  
+  // Fallback to local
+  const profile = window.petProfiles.find(p => p.id === petId);
+  return profile?.activityHistory || [];
+}
 //===========Helper to get updated activity history NOT NEEDED ANYMORE???==============
 // IT WAS USED TO BUILD ACTIVITY HISTORY ARRAY IN PETDATA WHICH IS NOT USED ANYMORE
 async function getUpdatedActivityHistory(petId, newActivities) {
   // Get existing activities from Firestore first, then local fallback
-  const existingHistory = await getMoodHistory(petId); // Reuse the same pattern
+  const existingHistory = await getActivityHistory(petId); // ← FIX THIS
   
   // Create new activity entries
   const newEntries = newActivities.map(activity => ({
