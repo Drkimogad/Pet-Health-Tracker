@@ -2757,7 +2757,7 @@ DOM.savedProfilesList?.addEventListener('click', (e) => {
   }
     // ✅ ADD INSIGHT BUTTON HANDLER HERE
   else if (btn.classList.contains('insight-btn')) {
-  checkScheduledReports(petId); // Use the same function as automatic check
+  showMonthlyInsights(petId);
  }
 });
     
