@@ -2672,8 +2672,13 @@ function showCombinedInsight(petId, moodInsight, activityInsight) {
 // ✅ MERGED MONTHLY INSIGHT FUNCTION
 //========================================
 async function showMonthlyInsights(petId) {
-      console.log("🔄 showMonthlyInsights CALLED for:", petId); // ← ADD HERE
-
+  console.log("🔍 Monthly Insights Data:", {
+  moodHistory,
+  activityHistory,
+  moodCount: moodHistory.length,
+  activityCount: activityHistory.length
+});
+    
   let moodHistory = [];
   let activityHistory = [];
   let petName = 'your pet';
