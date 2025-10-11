@@ -2613,27 +2613,46 @@ async function showYearlyInsights(petId) {
 function generateMoodInsight(moodHistory) {
   if (moodHistory.length === 0) return "No mood data this month";
   
-  const moodCounts = {};
-  moodHistory.forEach(entry => {
-    moodCounts[entry.mood] = (moodCounts[entry.mood] || 0) + 1;
-  });
+  // 🆕 GET CURRENT MOOD (most recent entry)
+  const currentMood = moodHistory[0]?.mood || 'No recent mood';
   
-  const mostCommonMood = Object.keys(moodCounts).reduce((a, b) => 
-    moodCounts[a] > moodCounts[b] ? a : b
+  // 🆕 ANALYZE LAST 7 DAYS FOR TRENDS
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  
+  const recentMoods = moodHistory.filter(entry => 
+    new Date(entry.date) > oneWeekAgo
+  );
+  
+  const recentMoodCounts = {};
+  recentMoods.forEach(entry => {
+    recentMoodCounts[entry.mood] = (recentMoodCounts[entry.mood] || 0) + 1;
+  });
+
+  const mostCommonRecent = Object.keys(recentMoodCounts).reduce((a, b) => 
+    recentMoodCounts[a] > recentMoodCounts[b] ? a : b, currentMood
   );
 
+  // 🆕 BETTER INSIGHT BASED ON CURRENT + RECENT PATTERNS
   let insight = "";
-  if (mostCommonMood.includes("😊") || mostCommonMood.includes("🤩") || mostCommonMood.includes("😍")) {
-    insight = "Your pet shows mostly positive moods! Great job maintaining a happy environment.";
-  } else if (mostCommonMood.includes("😢") || mostCommonMood.includes("😰") || mostCommonMood.includes("😨")) {
-    insight = "You've recorded several anxious/sad moods. Consider noting what triggers these patterns.";
-  } else if (mostCommonMood.includes("🥱") || mostCommonMood.includes("😴") || mostCommonMood.includes("🤒")) {
-    insight = "Multiple tired/sick mood entries. Monitor energy levels, appetite changes and general health.";
+  
+  if (currentMood.includes("😊") || currentMood.includes("🤩") || currentMood.includes("😍")) {
+    insight = `Your pet is currently ${currentMood}. Great job maintaining a happy environment!`;
+  } else if (currentMood.includes("😢") || currentMood.includes("😰") || currentMood.includes("😨")) {
+    insight = `Your pet is currently ${currentMood}. Consider noting what triggers these patterns.`;
   } else {
-    insight = `You've tracked ${moodHistory.length} mood patterns. Look for trends in daily activities and mood connections.`;
+    insight = `Your pet is currently ${currentMood}.`;
   }
 
-  return `${insight}\nMost frequent mood: ${mostCommonMood}`;
+  // 🆕 ADD RECENT TREND CONTEXT
+  if (recentMoods.length > 1) {
+    const trend = recentMoodCounts[mostCommonRecent] > 1 ? 
+      `Recent trend: ${mostCommonRecent} mood appears frequently.` : 
+      "Moods are varied recently.";
+    insight += ` ${trend}`;
+  }
+
+  return insight;
 }
 
 function generateActivityInsight(activityHistory) {
