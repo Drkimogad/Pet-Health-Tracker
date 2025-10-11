@@ -1293,6 +1293,19 @@ transform: translateY(-2px); /* Optional lift effect */
   }
 }
 
+/* Desktop form width reduction to 80% */
+@media (min-width: 1200px) {
+  #petList {
+    max-width: 80%;
+    margin: 2rem auto;
+  }
+  
+  .dashboard-actions {
+    margin-right: 10%;
+    margin-left: 10%;
+  }
+}
+
 
 /*================================================*/
 /* Pet Cards all styles SPLIT LAYOUT */
@@ -1510,6 +1523,13 @@ transform: translateY(-2px); /* Optional lift effect */
   background-color: #1b5e20; /* Darker green */
 }
 
+
+/* Desktop saved pet cards width reduction to 80% */
+@media (min-width: 1200px) {
+  .saved-profiles {
+    max-width: 80%;
+  }
+}
 
 /*===========================*/
 /* Mobile reminders section */
