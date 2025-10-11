@@ -1524,10 +1524,11 @@ transform: translateY(-2px); /* Optional lift effect */
 }
 
 
-/* Desktop saved pet cards width reduction to 80% */
+/* Desktop saved pet cards width reduction to 80% and centering */
 @media (min-width: 1200px) {
   .saved-profiles {
     max-width: 80%;
+    margin: 0 auto; /* Add this to center the container */
   }
 }
 
