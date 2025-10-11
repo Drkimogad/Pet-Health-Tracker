@@ -2382,9 +2382,14 @@ async function getMoodHistory(petId) {
 }
 
 // Update getUpdatedMoodHistory to use the Firestore-enhanced version:
+// Update getUpdatedMoodHistory to use the Firestore-enhanced version:
 async function getUpdatedMoodHistory(petId, mood, note) {
+  console.log("🔄 getUpdatedMoodHistory called", { petId, mood, note });
+
   if (!mood) {
-    return await getMoodHistory(petId); // Now uses Firestore + fallback
+    const existingHistory = await getMoodHistory(petId);
+    console.log("➡️ No new mood. Returning existing history:", existingHistory);
+    return existingHistory;
   }
   
   const newEntry = {
@@ -2392,10 +2397,16 @@ async function getUpdatedMoodHistory(petId, mood, note) {
     note: note || '',
     date: new Date().toISOString()
   };
+  console.log("🆕 New mood entry created:", newEntry);
   
   // Get existing history (now from Firestore + fallback)
   const existing = await getMoodHistory(petId);
-  return [newEntry, ...existing];
+  console.log("📚 Existing mood history:", existing);
+  
+  const updatedHistory = [newEntry, ...existing];
+  console.log("✅ Combined updated history:", updatedHistory);
+  
+  return updatedHistory;
 }
 //=============================================
 // All activity logging logic
@@ -2860,9 +2871,13 @@ showDashboardLoader(false, "error-xxx") → “stop operation but show error mes
           relationship: DOM.emergencyContactRelationship?.value
         }],
           // combined mood string for mood tracking:
-        mood: DOM.moodSelector?.value || '', // Keep simple mood string for UI
-        moodHistory: await getUpdatedMoodHistory(newId, DOM.moodSelector?.value, DOM.moodNote?.value),
-
+          // this is for last mood logged for UI 
+         mood: DOM.moodSelector?.value ? 
+         `${DOM.moodSelector.value} - ${DOM.moodNote?.value || 'No note'} - ${new Date().toLocaleDateString()}` 
+          : '',
+          // ✅ ADD THIS - for mood tracking history (array)
+           moodHistory: await getUpdatedMoodHistory(newId, DOM.moodSelector?.value, DOM.moodNote?.value),
+          
         activityHistory: await getUpdatedActivityHistory(newId, selectedActivities), // keep it like mood string and array.
   
         reminders: {
