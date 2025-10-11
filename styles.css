@@ -974,8 +974,8 @@ affect their colour in the footer */
   #emailLoginWrapper {
     top: calc(var(--header-height) + 15vh + 10px);
     right: 100px;
-    width: 400px; /* 270*/
-    height: 400px;  /* it was 270*/
+    width: 300px; /* 270*/
+    height: 300px;  /* it was 270*/
     padding: 8px;
   }
 
@@ -1024,7 +1024,8 @@ FORM Styling
 }
 
 #petList {
-  max-width: 90%; /* suitable for desktop*/
+ /* max-width: 90%;*/ /* suitable for desktop*/
+  max-width: 80%; /* suitable for desktop        MODIFIED*/
   padding: 2rem; /* maintain internal spacing can be adjusted to 3 rem for desktop*/
   background-color: var(--card-bg); /* slightly brighter than container */
   border: 1px solid var(--border-card); /* subtle border */
@@ -1303,7 +1304,9 @@ transform: translateY(-2px); /* Optional lift effect */
 /*  padding-bottom: 5vh;  /* same as footer height */
   display: flex;          /* make it flexbox */
   align-items: center;    /* keep cards centered horizontally */
-  max-width: 90%; /* or 100% if you want more flexibility */
+/* max-width: 90%;*/ /* or 100% if you want more flexibility */
+  
+  max-width: 80%; /* or 100% if you want more flexibility */
   flex-direction: column; /* force vertical stacking */
   border:var(--border-card); /* to check it out*/
 }
