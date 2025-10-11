@@ -1300,9 +1300,10 @@ transform: translateY(-2px); /* Optional lift effect */
     margin: 2rem auto;
   }
   
+  /* will reflect in form and rendered petcard display too*/
   .dashboard-actions {
-    margin-right: 10%;
-    margin-left: 10%;
+    margin-right: 15%; /* Increase from 10% to push buttons inward */ 
+    margin-left: 15%;  /* Increase from 10% to push buttons inward */
   }
 }
 
