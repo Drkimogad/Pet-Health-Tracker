@@ -1339,7 +1339,7 @@ transform: translateY(-2px); /* Optional lift effect */
   display: flex;
   flex-direction: column; /* 🔁 Changed from row */
   gap: 1rem;
-  margin-bottom: 10rem !important; /* will give more space between saved petcards 1.5rem*/
+  margin-bottom: 12rem !important; /* will give more space between saved petcards 15rem even if needed*/
   box-shadow: 0 4px 6px rgba(0,0,0,0.08);
   border: 2px solid var(--border-card);       /* Light gray border */
 }
