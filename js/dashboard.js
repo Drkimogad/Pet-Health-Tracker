@@ -2565,13 +2565,43 @@ async function saveMonthlyToYearly(petId, monthlyData) {
     const db = firebase.firestore();
     const yearlyRef = db.collection('yearlyInsights').doc(petId);
     
-    await yearlyRef.set({
-      monthlyReports: firebase.firestore.FieldValue.arrayUnion(monthlyData),
-      ownerId: firebase.auth().currentUser.uid, // ← ADD THIS
-      updatedAt: new Date().toISOString()
-    }, { merge: true });
+    const doc = await yearlyRef.get();
     
-    console.log("✅ Monthly report saved to yearly insights");
+    if (doc.exists) {
+      // 🆕 CHECK FOR DUPLICATES BEFORE ADDING
+      const existingData = doc.data();
+      const monthlyReports = existingData.monthlyReports || [];
+      
+      // Check if we already have a report for this month
+      const existingMonthIndex = monthlyReports.findIndex(report => 
+        report.month === monthlyData.month
+      );
+      
+      if (existingMonthIndex !== -1) {
+        // Update existing monthly report
+        monthlyReports[existingMonthIndex] = monthlyData;
+        await yearlyRef.update({
+          monthlyReports: monthlyReports,
+          updatedAt: new Date().toISOString()
+        });
+        console.log("✅ Monthly report UPDATED in yearly insights");
+      } else {
+        // Add new monthly report
+        await yearlyRef.update({
+          monthlyReports: firebase.firestore.FieldValue.arrayUnion(monthlyData),
+          updatedAt: new Date().toISOString()
+        });
+        console.log("✅ Monthly report ADDED to yearly insights");
+      }
+    } else {
+      // Create new document
+      await yearlyRef.set({
+        monthlyReports: [monthlyData],
+        ownerId: firebase.auth().currentUser.uid,
+        updatedAt: new Date().toISOString()
+      });
+      console.log("✅ New yearly insights document created");
+    }
   } catch (error) {
     console.error("Error saving to yearly insights:", error);
   }
@@ -2777,17 +2807,22 @@ async function checkScheduledReports(petId) {
   console.log("🔍 CHECK SCHEDULED REPORTS RUNNING for:", petId);
   
   const now = new Date();
+  const currentMonth = now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
   
-  // Replace localStorage check with Firestore check
+  // 🆕 CHECK IF WE ALREADY GENERATED THIS MONTH'S REPORT
   const lastReportDate = await getLastReportFromFirestore(petId);
-  const daysSinceMonthly = lastReportDate ? 
-    (now - new Date(lastReportDate)) / (24 * 60 * 60 * 1000) : 999;
+  const lastReportMonth = lastReportDate ? 
+    new Date(lastReportDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : null;
   
-  if (daysSinceMonthly >= 30) {
-    showMonthlyInsights(petId);
-    resetMonthlyActivityData(petId);
-    // Replace localStorage save with Firestore update
-    await updateLastReportInFirestore(petId);
+  // Only generate if it's a new month or no report exists
+  if (!lastReportMonth || lastReportMonth !== currentMonth) {
+    if (lastReportDate && (now - new Date(lastReportDate)) / (24 * 60 * 60 * 1000) >= 30) {
+      showMonthlyInsights(petId);
+      resetMonthlyActivityData(petId);
+      await updateLastReportInFirestore(petId);
+    }
+  } else {
+    console.log("⏩ Monthly report already generated for", currentMonth);
   }
 }
 
