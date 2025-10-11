@@ -2681,46 +2681,65 @@ function showCombinedInsight(petId, moodInsight, activityInsight) {
 }
 
 //================================================
-// ✅ MERGED MONTHLY INSIGHT FUNCTION
+// ✅ MERGED MONTHLY INSIGHT FUNCTION    UPDATED
 //========================================
 async function showMonthlyInsights(petId) {    
   let moodHistory = [];
   let activityHistory = [];
   let petName = 'your pet';
 
-  // Try Firestore first for latest data
-  if (navigator.onLine && firebase.auth().currentUser) {
-    try {
-      const db = firebase.firestore();
-      const profileRef = db.collection("profiles").doc(petId);
-      const doc = await profileRef.get();
-      
-      if (doc.exists) {
-        const profileData = doc.data();
-        moodHistory = profileData.moodHistory || [];
-        activityHistory = profileData.activityHistory || [];
-        petName = profileData.petName || 'your pet';
+  // 🆕 CHECK IF WE'RE CURRENTLY EDITING THIS PROFILE
+  const isCurrentlyEditing = editingProfileId === petId;
+  
+  if (isCurrentlyEditing) {
+    // 🆕 USE CURRENT FORM DATA FOR REAL-TIME INSIGHTS
+    console.log("🎯 Using real-time form data for insights (editing mode)");
+    moodHistory = await getUpdatedMoodHistory(petId, DOM.moodSelector?.value, DOM.moodNote?.value);
+    petName = DOM.petName?.value || 'your pet';
+    
+    // For activity history
+    const selectedActivities = Array.from(DOM.activityCheckboxes)
+      .filter(checkbox => checkbox.checked)
+      .map(checkbox => checkbox.value);
+    activityHistory = await getUpdatedActivityHistory(petId, selectedActivities);
+  } else {
+    // Existing Firestore/localStorage fallback (reading from storage)
+    console.log("📚 Using saved data for insights (viewing mode)");
+    if (navigator.onLine && firebase.auth().currentUser) {
+      try {
+        const db = firebase.firestore();
+        const profileRef = db.collection("profiles").doc(petId);
+        const doc = await profileRef.get();
+        
+        if (doc.exists) {
+          const profileData = doc.data();
+          moodHistory = profileData.moodHistory || [];
+          activityHistory = profileData.activityHistory || [];
+          petName = profileData.petName || 'your pet';
+        }
+      } catch (error) {
+        console.log("📴 Offline - using local data for monthly insights");
       }
-    } catch (error) {
-      console.log("📴 Offline - using local data for monthly insights");
+    }
+
+    // Final fallback to localStorage
+    if (moodHistory.length === 0 || activityHistory.length === 0) {
+      const profile = window.petProfiles.find(p => p.id === petId);
+      if (!profile) {
+        showErrorNotification("Profile not found for insights");
+        return;
+      }
+      
+      moodHistory = profile.moodHistory || [];
+      activityHistory = profile.activityHistory || [];
+      petName = profile.petName || 'your pet';
     }
   }
 
-  // Fallback to local data
-  if (moodHistory.length === 0 || activityHistory.length === 0) {
-    const profile = window.petProfiles.find(p => p.id === petId);
-    if (!profile) return;
-    
-    moodHistory = profile.moodHistory || [];
-    activityHistory = profile.activityHistory || [];
-    petName = profile.petName || 'your pet';
-  }
-
-    console.log("🟡 Data for Monthly Insight:", moodHistory); // to see what's going on
+  console.log("🟡 Data for Monthly Insight - Mood entries:", moodHistory.length);
   const moodInsight = generateMoodInsight(moodHistory);
   const activityInsight = generateActivityInsight(activityHistory);
   
-  // Create monthly data object for yearly storage
   const monthlyData = {
     month: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
     moodInsight: moodInsight,
@@ -2728,12 +2747,10 @@ async function showMonthlyInsights(petId) {
     savedAt: new Date().toISOString()
   };
   
-  // Save to yearly collection
   await saveMonthlyToYearly(petId, monthlyData);
-  
-  // Show to user (existing function)
   showCombinedInsight(petId, moodInsight, activityInsight);
 }
+
 //========================================
 // it handles monthly popup insights now, modified to read from firestore
 //=============================================
@@ -2783,10 +2800,20 @@ DOM.savedProfilesList?.addEventListener('click', (e) => {
   else if (btn.classList.contains('qr-btn')) {
     generateQRCode(petId);
   }
-    // ✅ ADD INSIGHT BUTTON HANDLER HERE
-  else if (btn.classList.contains('insight-btn')) {
-  showMonthlyInsights(petId);
- }
+// OPTION 2: Enhanced insight button handler with smart saving
+// In your event delegation section, update the insight button handler:
+else if (btn.classList.contains('insight-btn')) {
+  // 🆕 SMART SAVING + REAL-TIME DATA COMBO
+  const hasUnsavedChanges = editingProfileId === petId && 
+    (DOM.moodSelector?.value || Array.from(DOM.activityCheckboxes).some(cb => cb.checked));
+  
+  if (hasUnsavedChanges) {
+    // Show custom confirmation dialog
+    showSaveConfirmationDialog(petId);
+  } else {
+    showMonthlyInsights(petId);
+  }
+}
 });
     
 // Add this to catch handled errors 
