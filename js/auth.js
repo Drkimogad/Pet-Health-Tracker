@@ -35,9 +35,9 @@ const VALID_ORIGINS = [
   'https://drkimogad.github.io',
   'https://drkimogad.github.io/Pet-Health-Tracker',
   'https://pet-health-tracker-4ec31.web.app',
-  'https://pet-health-tracker-4ec31.firebaseapp.com',
-  'https://pet-health-tracker--pet-health-tracker-4ec31.us-central1.hosted.app'
+  'https://pet-health-tracker-4ec31.firebaseapp.com'
 ];
+
 
 
 // DOM Elements - Initialize as null first
