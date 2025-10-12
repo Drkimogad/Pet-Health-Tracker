@@ -23,21 +23,12 @@ window.showErrorToUser = showErrorToUser;
 // 🔶 State Management🔶🔶🔶
 const VALID_ORIGINS = [
   'https://drkimogad.github.io',
-  'https://drkimogad.github.io/Pet-Health-Tracker',
-  'https://pet-health-tracker-4ec31.web.app' // ADD THIS
+  'https://drkimogad.github.io/Pet-Health-Tracker'
 ];
- Runtime origin check
+// Runtime origin check
 if (!VALID_ORIGINS.includes(window.location.origin)) {
   window.location.href = 'https://drkimogad.github.io/Pet-Health-Tracker';
 }
-
-//const VALID_ORIGINS = [
-//  'https://drkimogad.github.io',
-//  'https://drkimogad.github.io/Pet-Health-Tracker',
-//  'https://pet-health-tracker-4ec31.web.app',
-//  'https://pet-health-tracker-4ec31.firebaseapp.com'
-//];
-
 
 
 // DOM Elements - Initialize as null first
