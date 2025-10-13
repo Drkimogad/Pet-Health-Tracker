@@ -145,8 +145,8 @@ function setupGoogleLoginButton() {
     setTimeout(setupGoogleLoginButton, 300);
     return;
   } 
-  
-  const CLIENT_ID = '175545140523-ufts7k2laidsobihlqnpf7q0m63h3abo.apps.googleusercontent.com';
+// new client id, same as id in cloud and same id in SDK firebase and same id as whitelist id   
+const CLIENT_ID = '123508617321-pivcfaokakhtf976f99ms1igtks7h4a3.apps.googleusercontent.com';
   
   try {
     // Initialize Google Identity Services
