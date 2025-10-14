@@ -3289,6 +3289,41 @@ INSIGHT MODAL STYLES - PRODUCTION READY
   }
 }
 
+/* community chat notification badge*/
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #ff4444;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  z-index: 1000;
+}
 
+.communityChat-btn {
+  position: relative;
+  /* Ensure the button has proper spacing for the badge */
+  padding: 10px 15px;
+  margin: 5px;
+}
 
+/* Pulse animation for attention */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.pulse {
+  animation: pulse 1s infinite;
+}
 
