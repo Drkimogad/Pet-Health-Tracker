@@ -177,11 +177,16 @@ footer p, footer .legal-links {
 }
 
 .header-container h2 {
-  font-size: 0.4rem;  /* 1.5rem*/
-  color: var(--text-accent);    /* Golden accent colour now, it was text inverse White text */
+  font-size: 0.4rem;  /* Your intentional reduction from 1.5rem*/
+  color: var(--text-accent);    
   text-align: center;
-  margin-bottom: 5px; /* to adjust*/
+  margin-bottom: 5px;
   line-height: 1.3;
+  
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 /*================================
