@@ -1312,6 +1312,37 @@ transform: translateY(-2px); /* Optional lift effect */
   }
 }
 
+/* =======================================================
+  Character counters for limited fields ADDED RECENTLY
+=====================================================*/
+#allergies + .char-counter,
+#medicalHistory + .char-counter,
+#dietPlan + .char-counter,
+#breed + .char-counter,
+#moodNote + .char-counter {
+  font-size: 0.8rem;
+  color: #666;
+  text-align: right;
+  margin-top: 2px;
+  display: block;
+}
+
+#allergies + .char-counter.warning,
+#medicalHistory + .char-counter.warning, 
+#dietPlan + .char-counter.warning,
+#breed + .char-counter.warning,
+#moodNote + .char-counter.warning {
+  color: #ff9800;
+}
+
+#allergies + .char-counter.error,
+#medicalHistory + .char-counter.error,
+#dietPlan + .char-counter.error, 
+#breed + .char-counter.error,
+#moodNote + .char-counter.error {
+  color: #f44336;
+}
+
 
 /*================================================*/
 /* Pet Cards all styles SPLIT LAYOUT */
