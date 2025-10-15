@@ -316,7 +316,8 @@
                         </fieldset>
 
                         <label for="breed">Breed:</label>
-                        <input type="text" id="breed" name="breed" required>
+                        <input type="text" id="breed" name="breed" required maxlength="40">
+
                         <!-- ADD: -->
                         <label for="petBirthday">Birthday:</label>
                         <input type="date" id="petBirthday" name="petBirthday" required>
@@ -356,11 +357,12 @@
                     <fieldset>
                         <legend>Health Information</legend>
                         <label for="allergies">Allergies:</label>
-                        <textarea id="allergies" name="allergies"></textarea>
+                        <textarea id="allergies" name="allergies" maxlength="150"></textarea>
                         <label for="medicalHistory">Medical History:</label>
-                        <textarea id="medicalHistory" name="medicalHistory"></textarea>
+                        <textarea id="medicalHistory" name="medicalHistory" maxlength="250"></textarea>
                         <label for="dietPlan">Diet Plan:</label>
-                        <textarea id="dietPlan" name="dietPlan"></textarea>
+                        <textarea id="dietPlan" name="dietPlan" maxlength="300"></textarea>
+
                         <label for="moodSelector">Current Mood:</label>
                         <select id="moodSelector" name="mood">
                         <option value="">Select mood...</option>
