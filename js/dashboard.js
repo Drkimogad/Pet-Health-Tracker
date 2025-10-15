@@ -370,7 +370,42 @@ function ensureCancelEditButton() {
     console.log("✅ Cancel Edit button already exists, now visible.");
   }
 }
+//======================================
+// for characters count in breed, mood, medicalHistory  and diet plan fields
+//====================
+function setupCharacterCounters() {
+  const fields = {
+    'breed': 30,
+    'allergies': 80, 
+    'medicalHistory': 100,
+    'dietPlan': 100,
+    'moodNote': 60
+  };
 
+  Object.entries(fields).forEach(([id, limit]) => {
+    const field = document.getElementById(id);
+    if (field) {
+      // Create counter element
+      const counter = document.createElement('div');
+      counter.className = 'char-counter normal';
+      counter.textContent = `0/${limit}`;
+      field.parentNode.insertBefore(counter, field.nextSibling);
+
+      // Update on input
+      field.addEventListener('input', function() {
+        const length = this.value.length;
+        counter.textContent = `${length}/${limit}`;
+        
+        // Color coding
+        counter.className = 'char-counter ' + (
+          length > limit ? 'error' :
+          length > limit * 0.8 ? 'warning' :
+          'normal'
+        );
+      });
+    }
+  });
+}
 
 
 // ======================
@@ -882,6 +917,9 @@ async function editPetProfile(petId) {
 
     // Scroll to form
     DOM.petList.scrollIntoView({ behavior: 'smooth' });
+      
+    // 🆕 ADD THIS LINE - Setup character counters
+  setupCharacterCounters();
 
   } catch (error) {
     console.error('Edit error:', error);
@@ -1036,6 +1074,9 @@ cancelBtn.style.display = "inline-block"; // Ensure it's visible
 
   // 5. Scroll to form
   DOM.petList.scrollIntoView({ behavior: "smooth" });
+
+// 🆕 ADD THIS LINE - Setup character counters
+  setupCharacterCounters();
 
   console.log("✅ Create form ready for new profile");
 }
