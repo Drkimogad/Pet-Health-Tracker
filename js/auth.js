@@ -503,10 +503,10 @@ class SupportManager {
     }
     
     // Manual initialization method (call this from dashboard.js)
-    initializeFromDashboard() {
-        console.log('🚀 Manual initialization from dashboard');
-        this.setupAuthListener();
-    }
+  //  initializeFromDashboard() {
+  //      console.log('🚀 Manual initialization from dashboard');
+ //       this.setupAuthListener();
+ //   }
     
     // Cleanup method
     destroy() {
