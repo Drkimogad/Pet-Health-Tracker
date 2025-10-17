@@ -1357,7 +1357,7 @@ I'm using this awesome app (Pet Health Tracker) to manage:
 ...and more!
 
 Get the app: https://drkimogad.github.io/Pet-Health-Tracker/
-📧 Contact developer: dr_kimogad@yahoo.com`;
+📧 Contact developer: Petkit2023@gmail.com`;
 
   const shareData = {
     title: "Pet Profile",
