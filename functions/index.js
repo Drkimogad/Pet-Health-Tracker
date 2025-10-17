@@ -38,7 +38,8 @@ function loadCloudinaryConfig() {
 // ✅ NEW
 const allowedOrigins = [
   "https://drkimogad.github.io",  // GitHub Pages
-  "http://localhost:5000"         // Local dev
+  "http://localhost:5000",     // Local dev
+  "https://pet-health-tracker-4ec31.web.app"  //added
 ];
 
 function setCors(request, response) {
@@ -85,13 +86,13 @@ export const deleteImage = functions.https.onRequest(async (request, response) =
     // --- Cloudinary deletion ---
     loadCloudinaryConfig();
     const result = await cloudinary.v2.uploader.destroy(public_id);
-    console.log("🗑️ Cloudinary deletion response:", result);
+    //console.log("🗑️ Cloudinary deletion response:", result);
 
     setCors(request, response); // ✅ UPDATED
     response.json({ status: "success", result });
 
   } catch (error) {
-    console.error("❌ Deletion failed:", error);
+   // console.error("❌ Deletion failed:", error);
     setCors(request, response); // ✅ UPDATED
     response.status(500).json({ error: error.message });
   }
