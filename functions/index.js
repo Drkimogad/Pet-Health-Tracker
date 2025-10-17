@@ -11,10 +11,9 @@ if (!admin.apps.length) {
 // Helper: Load Cloudinary Config
 // ---------------------------
 function loadCloudinaryConfig() {
-  const cfg = functions.config().cloudinary || {};
-  const cloud_name = cfg.cloud_name || process.env.CLOUDINARY_CLOUD_NAME;
-  const api_key = cfg.api_key || process.env.CLOUDINARY_API_KEY;
-  const api_secret = cfg.api_secret || process.env.CLOUDINARY_API_SECRET;
+  const cloud_name = process.env.CLOUDINARY_CLOUD_NAME;
+  const api_key = process.env.CLOUDINARY_API_KEY;
+  const api_secret = process.env.CLOUDINARY_API_SECRET;
 
   if (!cloud_name || !api_key || !api_secret) {
     throw new Error("Cloudinary credentials missing");
@@ -38,8 +37,9 @@ function loadCloudinaryConfig() {
 // ✅ NEW
 const allowedOrigins = [
   "https://drkimogad.github.io",  // GitHub Pages
-  "http://localhost:5000",     // Local dev
-  "https://pet-health-tracker-4ec31.web.app"  //added
+  "http://localhost:5000",      // Local dev
+  "https://pet-health-tracker-4ec31.web.app",  //added
+  "https://pet-health-tracker-4ec31.firebaseapp.com"
 ];
 
 function setCors(request, response) {
@@ -86,13 +86,13 @@ export const deleteImage = functions.https.onRequest(async (request, response) =
     // --- Cloudinary deletion ---
     loadCloudinaryConfig();
     const result = await cloudinary.v2.uploader.destroy(public_id);
-    //console.log("🗑️ Cloudinary deletion response:", result);
+    console.log("🗑️ Cloudinary deletion response:", result);
 
     setCors(request, response); // ✅ UPDATED
     response.json({ status: "success", result });
 
   } catch (error) {
-   // console.error("❌ Deletion failed:", error);
+    console.error("❌ Deletion failed:", error);
     setCors(request, response); // ✅ UPDATED
     response.status(500).json({ error: error.message });
   }
